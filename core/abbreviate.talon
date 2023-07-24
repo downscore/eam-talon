@@ -1,0 +1,1 @@
+brief {user.abbreviation}: "{abbreviation}"

@@ -1,0 +1,6 @@
+URL Template,Name
+https://www.amazon.com/s/?field-keywords=%s,amazon
+https://www.google.com/search?q=%s,google
+https://www.google.com/search?q=site%3Areddit.com+%s,reddit
+https://maps.google.com/maps?q=%s,google maps
+https://en.wikipedia.org/w/index.php?search=%s,wiki

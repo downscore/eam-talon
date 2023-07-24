@@ -1,0 +1,6 @@
+help show: user.help_show()
+help hide: user.help_hide()
+help refresh: user.help_refresh()
+help next: user.help_next_page()
+help last: user.help_previous_page()
+help jump <user.number>: user.help_set_page(number - 1)

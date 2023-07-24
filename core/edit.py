@@ -1,0 +1,514 @@
+"""Talon code for common edit actions."""
+# Disable linter warnings caused by Talon conventions.
+# pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
+# pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
+# mypy: ignore-errors
+
+from talon import Context, Module, actions, app, clip
+from .lib import format_util, text_util
+
+mod = Module()
+ctx = Context()
+
+
+def _get_selected_text_fragments():
+  """Gets the selected text and its fragment ranges. If no text is selected, selects the current word."""
+  text = actions.edit.selected_text()
+  if len(text) == 0:
+    actions.edit.select_word()
+    text = actions.edit.selected_text()
+
+  # Special case: Ignore list item markers (e.g. in Apple Notes).
+  if text.startswith("- "):
+    text = text[2:]
+
+  fragments = format_util.get_fragment_ranges(text)
+  return text, fragments
+
+
+@ctx.action_class("edit")
+class EditActions:
+  """Default implementations for built-in edit actions."""
+
+  def copy():
+    actions.key("cmd-c")
+
+  def cut():
+    actions.key("cmd-x")
+
+  def delete():
+    actions.key("backspace")
+
+  def delete_line():
+    actions.edit.select_line()
+    actions.edit.delete()
+
+  def delete_word():
+    actions.edit.select_word()
+    actions.edit.delete()
+
+  def down():
+    actions.key("down")
+
+  def extend_down():
+    actions.key("shift-down")
+
+  def extend_file_end():
+    actions.key("cmd-shift-down")
+
+  def extend_file_start():
+    actions.key("cmd-shift-up")
+
+  def extend_left():
+    actions.key("shift-left")
+
+  def extend_line_down():
+    actions.key("shift-down")
+
+  def extend_line_end():
+    actions.key("cmd-shift-right")
+
+  def extend_line_start():
+    actions.key("cmd-shift-left")
+
+  def extend_line_up():
+    actions.key("shift-up")
+
+  def extend_page_down():
+    actions.key("cmd-shift-pagedown")
+
+  def extend_page_up():
+    actions.key("cmd-shift-pageup")
+
+  def extend_right():
+    actions.key("shift-right")
+
+  def extend_up():
+    actions.key("shift-up")
+
+  def extend_word_left():
+    actions.key("shift-alt-left")
+
+  def extend_word_right():
+    actions.key("shift-alt-right")
+
+  def file_end():
+    actions.key("cmd-down")
+
+  def file_start():
+    actions.key("cmd-up")
+
+  def find(text: str = None):
+    actions.key("cmd-f")
+
+  def find_next():
+    actions.key("cmd-g")
+
+  def find_previous():
+    actions.key("cmd-shift-g")
+
+  def indent_less():
+    actions.key("cmd-[")
+
+  def indent_more():
+    actions.key("cmd-]")
+
+  def left():
+    actions.key("left")
+
+  def line_down():
+    actions.key("down cmd-left")
+
+  def line_end():
+    actions.key("cmd-right")
+
+  def line_insert_down():
+    actions.edit.line_end()
+    actions.key("enter")
+
+  def line_insert_up():
+    # Going to line end first can help consistently preserve indentation in code.
+    actions.edit.line_end()
+    actions.edit.line_start()
+    actions.key("enter up")
+
+  def line_start():
+    actions.key("cmd-left")
+
+  def line_swap_down():
+    actions.edit.select_line()
+    actions.edit.cut()
+    actions.key("down")
+    actions.edit.paste()
+    actions.key("left")
+
+  def line_swap_up():
+    actions.edit.select_line()
+    actions.edit.cut()
+    actions.sleep("50ms")
+    actions.key("up")
+    actions.edit.paste()
+    actions.key("left")
+
+  def line_up():
+    actions.key("up cmd-left")
+
+  def page_down():
+    actions.key("pagedown")
+
+  def page_up():
+    actions.key("pageup")
+
+  def paste():
+    # Short sleep to allow UI to catch up for chained commands.
+    actions.sleep("50ms")
+    actions.key("cmd-v")
+
+  def paste_match_style():
+    actions.key("cmd-shift-v")
+
+  def print():
+    actions.key("cmd-p")
+
+  def redo():
+    actions.key("cmd-shift-z")
+
+  def right():
+    actions.key("right")
+
+  def save():
+    actions.key("cmd-s")
+
+  def save_all():
+    actions.key("cmd-shift-s")
+
+  def select_all():
+    actions.key("cmd-a")
+
+  def select_line(n: int = None):
+    actions.key("cmd-left cmd-shift-right shift-right")
+
+  def select_none():
+    actions.key("right")
+
+  def select_word():
+    actions.edit.right()
+    actions.edit.word_left()
+    actions.edit.extend_word_right()
+
+  def undo():
+    actions.key("cmd-z")
+
+  def up():
+    actions.key("up")
+
+  def word_left():
+    actions.key("alt-left")
+
+  def word_right():
+    actions.key("alt-right")
+
+  def zoom_in():
+    actions.key("cmd-=")
+
+  def zoom_out():
+    actions.key("cmd--")
+
+  def zoom_reset():
+    actions.key("cmd-0")
+
+  def selected_text() -> str:
+    with clip.capture() as s:
+      actions.edit.copy()
+    try:
+      return s.text()
+    except clip.NoChange:
+      return ""
+
+
+@mod.action_class
+class ExtensionActions:
+  """Edit actions that are not built in to Talon."""
+
+  def count_lines():
+    """Pops up a notification with the number of lines in the currently selected text."""
+    lines = text_util.count_lines(actions.edit.selected_text())
+    app.notify(f"Lines: {lines}")
+
+  def count_words():
+    """Pops up a notification with the number of words in the currently selected text."""
+    words = text_util.count_words(actions.edit.selected_text())
+    app.notify(f"Words: {words}")
+
+  def count_characters():
+    """Pops up a notification with the number of characters in the currently selected text."""
+    characters = len(actions.edit.selected_text())
+    app.notify(f"Characters: {characters}")
+
+  def cursor_back():
+    """Jumps to previous cursor position."""
+    actions.key("cmd-,")
+
+  def delete_to_line_end():
+    """Delete from the cursor to the end of the line."""
+    actions.edit.extend_line_end()
+    actions.edit.delete()
+
+  def delete_to_line_start():
+    """Delete from the cursor to the start of the line."""
+    actions.edit.extend_line_start()
+    actions.edit.delete()
+
+  def delete_word_left():
+    """Delete the word to the left of the cursor."""
+    actions.edit.extend_word_left()
+    actions.edit.delete()
+
+  def delete_word_right():
+    """Delete the word to the right of the cursor."""
+    actions.edit.extend_word_right()
+    actions.edit.delete()
+
+  def duplicate_line():
+    """Duplicate the current line."""
+    actions.edit.select_line()
+    line_text = actions.edit.selected_text()
+    actions.edit.right()
+    actions.user.insert_via_clipboard(line_text)
+    actions.edit.left()
+
+  def expand_selection_to_adjacent_characters():
+    """Expands the current selection to include adjacent characters on the left and right."""
+    selection_length = len(actions.edit.selected_text())
+    # Disallow for long strings, as they can take a long time to select.
+    if selection_length > 500:
+      return
+    actions.key(f"left:2 shift-right:{selection_length + 2}")
+
+  def find_everywhere():
+    """Finds text across project."""
+    actions.key("cmd-shift-f")
+
+  def find_toggle_match_by_case():
+    """Toggles find match by case sensitivity."""
+
+  def find_toggle_match_by_word():
+    """Toggles find match by whole words."""
+
+  def find_toggle_match_by_regex():
+    """Toggles find match by regex."""
+
+  def fragment_cursor_after(n: int):
+    """Moves the cursor after the nth fragment of the selected text. Index is 1-based."""
+    _, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+    actions.key(f"left right:{fragment[1]}")
+
+  def fragment_cursor_before(n: int):
+    """Moves the cursor before the nth fragment of the selected text. Index is 1-based."""
+    _, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+    actions.key(f"left right:{fragment[0]}")
+
+  def fragment_delete(n: int):
+    """Deletes the nth fragment of the selected text. Index is 1-based."""
+    _, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+
+    # Check if we need to delete a separator character before or after the fragment.
+    delete_before = n > 1 and fragments[n - 2][1] < fragment[0]
+    # Using int(n) below to suppress pylint error.
+    delete_after = not delete_before and n < len(fragments) and fragment[1] < fragments[int(n)][0]
+
+    start_index = fragment[0] - (1 if delete_before else 0)
+    length = fragment[1] - fragment[0] + (1 if delete_before or delete_after else 0)
+
+    actions.key(f"left right:{start_index}")
+    actions.key(f"shift-right:{length}")
+    actions.key("backspace")
+
+  def fragment_select(n: int):
+    """Selects the nth fragment of the selected text. Index is 1-based."""
+    _, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+    actions.key(f"left right:{fragment[0]}")
+    actions.key(f"shift-right:{fragment[1] - fragment[0]}")
+
+  def fragment_select_head(n: int):
+    """Selects from the nth fragment of the selected text to the start. Index is 1-based."""
+    _, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+    actions.key(f"left right:{fragment[1]}")
+    actions.key(f"shift-left:{fragment[1]}")
+
+  def fragment_select_tail(n: int):
+    """Selects from the nth fragment of the selected text to the end. Index is 1-based."""
+    text, fragments = _get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      return
+    fragment = fragments[n - 1]
+    actions.key(f"left right:{fragment[0]}")
+    actions.key(f"shift-right:{len(text) - fragment[0]}")
+
+  def insert_via_clipboard(text: str):
+    """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII
+    character."""
+    with clip.revert():
+      clip.set_text(text)
+      actions.edit.paste()
+      # Sleep here so that clip.revert doesn't revert the clipboard too soon.
+      actions.sleep("50ms")
+
+  def jump_to_last_occurrence(text: str):
+    """Jumps to the last occurrence of the specified text."""
+    actions.key("cmd-f")
+    actions.insert(text)
+    actions.edit.find_previous()
+    actions.key("escape")
+
+  def jump_to_next_occurrence(text: str):
+    """Jumps to the next occurrence of the specified text."""
+    actions.key("cmd-f")
+    actions.insert(text)
+    actions.key("escape")
+
+  def replace():
+    """Search and replace for text in the active editor."""
+    actions.key("cmd-h")
+
+  def replace_confirm():
+    """Confirms replace at current position."""
+
+  def replace_confirm_all():
+    """Confirms replace all."""
+
+  def replace_everywhere():
+    """Search and replaces for text in the entire project."""
+    actions.key("cmd-shift-h")
+
+  def select_character_range(from_index: int, to_index: int = 0):
+    """Selects a range of characters in the selected text. 1-based. If `to_index` is zero, selects the from
+    character."""
+    if to_index > 0 and to_index < from_index:
+      return
+
+    selected = actions.edit.selected_text()
+    if len(selected) == 0:
+      actions.edit.select_word()
+      selected = actions.edit.selected_text()
+
+    if len(selected) == 0 or from_index <= 0 or from_index > len(selected):
+      return
+
+    effective_to = min(len(selected), to_index) if to_index > 0 else from_index
+    actions.key(f"left right:{from_index - 1}")
+    actions.key(f"shift-right:{effective_to - from_index + 1}")
+
+  def select_next_occurrence(text: str):
+    """Selects the next occurrence of the text, and suppresses any find/replace dialogs."""
+
+  def select_previous_occurrence(text: str):
+    """Selects the previous occurrence of the text, and suppresses any find/replace dialogs."""
+
+  def sort_lines_ascending():
+    """Sorts the selected lines in ascending order."""
+    selected_text = actions.edit.selected_text()
+    selected_text = text_util.sort_lines(selected_text)
+    actions.user.insert_via_clipboard(selected_text)
+
+  def sort_lines_descending():
+    """Sorts the selected lines in descending order."""
+    selected_text = actions.edit.selected_text()
+    selected_text = text_util.sort_lines(selected_text, reverse=False)
+    actions.user.insert_via_clipboard(selected_text)
+
+  def style_title():
+    """Format text as a title."""
+    actions.user.style_heading(1)
+
+  def style_subtitle():
+    """Format text as a subtitle."""
+    actions.user.style_heading(2)
+
+  def style_heading(number: int):
+    """Make text the specified heading level."""
+    # Check if the first word on the line is a heading specifier. If so, keep it selected.
+    actions.edit.line_start()
+    actions.edit.extend_word_right()
+    first_word = actions.edit.selected_text()
+    found_heading = all(map(lambda c: c.isspace() or c == "#", first_word)) and any(map(lambda c: c == "#", first_word))
+
+    prefix = ""
+    for _ in range(number):
+      prefix += "#"
+
+    # If the line already begins with a heading specifier, just replace it (keep it selected), otherwise add new
+    # specifier with trailing space.
+    if not found_heading:
+      prefix += " "
+      actions.edit.left()
+
+    actions.insert(prefix)
+
+  def style_body():
+    """Format text as normal body text."""
+
+  def style_bold():
+    """Make text bold."""
+    actions.user.surround_selected_text("**", "**")
+
+  def style_italic():
+    """"Make text italic."""
+    actions.user.surround_selected_text("_", "_")
+
+  def style_underline():
+    """"Make text underlined."""
+    actions.user.surround_selected_text("<ins>", "</ins>")
+
+  def style_strikethrough():
+    """"Make text strikethrough."""
+    actions.user.surround_selected_text("~~", "~~")
+
+  def style_bullet_list():
+    """Create a bulleted list."""
+    actions.edit.line_start()
+    actions.insert("* ")
+
+  def style_numbered_list():
+    """Create a numbered list."""
+    actions.edit.line_start()
+    actions.insert("1. ")
+
+  def style_checklist():
+    """Create a checklist."""
+    actions.edit.line_start()
+    actions.insert("- [ ] ")
+
+  def style_toggle_check():
+    """Toggle a checkbox."""
+    actions.edit.select_line()
+    line_text = actions.edit.selected_text()
+    if "[ ]" in line_text:
+      line_text = line_text.replace("[ ]", "[x]")
+    else:
+      line_text = line_text.replace("[x]", "[ ]")
+    actions.user.insert_via_clipboard(line_text)
+
+  def surround_selected_text(prefix: str, suffix: str):
+    """Surrounds the currently-selected text with the given prefix and suffix."""
+    text = actions.edit.selected_text()
+    if text != "":
+      actions.user.insert_via_clipboard(f"{prefix}{text}{suffix}")
+    else:
+      actions.user.insert_via_clipboard(f"{prefix}{suffix}")
+      actions.key(f"left:{len(suffix)}")

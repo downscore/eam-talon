@@ -1,4 +1,4 @@
-"""Talon code for dictating text."""
+"""Talon code for dictating text. Common to both command and dicatation modes."""
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false

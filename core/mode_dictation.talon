@@ -8,10 +8,16 @@ mode: dictation
 ^escape <user.prose>$: user.dictation_insert_prose(prose)
 
 # Formatted prose.
-format {user.formatter}+ <user.text>$: insert(user.format_multiple(text, formatter_list))
-format {user.formatter}+ <user.text> anchor: insert(user.format_multiple(text, formatter_list))
+format title <user.prose>$: user.dictation_insert_prose(user.format_title(prose))
+format title <user.prose> anchor: user.dictation_insert_prose(user.format_title(prose))
+format title <user.prose> void:
+  user.dictation_insert_prose(user.format_title(prose))
+  insert(" ")
+^reformat title$: user.format_selection_title()
+format {user.formatter}+ <user.text>$: user.dictation_insert_prose(user.format_multiple(text, formatter_list))
+format {user.formatter}+ <user.text> anchor: user.dictation_insert_prose(user.format_multiple(text, formatter_list))
 format {user.formatter}+ <user.text> void:
-  insert(user.format_multiple(text, formatter_list))
+  user.dictation_insert_prose(user.format_multiple(text, formatter_list))
   insert(" ")
 ^reformat {user.formatter}+$: user.format_selection(formatter_list)
 
@@ -29,22 +35,22 @@ anchor: skip()
 
 # Symbol convenience commands
 ^args$:
-  insert("()")
+  user.dictation_insert_prose("()")
   key(left)
 ^subscript$:
-  insert("[]")
+  user.dictation_insert_prose("[]")
   key(left)
 ^quads$:
-  insert("\"\"")
+  user.dictation_insert_prose("\"\"")
   key(left)
 ^padding$:
-  insert("  ")
+  user.dictation_insert_prose("  ")
   key(left)
 ^buried$:
-  insert("``")
+  user.dictation_insert_prose("``")
   key(left)
 ^diamond$:
-  insert("<>")
+  user.dictation_insert_prose("<>")
   key(left)
 
 # New lines.
@@ -61,7 +67,7 @@ anchor: skip()
 ^stone$: edit.word_left()
 ^step$: edit.word_right()
 ^head$: edit.line_start()
-^tail$: edit.line_end()
+^(tail|tale)$: edit.line_end()
 ^jump top$: edit.file_start()
 ^jump bottom$: edit.file_end()
 ^gail$:

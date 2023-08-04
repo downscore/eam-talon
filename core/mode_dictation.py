@@ -21,6 +21,14 @@ def _get_preceding_text() -> str:
   return preceding_text
 
 
+def _backspace_required(preceding_text: str, next_text: str) -> bool:
+  """Determine if we must press backspace before inserting the next text."""
+  # Backspace if we are inserting a period after a space.
+  if preceding_text[-1] == " " and preceding_text[-2] != " " and next_text[0] == ".":
+    return True
+  return False
+
+
 def _space_required(preceding_text: str, next_text: str) -> bool:
   """Determines if a space is required between the preceding and next text."""
   # Assume there is no preceding text if the text is too long (the editor may copy the entire line if no selection).
@@ -56,6 +64,8 @@ class Actions:
     """Inserts prose using maintained state (e.g. for spacing and capitalization) from dictation mode. Updates
     maintained state based on what is inserted."""
     preceding_text = _get_preceding_text()
+    if _backspace_required(preceding_text, prose):
+      actions.key("backspace")
     if _space_required(preceding_text, prose):
       actions.insert(" ")
     if _capitalization_required(preceding_text):

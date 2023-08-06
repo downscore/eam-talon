@@ -25,15 +25,19 @@ class Actions:
   def obsidian(command: str):
     """Executes a command using the Obsidian command palette."""
     actions.key("cmd-p")
-    actions.sleep("100ms")
     actions.insert(command)
-    actions.sleep("100ms")
     actions.key("enter")
 
 
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def navigation_back():
+    actions.key("cmd-alt-left")
+
+  def navigation_forward():
+    actions.key("cmd-alt-right")
 
   def split_down():
     actions.user.obsidian("Split down")
@@ -52,9 +56,7 @@ class ExtensionActions:
 
   def tab_switch_by_name(name: str):
     actions.key("cmd-o")
-    actions.sleep("250ms")
     actions.insert(name)
-    actions.sleep("250ms")
     actions.key("enter")
 
   def textflow_get_selected_text_potato_mode() -> str:

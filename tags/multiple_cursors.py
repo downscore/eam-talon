@@ -39,12 +39,9 @@ class Actions:
 
   def multi_cursor_skip():
     """Skips adding a cursor at next occurrence of selection."""
-    actions.key("cmd-k cmd-d")
 
   def multi_cursor_select_all():
     """Adds cursor at every occurrence of selection."""
-    actions.key("cmd-shift-l")
 
   def multi_cursor_add_to_line_ends():
     """Adds cursor at end of every selected line."""
-    actions.key("alt-shift-i")

@@ -134,6 +134,15 @@ class ExtensionActions:
   def duplicate_line():
     actions.user.vscode("editor.action.copyLinesDownAction")
 
+  def multi_cursor_skip():
+    actions.key("cmd-k cmd-d")
+
+  def multi_cursor_select_all():
+    actions.key("cmd-shift-l")
+
+  def multi_cursor_add_to_line_ends():
+    actions.key("alt-shift-i")
+
   def navigation_back():
     actions.user.vscode("workbench.action.navigateBack")
 

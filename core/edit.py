@@ -479,6 +479,10 @@ class ExtensionActions:
     """"Make text strikethrough."""
     actions.user.surround_selected_text("~~", "~~")
 
+  def style_highlight():
+    """"Make text highlighted."""
+    actions.user.surround_selected_text("==", "==")
+
   def style_bullet_list():
     """Create a bulleted list."""
     actions.edit.line_start()

@@ -8,14 +8,49 @@ lister:
   edit.line_insert_down()
   insert("* ")
 
-# Mermaid Support
+# Horizontal rule
+make horizontal:
+  insert("\n---\n")
+
+# Footnotes
+make footnote:
+  insert("[^]")
+  key("left")
+make inline footnote:
+  insert("^[]")
+  key("left:1")
+
+# Callouts
+callout info: insert("> [!info]\n")
+callout note: insert("> [!note]\n")
+callout to do: insert("> [!todo]\n")
+callout tip: insert("> [!tip]\n")
+callout abstract: insert("> [!abstract]\n")
+callout success: insert("> [!success]\n")
+callout check: insert("> [!check]\n")
+callout done: insert("> [!done]\n")
+callout question: insert("> [!question]\n")
+callout warning: insert("> [!warning]\n")
+callout failure: insert("> [!failure]\n")
+callout danger: insert("> [!danger]\n")
+callout bug: insert("> [!bug]\n")
+callout example: insert("> [!example]\n")
+callout quote: insert("> [!quote]\n")
+callout summary: insert("> [!summary]\n")
+callout hint: insert("> [!hint]\n")
+callout important: insert("> [!important]\n")
+callout fail: insert("> [!fail]\n")
+callout missing: insert("> [!missing]\n")
+callout error: insert("> [!error]\n")
+
+# Mermaid support
 make mermaid block:
   insert("```mermaid\n\n```")
   key("left:4")
 make connect: insert(" --> ")
 make font awesome: insert("fa:fa-")
 
-# Latex Support
+# Latex support
 make latex block:
   insert("$$\n\n$$")
   key("left:3")
@@ -29,7 +64,7 @@ make empty set: insert("\\emptyset")
 make times: insert("\\times ")
 make approximate: insert("\\approx ")
 
-# Greek Letters in Latex
+# Greek letters in latex
 make alpha: insert("\\alpha ")
 make beta: insert("\\beta ")
 make gamma: insert("\\gamma ")

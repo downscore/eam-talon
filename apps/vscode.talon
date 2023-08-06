@@ -12,9 +12,6 @@ comment line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
   user.vscode("editor.action.commentLine")
 
-# Copy a given line to the current location.
-bring line <user.number>: user.vscode_bring_line(number)
-
 # Show autocomplete suggest dialogue.
 suggest: user.vscode("editor.action.triggerSuggest")
 

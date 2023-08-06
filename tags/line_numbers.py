@@ -38,3 +38,24 @@ class Actions:
     else:
       for _ in range(to_index - from_index + 1):
         actions.edit.extend_down()
+
+  def bring_line_by_number(n: int):
+    """Copies a given line to the cursor location."""
+    # Insert some unique placeholder text so we can find the insertion position later.
+    # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
+    placeholder = f"!!!BringLine{n}!!!"
+    actions.user.insert_via_clipboard(placeholder)
+
+    # In VS Code, jumps to beginning of line, before indentation.
+    actions.edit.jump_line(n)
+    actions.sleep("100ms")
+
+    # Get line without trailing newline.
+    actions.edit.extend_line_end()
+    line = actions.edit.selected_text()
+
+    # Go back to original position and insert the line.
+    actions.edit.find()
+    actions.user.insert_via_clipboard(placeholder)
+    actions.key("escape")
+    actions.user.insert_via_clipboard(line)

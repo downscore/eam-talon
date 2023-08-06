@@ -24,25 +24,6 @@ app: vscode
 """
 
 
-@mod.action_class
-class Actions:
-  """VS Code actions."""
-
-  def vscode_bring_line(n: int):
-    """Copies a given line to the cursor location."""
-    # Jumps to beginning of line, before indentation.
-    actions.edit.jump_line(n)
-    actions.sleep("100ms")
-
-    # Get line without trailing newline.
-    actions.edit.extend_line_end()
-    line = actions.edit.selected_text()
-
-    # Go back to original position and insert the line.
-    actions.user.vscode("workbench.action.navigateBack")
-    actions.user.insert_via_clipboard(line)
-
-
 @ctx.action_class("win")
 class WinActions:
   """Action overwrites."""

@@ -32,6 +32,12 @@ buried:
 diamond:
   insert("<>")
   key(left)
+latex:
+  insert("$$")
+  key(left)
+bracing:
+  insert("{}")
+  key(left)
 pointer: "->"
 dub pointer: "=>"
 

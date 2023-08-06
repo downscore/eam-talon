@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module
+from talon import Context, Module, actions
 
 mod = Module()
 ctx = Context()
@@ -18,9 +18,44 @@ app: obsidian
 """
 
 
+@mod.action_class
+class Actions:
+  """Obsidian actions."""
+
+  def obsidian(command: str):
+    """Executes a command using the Obsidian command palette."""
+    actions.key("cmd-p")
+    actions.sleep("100ms")
+    actions.insert(command)
+    actions.sleep("100ms")
+    actions.key("enter")
+
+
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def split_down():
+    actions.user.obsidian("Split down")
+
+  def split_right():
+    actions.user.obsidian("Split right")
+
+  def tab_nth_previous(n: int):
+    # Make sure number of tab switches is reasonable.
+    if n < 1 or n > 9:
+      return
+    if n == 1:
+      actions.key("ctrl-tab")
+    else:
+      actions.key(f"cmd-o down:{n} enter")
+
+  def tab_switch_by_name(name: str):
+    actions.key("cmd-o")
+    actions.sleep("250ms")
+    actions.insert(name)
+    actions.sleep("250ms")
+    actions.key("enter")
 
   def textflow_get_selected_text_potato_mode() -> str:
     # Obsidian copies the entire line if nothing is selected, which breaks a bunch of TextFlow stuff.

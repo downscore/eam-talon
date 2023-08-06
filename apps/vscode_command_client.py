@@ -51,7 +51,7 @@ def _handle_existing_request_file(path):
   time_difference_ms = abs(modified_time_ms - current_time_ms)
 
   if time_difference_ms < stale_timeout_ms:
-    raise Exception(f"Found recent request file. Age: {time_difference_ms} ms")
+    raise FileExistsError(f"Found recent request file. Age: {time_difference_ms} ms")
 
   print(f"Removing stale VS Code Command Server request file. Path: {path}")
   path.unlink(missing_ok=True)
@@ -97,7 +97,7 @@ def _read_json_with_timeout(path: Path) -> Dict[str, Any]:
     time_left = timeout_time - time.perf_counter()
 
     if time_left < 0:
-      raise Exception("Timed out waiting for VS Code Command Server response")
+      raise TimeoutError("Timed out waiting for VS Code Command Server response")
 
     # Use exponential backoff (or remaining time if smaller) with a minimum wait time.
     sleep_time = max(min(sleep_time * 2, time_left), min_sleep_seconds)
@@ -135,7 +135,7 @@ def run_command(
   # Make sure the IPC path exists. It should be created by the Command Server Extension.
   ipc_path = _get_ipc_path()
   if not ipc_path.exists():
-    raise Exception(f"Command Server directory not found: {ipc_path}")
+    raise FileNotFoundError(f"Command Server directory not found: {ipc_path}")
   request_path = ipc_path / "request.json"
   response_path = ipc_path / "response.json"
 
@@ -170,7 +170,7 @@ def run_command(
     request_path.unlink(missing_ok=True)
 
   if decoded_contents["uuid"] != uuid:
-    raise Exception("VS Code Command Server uuids did not match")
+    raise ValueError("UUIDs did not match in VS Code Command Server response")
 
   # Print any warnings in the response.
   for warning in decoded_contents["warnings"]:
@@ -178,7 +178,7 @@ def run_command(
 
   # Raise error if present in the response.
   if decoded_contents["error"] is not None:
-    raise Exception(decoded_contents["error"])
+    raise ValueError(decoded_contents["error"])
 
   # TODO: Do we need to sleep here? What problems does this address?
   # actions.sleep("25ms")
@@ -206,12 +206,12 @@ class Actions:
   def vscode(command_id: str):
     """Executes a command via VS Code Command Server."""
     # Default implementation (VS Code not active) throws an exception.
-    raise Exception(f"Tried running VS Code command when VS Code not active. Command: {command_id}")
+    raise RuntimeError(f"Tried running VS Code command when VS Code not active. Command: {command_id}")
 
   def vscode_and_wait(command_id: str):
     """Executes a command via VS Code Command Server and waits for it to finish."""
     # Default implementation (VS Code not active) throws an exception.
-    raise Exception(f"Tried running (wait) VS Code command when VS Code not active. Command: {command_id}")
+    raise RuntimeError(f"Tried running (wait) VS Code command when VS Code not active. Command: {command_id}")
 
 
 @ctx.action_class("user")

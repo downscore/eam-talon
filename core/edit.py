@@ -446,6 +446,11 @@ class ExtensionActions:
     actions.edit.line_start()
     actions.edit.extend_word_right()
     first_word = actions.edit.selected_text()
+
+    # Clear the word if it's on the next line.
+    if first_word.startswith("\n"):
+      first_word = ""
+
     found_heading = all(map(lambda c: c.isspace() or c == "#", first_word)) and any(map(lambda c: c == "#", first_word))
 
     prefix = ""
@@ -507,6 +512,9 @@ class ExtensionActions:
     else:
       line_text = line_text.replace("[x]", "[ ]")
     actions.user.insert_via_clipboard(line_text)
+
+    # Go back to the original line (we just inserted a line break if it wasn't the last line in the file).
+    actions.edit.left()
 
   def surround_selected_text(prefix: str, suffix: str):
     """Surrounds the currently-selected text with the given prefix and suffix."""

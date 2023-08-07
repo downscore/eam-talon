@@ -6,7 +6,6 @@ sleepy [<phrase>]$: speech.disable()
 ^speech wake$: speech.enable()
 
 # Single word, multiple-syllable speech toggles that are unique, but easily recognized.
-penguin [<phrase>]$: speech.disable()
 coconut [<phrase>]$: speech.disable()
 ^dinosaur$: speech.enable()
 

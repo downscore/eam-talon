@@ -11,7 +11,8 @@ from .user_settings import load_dict_from_csv
 mod = Module()
 ctx = Context()
 
-mod.list("vocabulary", desc="additional vocabulary words")
+mod.list("vocabulary", desc="Additional vocabulary words")
+mod.list("unicode", desc="Named Unicode strings, such as emoji")
 
 # "dictate.word_map" is used by `actions.dictate.replace_words` to rewrite words Talon recognized. Entries in word_map
 # don't change the priority with which Talon recognizes some words over others.
@@ -20,6 +21,9 @@ ctx.settings["dictate.word_map"] = load_dict_from_csv("words_to_replace.csv")
 # "user.vocabulary" is used to explicitly add words/phrases that Talon doesn't recognize. Words in user.vocabulary (or
 # other lists and captures) are "command-like" and their recognition is prioritized over ordinary words.
 ctx.lists["user.vocabulary"] = load_dict_from_csv("additional_words.csv")
+
+# Named Unicode strings (e.g. emoji).
+ctx.lists["user.unicode"] = load_dict_from_csv("unicode.csv")
 
 
 def _capture_to_words(m):

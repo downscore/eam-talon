@@ -171,3 +171,7 @@ anchor: skip()
 ^style numbered list$: user.style_numbered_list()
 ^style checklist$: user.style_checklist()
 ^style check dog$: user.style_toggle_check()
+
+# Special characters.
+^moji hunt$: key("cmd-ctrl-space")
+^moji {user.unicode}$: user.insert_via_clipboard(user.unicode)

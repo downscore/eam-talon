@@ -41,7 +41,7 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
   next_char = next_text[0]
   if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\""):
     return False
-  if preceding_char in (" ", "$", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/", "'", "\""):
+  if preceding_char in (" ", "$", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/", "'", "\"", "`"):
     return False
   return True
 
@@ -49,11 +49,11 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
 def _capitalization_required(preceding_text: str) -> bool:
   """Determines if capitalization is required for the next word."""
   # Assume there is no preceding text if the text is too long (the editor may copy the entire line if no selection).
-  if len(preceding_text) == 0 or len(preceding_text) > _NUM_PRECEDING_CHARS:
+  if len(preceding_text) < 2 or len(preceding_text) > _NUM_PRECEDING_CHARS:
     return True
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
   if last_char.isalnum() or last_char in ("%", ";", ":", ",", "(", ")", "[", "]", "{", "}", "<", ">", "-", "_", "/",
-                                          "'", "\""):
+                                          "'", "\"", "`"):
     return False
   return True
 

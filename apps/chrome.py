@@ -28,6 +28,16 @@ app: chrome
 """
 
 
+@ctx.action_class("app")
+class AppActions:
+  """App action overwrites."""
+
+  def tab_previous():
+    actions.key("cmd-shift-a")
+    actions.sleep("50ms")
+    actions.key("enter")
+
+
 @ctx.action_class("browser")
 class BrowserActions:
   """Browser action overwrites."""

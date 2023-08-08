@@ -71,4 +71,4 @@ class Actions:
       return
     # Default implementation can only switch to the previous tab.
     # Using key("ctrl:down tab:{n} ctrl:up") doesn't seem to work.
-    actions.key("ctrl-tab")
+    actions.app.tab_previous()

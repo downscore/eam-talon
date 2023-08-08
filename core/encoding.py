@@ -7,10 +7,9 @@
 import base64
 
 import urllib.parse
-from talon import Context, Module, actions
+from talon import Module, actions
 
 mod = Module()
-ctx = Context()
 
 
 @mod.action_class

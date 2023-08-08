@@ -32,3 +32,8 @@ reformat clause: user.format_selection_sentence()
 
 word <user.word>: insert(user.word)
 ship word <user.word>: insert(user.format_title(user.word))
+
+# Switch to mixed (command+dictation) mode and execute a chained command (usually prose).
+prose [<phrase>]$:
+    user.mode_mixed()
+    user.rephrase(phrase or "")

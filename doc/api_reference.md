@@ -57,7 +57,7 @@ dictate.join_words(words: Sequence[str], separator: str = ' * **') -> str**
   * Insert lowercase text with auto_insert()
 * **dictate.natural(p: talon.grammar.vm.Phrase)**
   * Insert naturally-capitalized text with auto_insert()
-dictate.parse_words(p: talon.grammar.vm.Phrase) -> Sequence* *[*str]**
+* **dictate.parse_words(p: talon.grammar.vm.Phrase) -> Sequence* *[*str]**
   * Extract words from a spoken Capture
 * **dictate.replace_words(words: Sequence[str]) -> Sequence**[str]
   * Replace words according to the dictate.word_map dictionary setting

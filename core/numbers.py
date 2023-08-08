@@ -75,6 +75,12 @@ def ordinals_small(m) -> int:
   return int(_ORDINALS_DICT[m[0]])
 
 
+@mod.capture(rule="{self.ordinals_small}")
+def repeat_ordinal(m) -> int:
+  """Subtracts one from a single ordinal and returns it as an integer. Captures a small subset of `ordinals`."""
+  return int(_ORDINALS_DICT[m[0]]) - 1
+
+
 @mod.action_class
 class Actions:
   """Actions related to numbers."""

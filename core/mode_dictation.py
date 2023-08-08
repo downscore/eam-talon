@@ -24,9 +24,10 @@ def _get_preceding_text() -> str:
 def _backspace_required(preceding_text: str, next_text: str) -> bool:
   """Determine if we must press backspace before inserting the next text."""
   # Backspace if we are inserting a period after a space.
-  if preceding_text[-1] == " " and preceding_text[-2] != " " and next_text[0] == ".":
-    return True
-  return False
+  if len(preceding_text) < 2:
+    return False
+  return preceding_text[-1] == " " and preceding_text[-2] != " " and next_text[0] in (".", ",", ";", ")", "]", "}", ">",
+                                                                                      ":", "?", "!")
 
 
 def _space_required(preceding_text: str, next_text: str) -> bool:
@@ -38,9 +39,9 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
     return False
   preceding_char = preceding_text[-1]
   next_char = next_text[0]
-  if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%"):
+  if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\""):
     return False
-  if preceding_char in (" ", "$", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/"):
+  if preceding_char in (" ", "$", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/", "'", "\""):
     return False
   return True
 
@@ -51,7 +52,8 @@ def _capitalization_required(preceding_text: str) -> bool:
   if len(preceding_text) == 0 or len(preceding_text) > _NUM_PRECEDING_CHARS:
     return True
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
-  if last_char.isalnum() or last_char in ("%", ";", ":", ",", "(", ")", "[", "]", "{", "}", "<", ">", "-", "_", "/"):
+  if last_char.isalnum() or last_char in ("%", ";", ":", ",", "(", ")", "[", "]", "{", "}", "<", ">", "-", "_", "/",
+                                          "'", "\""):
     return False
   return True
 

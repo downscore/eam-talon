@@ -7,6 +7,12 @@ mode: dictation
 # Escaping to type things that would otherwise be commands.
 ^escape <user.prose>$: user.dictation_insert_prose(prose)
 
+# Misrecognition of "command mode".
+^commandment$:
+  mode.disable("sleep")
+  mode.disable("dictation")
+  mode.enable("command")
+
 # Formatted prose.
 format title <user.prose>$: user.dictation_insert_prose(user.format_title(prose))
 format title <user.prose> anchor: user.dictation_insert_prose(user.format_title(prose))
@@ -31,7 +37,15 @@ anchor: skip()
 ^press <user.unmodified_key>$: key("{unmodified_key}")
 
 # Repeat last command.
-^<user.ordinals_small>$: core.repeat_command(ordinals_small - 1)
+^<user.repeat_ordinal>$: core.repeat_command(repeat_ordinal)
+
+# Convenience commands for common actions
+^gail [<user.repeat_ordinal>]$:
+  edit.down()
+  repeat(repeat_ordinal or 0)
+  edit.line_end()
+^spam$: insert(", ")
+^disk$: edit.save()
 
 # Symbol convenience commands
 ^args$:
@@ -54,49 +68,86 @@ anchor: skip()
   key(left)
 
 # New lines.
-^enter$: key("enter")
-^slap$: edit.line_insert_down()
+^enter [<user.ordinals_small>]$: key("enter:{ordinals_small or 1}")
+^slap [<user.repeat_ordinal>]$:
+  edit.line_insert_down()
+  repeat(repeat_ordinal or 0)
 ^pour line$: edit.line_insert_down()
 ^drink line$: edit.line_insert_up()
 
 # Navigation.
-^push$: edit.right()
-^pull$: edit.left()
-^goop$: edit.up()
-^gown$: edit.down()
-^stone$: edit.word_left()
-^step$: edit.word_right()
+^push [<user.repeat_ordinal>]$:
+  edit.right()
+  repeat(repeat_ordinal or 0)
+^pull [<user.repeat_ordinal>]$:
+  edit.left()
+  repeat(repeat_ordinal or 0)
+^goop [<user.repeat_ordinal>]$:
+  edit.up()
+  repeat(repeat_ordinal or 0)
+^gown [<user.repeat_ordinal>]$:
+  edit.down()
+  repeat(repeat_ordinal or 0)
+^stone [<user.repeat_ordinal>]$:
+  edit.word_left()
+  repeat(repeat_ordinal or 0)
+^step [<user.repeat_ordinal>]$:
+  edit.word_right()
+  repeat(repeat_ordinal or 0)
 ^head$: edit.line_start()
 ^(tail|tale)$: edit.line_end()
 ^jump top$: edit.file_start()
 ^jump bottom$: edit.file_end()
-^gail$:
-  edit.down()
-  edit.line_end()
 
 # Selection.
 ^take line$: edit.select_line()
 ^take all$: edit.select_all()
-^take left$: edit.extend_left()
-^take right$: edit.extend_right()
-^take up$: edit.extend_line_up()
-^take down$: edit.extend_line_down()
+^take left [<user.repeat_ordinal>]$:
+  edit.extend_left()
+  repeat(repeat_ordinal or 0)
+^take right [<user.repeat_ordinal>]$:
+  edit.extend_right()
+  repeat(repeat_ordinal or 0)
+^take up [<user.repeat_ordinal>]$:
+  edit.extend_line_up()
+  repeat(repeat_ordinal or 0)
+^take down [<user.repeat_ordinal>]$:
+  edit.extend_line_down()
+  repeat(repeat_ordinal or 0)
 ^take word$: edit.select_word()
-^lefter$: edit.extend_word_left()
-^righter$: edit.extend_word_right()
+^lefter [<user.repeat_ordinal>]$:
+  edit.extend_word_left()
+  repeat(repeat_ordinal or 0)
+^righter [<user.repeat_ordinal>]$:
+  edit.extend_word_right()
+  repeat(repeat_ordinal or 0)
 ^take head$: edit.extend_line_start()
 ^take tail$: edit.extend_line_end()
 ^take top$: edit.extend_file_start()
 ^take bottom$: edit.extend_file_end()
 
 # Deleting text.
-^wiper$: key(backspace)
-^chuck line$: edit.delete_line()
-^chuck left$: key(backspace)
-^chuck right$: key(delete)
-^chuck word$: edit.delete_word()
-^scratcher$: user.delete_word_left()
-^swallow$: user.delete_word_right()
+^wiper [<user.repeat_ordinal>]$:
+  key(backspace)
+  repeat(repeat_ordinal or 0)
+^chuck line [<user.repeat_ordinal>]$:
+  edit.delete_line()
+  repeat(repeat_ordinal or 0)
+^chuck left [<user.repeat_ordinal>]$:
+  key(backspace)
+  repeat(repeat_ordinal or 0)
+^chuck right [<user.repeat_ordinal>]$:
+  key(delete)
+  repeat(repeat_ordinal or 0)
+^chuck word [<user.repeat_ordinal>]$:
+  edit.delete_word()
+  repeat(repeat_ordinal or 0)
+^scratcher [<user.repeat_ordinal>]$:
+  user.delete_word_left()
+  repeat(repeat_ordinal or 0)
+^swallow [<user.repeat_ordinal>]$:
+  user.delete_word_right()
+  repeat(repeat_ordinal or 0)
 ^chuck head$: user.delete_to_line_start()
 ^chuck tail$: user.delete_to_line_end()
 
@@ -146,17 +197,29 @@ anchor: skip()
 ^paste history <user.number_small>$: user.clipboard_history_paste(number_small)
 
 # Undo and redo.
-^nope$: edit.undo()
+^nope [<user.repeat_ordinal>]$:
+  edit.undo()
+  repeat(repeat_ordinal or 0)
 ^redo that$: edit.redo()
 
 # Line manipulation
-^clone line$: user.duplicate_line()
-^drag up$: edit.line_swap_up()
-^drag down$: edit.line_swap_down()
+^clone line [<user.repeat_ordinal>]$:
+  user.duplicate_line()
+  repeat(repeat_ordinal or 0)
+^drag up [<user.repeat_ordinal>]$:
+  edit.line_swap_up()
+  repeat(repeat_ordinal or 0)
+^drag down [<user.repeat_ordinal>]$:
+  edit.line_swap_down()
+  repeat(repeat_ordinal or 0)
 
 # Indentation
-^dedent$: edit.indent_less()
-^indent$: edit.indent_more()
+^dedent [<user.repeat_ordinal>]$:
+  edit.indent_less()
+  repeat(repeat_ordinal or 0)
+^indent [<user.repeat_ordinal>]$:
+  edit.indent_more()
+  repeat(repeat_ordinal or 0)
 
 # Text styles
 ^style title$: user.style_title()
@@ -174,4 +237,6 @@ anchor: skip()
 
 # Special characters.
 ^moji hunt$: key("cmd-ctrl-space")
-^moji {user.unicode}$: user.insert_via_clipboard(user.unicode)
+^moji {user.unicode} [<user.repeat_ordinal>]$:
+  user.insert_via_clipboard(user.unicode)
+  repeat(repeat_ordinal or 0)

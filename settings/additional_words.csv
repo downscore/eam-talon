@@ -4,6 +4,8 @@ API
 APIs
 ASAP
 Cisco
+comms,coms
+coords,cords
 corridor,corder
 corridor,cord or
 debug
@@ -19,6 +21,7 @@ GUI,gooey
 hard brake,hard break
 hard braking,hard breaking
 JIRA
+lat/long coords,lat long cords
 LLM
 Minami
 Minecraft
@@ -56,10 +59,13 @@ talon,Tallon
 beginning,begining
 candidate,candide
 candidate,candida
+coordinates,ordinates
 depot,deepa
 graph,graf
 or a,ora
 of,ob
+new,nu
+say,se
 
 # Salty language
 asshole

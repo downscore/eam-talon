@@ -19,6 +19,7 @@ _FILE_EXTENSIONS = {
     "see see": ".cc",
     "cc": ".cc",
     "header": ".h",
+    "comma separated": ".csv"
 }
 mod.list("file_extension", desc="Extensions for different file types.")
 ctx.lists["self.file_extension"] = _FILE_EXTENSIONS

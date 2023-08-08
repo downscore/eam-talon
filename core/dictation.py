@@ -12,6 +12,7 @@ mod = Module()
 ctx = Context()
 
 mod.list("vocabulary", desc="Additional vocabulary words")
+mod.list("person_name", desc="Names of people")
 mod.list("unicode", desc="Named Unicode strings, such as emoji")
 
 # "dictate.word_map" is used by `actions.dictate.replace_words` to rewrite words Talon recognized. Entries in word_map
@@ -21,6 +22,9 @@ ctx.settings["dictate.word_map"] = load_dict_from_csv("words_to_replace.csv")
 # "user.vocabulary" is used to explicitly add words/phrases that Talon doesn't recognize. Words in user.vocabulary (or
 # other lists and captures) are "command-like" and their recognition is prioritized over ordinary words.
 ctx.lists["user.vocabulary"] = load_dict_from_csv("additional_words.csv")
+
+# Names of people.
+ctx.lists["user.person_name"] = load_dict_from_csv("names.csv")
 
 # Named Unicode strings (e.g. emoji).
 ctx.lists["user.unicode"] = load_dict_from_csv("unicode.csv")
@@ -46,6 +50,12 @@ def _format_captured_text(m):
   return result
 
 
+@mod.capture(rule="gene may {self.person_name}")  # "gene may" sounds like 人名.
+def person_name(m) -> str:
+  """A person's name."""
+  return m.person_name
+
+
 @mod.capture(rule="({user.vocabulary} | <word>)")
 def word(m) -> str:
   """A single word, including user-defined vocabulary."""
@@ -62,7 +72,7 @@ def text(m) -> str:
 
 
 @mod.capture(rule="({user.punctuation} | <user.dictate_letters> | <user.dictate_number> | " +
-             "<user.file_extension> | {user.vocabulary} | <phrase>)+")
+             "<user.file_extension> | <user.person_name> | {user.vocabulary} | <phrase>)+")
 def prose(m) -> str:
   """Mixed words and punctuation, auto-spaced and capitalized."""
   capitalized = format_util.auto_capitalize(_format_captured_text(m))

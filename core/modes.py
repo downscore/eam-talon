@@ -25,6 +25,15 @@ class ExtensionActions:
     actions.mode.disable("command")
     actions.mode.enable("dictation")
 
+  def mode_enable_speech():
+    """Enables speech recognition."""
+    actions.speech.enable()
+    actions.user.mode_command()
+
+  def mode_disable_speech():
+    """Disables speech recognition."""
+    actions.speech.disable()
+
   def mode_mixed():
     """Switches to mixed (dictation + command) mode."""
     actions.mode.disable("sleep")

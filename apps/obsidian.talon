@@ -23,3 +23,8 @@ source dog: user.obsidian("Toggle Live Preview/Source mode")
 
 # Open today's daily note
 daily note: user.obsidian("Daily notes: Open today's daily note")
+
+# Wiki-link syntax
+linker:
+  insert("[[]]")
+  key("left:2")

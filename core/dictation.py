@@ -72,7 +72,8 @@ def text(m) -> str:
 
 
 @mod.capture(rule="({user.punctuation} | <user.dictate_letters> | <user.dictate_number> | " +
-             "<user.file_extension> | <user.person_name> | {user.vocabulary} | <phrase>)+")
+             "<user.dictate_abbreviation> | <user.file_extension> | <user.person_name> | {user.vocabulary} | <phrase>)+"
+            )
 def prose(m) -> str:
   """Mixed words and punctuation, auto-spaced and capitalized."""
   capitalized = format_util.auto_capitalize(_format_captured_text(m))

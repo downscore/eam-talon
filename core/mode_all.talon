@@ -1,13 +1,14 @@
 mode: all
 -
-^drowse [<phrase>]$: speech.disable()
-sleepy [<phrase>]$: speech.disable()
-^speech sleep [<phrase>]$: speech.disable()
-^speech wake$: speech.enable()
+^speech sleep [<phrase>]$: user.mode_disable_speech()
+^speech wake$: user.mode_enable_speech()
 
 # Single word, multiple-syllable speech toggles that are unique, but easily recognized.
-coconut [<phrase>]$: speech.disable()
-^dinosaur$: speech.enable()
+coconut [<phrase>]$: user.mode_disable_speech()
+# Mistaken recognitions for "dinosaur": Denise:5, tensor:4, venator:3, dilator:2, vanisher, then IO, donator, donate
+# ^dinosaur$: user.mode_enable_speech()
+# "Pavia" seems to be the most common mistaken recognition for "papaya".
+^(papaya|Pavia)$: user.mode_enable_speech()
 
 # Keyboard shortcut for toggling speech. Used for external integrations (e.g. Stream Deck).
 key(shift-f13):

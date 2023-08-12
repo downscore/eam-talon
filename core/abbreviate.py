@@ -12,3 +12,9 @@ ctx = Context()
 
 mod.list("abbreviation", desc="Common abbreviation")
 ctx.lists["user.abbreviation"] = load_dict_from_csv("abbreviate.csv")
+
+
+@mod.capture(rule="brief {user.abbreviation}")
+def dictate_abbreviation(m) -> int:
+  """A word to abbreviate prefixed with a dictation command."""
+  return m.abbreviation

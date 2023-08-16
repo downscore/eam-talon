@@ -28,3 +28,15 @@ daily note: user.obsidian("Daily notes: Open today's daily note")
 linker:
   insert("[[]]")
   key("left:2")
+
+# Create a new folder
+folder new:
+    user.mouse_helper_position_save()
+    user.mouse_helper_move_image_relative("2023-08-15_20.09.43.016999.png", 0)
+    sleep(0.05)
+    mouse_click(0)
+    sleep(0.05)
+    user.mouse_helper_position_restore()
+
+# Create a new file
+file new: key(cmd-n)

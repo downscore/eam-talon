@@ -55,8 +55,3 @@ bracing:
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.
 anchor: skip()
-
-# Switch to command mode and execute a chained command.
-now do [<phrase>]$:
-    user.mode_command()
-    user.rephrase(phrase or "")

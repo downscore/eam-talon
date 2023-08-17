@@ -19,37 +19,19 @@ title <user.prose> void:
   insert(user.format_title(prose))
   insert(" ")
 
-# Include symbol convenience commands so they can be chained with anchored prose.
-# Symbol convenience commands
-args:
-  insert("()")
-  key(left)
-subscript:
-  insert("[]")
-  key(left)
-quads:
-  insert("\"\"")
-  key(left)
-padding:
-  insert("  ")
-  key(left)
-buried:
-  insert("``")
-  key(left)
-diamond:
-  insert("<>")
-  key(left)
-latex:
-  insert("$$")
-  key(left)
-bracing:
-  insert("{}")
-  key(left)
-
 # Escaping to type things that would otherwise be commands.
 ^escape <user.prose>$: user.dictation_insert_prose(prose)
 
-# Misrecognition of "command mode".
+# Fixes for some commands that are poorly recognized in dictation mode.
+# "args"
+^arcs$:
+  insert("()")
+  key("left")
+# "void args"
+^void arcs$:
+  insert(" ()")
+  key("left")
+# "command mode".
 ^commandment$: user.mode_command()
 
 # Ignore anchors that get split up from their original command.

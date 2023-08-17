@@ -131,7 +131,7 @@ make expect more:
   insert("EXPECT_GT();")
   key(left:2)
 
-  # Operators
+# Operators
 a sign: insert(" = ")
 make equal: insert(" == ")
 make not equal: insert(" != ")

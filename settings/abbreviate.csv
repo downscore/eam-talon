@@ -77,6 +77,7 @@ etc,etcetera
 ex,example
 exc,exception
 exec,execute
+exp,exponent
 exp,expression
 ext,extend
 ext,extension
@@ -176,6 +177,7 @@ spec,special
 spec,specific
 spec,specification
 spec,specify
+sqrt,square root
 stdin,standard in
 stdout,standard out
 std,standard

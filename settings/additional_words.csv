@@ -1,5 +1,6 @@
 Word(s),Spoken Form (If Different)
 admin
+autoencoder
 API
 APIs
 ASAP
@@ -9,9 +10,12 @@ coords,cords
 corridor,corder
 corridor,cord or
 debug
+denoise
+denoising
 diff
 discretization
 DNS
+etc.,etsy
 eval
 Google Docs,Google docks
 gonna
@@ -23,6 +27,7 @@ JIRA
 lat/long coords,lat long cords
 LLM
 Minecraft
+ML
 NLP
 num
 OCR
@@ -36,9 +41,11 @@ PRs
 prev
 pullover
 pullover,plover
+ReLU,ray lou
 ROI
 ROIs
 sensor data,censor data
+softmax
 TextFlow
 under-documented,under documented
 url,earl
@@ -61,9 +68,10 @@ candidate,candida
 coordinates,ordinates
 depot,deepa
 graph,graf
+Markov,Markoff
+new,nu
 or a,ora
 of,ob
-new,nu
 say,se
 
 # Salty language

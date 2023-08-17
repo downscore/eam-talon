@@ -1,1 +1,1 @@
-preferences show: app.preferences()
+settings show: app.preferences()

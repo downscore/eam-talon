@@ -59,6 +59,18 @@ make not in: insert(" \\notin ")
 make times: insert(" \\times ")
 make approximate: insert(" \\approx ")
 
+# General operators (useful in Latex)
+a sign: insert(" = ")
+make equal: insert(" == ")
+make not equal: insert(" != ")
+make minus: insert(" - ")
+make plus: insert(" + ")
+make multiply: insert(" * ")
+make divide: insert(" / ")
+make modulo: insert(" % ")
+make more: insert(" > ")
+make less: insert(" < ")
+
 # Greek letters in latex
 greek alpha: insert("\\alpha")
 greek beta: insert("\\beta")

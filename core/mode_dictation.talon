@@ -22,7 +22,15 @@ title <user.prose> void:
 # Escaping to type things that would otherwise be commands.
 ^escape <user.prose>$: user.dictation_insert_prose(prose)
 
+# Insert punctuation with automatic spacing.
+scratcher punch:
+  user.delete_word_left()
+  user.dictation_insert_prose(".")
+punch: user.dictation_insert_prose(".")
+
 # Fixes for some commands that are poorly recognized in dictation mode.
+# "punch"
+^punt$: user.dictation_insert_prose(".")
 # "args"
 ^arcs$:
   insert("()")

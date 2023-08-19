@@ -41,8 +41,10 @@ ctrl,control
 const,constant
 coord,coordinate
 coords,coordinates
+cos,cosine
 cpy,copy
 cnt,count
+csc,cosecant
 ctr,counter
 db,database
 decl,declare
@@ -89,6 +91,7 @@ gen,generic
 gen,generate
 http,hypertext
 hist,history
+hypot,hypotenuse
 i.e.,that is
 img,image
 iat,import table
@@ -172,6 +175,8 @@ sp,service pack
 sid,session id
 sh,shell
 sc,shellcode
+sec,secant
+sin,sine
 src,source
 spec,special
 spec,specific
@@ -186,6 +191,7 @@ struct,structure
 sync,synchronize
 sync,synchronous
 sys,system
+tan,tangent
 toc,table of contents
 tbl,table
 tw,taiwan

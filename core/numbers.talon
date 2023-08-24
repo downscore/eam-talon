@@ -1,5 +1,5 @@
 <user.dictate_number>: "{dictate_number}"
-<user.dictate_number> punch <user.number_string>: "{dictate_number}.{number_string}"
+<user.dictate_number> (punch|point) <user.number_string>: "{dictate_number}.{number_string}"
 
 increment: user.number_add(1)
 decrement: user.number_add(-1)

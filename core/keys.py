@@ -40,6 +40,14 @@ _LETTERS = {
 mod.list("letter", desc="The spoken phonetic alphabet")
 ctx.lists["self.letter"] = _LETTERS
 
+# Create a list including all letters and capital letters with spoken forms preceded by "ship".
+# TODO: Clean this up. We should be able to allow dictating capital letters without including them in a new list.
+_LETTER_WITH_CAPITALS = _LETTERS.copy()
+for spoken, written in _LETTERS.items():
+  _LETTER_WITH_CAPITALS[f"ship {spoken}"] = written.upper()
+mod.list("letter_with_capitals", desc="The spoken phonetic alphabet including capital letters")
+ctx.lists["self.letter_with_capitals"] = _LETTER_WITH_CAPITALS
+
 _DIGITS = {
     "zero": "0",
     "one": "1",
@@ -91,10 +99,9 @@ _MODIFIER_KEYS = {
 mod.list("modifier_key", desc="All modifier keys")
 ctx.lists["self.modifier_key"] = _MODIFIER_KEYS
 
-# TODO: Looks like the values are key names but need to be the actual symbols for use in prose. Verify and update
-# comments in this file.
 # Punctuation words are usable in prose formatters ("say", "title", etc.).
 # Using "gram" to trigger symbols.
+# The values are key names but need to be the actual symbols for use in prose.
 _PUNCTUATION_WORDS = {
     # Commonly-used punctuation that can be used in prose.
     "punch": ".",
@@ -108,6 +115,7 @@ _PUNCTUATION_WORDS = {
     "gram pound": "#",
     "gram score": "_",
     "gram paren": "(",
+    "gram round": "(",  # Alternative that works better in prose.
     "gram R paren": ")",
     "gram square": "[",
     "gram R square": "]",
@@ -136,7 +144,7 @@ _PUNCTUATION_WORDS = {
 mod.list("punctuation", desc="Words for inserting punctuation into text")
 ctx.lists["self.punctuation"] = _PUNCTUATION_WORDS
 
-# Symbol keys are a superset of punctuation words, and are usable as commands.
+# Symbol keys are a superset of punctuation words, and are usable as commands, but not necessarily in prose.
 _SYMBOL_KEYS = _PUNCTUATION_WORDS | {
     "stack": ":",
     "semi": ";",
@@ -246,7 +254,7 @@ def letters(m) -> str:
   return "".join(m.letter_list)
 
 
-@mod.capture(rule="spell {self.letter}+")
+@mod.capture(rule="spell {self.letter_with_capitals}+")
 def dictate_letters(m) -> str:
-  """Multiple letter keys preceded by a dictation command."""
-  return "".join(m.letter_list)
+  """Multiple letter keys preceded by a dictation command. Includes capital letters."""
+  return "".join(m.letter_with_capitals_list)

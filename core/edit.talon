@@ -32,7 +32,7 @@ buried:
 diamond:
   insert("<>")
   key(left)
-latex:
+(latex|playtex):
   insert("$$")
   key(left)
 bracing:

@@ -59,6 +59,16 @@ make not in: insert(" \\notin ")
 make times: insert(" \\times ")
 make approximate: insert(" \\approx ")
 
+# Big-O notation
+big o constant: insert("$O(1)$")
+big o linear: insert("$O(n)$")
+big o quadratic: insert("$O(n^2)$")
+big o cubic: insert("$O(n^3)$")
+big o quartic: insert("$O(n^4)$")
+big o quintic: insert("$O(n^5)$")
+big o log: insert("$O(\log{{n}})$")
+big o log linear: insert("$O(n \log{{n}})$")
+
 # General operators (useful in Latex)
 a sign: insert(" = ")
 make equal: insert(" == ")

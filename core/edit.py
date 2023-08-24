@@ -491,7 +491,7 @@ class ExtensionActions:
   def style_bullet_list():
     """Create a bulleted list."""
     actions.edit.line_start()
-    actions.insert("* ")
+    actions.insert("- ")
 
   def style_numbered_list():
     """Create a numbered list."""

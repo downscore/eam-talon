@@ -19,7 +19,7 @@ _FORMATTERS_BY_WORD = {
 
     # Join formatters. May also change case.
     "camel": format_util.Formatters.CAMEL,
-    "period": format_util.Formatters.DOT_SEPARATED,
+    "dotted": format_util.Formatters.DOT_SEPARATED,
     "numerate": format_util.Formatters.ENUM,
     "hammer": format_util.Formatters.PASCAL,
     "kebab": format_util.Formatters.KEBAB,

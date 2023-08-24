@@ -1,4 +1,5 @@
 Word(s),Spoken Form (If Different)
+2D
 admin
 autoencoder
 API
@@ -12,6 +13,10 @@ corridor,cord or
 CNN
 CNNs
 debug
+dedupe
+deduping
+de-duplicate
+de-duplicating
 denoise
 denoising
 diff
@@ -28,6 +33,7 @@ hard braking,hard breaking
 JIRA
 lat/long coords,lat long cords
 LLM
+min
 Minecraft
 ML
 MLP
@@ -50,9 +56,10 @@ ROI
 ROIs
 sensor data,censor data
 softmax
+T-intersection, tea intersection
 TextFlow
 under-documented,under documented
-url,earl
+URL
 util,you till
 utils
 VPN
@@ -66,18 +73,27 @@ dominance,dominants
 talon,Tallon
 
 # Misspellings, mistakes, or uncommon words in Talon model.
+2D,tutti
+2D,two de
+auto,oto
 beginning,begining
 candidate,candide
 candidate,candida
 coordinates,ordinates
 depot,deepa
 graph,graf
+lane,lang
 Markov,Markoff
 new,nu
+on a,una
 or a,ora
 of,ob
+router,rotter
 say,se
+the,te
 
 # Salty language
 asshole
 assholes
+motherfucker
+motherfucking

@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from typing import Optional
 from talon import Context, Module, actions, imgui, registry
 
 mod = Module()
@@ -35,7 +36,7 @@ def _add_context_to_help(context):
   _help_contents.append(f"{name}:")
 
   # Add commands. Key is hashed command name.
-  for _, command in context.commands.items():
+  for _, command in sorted(context.commands.items()):
     # Get the formatted command name.
     command_name = command.rule.rule
     command_name = command_name.replace("user.", "")
@@ -81,7 +82,7 @@ def help_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
 class Actions:
   """Formatter actions."""
 
-  def help_refresh():
+  def help_refresh(context_filter: Optional[list[str]] = None):
     """Refreshes the active help contents."""
     global _help_contents
     global _help_page
@@ -96,7 +97,15 @@ class Actions:
       # Only take ".talon" contexts.
       if parts[-1] != "talon":
         continue
-      if parts[-3] in ["apps", "tags", "private"] and not "global" in parts[-2]:
+
+      context_directory = parts[-3]
+      context_name = parts[-2]
+
+      # Apply filter if provided.
+      if context_filter is not None and context_directory not in context_filter:  # pylint: disable=unsupported-membership-test
+        continue
+
+      if context_directory in ["apps", "tags", "private"] and not "global" in context_name:
         specialized_contexts.append(context)
       else:
         global_contexts.append(context)
@@ -111,14 +120,15 @@ class Actions:
     for context in global_contexts:
       _add_context_to_help(context)
 
-  def help_show():
+  def help_show(directory_filter: Optional[str] = None):
     """Shows the help GUI."""
     # Start by listing contexts.
     global _help_contents
     global _help_page
     _help_contents = []
     _help_page = 0
-    actions.user.help_refresh()
+    # Use filter if provided.
+    actions.user.help_refresh([directory_filter] if directory_filter is not None else None)
     help_gui.show()
 
   def help_hide():

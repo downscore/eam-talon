@@ -39,7 +39,7 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
     return False
   preceding_char = preceding_text[-1]
   next_char = next_text[0]
-  if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\""):
+  if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\"", "/"):
     return False
   if preceding_char in (" ", "$", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/", "'", "\"", "`"):
     return False

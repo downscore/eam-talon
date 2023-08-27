@@ -1,4 +1,9 @@
 help show: user.help_show()
+help language: user.help_show("lang")
+help apps: user.help_show("apps")
+help tags: user.help_show("tags")
+help private: user.help_show("private")
+
 help hide: user.help_hide()
 help refresh: user.help_refresh()
 help next: user.help_next_page()

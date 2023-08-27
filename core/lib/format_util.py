@@ -174,11 +174,33 @@ def format_phrase(phrase: str, options: FormatOptions) -> str:
   return options.surround + options.separator.join(result_words) + options.surround
 
 
+def title_format_phrase(phrase: str) -> str:
+  """Returns the given phrase formatted as a title."""
+  # Find hyphens and remember their locations, then replace them with spaces.
+  hyphen_indexes = []
+  for i, c in enumerate(phrase):
+    if c == "-":
+      hyphen_indexes.append(i)
+  phrase_processed = phrase.replace("-", " ")
+
+  # Format as title case.
+  options = FormatOptions()
+  options.first_capitalization = WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
+  options.rest_capitalization = WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING
+  formatted = format_phrase(phrase_processed, options)
+
+  # Restore hyphens.
+  for index in hyphen_indexes:
+    formatted = formatted[:index] + "-" + formatted[index + 1:]
+
+  return formatted
+
+
 def unformat_phrase(phrase: str) -> str:
   """Takes a formatted phrase and tries to return an unformatted version.
   Splits on case or character class changes. Output is always lowercase."""
-  # Replace symbols with spaces.
-  unformatted = re.sub(r"[^a-zA-Z0-9]+", " ", phrase)
+  # Replace symbols with spaces. Don't include hyphens - this will not work for kebab-case.
+  unformatted = re.sub(r"[^a-zA-Z0-9\-]+", " ", phrase)
   # Split on camel/pascal casing. Include numbers.
   unformatted = re.sub(r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])|(?<=[0-9])(?=[a-zA-Z])",
                        " ", unformatted)

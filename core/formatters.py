@@ -43,6 +43,16 @@ def _reformat_string(s: str, options: format_util.FormatOptions) -> str:
   return stripped.apply_padding(formatted)
 
 
+def _title_reformat_string(s: str) -> str:
+  """Reformat the given string with the given options, preserving padding."""
+  stripped = text_util.StrippedString(s)
+  if not stripped.stripped:
+    return ""
+  unformatted = format_util.unformat_phrase(stripped.stripped)
+  formatted = format_util.title_format_phrase(unformatted)
+  return stripped.apply_padding(formatted)
+
+
 @mod.action_class
 class Actions:
   """Formatter actions."""
@@ -65,18 +75,12 @@ class Actions:
 
   def format_title(phrase: str) -> str:
     """Formats a phrase using title casing."""
-    options = format_util.FormatOptions()
-    options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
-    options.rest_capitalization = format_util.WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING
-    return format_util.format_phrase(phrase, options)
+    return format_util.title_format_phrase(phrase)
 
   def format_selection_title():
     """Reformats the current selection as a title."""
-    options = format_util.FormatOptions()
-    options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
-    options.rest_capitalization = format_util.WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING
     selected = actions.edit.selected_text()
-    reformatted = _reformat_string(selected, options)
+    reformatted = _title_reformat_string(selected)
     if not reformatted:
       return
     actions.user.insert_via_clipboard(reformatted)

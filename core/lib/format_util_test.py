@@ -292,6 +292,26 @@ class FormatPhraseTestCase(unittest.TestCase):
     self.assertEqual(format_phrase("this is a 3 test", options), "__this is a 3 test__")
 
 
+class TitlePhraseTestCase(unittest.TestCase):
+  """Tests for title case formatting."""
+
+  def test_format_phrase_title(self):
+    self.assertEqual(title_format_phrase(""), "")
+    self.assertEqual(title_format_phrase(" "), "")
+    self.assertEqual(title_format_phrase("  "), "")
+    self.assertEqual(title_format_phrase("\t"), "")
+    self.assertEqual(title_format_phrase(" \t "), "")
+    self.assertEqual(title_format_phrase("a"), "A")
+    self.assertEqual(title_format_phrase("ab"), "Ab")
+    self.assertEqual(title_format_phrase("5"), "5")
+    self.assertEqual(title_format_phrase("this is a test"), "This is a Test")
+    self.assertEqual(title_format_phrase("this is a test."), "This is a Test.")
+    self.assertEqual(title_format_phrase("thIS is a teSt"), "ThIS is a TeSt")
+    self.assertEqual(title_format_phrase("this is a3 test"), "This is A3 Test")
+    self.assertEqual(title_format_phrase("this is a 3 test"), "This is a 3 Test")
+    self.assertEqual(title_format_phrase("hyphenated-title"), "Hyphenated-Title")
+
+
 class UnformatPhraseTestCase(unittest.TestCase):
   """Tests for unformatting potentially already-formatted text."""
 
@@ -311,9 +331,9 @@ class UnformatPhraseTestCase(unittest.TestCase):
     self.assertEqual(unformat_phrase("this is a 3 test"), "this is a 3 test")
     self.assertEqual(unformat_phrase("ThisIsPascalCase"), "this is pascal case")
     self.assertEqual(unformat_phrase("thisIsCamelCase"), "this is camel case")
-    self.assertEqual(unformat_phrase("this-is-kebab"), "this is kebab")
+    self.assertEqual(unformat_phrase("this-is-kebab"), "this-is-kebab")  # Kebab case can't be unformatted.
     self.assertEqual(unformat_phrase("this_is_snake"), "this is snake")
-    self.assertEqual(unformat_phrase("this_is-mixed"), "this is mixed")
+    self.assertEqual(unformat_phrase("this_is-mixed"), "this is-mixed")  # Kebab case can't be unformatted.
     self.assertEqual(unformat_phrase("This::Is::Packed"), "this is packed")
 
     # Note: Unformatting introduces a space where letters and numbers are concatenated.

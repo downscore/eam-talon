@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from typing import Optional
 from talon import Module, actions
 from .lib import format_util
 
@@ -62,9 +63,11 @@ def _capitalization_required(preceding_text: str) -> bool:
 class Actions:
   """Dictation mode actions."""
 
-  def dictation_insert_prose(prose: str):
+  def dictation_insert_prose(prose: Optional[str]):
     """Inserts prose using maintained state (e.g. for spacing and capitalization) from dictation mode. Updates
     maintained state based on what is inserted."""
+    if prose is None or prose == "":
+      return
     preceding_text = _get_preceding_text()
     if _backspace_required(preceding_text, prose):
       actions.key("backspace")

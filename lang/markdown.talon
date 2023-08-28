@@ -66,8 +66,8 @@ big o quadratic: insert("$O(n^2)$")
 big o cubic: insert("$O(n^3)$")
 big o quartic: insert("$O(n^4)$")
 big o quintic: insert("$O(n^5)$")
-big o log: insert("$O(\log{{n}})$")
-big o log linear: insert("$O(n \log{{n}})$")
+big o log: insert("$O(\\log{{n}})$")
+big o log linear: insert("$O(n \\log{{n}})$")
 
 # General operators
 a sign: insert(" = ")

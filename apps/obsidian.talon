@@ -1,6 +1,5 @@
 app: obsidian
 -
-tag(): user.lang_markdown
 tag(): user.multiple_cursors
 tag(): user.navigation
 tag(): user.tabs

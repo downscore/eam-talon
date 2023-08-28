@@ -61,7 +61,7 @@ _MAX_ACCESSIBLITY_API_CHARS = 10000
 _MIN_CHARS_AFTER_ACCESSIBLITY_API_LIMIT = 1000
 
 # Lines to fetch in potato mode.
-_POTATO_LINES_BEFORE = 10
+_POTATO_LINES_BEFORE = 15
 _POTATO_LINES_AFTER = 10
 
 # Input action functions keyed by potato action type.

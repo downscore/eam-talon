@@ -3,6 +3,10 @@
 {user.formatter}+ <user.text> void:
   insert(user.format_multiple(text, formatter_list))
   insert(" ")
+{user.formatter}+ <user.text> args:
+  insert(user.format_multiple(text, formatter_list))
+  insert("()")
+  key("left")
 reformat {user.formatter}+: user.format_selection(formatter_list)
 
 # "phrase" is used to insert the all of the following text verbatim.

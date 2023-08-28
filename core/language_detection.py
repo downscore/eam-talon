@@ -42,8 +42,13 @@ ctx.tags = ["user.lang_auto"]
 
 @ctx.action_class("code")
 class CodeActions:
+  """Code action overrides."""
 
   def language():
+    # Special case: Obsidian always uses markdown (it doesn't indicate file extensions).
+    if actions.app.bundle() == "md.obsidian":
+      return "markdown"
+
     result = ""
     file_extension = actions.win.file_ext()
     if file_extension and file_extension in _LANGUAGE_BY_EXTENSION:
@@ -53,6 +58,7 @@ class CodeActions:
 
 @mod.action_class
 class Actions:
+  # """Custom language detection actions."""
 
   def code_set_language_mode(language: str):
     """Sets the active language mode, and disables extension matching."""
@@ -60,5 +66,5 @@ class Actions:
     ctx.tags = [f"user.lang_forced_{language}"]
 
   def code_clear_language_mode():
-    """Clears the active language mode, and re-enables code.language: extension matching."""
+    """Clears the active language mode, and re-enables extension matching."""
     ctx.tags = ["user.lang_auto"]

@@ -6,16 +6,12 @@ glide:
   insert(";")
   key(enter)
 
-template:
-  insert("<>")
-  key(left)
-
 make if:
   insert("if ()")
   key(left)
 make block:
   edit.line_end()
-  insert("{}")
+  insert(" {}")
   key(left)
   key(enter)
 make elf:
@@ -54,52 +50,40 @@ make switch:
 make case:
   insert("case :")
   key(left)
-make default:
-  insert("default:")
-make (null opt|nullopt):
-  insert("nullopt")
-make null:
-  insert("nullptr")
-make class:
-  insert("class ")
-make type deaf:
-  insert("typedef ")
-make struct:
-  insert("struct ")
-make break:
-  insert("break")
-make continue:
-  insert("continue")
-make true:
-  insert("true")
-make false:
-  insert("false")
-make auto ref:
-  insert("auto& ")
-make auto pointer:
-  insert("auto* ")
-make auto:
-  insert("auto ")
-make const:
-  insert("const ")
-make const auto:
-  insert("const auto ")
-make const ref:
-  insert("const auto& ")
-make constex:
-  insert("constexpr ")
-make static:
-  insert("static ")
+make default: insert("default:")
+make (null opt|nullopt): insert("nullopt")
+make null: insert("nullptr")
+make class: insert("class ")
+make type deaf: insert("typedef ")
+make struct: insert("struct ")
+make break: insert("break;")
+make continue: insert("continue;")
+make true: insert("true")
+make false: insert("false")
+make auto ref: insert("auto& ")
+make auto pointer: insert("auto* ")
+make auto: insert("auto ")
+make const: insert("const ")
+make const auto: insert("const auto ")
+make const ref: insert("const auto& ")
+make constex: insert("constexpr ")
+make static: insert("static ")
 make include system:
   insert("#include <>")
   key(left)
 make include:
   insert("#include \"\"")
   key(left)
-make abseil:
-  insert("absl::")
-make standard:
-  insert("std::")
+make abseil: insert("absl::")
+make standard: insert("std::")
+
+# Shortcuts for symbol names hard to type by voice.
+make emplace back:
+  insert("emplace_back()")
+  key(left)
+make emplace front:
+  insert("emplace_front()")
+  key(left)
 make assert equal:
   insert("ASSERT_EQ();")
   key(left:2)
@@ -135,15 +119,15 @@ make expect more:
 a sign: insert(" = ")
 make equal: insert(" == ")
 make not equal: insert(" != ")
-make minus assign: insert(" -= ")
+make minus equal: insert(" -= ")
 make minus: insert(" - ")
-make plus assign: insert(" += ")
+make plus equal: insert(" += ")
 make plus: insert(" + ")
-make multiply assign: insert(" *= ")
+make multiply equal: insert(" *= ")
 make multiply: insert(" * ")
-make divide assign: insert(" /= ")
+make divide equal: insert(" /= ")
 make divide: insert(" / ")
-make modulo assign: insert(" %= ")
+make modulo equal: insert(" %= ")
 make modulo: insert(" % ")
 make more equal: insert(" >= ")
 make more: insert(" > ")
@@ -161,36 +145,36 @@ make increment: insert("++")
 make decrement: insert("--")
 
 # Types
-tip string: insert("std::string")
-tip tee: insert("_t")
-tip you int eight: insert("uint8_t")
-tip int eight: insert("int8_t")
-tip you int sixteen: insert("uint16_t")
-tip int sixteen: insert("int16_t")
-tip you int thirty two: insert("uint32_t")
-tip int thirty two: insert("int32_t")
-tip you int sixty four: insert("uint64_t")
-tip int sixty four: insert("int64_t")
-tip int: insert("int")
-tip (bool|boolean|boo): insert("bool")
-tip float: insert("float")
-tip double: insert("double")
-tip void: insert("void")
+tip string: insert("std::string ")
+tip you int eight: insert("uint8_t ")
+tip int eight: insert("int8_t ")
+tip you int sixteen: insert("uint16_t ")
+tip int sixteen: insert("int16_t ")
+tip you int thirty two: insert("uint32_t ")
+tip int thirty two: insert("int32_t ")
+tip you int sixty four: insert("uint64_t ")
+tip int sixty four: insert("int64_t ")
+tip int: insert("int ")
+tip (bool|boolean|boo): insert("bool ")
+tip float: insert("float ")
+tip double: insert("double ")
+tip void: insert("void ")
+tip char: insert("char ")
 tip optional:
-  insert("absl::optional<>")
-  key(left)
+  insert("absl::optional<> ")
+  key(left:2)
 tip status or:
-  insert("absl::StatusOr<>")
-  key(left)
-tip status: insert("absl::Status")
+  insert("absl::StatusOr<> ")
+  key(left:2)
+tip status: insert("absl::Status ")
 
 comment inline:
   edit.line_end()
   insert("  // ")
 comment block start:
-  insert("/*")
+  insert("/* ")
 comment block end:
-  insert("*/")
+  insert(" */")
 comment to do:
   insert("// TODO: ")
 comment:

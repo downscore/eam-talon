@@ -75,6 +75,14 @@ def text(m) -> str:
              "<user.dictate_abbreviation> | <user.file_extension> | <user.person_name> | {user.vocabulary} | <phrase>)+"
             )
 def prose(m) -> str:
-  """Mixed words and punctuation, auto-spaced and capitalized."""
+  """Prose that is auto-spaced and capitalized. Allows abbreviations, letters, numbers, file extensions, and
+  punctuation."""
   capitalized = format_util.auto_capitalize(_format_captured_text(m))
   return capitalized
+
+
+@mod.capture(rule="(<user.dictate_letters> | <user.dictate_number> | <user.dictate_abbreviation> | " +
+             "{user.vocabulary} | <phrase>)+")
+def formatter_text(m) -> str:
+  """Text for formatters. Allows abbreviations, letters, and numbers."""
+  return _format_captured_text(m)

@@ -162,6 +162,7 @@ _SYMBOL_KEYS = _PUNCTUATION_WORDS | {
     "double": '"',
     "stroke": "/",
     "backstroke": "\\",
+    "star": "*",
     "equal": "=",
 }
 mod.list("symbol_key", desc="All symbols from the keyboard")

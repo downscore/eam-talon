@@ -27,10 +27,16 @@ scratcher punch:
   user.delete_word_left()
   user.dictation_insert_prose(".")
 punch: user.dictation_insert_prose(".")
+scratcher drip:
+  user.delete_word_left()
+  user.dictation_insert_prose(",")
+drip: user.dictation_insert_prose(",")
 
 # Fixes for some commands that are poorly recognized in dictation mode.
 # "punch"
-^punt$: user.dictation_insert_prose(".")
+^(punt|bunch)$: user.dictation_insert_prose(".")
+# "drip"
+^(chip|trip)$: user.dictation_insert_prose(",")
 # "args"
 ^arcs$:
   insert("()")

@@ -106,6 +106,7 @@ inst,instance
 int,integer
 int,interrupt
 iter,iterate
+ix,index
 jar,java archive
 js,javascript
 json,jason

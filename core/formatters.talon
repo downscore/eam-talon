@@ -1,10 +1,10 @@
-{user.formatter}+ <user.text>$: insert(user.format_multiple(text, formatter_list))
-{user.formatter}+ <user.text> anchor: insert(user.format_multiple(text, formatter_list))
-{user.formatter}+ <user.text> void:
-  insert(user.format_multiple(text, formatter_list))
+{user.formatter}+ <user.formatter_text>$: insert(user.format_multiple(formatter_text, formatter_list))
+{user.formatter}+ <user.formatter_text> anchor: insert(user.format_multiple(formatter_text, formatter_list))
+{user.formatter}+ <user.formatter_text> void:
+  insert(user.format_multiple(formatter_text, formatter_list))
   insert(" ")
-{user.formatter}+ <user.text> args:
-  insert(user.format_multiple(text, formatter_list))
+{user.formatter}+ <user.formatter_text> args:
+  insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")
 reformat {user.formatter}+: user.format_selection(formatter_list)

@@ -7,7 +7,6 @@ APIs
 ASAP
 C++,see plus plus
 Cisco
-comms,coms
 coords,cords
 corridor,corder
 corridor,cord or
@@ -80,12 +79,15 @@ auto,oto
 beginning,begining
 candidate,candide
 candidate,candida
-coordinates,ordinates
+comms,coms
 constraint,en strain
+coordinates,ordinates
 depot,deepa
+fills,fils
 graph,graf
 lane,lang
 Markov,Markoff
+minimizes,minimises
 new,nu
 on a,una
 or a,ora
@@ -94,6 +96,12 @@ queue,cu
 router,rotter
 say,se
 the,te
+
+# Same as above, but for words recognized as profanity or sensitive terms.
+collide,clit
+
+# Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
+end,endy
 
 # Salty language
 asshole

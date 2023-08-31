@@ -183,10 +183,9 @@ tip status: insert("absl::Status ")
 comment inline:
   edit.line_end()
   insert("  // ")
-comment block start:
-  insert("/* ")
-comment block end:
-  insert(" */")
+comment block:
+  insert("/**/")
+  key(left:2)
 comment to do:
   insert("// TODO: ")
 comment:

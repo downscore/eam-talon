@@ -52,10 +52,12 @@ def number(m) -> int:
   return int(m.number_string)
 
 
-@mod.capture(rule="(numb|num) <user.number_string>")
+@mod.capture(rule="(numb|num) <user.number_string> [(punch|point) <user.number_string>]")
 def dictate_number(m) -> int:
-  """A number prefixed with a dictation command."""
-  return m.number_string
+  """A number prefixed with a dictation command. Includes an optional decimal point"""
+  if len(m.number_string_list) > 1:
+    return m.number_string_list[0] + "." + m.number_string_list[1]
+  return m.number_string_list[0]
 
 
 @mod.capture(rule=f"({_ALT_DIGITS} | {_ALT_TEENS} | {_ALT_TENS} [{_ALT_DIGITS}])")

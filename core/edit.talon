@@ -75,7 +75,7 @@ take up: edit.extend_line_up()
 take down: edit.extend_line_down()
 take word: edit.select_word()
 lefter: edit.extend_word_left()
-righter: edit.extend_word_right()
+writer: edit.extend_word_right()
 take head: edit.extend_line_start()
 take tail: edit.extend_line_end()
 take top: edit.extend_file_start()
@@ -212,6 +212,8 @@ inside spaces:
 	user.surround_selected_text(" ", " ")
 inside triangles:
   user.surround_selected_text("<", ">")
+inside dollars:
+  user.surround_selected_text("$", "$")
 
 # Text styles
 style title: user.style_title()

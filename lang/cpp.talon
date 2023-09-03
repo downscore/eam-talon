@@ -52,7 +52,7 @@ make case:
   key(left)
 make default: insert("default:")
 make (null opt|nullopt): insert("nullopt")
-make null: insert("nullptr")
+make null pointer: insert("nullptr")
 make class: insert("class ")
 make type deaf: insert("typedef ")
 make struct: insert("struct ")
@@ -173,12 +173,21 @@ tip int thirty two: insert("int32_t ")
 tip you int sixty four: insert("uint64_t ")
 tip int sixty four: insert("int64_t ")
 tip optional:
-  insert("absl::optional<> ")
+  insert("std::optional<> ")
   key(left:2)
 tip status or:
   insert("absl::StatusOr<> ")
   key(left:2)
 tip status: insert("absl::Status ")
+tip vector:
+  insert("std::vector<> ")
+  key(left:2)
+tip vector amper:
+  insert("std::vector<>& ")
+  key(left:3)
+tip vector star:
+  insert("std::vector<>* ")
+  key(left:3)
 
 comment inline:
   edit.line_end()

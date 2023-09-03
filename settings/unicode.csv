@@ -50,13 +50,13 @@ String to Insert,Spoken
 ξ,xi
 ο,omicron
 π,pi
-ρ,rho
+ρ,row
 σ,sigma
 τ,tau
 υ,upsilon
-φ,phi
-χ,chi
-ψ,psi
+φ,fee
+χ,chee
+ψ,sigh
 ω,omega
 
 # Uppercase Greek letters
@@ -76,11 +76,11 @@ String to Insert,Spoken
 Ξ,big xi
 Ο,big omicron
 Π,big pi
-Ρ,big rho
+Ρ,big row
 Σ,big sigma
 Τ,big tau
 Υ,big upsilon
-Φ,big phi
-Χ,big chi
-Ψ,big psi
+Φ,big fee
+Χ,big chee
+Ψ,big sigh
 Ω,big omega

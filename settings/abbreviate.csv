@@ -6,6 +6,7 @@ adv,advance
 adv,advanced
 ab,alberta
 abs,absolute
+afk,away from keyboard
 alt,alternative
 app,application
 apps,applications
@@ -20,7 +21,7 @@ attr,attribute
 attrs,attributes
 auth,authenticate
 auth,authentication
-afk,away from keyboard
+avg,average
 bin,binary
 bool,boolean
 bc,british columbia
@@ -76,7 +77,7 @@ ent,entry
 enum,enumerate
 env,environment
 esc,escape
-etc,etcetera
+etc,et cetera
 ex,example
 exc,exception
 exec,execute

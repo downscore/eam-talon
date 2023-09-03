@@ -9,26 +9,29 @@ self taught: "self."
 [make] dock string:
   insert("\"\"\"")
 make if:
-  insert("if ")
+  insert("if :")
+  key(left)
 make block:
   edit.line_end()
   insert(":")
   key(enter)
 make elf:
   edit.line_end()
-  insert("elif ")
+  insert("elif :")
+  key(left)
 make else:
   edit.line_end()
-  insert("else")
-make for zero:
-  insert("for i in range():")
-  key(left)
-  key(left)
+  insert("else:")
 make for:
-  insert("for ")
+  insert("for :")
+  key(left)
+make for range:
+  insert("for i in range():")
+  key(left:2)
 # Problems recognizing "while".
 make loop:
-  insert("while ")
+  insert("while :")
+  key(left)
 make return:
   insert("return ")
 make (null|none):
@@ -52,7 +55,7 @@ make funk:
   key(left)
 make hint:
   insert(" -> ")
-make len:
+make (len|size):
   insert("len()")
   key(left)
 make raise:

@@ -1,4 +1,6 @@
 Word(s),Spoken Form (If Different)
+
+# New words to add to the vocabulary.
 2D
 admin
 autoencoder
@@ -12,16 +14,18 @@ corridor,corder
 corridor,cord or
 CNN
 CNNs
+de-duplicate
+de-duplicating
 debug
 dedupe
 deduping
-de-duplicate
-de-duplicating
 denoise
 denoising
+dequeue
 diff
 discretization
 DNS
+enqueue
 etc.,etsy
 eval
 Google Docs,Google docks
@@ -69,16 +73,18 @@ yeah
 vscode, V S code
 
 # Homophones (setting preferred word)
+add,ad
 dominance,dominants
-talon,Tallon
 
 # Misspellings, mistakes, or uncommon words in Talon model.
 2D,tutti
 2D,two de
+a,la
 auto,oto
 beginning,begining
 candidate,candide
 candidate,candida
+collinear,colinear
 comms,coms
 constraint,en strain
 coordinates,ordinates
@@ -86,24 +92,30 @@ depot,deepa
 fills,fils
 graph,graf
 lane,lang
+last,lust
 Markov,Markoff
 minimizes,minimises
 new,nu
+okay,ok
 on a,una
 or a,ora
 of,ob
 queue,cu
 router,rotter
 say,se
+sum,som
+talon,Tallon
 the,te
+then on,Denon
 
 # Same as above, but for words recognized as profanity or sensitive terms.
 collide,clit
+pass,puss
 
 # Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
 end,endy
 
-# Salty language
+# Adding salty language to vocabulary.
 asshole
 assholes
 motherfucker

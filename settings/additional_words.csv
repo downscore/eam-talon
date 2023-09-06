@@ -2,6 +2,7 @@ Word(s),Spoken Form (If Different)
 
 # New words to add to the vocabulary.
 2D
+ad-hoc,ad hoc
 admin
 autoencoder
 API
@@ -44,14 +45,13 @@ MLP
 MLPs
 NLP
 num
+numpy,num pie
 OCR
 overtaker
 overtakers
 overwrite,over right
 overwrites,over rights
 planner,planer
-PR
-PRs
 prev
 pullover
 pullover,plover
@@ -62,6 +62,8 @@ sensor data,censor data
 softmax
 T-intersection,tea intersection
 TextFlow
+# Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
+tokenize
 under-documented,under documented
 URL
 util,you till
@@ -80,6 +82,7 @@ dominance,dominants
 2D,tutti
 2D,two de
 a,la
+and are,antar
 auto,oto
 beginning,begining
 candidate,candide
@@ -100,6 +103,7 @@ okay,ok
 on a,una
 or a,ora
 of,ob
+pytorch,pie torch
 queue,cu
 router,rotter
 say,se
@@ -113,7 +117,7 @@ collide,clit
 pass,puss
 
 # Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
-end,endy
+end,ender
 
 # Adding salty language to vocabulary.
 asshole

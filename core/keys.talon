@@ -1,3 +1,6 @@
+mode: command
+mode: user.game
+-
 <user.letter>: key(letter)
 uppercase <user.letters>: insert(user.format_uppercase(letters))
 <user.symbol_key>: key(symbol_key)

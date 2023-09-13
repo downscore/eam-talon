@@ -1,9 +1,8 @@
-not mode: sleep
--
-^dictation mode$: user.mode_dictation()
-^command mode$: user.mode_command()
-^mixed mode$: user.mode_mixed()
+# Commands for switching between command and dictation/mixed mode.
 
+mode: command
+mode: dictation
+-
 # Switch to mixed mode and insert some prose at the same time.
 ^prose [<user.prose>]$:
   user.mode_mixed()

@@ -4,7 +4,6 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-import subprocess
 import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
@@ -30,6 +29,9 @@ _MAC_APPLICATION_DIRECTORIES = [
     "/System/Applications",
     "/System/Applications/Utilities",
 ]
+
+# Remembered window IDs keyed by name.
+_window_id_by_name: dict[str, int] = {}
 
 
 def _update_running_list():
@@ -75,6 +77,26 @@ def _update_launch_list():
       # TODO: Util function for normalizing names.
       launch[filtered] = path
   ctx.lists["self.launch_app_name"] = launch
+
+
+def _focus_window_by_id(window_id: int):
+  window_found = False
+  for window in ui.windows():
+    if window.id != window_id:
+      continue
+    window_found = True
+    window.focus()
+    return
+  if not window_found:
+    raise ValueError(f"Could not find window. ID: {window_id}")
+
+  # Hack to wait for window to be focused on Macos.
+  timeout_secs = 1
+  sleep_secs = 0.1
+  start_time_secs = time.monotonic()
+  if talon.app.platform == "mac":
+    while ui.active_window().id != window_id and time.monotonic() - start_time_secs < timeout_secs:
+      time.sleep(sleep_secs)
 
 
 @imgui.open()
@@ -165,9 +187,55 @@ class Actions:
     """Hides list of launch applications."""
     launch_gui.hide()
 
-  def switcher_test():
-    """Runs test script."""
-    subprocess.Popen(["/opt/homebrew/bin/python3", "/Users/eamdoherty/Documents/Code/PythonTools/llm.py"], shell=False)
+  def switcher_save_current_window(name: str):
+    """Saves the current window as the window with the given name."""
+    _window_id_by_name[name] = ui.active_window().id
+
+  def switcher_focus_coder():
+    """Switch to the saved IDE window or try to find an app."""
+    if "coder" in _window_id_by_name:
+      try:
+        _focus_window_by_id(_window_id_by_name["coder"])
+        return
+      except ValueError:
+        # Could not find window. Delete the saved ID and fall back to switching apps.
+        del _window_id_by_name["coder"]
+
+    # No saved window, or saved window could not be found. Try to switch to known IDEs.
+    try:
+      actions.user.switcher_focus("Code - Insiders")
+      return
+    except ValueError:
+      pass
+    try:
+      actions.user.switcher_focus("Code")
+      return
+    except ValueError:
+      pass
+    raise ValueError("Could not find IDE window")
+
+  def switcher_focus_browser():
+    """Switch to the saved browser window or try to find an app."""
+    if "browser" in _window_id_by_name:
+      try:
+        _focus_window_by_id(_window_id_by_name["browser"])
+        return
+      except ValueError:
+        # Could not find window. Delete the saved ID and fall back to switching apps.
+        del _window_id_by_name["browser"]
+
+    # No saved window, or saved window could not be found. Try to switch to known browsers.
+    try:
+      actions.user.switcher_focus("Chrome")
+      return
+    except ValueError:
+      pass
+    try:
+      actions.user.switcher_focus("Safari")
+      return
+    except ValueError:
+      pass
+    raise ValueError("Could not find browser window")
 
 
 def _on_app_change(event: str):

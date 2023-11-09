@@ -70,9 +70,16 @@ drip: user.dictation_insert_prose(",")
 # "style heading <number>".
 ^still (heading|hitting) <user.number_small>$: user.style_heading(number_small)
 #"tail"
-^till$: edit.line_end()
+^(till|te)$: edit.line_end()
 #"pasty"
 ^hasty$: edit.paste()
+#"title"
+^te (a|la) <user.prose>$: insert(user.format_title(prose))
+^te (a|la) <user.prose> anchor: insert(user.format_title(prose))
+^te (a|la) <user.prose> void:
+  insert(user.format_title(prose))
+  insert(" ")
+
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

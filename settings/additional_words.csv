@@ -104,18 +104,23 @@ on a,una
 or a,ora
 of,ob
 pause,pau
+pull,pol
+pulled,puled
 pytorch,pie torch
 queue,cu
+ramp lane,rampling
 router,rotter
 say,se
 sum,som
 talon,Tallon
 the,te
 then on,Denon
+yeah,ya
 
 # Same as above, but for words recognized as profanity or sensitive terms.
 collide,clit
 pass,puss
+lane change,lynching
 
 # Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
 end,ender

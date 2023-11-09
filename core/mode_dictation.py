@@ -53,8 +53,8 @@ def _capitalization_required(preceding_text: str) -> bool:
   if len(preceding_text) < 2 or len(preceding_text) > _NUM_PRECEDING_CHARS:
     return True
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
-  if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", ">", "_", "/", "'", "\"",
-                                          "`", "$", "="):
+  if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", "_", "/", "'", "\"", "`",
+                                          "$", "="):
     return False
   return True
 

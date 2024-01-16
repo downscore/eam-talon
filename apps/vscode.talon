@@ -19,6 +19,11 @@ suggest: user.vscode("editor.action.triggerSuggest")
 please [<user.text>]:
   user.vscode("workbench.action.showCommands")
   insert(user.text or "")
+lucky <user.text>:
+  user.vscode("workbench.action.showCommands")
+  insert(user.text or "")
+  sleep(200ms)
+  key(enter)
 
 # Files
 tab list [<user.text>] [<user.file_extension>]:

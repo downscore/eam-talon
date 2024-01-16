@@ -57,6 +57,12 @@ def _title_reformat_string(s: str) -> str:
 class Actions:
   """Formatter actions."""
 
+  def format_single(phrase: str, formatter_word: str) -> str:
+    """Formats a phrase using the given formatter."""
+    formatter_enums =  [_FORMATTERS_BY_WORD[formatter_word]]
+    options = format_util.get_format_options(formatter_enums)
+    return format_util.format_phrase(phrase, options)
+
   def format_multiple(phrase: str, formatter_words: list[str]) -> str:
     """Formats a phrase using the given formatters."""
     formatter_enums = list(map(lambda f: _FORMATTERS_BY_WORD[f], formatter_words))

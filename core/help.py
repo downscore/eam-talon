@@ -49,9 +49,7 @@ def _add_context_to_help(context):
     line = "  " + command_name + " " * (_MAX_COMMAND_CHARS - len(command_name))
 
     # Get the formatted description.
-    # TODO: Use "script" as "target" is deprecated.
-    # description = command.script.code.replace("\n", " ")
-    description = command.target.code.replace("\n", " ")
+    description = command.script.code.replace("\n", " ")
     description = description.replace("user.", "")
     description = description.replace("textflow", "tf")
     description = description[:_MAX_COMMAND_DESCRIPTION_CHARS]

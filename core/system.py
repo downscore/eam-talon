@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import os
 from talon import Module, actions, app, imgui, registry, scope
 
 mod = Module()
@@ -57,3 +58,7 @@ class Actions:
     toggling speech via a button (as opposed to a spoken command)."""
     actions.speech.toggle()
     actions.user.status_file_update()
+
+  def system_notify_say(text: str):
+    """Says the given text."""
+    os.system(f"say \"{text}\"")

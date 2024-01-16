@@ -68,6 +68,12 @@ class EditActions:
   # def delete_line():
   #   actions.user.vscode_and_wait("editor.action.deleteLines")
 
+  def find_next():
+    actions.user.vscode("search.action.focusNextSearchResult")
+
+  def find_previous():
+    actions.user.vscode("search.action.focusPreviousSearchResult")
+
   def indent_more():
     actions.user.vscode("editor.action.indentLines")
 

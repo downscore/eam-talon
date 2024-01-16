@@ -10,11 +10,17 @@ please [<user.text>]:
   insert(user.text or "")
 
 # Show the quick open dialogue.
+# TODO: Make this a command usable across applications.
 tab list [<user.text>]:
   key(cmd-o)
   sleep(250ms)
   insert(text or "")
 
+# Focus the editor.
+# TODO: Make this a command usable across applications.
+editor: user.obsidian("Focus on last note")
+
+# Use AI magic.
 # TODO: Make this a command usable across applications.
 copilot answer:
   user.obsidian("Copilot: Apply custom prompt to selection")
@@ -30,7 +36,7 @@ source dog: user.obsidian("Toggle Live Preview/Source mode")
 daily note: user.obsidian("Daily notes: Open today's daily note")
 
 # Wiki-link syntax
-linker:
+make link:
   insert("[[]]")
   key("left:2")
 

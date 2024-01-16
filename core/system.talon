@@ -1,5 +1,5 @@
 # Repeat last command n times.
-# -1 because we are repeating, so the initial command counts as one.
+# repeat_ordinal subtracts 1 because we are repeating: The initial command counts as one.
 <user.repeat_ordinal>: core.repeat_command(repeat_ordinal)
 
 # "anchor" is used to terminate some commands that take phrases of arbitrary length. Here we handle the case where such

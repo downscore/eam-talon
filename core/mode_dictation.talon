@@ -40,7 +40,13 @@ title <user.prose> void:
 # Escaping to type things that would otherwise be commands.
 ^escape <user.prose>$: user.dictation_insert_prose(prose)
 
-# Insert punctuation with automatic spacing.
+# Editing commands that can be chained with prose.
+scratcher [<user.ordinals_small>]:
+  user.delete_word_left(ordinals_small or 1)
+swallow [<user.ordinals_small>]:
+  user.delete_word_right(ordinals_small or 1)
+
+# Insert punctuation with automatic spacing, and allow chaining with prose.
 scratcher punch:
   user.delete_word_left()
   user.dictation_insert_prose(".")

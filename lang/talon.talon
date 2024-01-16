@@ -22,3 +22,4 @@ make edit:
 make app: insert("app: ")
 make tag: insert("tag: ")
 make declare tag: insert("tag(): ")
+make or: insert(" or ")

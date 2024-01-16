@@ -1,3 +1,5 @@
+mode: command
+mode: user.game
 tag: user.marker_ui_showing
 -
 scrape:

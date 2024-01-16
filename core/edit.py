@@ -259,15 +259,17 @@ class ExtensionActions:
     actions.edit.extend_line_start()
     actions.edit.delete()
 
-  def delete_word_left():
-    """Delete the word to the left of the cursor."""
-    actions.edit.extend_word_left()
-    actions.edit.delete()
+  def delete_word_left(n: int = 1):
+    """Delete one or more words to the left of the cursor."""
+    for _ in range(n):
+      actions.edit.extend_word_left()
+      actions.edit.delete()
 
-  def delete_word_right():
-    """Delete the word to the right of the cursor."""
-    actions.edit.extend_word_right()
-    actions.edit.delete()
+  def delete_word_right(n: int = 1):
+    """Delete one or more words to the right of the cursor."""
+    for _ in range(n):
+      actions.edit.extend_word_right()
+      actions.edit.delete()
 
   def duplicate_line():
     """Duplicate the current line."""

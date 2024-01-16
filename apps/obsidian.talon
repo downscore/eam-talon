@@ -9,6 +9,12 @@ please [<user.text>]:
   key(cmd-p)
   insert(user.text or "")
 
+# Show the quick open dialogue.
+tab list [<user.text>]:
+  key(cmd-o)
+  sleep(250ms)
+  insert(text or "")
+
 # TODO: Make this a command usable across applications.
 copilot answer:
   user.obsidian("Copilot: Apply custom prompt to selection")

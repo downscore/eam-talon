@@ -6,8 +6,8 @@ app list launch: user.switcher_toggle_launch()
 app launch <user.launch_applications>: user.switcher_launch(launch_applications)
 
 # Saving windows for shortcuts.
-app save coder: user.switcher_save_current_window("coder")
-app save browser: user.switcher_save_current_window("browser")
+app save coder: user.switcher_save_current_window_by_name("coder")
+app save browser: user.switcher_save_current_window_by_name("browser")
 
 # Shortcuts to apps.
 obsidian: user.switcher_focus("Obsidian")

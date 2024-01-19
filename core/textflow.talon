@@ -41,3 +41,9 @@ join up <user.word> <user.word>:
   user.textflow_join_words(word_1, word_2)
 hyphenate <user.word> <user.word>:
   user.textflow_hyphenate_words(word_1, word_2)
+
+# Swapping articles (the <-> a).
+definite [<user.ordinals_small>] [{user.textflow_search_direction}]:
+  user.textflow_switch_to_definite(ordinals_small or 1, textflow_search_direction or "")
+indefinite [<user.ordinals_small>] [{user.textflow_search_direction}]:
+  user.textflow_switch_to_indefinite(ordinals_small or 1, textflow_search_direction or "")

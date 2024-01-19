@@ -15,6 +15,9 @@ coconut [<phrase>]$:
   user.system_notify_say("On")
   user.mode_enable_speech()
 
+# Allow media control without enabling speech.
+media (play | pause): key(play)
+
 # Keyboard shortcut for toggling speech. Used for external integrations (e.g. Stream Deck).
 key(shift-f13):
   speech.toggle()

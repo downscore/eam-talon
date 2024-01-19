@@ -19,6 +19,11 @@ def make_text_match(start: int, end: int) -> TextMatch:
   return TextMatch(text_range=TextRange(start, end))
 
 
+def get_word_regex(word: str) -> str:
+  """Get a regex for matching the given word exactly."""
+  return r"\b" + re.escape(word) + r"\b"
+
+
 def get_phrase_regex(words: list[str], get_homophones: Callable[[str], list[str]]) -> str:
   """Get a regex for matching the given phrase. Expands with homophones using `get_homophones`: Given a word, the
   function should return a list containing the word and its homophones."""
@@ -139,6 +144,14 @@ def _match_token_partial(text: str, options: TokenMatchOptions, direction: Searc
   # Handle matching by line start.
   if options.match_method == TokenMatchMethod.LINE_START:
     return get_nth_line_start_match(text, options.search, options.nth_match, direction)
+
+  # Handle matching by exact word.
+  if options.match_method == TokenMatchMethod.EXACT_WORD:
+    regex = get_word_regex(options.search)
+    word_match = get_nth_regex_match(text, re.compile(regex, re.IGNORECASE), options.nth_match, direction)
+    if word_match is not None:
+      return tuple_to_text_match(word_match.span())
+    return None
 
   # Handle matching by word start.
   if options.match_method in (TokenMatchMethod.WORD_START, TokenMatchMethod.WORD_START_THEN_SUBSTRING):

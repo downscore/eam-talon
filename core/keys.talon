@@ -17,9 +17,9 @@ brightness down: key(brightness_down)
 backlight up: key(backlight_up)
 backlight down: key(backlight_down)
 
+# "media play/pause" is in mode_all so it can be used while speech is disabled.
 media volume up: key(volup)
 media volume down: key(voldown)
 media mute: key(mute)
 media next: key(next)
-media previous: key(prev)
-media (play | pause): key(play)
+media last: key(prev)

@@ -478,6 +478,30 @@ class Actions:
     joined = joined.replace(" ", "-")
     actions.user.insert_via_clipboard(joined)
 
+  def textflow_switch_to_definite(nth_match: int = 1, search_direction: Optional[tf.SearchDirection] = None):
+    """Swaps indefinite (a) to definite (the) article."""
+    search_direction_enum = None
+    if search_direction is not None and search_direction != "":
+      search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
+    target_from = tf.CompoundTarget(
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search="a", nth_match=nth_match),
+                        search_direction_enum))
+    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=f"the")
+    _run_command(command)
+
+  def textflow_switch_to_indefinite(nth_match: int = 1, search_direction: Optional[tf.SearchDirection] = None):
+    """Swaps definite (the) to indefinite (a) article."""
+    search_direction_enum = None
+    if search_direction is not None and search_direction != "":
+      search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
+    target_from = tf.CompoundTarget(
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search="the", nth_match=nth_match),
+                        search_direction_enum))
+    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=f"a")
+    _run_command(command)
+
+# This is a test potato.
+
   def textflow_potato_get_text_before_cursor():
     """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text
     selection behavior."""

@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from typing import Optional
 import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
@@ -32,6 +33,9 @@ _MAC_APPLICATION_DIRECTORIES = [
 
 # Remembered window IDs keyed by name.
 _window_id_by_name: dict[str, int] = {}
+
+# Saved window ID for restoring focus.
+_saved_window_id: Optional[int] = None
 
 
 def _update_running_list():
@@ -187,9 +191,20 @@ class Actions:
     """Hides list of launch applications."""
     launch_gui.hide()
 
-  def switcher_save_current_window(name: str):
+  def switcher_save_current_window_by_name(name: str):
     """Saves the current window as the window with the given name."""
     _window_id_by_name[name] = ui.active_window().id
+
+  def switcher_save_window():
+    """Saves the current window so it can be restored later."""
+    global _saved_window_id
+    _saved_window_id = ui.active_window().id
+
+  def switcher_restore_window():
+    """Restores the last saved window to focus."""
+    if _saved_window_id == None:
+      raise ValueError("No window saved")
+    _focus_window_by_id(_saved_window_id)
 
   def switcher_focus_coder():
     """Switch to the saved IDE window or try to find an app."""

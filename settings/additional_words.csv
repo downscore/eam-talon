@@ -55,11 +55,13 @@ planner,planer
 prev
 pullover
 pullover,plover
+regex
 ReLU,ray lou
 ROI
 ROIs
 sensor data,censor data
 softmax
+substring
 T-intersection,tea intersection
 TextFlow
 # Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
@@ -118,6 +120,7 @@ sum,som
 talon,Tallon
 the,te
 then on,Denon
+this,dis
 yeah,ya
 
 # Same as above, but for words recognized as profanity or sensitive terms.

@@ -62,6 +62,8 @@ class TokenMatchMethod(Enum):
   TOKEN_COUNT = 5
   # Match by a text phrase with homophone expansion.
   PHRASE = 6
+  # Match by an exact word (case insensitive).
+  EXACT_WORD = 7
 
 
 @dataclass

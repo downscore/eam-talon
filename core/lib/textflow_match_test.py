@@ -142,8 +142,8 @@ class GetPhraseRegexTestCase(unittest.TestCase):
     self.assertEqual(get_phrase_regex([], _get_homophones_mock), "")
     # Note: No parens in regex when a word has no homophones.
     self.assertEqual(get_phrase_regex(["a"], _get_homophones_mock), "a")
-    self.assertEqual(get_phrase_regex("a b".split(" "), _get_homophones_mock), f"a{sep}b")
-    self.assertEqual(get_phrase_regex("we are there".split(" "), _get_homophones_mock),
+    self.assertEqual(get_phrase_regex("a b".split(" "), _get_homophones_mock), f"a{sep}b") # type: ignore
+    self.assertEqual(get_phrase_regex("we are there".split(" "), _get_homophones_mock), # type: ignore
                      f"we{sep}are{sep}(there|their|they're)")
 
 
@@ -443,6 +443,18 @@ class MatchTokenTestCase(unittest.TestCase):
     options = TokenMatchOptions(match_method=TokenMatchMethod.WORD_SUBSTRING, search="xyz")
     self.assertEqual(self._token(_TEXT_AFTER, options, SearchDirection.FORWARD), None)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), None)
+
+  def test_exact_word(self):
+    text = "aa a aaa"
+    options = TokenMatchOptions(match_method=TokenMatchMethod.EXACT_WORD, search="a", nth_match=1)
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "a")
+    options.search = "aa"
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "aa")
+
+  def test_exact_word_no_match(self):
+    text = "aa aaa"
+    options = TokenMatchOptions(match_method=TokenMatchMethod.EXACT_WORD, search="a", nth_match=1)
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), None)
 
   def test_line_start(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.LINE_START, search="in", nth_match=1)

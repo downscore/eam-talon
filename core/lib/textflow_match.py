@@ -122,6 +122,23 @@ def expand_match_to_token(text: str, match: TextMatch) -> TextMatch:
   return make_text_match(start, end)
 
 
+def maybe_add_deletion_range(text: str, match: TextMatch) -> TextMatch:
+  """Adds a deletion range to the given match if there is a comma, space, or similar following the token."""
+  if match.text_range.end >= len(text):
+    return match
+
+  # Check if there is ", " following the token.
+  if match.text_range.end + 1 < len(text) and text[match.text_range.end] == "," and text[match.text_range.end + 1] == " ":
+    return TextMatch(text_range=match.text_range, deletion_range=TextRange(match.text_range.start, match.text_range.end + 2))
+
+  # Check for space or comma.
+  if text[match.text_range.end] in (" ", ","):
+    return TextMatch(text_range=match.text_range, deletion_range=TextRange(match.text_range.start, match.text_range.end + 1))
+
+  # The deletion range would be the same as the text range, so do not include it.
+  return TextMatch(text_range=match.text_range)
+
+
 def _match_token_partial(text: str, options: TokenMatchOptions, direction: SearchDirection,
                          get_homophones: Callable[[str], list[str]]) -> Optional[TextMatch]:
   """Finds a partial (may be full) match for a token in the given text using the given options. Returns the range or
@@ -175,4 +192,5 @@ def match_token(text: str, options: TokenMatchOptions, direction: SearchDirectio
   partial_match = _match_token_partial(text, options, direction, get_homophones)
   if partial_match is None:
     return None
-  return expand_match_to_token(text, partial_match)
+  expanded_match = expand_match_to_token(text, partial_match)
+  return maybe_add_deletion_range(text, expanded_match)

@@ -142,9 +142,10 @@ class GetPhraseRegexTestCase(unittest.TestCase):
     self.assertEqual(get_phrase_regex([], _get_homophones_mock), "")
     # Note: No parens in regex when a word has no homophones.
     self.assertEqual(get_phrase_regex(["a"], _get_homophones_mock), "a")
-    self.assertEqual(get_phrase_regex("a b".split(" "), _get_homophones_mock), f"a{sep}b") # type: ignore
-    self.assertEqual(get_phrase_regex("we are there".split(" "), _get_homophones_mock), # type: ignore
-                     f"we{sep}are{sep}(there|their|they're)")
+    self.assertEqual(get_phrase_regex("a b".split(" "), _get_homophones_mock), f"a{sep}b")  # type: ignore
+    self.assertEqual(
+        get_phrase_regex("we are there".split(" "), _get_homophones_mock),  # type: ignore
+        f"we{sep}are{sep}(there|their|they're)")
 
 
 class MatchNthWordStartSubstringTestCase(unittest.TestCase):
@@ -368,6 +369,38 @@ class ExpandMatchToTokenTestCase(unittest.TestCase):
       expand_match_to_token("", make_text_match(0, 1))
 
 
+class MaybeAddDeletionRangeTestCase(unittest.TestCase):
+  """Tests for adding a deletion range to a match."""
+
+  def test_first_word(self):
+    text = "apples, oranges, bananas"
+    match = make_text_match(0, 6)
+    match = maybe_add_deletion_range(text, match)
+    assert (match.deletion_range is not None)
+    self.assertEqual(match.deletion_range.start, 0)
+    self.assertEqual(match.deletion_range.end, 8)
+
+  def test_middle_word(self):
+    text = "apples, oranges bananas"
+    match = make_text_match(8, 15)
+    match = maybe_add_deletion_range(text, match)
+    assert (match.deletion_range is not None)
+    self.assertEqual(match.deletion_range.start, 8)
+    self.assertEqual(match.deletion_range.end, 16)
+
+  def test_end(self):
+    text = "apples, oranges bananas"
+    match = make_text_match(16, 23)
+    match = maybe_add_deletion_range(text, match)
+    self.assertIsNone(match.deletion_range)
+
+  def test_no_deletion_range(self):
+    text = "apples-oranges bananas"
+    match = make_text_match(0, 6)
+    match = maybe_add_deletion_range(text, match)
+    self.assertIsNone(match.deletion_range)
+
+
 class MatchTokenTestCase(unittest.TestCase):
   """Tests for matching a token."""
 
@@ -405,8 +438,9 @@ class MatchTokenTestCase(unittest.TestCase):
 
   def test_second_token_backward(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.TOKEN_COUNT, nth_match=2)
-    self.assertEqual(match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock),
-                     make_text_match(184, 190))
+    result = match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock)
+    assert (result is not None)
+    self.assertEqual(result.text_range, make_text_match(184, 190).text_range)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), "entire")
 
   def test_token_count_no_match(self):

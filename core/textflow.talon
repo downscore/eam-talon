@@ -43,7 +43,14 @@ hyphenate <user.word> <user.word>:
   user.textflow_hyphenate_words(word_1, word_2)
 
 # Swapping articles (the <-> a).
-definite [<user.ordinals_small>] [{user.textflow_search_direction}]:
-  user.textflow_switch_to_definite(ordinals_small or 1, textflow_search_direction or "")
-indefinite [<user.ordinals_small>] [{user.textflow_search_direction}]:
-  user.textflow_switch_to_indefinite(ordinals_small or 1, textflow_search_direction or "")
+swap [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
+  user.textflow_swap_exact_words("a", "the", ordinals_small or 1, textflow_search_direction or "")
+swap [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
+  user.textflow_swap_exact_words("the", "a", ordinals_small or 1, textflow_search_direction or "")
+
+# Deleting articles. This is hard to do with other commands. e.g. "chuck a" will delete any word with the letter "a"
+# in it.
+chuck [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
+  user.textflow_delete_exact_word("the", ordinals_small or 1, textflow_search_direction or "")
+chuck [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
+  user.textflow_delete_exact_word("a", ordinals_small or 1, textflow_search_direction or "")

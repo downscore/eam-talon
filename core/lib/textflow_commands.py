@@ -20,24 +20,34 @@ def _perform_command_select(text: str, selection_range: TextRange, match_from: T
   return [EditorAction(EditorActionType.SET_SELECTION_RANGE, match_from.text_range)]
 
 
-def _perform_command_clear_move_cursor(text: str, selection_range: TextRange, match_from: TextMatch,
-                                       match_to: Optional[TextMatch], insert_text: str,
-                                       utility_functions: UtilityFunctions) -> list[EditorAction]:
+def _perform_command_clear_move_cursor(text: str,
+                                       selection_range: TextRange,
+                                       match_from: TextMatch,
+                                       match_to: Optional[TextMatch],
+                                       insert_text: str,
+                                       utility_functions: UtilityFunctions,
+                                       use_deletion_range: bool = True) -> list[EditorAction]:
   """Clear the matched text and move the cursor where it was."""
   del text, selection_range, match_to, insert_text, utility_functions
-  deletion_range = match_from.deletion_range or match_from.text_range
+  deletion_range = (match_from.deletion_range
+                    if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
   return [
       EditorAction(EditorActionType.SET_SELECTION_RANGE, deletion_range),
       EditorAction(EditorActionType.CLEAR),
   ]
 
 
-def _perform_command_clear_no_move(text: str, selection_range: TextRange, match_from: TextMatch,
-                                   match_to: Optional[TextMatch], insert_text: str,
-                                   utility_functions: UtilityFunctions) -> list[EditorAction]:
+def _perform_command_clear_no_move(text: str,
+                                   selection_range: TextRange,
+                                   match_from: TextMatch,
+                                   match_to: Optional[TextMatch],
+                                   insert_text: str,
+                                   utility_functions: UtilityFunctions,
+                                   use_deletion_range: bool = True) -> list[EditorAction]:
   """Clear the matched text but preserve cursor position."""
   del text, match_to, insert_text, utility_functions
-  deletion_range = match_from.deletion_range or match_from.text_range
+  deletion_range = (match_from.deletion_range
+                    if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
 
   # Compute selected range after deletion.
   range_after = selection_range
@@ -146,11 +156,14 @@ def _perform_command_swap(text: str, selection_range: TextRange, match_from: Tex
   text_from_second = match_second.text_range.extract(text)
 
   # Delete the range that occurs later and insert the earlier string.
-  result = _perform_command_clear_move_cursor(text, selection_range, match_second, None, "", utility_functions)
+  # Note: Deletion does not use deletion ranges. We want to maintain spaces and punctuation.
+  result = _perform_command_clear_move_cursor(text, selection_range, match_second, None, "", utility_functions, False)
   result.append(EditorAction(EditorActionType.INSERT_TEXT, text=text_from_first))
 
   # Delete the range that occurs earlier and insert the later string.
-  result.extend(_perform_command_clear_move_cursor(text, selection_range, match_first, None, "", utility_functions))
+  # Note: Deletion does not use deletion ranges. We want to maintain spaces and punctuation.
+  result.extend(
+      _perform_command_clear_move_cursor(text, selection_range, match_first, None, "", utility_functions, False))
   result.append(EditorAction(EditorActionType.INSERT_TEXT, text=text_from_second))
   return result
 

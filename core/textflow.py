@@ -349,7 +349,7 @@ def textflow_simple_target(m) -> tf.SimpleTarget:
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] <user.word>")
-def textflow_word(m) -> tf.SimpleTarget:
+def textflow_word(m) -> tf.CompoundTarget:
   """A textflow target matching a single word with homophones."""
   try:
     nth = m.ordinals_small
@@ -478,29 +478,27 @@ class Actions:
     joined = joined.replace(" ", "-")
     actions.user.insert_via_clipboard(joined)
 
-  def textflow_switch_to_definite(nth_match: int = 1, search_direction: Optional[tf.SearchDirection] = None):
-    """Swaps indefinite (a) to definite (the) article."""
+  def textflow_swap_exact_words(from_word: str, to_word: str, nth_match: int = 1, search_direction: str = ""):
+    """Swaps one word for another, using exact match."""
     search_direction_enum = None
     if search_direction is not None and search_direction != "":
       search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
     target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search="a", nth_match=nth_match),
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=from_word, nth_match=nth_match),
                         search_direction_enum))
-    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=f"the")
+    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=to_word)
     _run_command(command)
 
-  def textflow_switch_to_indefinite(nth_match: int = 1, search_direction: Optional[tf.SearchDirection] = None):
-    """Swaps definite (the) to indefinite (a) article."""
+  def textflow_delete_exact_word(word: str, nth_match: int = 1, search_direction: str = ""):
+    """Deletes the given word."""
     search_direction_enum = None
     if search_direction is not None and search_direction != "":
       search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
     target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search="the", nth_match=nth_match),
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=word, nth_match=nth_match),
                         search_direction_enum))
-    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=f"a")
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, target_from)
     _run_command(command)
-
-# This is a test potato.
 
   def textflow_potato_get_text_before_cursor():
     """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text

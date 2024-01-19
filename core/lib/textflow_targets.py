@@ -9,7 +9,8 @@ from .textflow_match import match_token
 def _add_to_match(match: TextMatch, num_chars: int) -> TextMatch:
   """Returns a new text match with the given number of characters added to the given match's ranges."""
   result = TextMatch(TextRange(match.text_range.start + num_chars, match.text_range.end + num_chars))
-  # TODO: Add to deletion range if necessary.
+  if match.deletion_range is not None:
+    result.deletion_range = TextRange(match.deletion_range.start + num_chars, match.deletion_range.end + num_chars)
   return result
 
 

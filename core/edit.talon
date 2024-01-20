@@ -10,8 +10,9 @@ join lines:
   edit.extend_line_start()
   key(backspace:2)
   key(space)
+
 # Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
-choose <user.number_small>: key("down:{number_small-1} enter")
+chooser <user.number_small>: key("down:{number_small-1} enter")
 
 # Symbol convenience commands
 args:

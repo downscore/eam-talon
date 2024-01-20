@@ -128,12 +128,15 @@ def maybe_add_deletion_range(text: str, match: TextMatch) -> TextMatch:
     return match
 
   # Check if there is ", " following the token.
-  if match.text_range.end + 1 < len(text) and text[match.text_range.end] == "," and text[match.text_range.end + 1] == " ":
-    return TextMatch(text_range=match.text_range, deletion_range=TextRange(match.text_range.start, match.text_range.end + 2))
+  if match.text_range.end + 1 < len(text) and text[match.text_range.end] == "," and text[match.text_range.end +
+                                                                                         1] == " ":
+    return TextMatch(text_range=match.text_range,
+                     deletion_range=TextRange(match.text_range.start, match.text_range.end + 2))
 
   # Check for space or comma.
   if text[match.text_range.end] in (" ", ","):
-    return TextMatch(text_range=match.text_range, deletion_range=TextRange(match.text_range.start, match.text_range.end + 1))
+    return TextMatch(text_range=match.text_range,
+                     deletion_range=TextRange(match.text_range.start, match.text_range.end + 1))
 
   # The deletion range would be the same as the text range, so do not include it.
   return TextMatch(text_range=match.text_range)

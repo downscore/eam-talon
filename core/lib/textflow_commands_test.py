@@ -436,3 +436,23 @@ class PerformCommandTestCase(unittest.TestCase):
     self.assertEqual(text, "This is THEIR test.")
     self.assertEqual(selection, initial_selection)
     self.assertEqual(clipboard, "")
+
+  def test_join_words(self):
+    test_string = "Let's play base ball now."
+    initial_selection = TextRange(5, 5)
+    actions = _perform_command(CommandType.JOIN_WORDS, test_string, initial_selection, TextMatch(TextRange(11, 20)),
+                               None, "")
+    text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
+    self.assertEqual(text, "Let's play baseball now.")
+    self.assertEqual(selection, initial_selection)
+    self.assertEqual(clipboard, "")
+
+  def test_hyphenate_words(self):
+    test_string = "Let's play base ball now."
+    initial_selection = TextRange(5, 5)
+    actions = _perform_command(CommandType.HYPHENATE_WORDS, test_string, initial_selection,
+                               TextMatch(TextRange(11, 20)), None, "")
+    text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
+    self.assertEqual(text, "Let's play base-ball now.")
+    self.assertEqual(selection, initial_selection)
+    self.assertEqual(clipboard, "")

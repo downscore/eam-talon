@@ -35,6 +35,7 @@ swap <user.textflow_word> with <user.word>:
   user.textflow_replace_word(textflow_word, word)
 
 # Segmenting or joining words.
+# Note: Including a match ordinal and search direction here makes parsing very ambiguous.
 segment <user.word> <user.word>:
   user.textflow_segment_word(word_1, word_2)
 join up <user.word> <user.word>:

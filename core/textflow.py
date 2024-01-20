@@ -32,6 +32,7 @@ _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
     "before": tf.CommandType.MOVE_CURSOR_BEFORE,
     "after": tf.CommandType.MOVE_CURSOR_AFTER,
     "bring": tf.CommandType.BRING,
+    "junker": tf.CommandType.CLEAR_NO_MOVE,
     "phony": tf.CommandType.NEXT_HOMOPHONE,
     "bigger": tf.CommandType.TITLE_CASE,
     "biggest": tf.CommandType.UPPERCASE,
@@ -462,21 +463,15 @@ class Actions:
     """Joins two words into one. e.g. base ball->baseball."""
     target_from = tf.CompoundTarget(
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.SELECT, target_from, insert_text=f"{word1}{word2}")
+    command = tf.Command(tf.CommandType.JOIN_WORDS, target_from)
     _run_command(command)
-    joined = actions.edit.selected_text()
-    joined = joined.replace(" ", "")
-    actions.user.insert_via_clipboard(joined)
 
   def textflow_hyphenate_words(word1: str, word2: str):
     """Hyphenates two words. e.g. base ball->base-ball."""
     target_from = tf.CompoundTarget(
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.SELECT, target_from, insert_text=f"{word1}{word2}")
+    command = tf.Command(tf.CommandType.HYPHENATE_WORDS, target_from)
     _run_command(command)
-    joined = actions.edit.selected_text()
-    joined = joined.replace(" ", "-")
-    actions.user.insert_via_clipboard(joined)
 
   def textflow_swap_exact_words(from_word: str, to_word: str, nth_match: int = 1, search_direction: str = ""):
     """Swaps one word for another, using exact match."""

@@ -92,3 +92,13 @@ class TextFlowTestCase(unittest.TestCase):
     self.assertEqual(text, "this is that test.")
     self.assertEqual(selection, initial_selection)
     self.assertEqual(clipboard, "")
+
+  def test_delete_word(self):
+    test_string = "Lorem ipsum dolor sit amet."
+    command = Command(CommandType.CLEAR_NO_MOVE, _get_substring_target("ips"))
+    actions = run_command(command, test_string, TextRange(0, 0), UTILITY_FUNCTIONS)
+    text, selection, clipboard = simulate_actions(test_string, TextRange(0, 0), actions)
+    # Space after word should also be removed.
+    self.assertEqual(text, "Lorem dolor sit amet.")
+    self.assertEqual(selection, TextRange(0, 0))
+    self.assertEqual(clipboard, "")

@@ -196,6 +196,22 @@ def _perform_command_replace(text: str, selection_range: TextRange, match_from: 
   ]
 
 
+def _perform_command_join_words(text: str, selection_range: TextRange, match_from: TextMatch,
+                                match_to: Optional[TextMatch], insert_text: str,
+                                utility_functions: UtilityFunctions) -> list[EditorAction]:
+  """Remove spaces between the matched words."""
+  joined = match_from.text_range.extract(text).replace(" ", "")
+  return _perform_command_replace(text, selection_range, match_from, match_to, joined, utility_functions)
+
+
+def _perform_command_hyphenate_words(text: str, selection_range: TextRange, match_from: TextMatch,
+                                     match_to: Optional[TextMatch], insert_text: str,
+                                     utility_functions: UtilityFunctions) -> list[EditorAction]:
+  """Hyphenate the matched words."""
+  joined = match_from.text_range.extract(text).replace(" ", "-")
+  return _perform_command_replace(text, selection_range, match_from, match_to, joined, utility_functions)
+
+
 def _perform_command_replace_word_match_case(text: str, selection_range: TextRange, match_from: TextMatch,
                                              match_to: Optional[TextMatch], insert_text: str,
                                              utility_functions: UtilityFunctions) -> list[EditorAction]:
@@ -286,6 +302,8 @@ _COMMAND_FUNCTIONS = {
     CommandType.LOWERCASE: _perform_command_lowercase,
     CommandType.REPLACE_WORD_MATCH_CASE: _perform_command_replace_word_match_case,
     CommandType.UPPERCASE: _perform_command_uppercase,
+    CommandType.JOIN_WORDS: _perform_command_join_words,
+    CommandType.HYPHENATE_WORDS: _perform_command_hyphenate_words,
 }
 
 

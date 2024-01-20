@@ -178,10 +178,8 @@ class CommandType(Enum):
   REPLACE_WORD_MATCH_CASE = 17
   # Make the matched target all uppercase.
   UPPERCASE = 18
-  # Join up the matched words without moving the cursor.
-  JOIN_WORDS = 19
-  # Hyphenate the matched words without moving the cursor.
-  HYPHENATE_WORDS = 20
+  # Replace a matched string with the output of a given lambda.
+  REPLACE_WITH_LAMBDA = 19
 
 
 @dataclass
@@ -193,6 +191,9 @@ class Command:
 
   # Text for replacement/insertion commands.
   insert_text: str = ""
+
+  # Lambda for REPLACE_WITH_LAMBDA commands.
+  lambda_func: Optional[Callable[[str], str]] = None
 
 
 @unique

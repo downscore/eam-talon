@@ -463,14 +463,14 @@ class Actions:
     """Joins two words into one. e.g. base ball->baseball."""
     target_from = tf.CompoundTarget(
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.JOIN_WORDS, target_from)
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: s.replace(" ", ""))
     _run_command(command)
 
   def textflow_hyphenate_words(word1: str, word2: str):
     """Hyphenates two words. e.g. base ball->base-ball."""
     target_from = tf.CompoundTarget(
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.HYPHENATE_WORDS, target_from)
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: s.replace(" ", "-"))
     _run_command(command)
 
   def textflow_swap_exact_words(from_word: str, to_word: str, nth_match: int = 1, search_direction: str = ""):

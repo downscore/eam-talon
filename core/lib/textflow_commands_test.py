@@ -6,14 +6,18 @@ from .textflow_sim import simulate_actions
 from .textflow_test_util import UTILITY_FUNCTIONS
 
 
-def _perform_command(command_type: CommandType,
-                     text: str,
-                     selection_range: TextRange,
-                     match_from: TextMatch,
-                     match_to: Optional[TextMatch] = None,
-                     insert_text: str = "") -> list[EditorAction]:
+def _perform_command(
+    command_type: CommandType,
+    text: str,
+    selection_range: TextRange,
+    match_from: TextMatch,
+    match_to: Optional[TextMatch] = None,
+    insert_text: str = "",
+    lambda_func: Optional[Callable[[str], str]] = None,
+) -> list[EditorAction]:
   """Helper methods for performing a command."""
-  return perform_command(command_type, text, selection_range, match_from, match_to, insert_text, UTILITY_FUNCTIONS)
+  return perform_command(command_type, text, selection_range, match_from, match_to, insert_text, lambda_func,
+                         UTILITY_FUNCTIONS)
 
 
 class PerformCommandTestCase(unittest.TestCase):
@@ -437,22 +441,19 @@ class PerformCommandTestCase(unittest.TestCase):
     self.assertEqual(selection, initial_selection)
     self.assertEqual(clipboard, "")
 
-  def test_join_words(self):
+  def test_replace_with_lambda(self):
     test_string = "Let's play base ball now."
     initial_selection = TextRange(5, 5)
-    actions = _perform_command(CommandType.JOIN_WORDS, test_string, initial_selection, TextMatch(TextRange(11, 20)),
-                               None, "")
+    actions = _perform_command(CommandType.REPLACE_WITH_LAMBDA, test_string, initial_selection,
+                               TextMatch(TextRange(11, 20)), None, "", lambda s: s.replace(" ", ""))
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "Let's play baseball now.")
     self.assertEqual(selection, initial_selection)
     self.assertEqual(clipboard, "")
 
-  def test_hyphenate_words(self):
+  def test_replace_no_lambda_provided(self):
     test_string = "Let's play base ball now."
     initial_selection = TextRange(5, 5)
-    actions = _perform_command(CommandType.HYPHENATE_WORDS, test_string, initial_selection,
-                               TextMatch(TextRange(11, 20)), None, "")
-    text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
-    self.assertEqual(text, "Let's play base-ball now.")
-    self.assertEqual(selection, initial_selection)
-    self.assertEqual(clipboard, "")
+    with self.assertRaises(ValueError):
+      actions = _perform_command(CommandType.REPLACE_WITH_LAMBDA, test_string, initial_selection,
+                                 TextMatch(TextRange(11, 20)), None, "", None)

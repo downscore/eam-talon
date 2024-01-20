@@ -28,4 +28,4 @@ def run_command(command: Command, text: str, selection_range: TextRange,
 
   # Get command actions.
   return perform_command(command.command_type, text, selection_range, match_from, match_to, command.insert_text,
-                         utility_functions)
+                         command.lambda_func, utility_functions)

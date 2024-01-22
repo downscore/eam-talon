@@ -14,20 +14,6 @@ mod = Module()
 ctx = Context()
 
 _COMMAND_TYPES_BY_SPOKEN = {
-    "take": tf.CommandType.SELECT,
-    "before": tf.CommandType.MOVE_CURSOR_BEFORE,
-    "after": tf.CommandType.MOVE_CURSOR_AFTER,
-    "bring": tf.CommandType.BRING,
-    "chuck": tf.CommandType.CLEAR_NO_MOVE,
-    "phony": tf.CommandType.NEXT_HOMOPHONE,
-    "bigger": tf.CommandType.TITLE_CASE,
-    "biggest": tf.CommandType.UPPERCASE,
-    "smaller": tf.CommandType.LOWERCASE,
-}
-mod.list("textflow_command_type", desc="Text navigation command types")
-ctx.lists["self.textflow_command_type"] = _COMMAND_TYPES_BY_SPOKEN.keys()
-
-_SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
     "grab": tf.CommandType.SELECT,
     "before": tf.CommandType.MOVE_CURSOR_BEFORE,
     "after": tf.CommandType.MOVE_CURSOR_AFTER,
@@ -38,8 +24,8 @@ _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
     "biggest": tf.CommandType.UPPERCASE,
     "smaller": tf.CommandType.LOWERCASE,
 }
-mod.list("textflow_single_word_command_type", desc="Text navigation command types for single words")
-ctx.lists["self.textflow_single_word_command_type"] = _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN.keys()
+mod.list("textflow_command_type", desc="Text navigation command types")
+ctx.lists["self.textflow_command_type"] = _COMMAND_TYPES_BY_SPOKEN.keys()
 
 _SEARCH_DIRECTION_BY_SPOKEN = {
     "next": tf.SearchDirection.FORWARD,
@@ -289,12 +275,6 @@ def _capture_to_words(m) -> list[str]:
 def textflow_command_type(m) -> tf.CommandType:
   """Maps a spoken command to the command type."""
   return _COMMAND_TYPES_BY_SPOKEN[m.textflow_command_type]
-
-
-@mod.capture(rule="{self.textflow_single_word_command_type}")
-def textflow_single_word_command_type(m) -> tf.CommandType:
-  """Maps a spoken command to the single-word command type."""
-  return _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN[m.textflow_single_word_command_type]
 
 
 @mod.capture(rule="{self.textflow_search_direction}")

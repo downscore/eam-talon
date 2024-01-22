@@ -440,9 +440,9 @@ class MatchTokenTestCase(unittest.TestCase):
 
   def test_first_token_backward(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.TOKEN_COUNT, nth_match=1)
-    self.assertEqual(
-        match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock).text_range,
-        make_text_match(191, 196).text_range)
+    result = match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock)
+    assert (result is not None)
+    self.assertEqual(result.text_range, make_text_match(191, 196).text_range)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), "match")
 
   def test_second_token_backward(self):
@@ -512,6 +512,20 @@ class MatchTokenTestCase(unittest.TestCase):
     options = TokenMatchOptions(match_method=TokenMatchMethod.LINE_START, search="xyz")
     self.assertEqual(self._token(_TEXT_AFTER, options, SearchDirection.FORWARD), None)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), None)
+
+  def test_line_start_word_start(self):
+    text = "hello redo_snake done-kebab"
+    options = TokenMatchOptions(match_method=TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING,
+                                search="do",
+                                nth_match=1)
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "done-kebab")
+
+  def test_line_start_substring(self):
+    text = "hello redo_snake done-kebab"
+    options = TokenMatchOptions(match_method=TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING,
+                                search="ake",
+                                nth_match=1)
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "redo_snake")
 
   def test_phrase(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.PHRASE, search="var name", nth_match=1)

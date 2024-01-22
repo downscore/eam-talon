@@ -418,7 +418,7 @@ class Actions:
 
   def textflow_execute_line_command(command_type: tf.CommandType, simple_target: tf.SimpleTarget):
     """"Execute a textflow command on a line."""
-    simple_target.match_options.match_method = tf.TokenMatchMethod.LINE_START
+    simple_target.match_options.match_method = tf.TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING
     target_from = tf.CompoundTarget(simple_target, modifier=tf.Modifier(tf.ModifierType.LINE))
     command = tf.Command(command_type, target_from)
     _run_command(command)

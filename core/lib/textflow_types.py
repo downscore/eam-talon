@@ -64,7 +64,8 @@ class TokenMatchMethod(Enum):
   PHRASE = 6
   # Match by an exact word (case insensitive).
   EXACT_WORD = 7
-
+  # Matches LINE_START, then falls back to WORD_START_THEN_SUBSTRING.
+  LINE_START_THEN_WORD_START_THEN_SUBSTRING = 8
 
 @dataclass
 class TokenMatchOptions:

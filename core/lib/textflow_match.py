@@ -89,7 +89,7 @@ def get_nth_line_start_match(text: str, search: str, n: int, direction: SearchDi
   # No match for empty string.
   if len(search) == 0:
     return None
-  # Create a regex from the substring that only matches that start of words. Match is case insensitive.
+  # Create a regex from the substring that only matches that start of lines. Match is case insensitive.
   # Note: First capture group will match a single character if it is not at the start of the line.
   regex = re.compile(r"^([ \t]*)" + re.escape(search), re.IGNORECASE | re.MULTILINE)
   match = get_nth_regex_match(text, regex, n, direction)
@@ -168,8 +168,12 @@ def _match_token_partial(text: str, options: TokenMatchOptions, direction: Searc
     return None
 
   # Handle matching by line start.
+  if options.match_method in (TokenMatchMethod.LINE_START, TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING):
+    line_match = get_nth_line_start_match(text, options.search, options.nth_match, direction)
+    if line_match is not None:
+      return line_match
   if options.match_method == TokenMatchMethod.LINE_START:
-    return get_nth_line_start_match(text, options.search, options.nth_match, direction)
+    return None
 
   # Handle matching by exact word.
   if options.match_method == TokenMatchMethod.EXACT_WORD:
@@ -180,7 +184,8 @@ def _match_token_partial(text: str, options: TokenMatchOptions, direction: Searc
     return None
 
   # Handle matching by word start.
-  if options.match_method in (TokenMatchMethod.WORD_START, TokenMatchMethod.WORD_START_THEN_SUBSTRING):
+  if options.match_method in (TokenMatchMethod.WORD_START, TokenMatchMethod.WORD_START_THEN_SUBSTRING,
+                              TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING):
     start_match = get_nth_word_start_match(text, options.search, options.nth_match, direction)
     if start_match is not None or options.match_method == TokenMatchMethod.WORD_START:
       return start_match
@@ -189,6 +194,7 @@ def _match_token_partial(text: str, options: TokenMatchOptions, direction: Searc
   substr_match = get_nth_substring_match(text, options.search, options.nth_match, direction)
   if substr_match is not None:
     return tuple_to_text_match(substr_match.span())
+
   return None
 
 

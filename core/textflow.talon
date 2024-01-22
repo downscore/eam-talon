@@ -18,6 +18,13 @@
 <user.textflow_single_word_command_type> <user.textflow_word>:
   user.textflow_execute_command(textflow_single_word_command_type, textflow_word)
 
+# Commands that act on articles (a/the). e.g. "chuck indefinite".
+# This is hard to do with other commands. e.g. "chuck a" will delete any word with the letter "a" in it.
+<user.textflow_single_word_command_type> <user.textflow_definite>:
+  user.textflow_execute_command(textflow_single_word_command_type, textflow_definite)
+<user.textflow_single_word_command_type> <user.textflow_indefinite>:
+  user.textflow_execute_command(textflow_single_word_command_type, textflow_indefinite)
+
 # Insert newline relative to target.
 drink <user.textflow_simple_target>:
   user.textflow_new_line_above(textflow_simple_target)
@@ -43,15 +50,8 @@ join up <user.word> <user.word>:
 hyphenate <user.word> <user.word>:
   user.textflow_hyphenate_words(word_1, word_2)
 
-# Swapping articles (the <-> a).
+# Swap articles (a <-> the).
 swap [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
   user.textflow_swap_exact_words("a", "the", ordinals_small or 1, textflow_search_direction or "")
 swap [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
   user.textflow_swap_exact_words("the", "a", ordinals_small or 1, textflow_search_direction or "")
-
-# Deleting articles. This is hard to do with other commands. e.g. "chuck a" will delete any word with the letter "a"
-# in it.
-chuck [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
-  user.textflow_delete_exact_word("the", ordinals_small or 1, textflow_search_direction or "")
-chuck [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
-  user.textflow_delete_exact_word("a", ordinals_small or 1, textflow_search_direction or "")

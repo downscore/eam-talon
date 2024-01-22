@@ -38,7 +38,7 @@ make continue: insert("continue")
 make pass: insert("pass")
 make true: insert("True")
 make false: insert("False")
-make deaf: insert("def")
+make deaf: insert("def ")
 make funk:
   insert("def :")
   key(left)

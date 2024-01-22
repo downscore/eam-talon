@@ -366,6 +366,40 @@ def textflow_word(m) -> tf.CompoundTarget:
       tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.word), direction))
 
 
+@mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] definite")
+def textflow_definite(m) -> tf.CompoundTarget:
+  """A textflow target matching the word "the"."""
+  try:
+    nth = m.ordinals_small
+  except AttributeError:
+    nth = 1
+
+  try:
+    direction = m.textflow_search_direction
+  except AttributeError:
+    direction = None
+
+  return tf.CompoundTarget(
+      tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="the"), direction))
+
+
+@mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] indefinite")
+def textflow_indefinite(m) -> tf.CompoundTarget:
+  """A textflow target matching the word "a"."""
+  try:
+    nth = m.ordinals_small
+  except AttributeError:
+    nth = 1
+
+  try:
+    direction = m.textflow_search_direction
+  except AttributeError:
+    direction = None
+
+  return tf.CompoundTarget(
+      tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="a"), direction))
+
+
 @mod.capture(rule="<user.textflow_simple_target> [<user.textflow_target_combo_type> <user.textflow_simple_target>]")
 def textflow_compound_target(m) -> tf.CompoundTarget:
   """A textflow compound target."""
@@ -482,17 +516,6 @@ class Actions:
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=from_word, nth_match=nth_match),
                         search_direction_enum))
     command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=to_word)
-    _run_command(command)
-
-  def textflow_delete_exact_word(word: str, nth_match: int = 1, search_direction: str = ""):
-    """Deletes the given word."""
-    search_direction_enum = None
-    if search_direction is not None and search_direction != "":
-      search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
-    target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=word, nth_match=nth_match),
-                        search_direction_enum))
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, target_from)
     _run_command(command)
 
   def textflow_potato_get_text_before_cursor():

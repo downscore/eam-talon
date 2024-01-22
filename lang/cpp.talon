@@ -50,6 +50,7 @@ make switch:
 make case:
   insert("case :")
   key(left)
+make todo: insert("TODO: ")
 make default: insert("default:")
 make (null opt|nullopt): insert("nullopt")
 make null pointer: insert("nullptr")

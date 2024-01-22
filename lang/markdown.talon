@@ -4,6 +4,22 @@ make block:
   insert("```\n\n```")
   key("left:4")
 
+make python block:
+  insert("```python\n\n```")
+  key("left:4")
+
+make C P P block:
+  insert("```C++\n\n```")
+  key("left:4")
+
+make jason block:
+  insert("```json\n\n```")
+  key("left:4")
+
+make yaml block:
+  insert("```yaml\n\n```")
+  key("left:4")
+
 lister:
   edit.line_insert_down()
   insert("* ")

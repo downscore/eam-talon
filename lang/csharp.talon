@@ -37,8 +37,6 @@ make for:
 make loop:
   insert("while ()")
   key(left)
-make return:
-  insert("return ")
 make do loop:
   insert("do ")
   key(left)
@@ -48,38 +46,23 @@ make switch:
 make case:
   insert("case :")
   key(left)
-make default:
-  insert("default:")
-make null:
-  insert("null")
-make class:
-  insert("class ")
-make struct:
-  insert("struct ")
-make break:
-  insert("break")
-make continue:
-  insert("continue")
-make true:
-  insert("true")
-make false:
-  insert("false")
-make var:
-  insert("var ")
-make const:
-  insert("const ")
-make static:
-  insert("static ")
-make to do:
-  insert("// TODO: ")
-make public:
-  insert("public ")
-make private:
-  insert("private ")
-make read only:
-  insert("readonly ")
-make new:
-  insert("new ")
+make return: insert("return ")
+make default: insert("default:")
+make null: insert("null")
+make class: insert("class ")
+make struct: insert("struct ")
+make break: insert("break")
+make continue: insert("continue")
+make true: insert("true")
+make false: insert("false")
+make var: insert("var ")
+make const: insert("const ")
+make static: insert("static ")
+make public: insert("public ")
+make private: insert("private ")
+make read only: insert("readonly ")
+make new: insert("new ")
+make todo: insert("TODO: ")
 
   # Operators
 a sign: insert(" = ")

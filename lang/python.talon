@@ -1,13 +1,10 @@
 tag: user.lang_python
 -
-is none:
-  insert(" is None")
-is not none:
-  insert(" is not None")
+is none: insert(" is None")
+is not none: insert(" is not None")
 self taught: "self."
 
-[make] dock string:
-  insert("\"\"\"")
+[make] dock string: insert("\"\"\"")
 make if:
   insert("if :")
   key(left)
@@ -32,41 +29,29 @@ make for range:
 make loop:
   insert("while :")
   key(left)
-make return:
-  insert("return ")
-make (null|none):
-  insert("None")
-make class:
-  insert("class ")
-make break:
-  insert("break")
-make continue:
-  insert("continue")
-make pass:
-  insert("pass")
-make true:
-  insert("True")
-make false:
-  insert("False")
-make deaf:
-  insert("def")
+make todo: insert("TODO: ")
+make return: insert("return ")
+make (null|none): insert("None")
+make class: insert("class ")
+make break: insert("break")
+make continue: insert("continue")
+make pass: insert("pass")
+make true: insert("True")
+make false: insert("False")
+make deaf: insert("def")
 make funk:
   insert("def :")
   key(left)
-make hint:
-  insert(" -> ")
+make hint: insert(" -> ")
 make (len|size):
   insert("len()")
   key(left)
-make raise:
-  insert("raise ")
-make with:
-  insert("with ")
+make raise: insert("raise ")
+make with: insert("with ")
 make value error:
   insert("raise ValueError(f\"\")")
   key(left:2)
-make try:
-  insert("try:\n")
+make try: insert("try:\n")
 make except:
   insert("except :")
   key(left)
@@ -88,15 +73,12 @@ make print:
 make range:
   insert("range()")
   key(left)
-make global:
-  insert("global ")
+make global: insert("global ")
 make enumerate:
   insert("enumerate()")
   key(left)
-make delete:
-  insert("del ")
-make none:
-  insert("None")
+make delete: insert("del ")
+make none: insert("None")
 
 # Imports
 import: insert("import ")
@@ -111,7 +93,6 @@ import R E: insert("import re\n")
 import requests: insert("import requests\n")
 import time: insert("import time\n")
 import unit test: insert("import unittest\n")
-
 
 # Operators
 a sign: insert(" = ")
@@ -157,6 +138,8 @@ hint (bool|boolean|boo): insert(": bool")
 hint list:
   insert(": list[]")
   key(left)
+hint list string: insert(": list[str]")
+hint list int: insert(": list[int]")
 hint dictionary:
   insert(": dict[]")
   key(left)

@@ -12,29 +12,20 @@ make block:
   insert("{}")
   key(left)
   key(enter)
-make abseil:
-  insert("absl::")
-make standard:
-  insert("std::")
+make abseil: insert("absl::")
+make standard: insert("std::")
 make import:
   insert("import \"\";")
   key(left:2)
-make message:
-  insert("message ")
-make optional:
-  insert("optional ")
-make required:
-  insert("required ")
-make repeated:
-  insert("repeated ")
-make enum:
-  insert("enum ")
-make service:
-  insert("service ")
-make rpc:
-  insert("rpc ")
-make reserved:
-  insert("reserved ")
+make message: insert("message ")
+make optional: insert("optional ")
+make required: insert("required ")
+make repeated: insert("repeated ")
+make enum: insert("enum ")
+make service: insert("service ")
+make rpc: insert("rpc ")
+make reserved: insert("reserved ")
+make todo: insert("TODO: ")
 
 # Operators
 a sign: insert(" = ")

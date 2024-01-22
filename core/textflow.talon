@@ -18,8 +18,8 @@
 <user.textflow_command_type> <user.textflow_word>:
   user.textflow_execute_command(textflow_command_type, textflow_word)
 
-# Commands that act on articles (a/the). e.g. "chuck indefinite".
-# This is hard to do with other commands. e.g. "chuck a" will delete any word with the letter "a" in it.
+# Commands that act on articles (a/the). e.g. "grab indefinite".
+# This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in it.
 <user.textflow_command_type> <user.textflow_definite>:
   user.textflow_execute_command(textflow_command_type, textflow_definite)
 <user.textflow_command_type> <user.textflow_indefinite>:

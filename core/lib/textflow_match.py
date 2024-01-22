@@ -123,7 +123,7 @@ def expand_match_to_token(text: str, match: TextMatch) -> TextMatch:
 
 
 def maybe_add_deletion_range(text: str, match: TextMatch) -> TextMatch:
-  """Adds a deletion range to the given match if there is a comma, space, or similar following the token."""
+  """Adds a deletion range to the given match to include spaces and commas around the token."""
   if match.text_range.end >= len(text):
     return match
 
@@ -137,6 +137,12 @@ def maybe_add_deletion_range(text: str, match: TextMatch) -> TextMatch:
   if text[match.text_range.end] in (" ", ","):
     return TextMatch(text_range=match.text_range,
                      deletion_range=TextRange(match.text_range.start, match.text_range.end + 1))
+
+  # If the sentence ends following the token, try to include a leading space in the deletion range.
+  if text[match.text_range.end] in (".",
+                                    "?") and match.text_range.start > 0 and text[match.text_range.start - 1] == " ":
+    return TextMatch(text_range=match.text_range,
+                     deletion_range=TextRange(match.text_range.start - 1, match.text_range.end))
 
   # The deletion range would be the same as the text range, so do not include it.
   return TextMatch(text_range=match.text_range)

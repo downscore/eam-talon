@@ -394,6 +394,14 @@ class MaybeAddDeletionRangeTestCase(unittest.TestCase):
     match = maybe_add_deletion_range(text, match)
     self.assertIsNone(match.deletion_range)
 
+  def test_end_with_period(self):
+    text = "apples, oranges bananas."
+    match = make_text_match(16, 23)
+    match = maybe_add_deletion_range(text, match)
+    assert (match.deletion_range is not None)
+    self.assertEqual(match.deletion_range.start, 15)
+    self.assertEqual(match.deletion_range.end, 23)
+
   def test_no_deletion_range(self):
     text = "apples-oranges bananas"
     match = make_text_match(0, 6)
@@ -432,8 +440,9 @@ class MatchTokenTestCase(unittest.TestCase):
 
   def test_first_token_backward(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.TOKEN_COUNT, nth_match=1)
-    self.assertEqual(match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock),
-                     make_text_match(191, 196))
+    self.assertEqual(
+        match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock).text_range,
+        make_text_match(191, 196).text_range)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), "match")
 
   def test_second_token_backward(self):

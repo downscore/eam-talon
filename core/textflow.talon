@@ -88,6 +88,12 @@ singleize <user.textflow_word>:
 singleize <user.textflow_compound_target>:
   user.textflow_surround_text(textflow_compound_target, "'")
 
+# Add a comma after a word.
+dripize <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "", ",")
+dripize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "", ",")
+
 # Add markdown formatting.
 boldize <user.textflow_word>:
   user.textflow_surround_text(textflow_word, "**")

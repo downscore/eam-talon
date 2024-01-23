@@ -515,6 +515,30 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_possessive)
     _run_command(command)
 
+  def textflow_make_plural(target_from: tf.CompoundTarget):
+    """Converts a word to end in "s". Uses existing trailing 's' if present. e.g. "dog" -> "dogs", "it" -> "it's"."""
+
+    def _make_plural(s: str) -> str:
+      if s.endswith("s"):
+        return s
+      return s + "s"
+
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_plural)
+    _run_command(command)
+
+  def textflow_make_singular(target_from: tf.CompoundTarget):
+    """Converts a word to not end in "s" or "'s". e.g. "dogs" -> "dog", "it's" -> "it"."""
+
+    def _make_singular(s: str) -> str:
+      if s.endswith("'s"):
+        return s[:-2]
+      if s.endswith("s"):
+        return s[:-1]
+      return s
+
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_singular)
+    _run_command(command)
+
   def textflow_potato_get_text_before_cursor():
     """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text
     selection behavior."""

@@ -61,7 +61,19 @@ numberize <user.number_list_of_words>:
   user.textflow_words_to_digits(number_list_of_words)
 
 # Make a word possessive ("dog" -> "dog's", "its" -> "it's").
-possessive <user.textflow_word>:
+possessivize <user.textflow_word>:
   user.textflow_make_possessive(textflow_word)
-possessive <user.textflow_compound_target>:
+possessivize <user.textflow_compound_target>:
   user.textflow_make_possessive(textflow_compound_target)
+
+# Make a word plural ("dog" -> "dogs", "it" -> "its").
+pluralize <user.textflow_word>:
+  user.textflow_make_plural(textflow_word)
+pluralize <user.textflow_compound_target>:
+  user.textflow_make_plural(textflow_compound_target)
+
+# Make a word singular ("dogs" -> "dog", "it's" -> "it").
+singularize <user.textflow_word>:
+  user.textflow_make_singular(textflow_word)
+singularize <user.textflow_compound_target>:
+  user.textflow_make_singular(textflow_compound_target)

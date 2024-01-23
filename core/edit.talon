@@ -33,6 +33,7 @@ buried:
 diamond:
   insert("<>")
   key(left)
+# "Latex" is commonly misheard as "playtex" in dictation mode.
 (latex|playtex):
   insert("$$")
   key(left)

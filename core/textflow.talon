@@ -77,3 +77,17 @@ singularize <user.textflow_word>:
   user.textflow_make_singular(textflow_word)
 singularize <user.textflow_compound_target>:
   user.textflow_make_singular(textflow_compound_target)
+
+# Add markdown formatting.
+boldize <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "**")
+boldize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "**")
+italicize <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "*")
+italicize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "*")
+strike through <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "~~")
+strike through <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "~~")

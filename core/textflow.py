@@ -539,6 +539,13 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_singular)
     _run_command(command)
 
+  def textflow_surround_text(target_from: tf.CompoundTarget, before: str, after: Optional[str] = None):
+    """Adds strings around a matched target. If `after` is None, it will be set to `before`."""
+    if after is None:
+      after = before
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: f"{before}{s}{after}")
+    _run_command(command)
+
   def textflow_potato_get_text_before_cursor():
     """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text
     selection behavior."""

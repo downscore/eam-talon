@@ -476,7 +476,7 @@ class ExtensionActions:
 
   def style_italic():
     """"Make text italic."""
-    actions.user.surround_selected_text("_", "_")
+    actions.user.surround_selected_text("*", "*")
 
   def style_underline():
     """"Make text underlined."""

@@ -55,3 +55,7 @@ swap [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
   user.textflow_swap_exact_words("a", "the", ordinals_small or 1, textflow_search_direction or "")
 swap [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
   user.textflow_swap_exact_words("the", "a", ordinals_small or 1, textflow_search_direction or "")
+
+# Convert a number written as words to digits ("one thousand and twenty five" -> "1025").
+numberize <user.number_list_of_words>:
+  user.textflow_words_to_digits(number_list_of_words)

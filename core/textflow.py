@@ -7,7 +7,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from talon import Context, Module, actions, grammar, types, ui
-from .lib import textflow, textflow_potato
+from .lib import number_util, textflow, textflow_potato
 from .lib import textflow_types as tf
 
 mod = Module()
@@ -496,6 +496,21 @@ class Actions:
         tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=from_word, nth_match=nth_match),
                         search_direction_enum))
     command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=to_word)
+    _run_command(command)
+
+  def textflow_words_to_digits(number_words: list[str]):
+    """Find and convert a number written as words into digits. e.g. "one thousand and twenty five" -> "1025"."""
+    if len(number_words) == 0:
+      return
+    number_string = number_util.parse_number(number_words)
+    # If there is only one word, use an exact match. e.g. for "ten", we don't want to convert "tent" to "10".
+    if len(number_words) == 1:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=number_words[0])))
+    else:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=" ".join(number_words))))
+    command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text=number_string)
     _run_command(command)
 
   def textflow_potato_get_text_before_cursor():

@@ -32,9 +32,9 @@ pour <user.textflow_simple_target>:
   user.textflow_new_line_below(textflow_simple_target)
 
 # Replace a target with prose (includes punctuation).
-replace <user.textflow_compound_target> with <user.prose>$:
+swap <user.textflow_compound_target> with <user.prose>$:
   user.textflow_replace(textflow_compound_target, prose)
-replace <user.textflow_compound_target> with <user.prose> anchor:
+swap <user.textflow_compound_target> with <user.prose> anchor:
   user.textflow_replace(textflow_compound_target, prose)
 
 # Single word replacement.
@@ -77,6 +77,16 @@ singularize <user.textflow_word>:
   user.textflow_make_singular(textflow_word)
 singularize <user.textflow_compound_target>:
   user.textflow_make_singular(textflow_compound_target)
+
+# Surround a word in quotes.
+doubleize <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "\"")
+doubleize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "\"")
+singleize <user.textflow_word>:
+  user.textflow_surround_text(textflow_word, "'")
+singleize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "'")
 
 # Add markdown formatting.
 boldize <user.textflow_word>:

@@ -5,7 +5,7 @@
 # mypy: ignore-errors
 
 import re
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, Union
 from talon import Context, Module, actions, canvas, screen, ui
 from talon.experimental import ocr
 from talon.types import Rect
@@ -199,8 +199,10 @@ class Actions:
     # Display matches for moving.
     actions.user.mouse_ocr_ui_show()
 
-  def mouse_ocr_ui_activate_label(label: str):
+  def mouse_ocr_ui_activate_label(label: Union[str, int]):
     """Activates (moves the mouse to or clicks on) the given label."""
+    label = str(label)
+
     # Zip labels to matches and create a dictionary.
     rects_by_label = dict(zip(_LABELS, _target_rects_from_last_search))
 

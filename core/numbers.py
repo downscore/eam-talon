@@ -41,23 +41,29 @@ def _get_selected_number() -> text_util.StrippedString:
 
 
 @mod.capture(rule=f"{_ALT_FIRST_NUMBER_WORDS} {_ALT_NUMBER_WORDS}* (and {_ALT_NUMBER_WORDS}+)*")
-def number_string(m) -> str:
-  """Parses a number phrase, returning that number as a string."""
-  return number_util.parse_number(list(m))
+def number_list_of_words(m) -> list[str]:
+  """Captures a number as a list of words. e.g. ["one", "thousand", "and", "twenty", "five"]."""
+  return list(m)
 
 
-@mod.capture(rule="<user.number_string>")
+@mod.capture(rule=f"<user.number_list_of_words>")
+def number_string_of_digits(m) -> str:
+  """Parses a number phrase, returning that number as a string of digits. e.g. "1025"."""
+  return number_util.parse_number(m.number_list_of_words)
+
+
+@mod.capture(rule="<user.number_string_of_digits>")
 def number(m) -> int:
   """Parses a number phrase, returning it as an integer."""
-  return int(m.number_string)
+  return int(m.number_string_of_digits)
 
 
-@mod.capture(rule="(numb|num) <user.number_string> [(punch|point) <user.number_string>]")
-def dictate_number(m) -> int:
+@mod.capture(rule="(numb|num) <user.number_string_of_digits> [(punch|point) <user.number_string_of_digits>]")
+def dictate_number(m) -> str:
   """A number prefixed with a dictation command. Includes an optional decimal point"""
-  if len(m.number_string_list) > 1:
-    return m.number_string_list[0] + "." + m.number_string_list[1]
-  return m.number_string_list[0]
+  if len(m.number_string_of_digits_list) > 1:
+    return m.number_string_of_digits_list[0] + "." + m.number_string_of_digits_list[1]
+  return m.number_string_of_digits_list[0]
 
 
 @mod.capture(rule=f"({_ALT_DIGITS} | {_ALT_TEENS} | {_ALT_TENS} [{_ALT_DIGITS}])")

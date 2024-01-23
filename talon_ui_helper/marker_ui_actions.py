@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from typing import List
+from typing import List, Union
 
 from talon import Module, Context, actions
 from talon.types import Rect as TalonRect
@@ -59,11 +59,12 @@ class MarkerUiActions:
     marker_ui = None
     ctx.tags = []
 
-  def marker_ui_mouse_move(label: str):
+  def marker_ui_mouse_move(label: Union[str, int]):
     """Moves the mouse cursor to the label corresponding to the given label."""
     if marker_ui is None:
       return
 
+    label = str(label)
     rect = marker_ui.find_rect(label)
 
     if rect is None:

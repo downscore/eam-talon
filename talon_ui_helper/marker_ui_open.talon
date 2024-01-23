@@ -10,8 +10,8 @@ scrape:
     mouse_click(0)
     user.marker_ui_hide()
 
-<user.number_string>:
-    user.marker_ui_mouse_move(number_string)
+<user.number>:
+    user.marker_ui_mouse_move(number)
     mouse_click(0)
     user.marker_ui_hide()
 

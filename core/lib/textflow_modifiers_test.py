@@ -229,3 +229,145 @@ class TestStringModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.STRING, None)
     with self.assertRaises(ValueError):
       apply_modifier(text, input_match, modifier)
+
+
+class TestCharsModifier(unittest.TestCase):
+  """Tests for applying character modifiers."""
+
+  def test_single_char(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(1, 2))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "e")
+
+  def test_first_char(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(0, 1))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "t")
+
+  def test_multiple_chars(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(1, 3))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "es")
+
+  def test_full_word(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(0, 4))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+  def test_longer_than_word(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(0, 5))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+  def test_beyond_word(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.CHARS, TextRange(50, 55))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "")
+
+  def test_missing_range(self):
+    with self.assertRaises(ValueError):
+      modifier = Modifier(ModifierType.CHARS, None)
+      apply_modifier("test", TextMatch(TextRange(1, 2)), modifier)
+
+
+class TestFragmentsModifier(unittest.TestCase):
+  """Tests for applying fragment modifiers."""
+
+  def test_single_word(self):
+    text = "This_is_the_test_string."
+    input_match = TextMatch(TextRange(0, len(text)))
+    modifier = Modifier(ModifierType.FRAGMENTS, TextRange(1, 2))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "is")
+
+  def test_single_word_pascal(self):
+    text = "ThisIsTheTestString."
+    input_match = TextMatch(TextRange(0, len(text)))
+    modifier = Modifier(ModifierType.FRAGMENTS, TextRange(1, 2))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Is")
+
+  def test_multiple_words(self):
+    text = "This_is_the_test_string."
+    input_match = TextMatch(TextRange(0, len(text)))
+    modifier = Modifier(ModifierType.FRAGMENTS, TextRange(1, 4))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "is_the_test")
+
+  def test_multiple_words_pascal(self):
+    text = "ThisIsTheTestString."
+    input_match = TextMatch(TextRange(0, len(text)))
+    modifier = Modifier(ModifierType.FRAGMENTS, TextRange(1, 4))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "IsTheTest")
+
+  def test_beyond_token(self):
+    text = "This_is_the_test_string."
+    input_match = TextMatch(TextRange(0, len(text)))
+    modifier = Modifier(ModifierType.FRAGMENTS, TextRange(10, 12))
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range, TextRange(len(text), len(text)))
+
+  def test_missing_range(self):
+    with self.assertRaises(ValueError):
+      modifier = Modifier(ModifierType.FRAGMENTS, None)
+      apply_modifier("test", TextMatch(TextRange(1, 2)), modifier)
+
+
+class TestLineHeadModifier(unittest.TestCase):
+  """Tests for applying line head modifiers."""
+
+  def test_first_line(self):
+    # Second line starts at char 17.
+    # Third line starts at char 34.
+    text = "Test first line.\nThe second line.\nFinal text."
+    input_match = TextMatch(TextRange(5, 10))
+    modifier = Modifier(ModifierType.LINE_HEAD)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Test first")
+
+  def test_middle_line(self):
+    text = "Test first line.\nThe second line.\nFinal text."
+    input_match = TextMatch(TextRange(22, 27))
+    modifier = Modifier(ModifierType.LINE_HEAD)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "The second")
+
+
+class TestLineTailModifier(unittest.TestCase):
+  """Tests for applying line tail modifiers."""
+
+  def test_first_line(self):
+    # Second line starts at char 17.
+    # Third line starts at char 34.
+    text = "Test first line.\nThe second line.\nFinal text."
+    input_match = TextMatch(TextRange(5, 10))
+    modifier = Modifier(ModifierType.LINE_TAIL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "first line.")
+
+  def test_middle_line(self):
+    text = "Test first line.\nThe second line.\nFinal text."
+    input_match = TextMatch(TextRange(21, 27))
+    modifier = Modifier(ModifierType.LINE_TAIL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "second line.")
+
+  def test_last_line(self):
+    text = "Test first line.\nThe second line.\nFinal text."
+    input_match = TextMatch(TextRange(37, 38))
+    modifier = Modifier(ModifierType.LINE_TAIL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "al text.")

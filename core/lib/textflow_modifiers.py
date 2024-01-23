@@ -4,6 +4,7 @@ import functools
 import re
 from .textflow_match import get_nth_regex_match
 from .textflow_types import Modifier, ModifierType, SearchDirection, TextMatch, TextRange
+from .format_util import get_fragment_ranges
 
 
 def _make_match(start: int, end: int) -> TextMatch:
@@ -16,41 +17,30 @@ def _apply_chars_modifier(text: str, input_match: TextMatch, modifier: Modifier)
   del text  # Unused.
   if modifier.modifier_range is None:
     raise ValueError("No modifier range provided")
-  if (modifier.modifier_range.start < 0 or modifier.modifier_range.end < modifier.modifier_range.start):
-    raise ValueError(f"Invalid modifier range: {modifier.modifier_range}")
-  # Clamp end of the modifier range.
+  # Clamp the modifier range to the end of the input.
+  start_index = min(input_match.text_range.end, input_match.text_range.start + modifier.modifier_range.start)
   end_index = min(input_match.text_range.end, input_match.text_range.start + modifier.modifier_range.end)
-  return _make_match(input_match.text_range.start + modifier.modifier_range.start, end_index)
+  return _make_match(start_index, end_index)
 
 
-def _apply_words_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes words from the matched token."""
+def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes fragments from the matched token."""
   if modifier.modifier_range is None:
     raise ValueError("No modifier range provided")
-  if (modifier.modifier_range.start < 0 or modifier.modifier_range.end < modifier.modifier_range.start):
-    raise ValueError(f"Invalid modifier range: {modifier.modifier_range}")
 
-  # Split matched token into words.
-  # TODO: Split camel/pascal/snake/kebab case words and track word positions.
-  token = text[input_match.text_range.start:input_match.text_range.end]
-  words = re.split(r" |\_|\-", token)
+  # Divide matched text into fragments.
+  fragment_ranges = get_fragment_ranges(text)
 
-  # Return empty start of range if there are no words.
-  if len(words) == 0:
-    return _make_match(input_match.text_range.start, input_match.text_range.start)
+  # Clamp range to the number of fragments.
+  start_fragment = min(len(fragment_ranges), modifier.modifier_range.start)
+  end_fragment = min(len(fragment_ranges), modifier.modifier_range.end)
+  assert end_fragment >= start_fragment
 
-  # Clamp word range to last word.
-  start_word = min(len(words) - 1, modifier.modifier_range.start)
-  end_word = min(len(words), modifier.modifier_range.end)
-  assert end_word >= start_word
+  # Return empty end of range if start fragment is beyond last fragment.
+  if start_fragment >= len(fragment_ranges):
+    return _make_match(input_match.text_range.end, input_match.text_range.end)
 
-  # Sum word lengths, then add number of spaces/separators between words.
-  start_index = functools.reduce(lambda index, word: index + len(word), words[0:start_word], 0)
-  start_index += start_word
-  end_index = functools.reduce(lambda index, word: index + len(word), words[start_word:end_word], start_index)
-  end_index += end_word - start_word
-
-  return _make_match(start_index, end_index)
+  return _make_match(fragment_ranges[start_fragment][0], fragment_ranges[end_fragment - 1][1])
 
 
 def _apply_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -78,7 +68,7 @@ def _apply_line_tail_modifier(text: str, input_match: TextMatch, modifier: Modif
   """Takes the end of the line containing the token."""
   del modifier  # Unused.
   end_index = input_match.text_range.start  # Start of token to ensure we always take a single line.
-  while end_index < len(text) - 1 and text[end_index + 1] != "\n":
+  while end_index < len(text) and text[end_index] != "\n":
     end_index += 1
   return _make_match(input_match.text_range.start, end_index)
 
@@ -183,7 +173,7 @@ def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier
 
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
-    ModifierType.FRAGMENTS: _apply_words_modifier,
+    ModifierType.FRAGMENTS: _apply_fragments_modifier,
     ModifierType.LINE: _apply_line_modifier,
     ModifierType.LINE_HEAD: _apply_line_head_modifier,
     ModifierType.LINE_TAIL: _apply_line_tail_modifier,

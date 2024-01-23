@@ -487,17 +487,6 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: s.replace(" ", "-"))
     _run_command(command)
 
-  def textflow_swap_exact_words(from_word: str, to_word: str, nth_match: int = 1, search_direction: str = ""):
-    """Swaps one word for another, using exact match."""
-    search_direction_enum = None
-    if search_direction is not None and search_direction != "":
-      search_direction_enum = _SEARCH_DIRECTION_BY_SPOKEN[search_direction]
-    target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=from_word, nth_match=nth_match),
-                        search_direction_enum))
-    command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=to_word)
-    _run_command(command)
-
   def textflow_words_to_digits(number_words: list[str]):
     """Find and convert a number written as words into digits. e.g. "one thousand and twenty five" -> "1025"."""
     if len(number_words) == 0:
@@ -511,6 +500,19 @@ class Actions:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=" ".join(number_words))))
     command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text=number_string)
+    _run_command(command)
+
+  def textflow_make_possessive(target_from: tf.CompoundTarget):
+    """Converts a word to end in "'s". Uses existing trailing 's' if present. e.g. "dog" -> "dog's", "its" -> "it's"."""
+
+    def _make_possessive(s: str) -> str:
+      if s.endswith("'s"):
+        return s
+      if s.endswith("s"):
+        return s[:-1] + "'" + s[-1:]
+      return s + "'s"
+
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_possessive)
     _run_command(command)
 
   def textflow_potato_get_text_before_cursor():

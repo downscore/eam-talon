@@ -1,24 +1,24 @@
-# Single compound target command.
+# Core commands - Single compound target.
 <user.textflow_command_type> <user.textflow_compound_target>:
   user.textflow_execute_command(textflow_command_type, textflow_compound_target)
 
-# Command on the current block.
+# Core commands - Current block as target.
 <user.textflow_command_type> block:
   user.textflow_execute_command_current_block(textflow_command_type)
 
-# Command on a line.
+# Core commands - Target modified to a full line. Tries to match beginning of line first.
 <user.textflow_command_type> row <user.textflow_simple_target>:
   user.textflow_execute_line_command(textflow_command_type, textflow_simple_target)
 
-# Command starting from the cursor.
+# Core commands - Compound target starting from the cursor position.
 <user.textflow_command_type> <user.textflow_target_combo_type> <user.textflow_simple_target>:
   user.textflow_execute_command_from_cursor(textflow_command_type, textflow_target_combo_type, textflow_simple_target)
 
-# Commands that act on a single word target.
+# Core commands - Single word target.
 <user.textflow_command_type> <user.textflow_word>:
   user.textflow_execute_command(textflow_command_type, textflow_word)
 
-# Commands that act on articles (a/the). e.g. "grab indefinite".
+# Core commands - Articles (a/the) as target. e.g. "grab indefinite".
 # This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in it.
 <user.textflow_command_type> <user.textflow_definite>:
   user.textflow_execute_command(textflow_command_type, textflow_definite)
@@ -41,6 +41,12 @@ replace <user.textflow_compound_target> with <user.prose> anchor:
 swap <user.textflow_word> with <user.word>:
   user.textflow_replace_word(textflow_word, word)
 
+# Swap articles (a <-> the).
+swap <user.textflow_definite>:
+  user.textflow_replace_word(textflow_definite, "a")
+swap <user.textflow_indefinite>:
+  user.textflow_replace_word(textflow_indefinite, "the")
+
 # Segmenting or joining words.
 # Note: Including a match ordinal and search direction here makes parsing very ambiguous.
 segment <user.word> <user.word>:
@@ -50,12 +56,12 @@ join up <user.word> <user.word>:
 hyphenate <user.word> <user.word>:
   user.textflow_hyphenate_words(word_1, word_2)
 
-# Swap articles (a <-> the).
-swap [<user.ordinals_small>] [{user.textflow_search_direction}] indefinite:
-  user.textflow_swap_exact_words("a", "the", ordinals_small or 1, textflow_search_direction or "")
-swap [<user.ordinals_small>] [{user.textflow_search_direction}] definite:
-  user.textflow_swap_exact_words("the", "a", ordinals_small or 1, textflow_search_direction or "")
-
 # Convert a number written as words to digits ("one thousand and twenty five" -> "1025").
 numberize <user.number_list_of_words>:
   user.textflow_words_to_digits(number_list_of_words)
+
+# Make a word possessive ("dog" -> "dog's", "its" -> "it's").
+possessive <user.textflow_word>:
+  user.textflow_make_possessive(textflow_word)
+possessive <user.textflow_compound_target>:
+  user.textflow_make_possessive(textflow_compound_target)

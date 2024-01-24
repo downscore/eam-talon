@@ -24,6 +24,9 @@ mouser <user.prose>: user.mouse_ocr_move(prose)
 toucher <user.prose>: user.mouse_ocr_click(prose)
 right toucher <user.prose>: user.mouse_ocr_click(prose, 1)
 
+# Use OCR to copy text nearest to the mouse.
+copy mouse: user.mouse_ocr_copy_nearby_line()
+
 # Interacting with labeled coordinates.
 # Saving a new labeled mouse position to file cannot be chained with other commands.
 ^label save <user.text>$: user.mouse_save_coords(text)

@@ -45,7 +45,6 @@ dub pointer: "=>"
 
 # New lines
 slap: edit.line_insert_down()
-pour line: edit.line_insert_down()
 drink line: edit.line_insert_up()
 
 # Navigation

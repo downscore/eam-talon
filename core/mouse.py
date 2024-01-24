@@ -234,6 +234,29 @@ class Actions:
     _ocr_ui.show()
     ctx.tags = ["user.mouse_ocr_ui_open"]
 
+  def mouse_ocr_copy_nearby_line():
+    """Copies the line of text nearest to the mouse."""
+    ocr_results = _ocr_active_context()
+    x: float = actions.mouse_x()
+    y: float = actions.mouse_y()
+
+    # Find the closest OCR result to the mouse coordinates.
+    closest_result = None
+    closest_distance_squared = None
+    for result in ocr_results:
+      distance_squared = (result.rect.x + result.rect.width / 2 - x)**2 + (result.rect.y + result.rect.height / 2 -
+                                                                           y)**2
+      if closest_distance_squared is None or distance_squared < closest_distance_squared:
+        closest_result = result
+        closest_distance_squared = distance_squared
+    if closest_result is None:
+      actions.app.notify("No nearby text found")
+      return
+
+    # Copy the line of text.
+    actions.user.clipboard_history_set_text(closest_result.text)
+    actions.app.notify(f"Copied: {closest_result.text}")
+
   def mouse_save_coords(label: str):
     """Saves the current mouse coordinates to file."""
     x: float = actions.mouse_x()

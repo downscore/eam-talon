@@ -42,6 +42,7 @@ test run all: user.vscode("testing.runAll")
 test run file: user.vscode("testing.runCurrentFile")
 test run blinker: user.vscode("testing.runAtCursor")
 python run: user.vscode("python.execInTerminal")
+python debug: user.vscode("python.debugInTerminal")
 
 # Active editor
 editor: user.vscode("workbench.action.focusActiveEditorGroup")

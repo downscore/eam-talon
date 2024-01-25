@@ -7,6 +7,9 @@
   insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")
+{user.formatter}+ <user.formatter_text> assign:
+  insert(user.format_multiple(formatter_text, formatter_list))
+  insert(" = ")
 reformat {user.formatter}+: user.format_selection(formatter_list)
 
 # "phrase" is used to insert the all of the following text verbatim.

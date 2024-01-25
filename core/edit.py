@@ -375,7 +375,7 @@ class ExtensionActions:
     """Jumps to the last occurrence of the specified text."""
     actions.key("cmd-f")
     actions.insert(text)
-    actions.edit.find_previous()
+    actions.key("shift-enter")
     actions.key("escape")
 
   def jump_to_next_occurrence(text: str):

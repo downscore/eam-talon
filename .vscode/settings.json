@@ -1,9 +1,6 @@
 {
   "outline.showVariables": false,
   "outline.showConstants": false,
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-  "python.linting.mypyEnabled": true,
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": [
     // Enabling coverage here causes problems with discovery (empty coverage report) and debugging (no breakpoints).

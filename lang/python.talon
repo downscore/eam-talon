@@ -79,6 +79,7 @@ make enumerate:
   key(left)
 make delete: insert("del ")
 make none: insert("None")
+make not: insert("not ")
 
 # Imports
 import: insert("import ")

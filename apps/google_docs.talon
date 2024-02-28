@@ -1,7 +1,6 @@
 app: google_docs
 -
 
-link insert: key(cmd-k)
 doc history: key(cmd-alt-shift-h)
 
 # Doc mode.

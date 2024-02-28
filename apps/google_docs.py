@@ -56,6 +56,9 @@ class ExtensionActions:
       actions.edit.left()
     return result
 
+  def insert_link():
+    actions.key("cmd-k")
+
   def style_title():
     actions.key("ctrl-alt-o")
     actions.sleep("50ms")

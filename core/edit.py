@@ -98,7 +98,7 @@ class EditActions:
   def file_start():
     actions.key("cmd-up")
 
-  def find(text: str = None):
+  def find(text: str = ""):
     actions.key("cmd-f")
 
   def find_next():
@@ -185,7 +185,7 @@ class EditActions:
   def select_all():
     actions.key("cmd-a")
 
-  def select_line(n: int = None):
+  def select_line(n: int = 0):
     actions.key("cmd-left cmd-shift-right shift-right")
 
   def select_none():
@@ -361,6 +361,11 @@ class ExtensionActions:
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[0]}")
     actions.key(f"shift-right:{len(text) - fragment[0]}")
+
+  def insert_link():
+    """Insert a link or make the selected text into a link."""
+    actions.user.surround_selected_text("[", "]()")
+    actions.key("left:1")
 
   def insert_via_clipboard(text: str):
     """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII

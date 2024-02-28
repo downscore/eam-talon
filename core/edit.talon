@@ -216,6 +216,9 @@ inside triangles:
 inside dollars:
   user.surround_selected_text("$", "$")
 
+# Insert a link or make the selected text into a link.
+link insert: user.insert_link()
+
 # Text styles
 style title: user.style_title()
 style subtitle: user.style_subtitle()

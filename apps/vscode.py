@@ -103,10 +103,10 @@ class EditActions:
     actions.user.vscode("workbench.action.files.saveAll")
 
   # Note: Prevents using select line command outside of editor (e.g. in Search panel).
-  # def select_line(n: int = None):
+  # def select_line(n: int = 0):
   #   actions.user.vscode("expandLineSelection")
 
-  def select_line(n: int = None):
+  def select_line(n: int = 0):
     # Ensure leading white spaces included.
     actions.key("cmd-right cmd-left cmd-left cmd-shift-right shift-right")
 

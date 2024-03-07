@@ -27,7 +27,7 @@ app: safari
 class EditActions:
   """Edit action overwrites."""
 
-  def find(text: str = None):
+  def find(text: str = ""):
     actions.key("cmd-f")
     # Add a brief pause so we don't swallow subsequent keystrokes before the find dialog opens.
     actions.sleep("100ms")
@@ -62,19 +62,13 @@ class BrowserActions:
     address_field.perform("AXConfirm")
 
   def address():
-    try:
-      toolbar = ui.active_window().children.find_one(AXRole="AXToolbar", max_depth=1)
-      address_field = toolbar.children.find_one(
-          AXRole="AXTextField",
-          AXIdentifier="WEB_BROWSER_ADDRESS_AND_SEARCH_FIELD",
-      )
-      return address_field.AXValue
-    except ui.UIErr:
-      print("Error getting Safari address (UIErr). Returning empty string.")
-      return ""
-    except AttributeError:
-      print("Error getting Safari address (AttributeError). Returning empty string.")
-      return ""
+    script = """
+      tell application "Safari"
+          set currentURL to URL of front document
+          return currentURL
+      end tell
+    """
+    return applescript.run(script)
 
 
 @ctx.action_class("user")

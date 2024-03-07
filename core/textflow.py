@@ -236,10 +236,6 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
                                     action.text_range.end + context.text_offset)
 
       context.editor_element.AXSelectedTextRange = select_span
-    elif action.action_type == tf.EditorActionType.GO_LINE_START:
-      actions.edit.line_start()
-    elif action.action_type == tf.EditorActionType.GO_LINE_END:
-      actions.edit.line_end()
 
     # Sleep to let the UI catch up to the commands.
     actions.sleep("50ms")

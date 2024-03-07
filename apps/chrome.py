@@ -63,7 +63,7 @@ class BrowserActions:
 class EditActions:
   """Edit action overwrites."""
 
-  def find(text: str = None):
+  def find(text: str = ""):
     actions.key("cmd-f")
     # Add a brief pause so we don't swallow subsequent keystrokes before the find dialog opens.
     actions.sleep("100ms")

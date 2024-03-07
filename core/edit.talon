@@ -10,6 +10,8 @@ join lines:
   edit.extend_line_start()
   key(backspace:2)
   key(space)
+# Double tap escape
+hatch: key(escape:2)
 
 # Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
 chooser <user.number_small>: key("down:{number_small-1} enter")
@@ -76,7 +78,7 @@ take down: edit.extend_line_down()
 take word: edit.select_word()
 lefter: edit.extend_word_left()
 writer: edit.extend_word_right()
-take all: edit.select_all()
+select all: edit.select_all()
 select head: edit.extend_line_start()
 select tail: edit.extend_line_end()
 select top: edit.extend_file_start()

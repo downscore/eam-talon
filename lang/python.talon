@@ -124,6 +124,8 @@ make colon: insert(" : ")
 make increment: insert("++")
 make decrement: insert("--")
 make in: insert(" in ")
+make inline for: insert(" for ")
+make inline if: insert(" if ")
 
 tip any: insert("Any")
 tip string: insert("str")

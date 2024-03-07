@@ -25,7 +25,7 @@ _LETTERS = {
     "made": "m",
     "near": "n",
     "odd": "o",
-    "pit": "p",
+    "prime": "p",
     "quench": "q",
     "red": "r",
     "sun": "s",

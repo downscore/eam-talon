@@ -161,6 +161,10 @@ cut tail:
 pasty: edit.paste()
 paste match: edit.paste_match_style()
 paste history <user.number_small>: user.clipboard_history_paste(number_small)
+paste line:
+  edit.line_start()
+  edit.line_start()
+  edit.paste()
 
 # Undo and redo
 nope: edit.undo()

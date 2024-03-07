@@ -28,4 +28,4 @@ dedent line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
   edit.indent_less()
   edit.right()
-bring line <user.number>: user.bring_line_by_number(number)
+bring line <user.number> [past <user.number>]: user.bring_line_range(number_1, number_2 or 0)

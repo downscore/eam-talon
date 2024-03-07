@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import uuid
 from talon import Context, Module, actions
 
 mod = Module()
@@ -39,23 +40,31 @@ class Actions:
       for _ in range(to_index - from_index + 1):
         actions.edit.extend_down()
 
-  def bring_line_by_number(n: int):
+  def bring_line_range(from_index: int, to_index: int = 0):
     """Copies a given line to the cursor location."""
     # Insert some unique placeholder text so we can find the insertion position later.
     # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
-    placeholder = f"!!!BringLine{n}!!!"
+    # Reusing the same placeholder can result in the cursor not jumping to it, so we always create a unique one.
+    placeholder_uuid = uuid.uuid4()
+    placeholder = f"!!!BringLine{str(placeholder_uuid)[:5]}!!!"
     actions.user.insert_via_clipboard(placeholder)
 
     # In VS Code, jumps to beginning of line, before indentation.
-    actions.edit.jump_line(n)
+    actions.edit.jump_line(from_index)
+    if to_index <= from_index:
+      # Get single line without trailing newline.
+      actions.edit.extend_line_end()
+    else:
+      for _ in range(to_index - from_index + 1):
+        actions.edit.extend_down()
+      # Deselect the last line's newline.
+      actions.edit.extend_left()
     actions.sleep("100ms")
 
-    # Get line without trailing newline.
-    actions.edit.extend_line_end()
-    line = actions.edit.selected_text()
+    lines = actions.edit.selected_text()
 
     # Go back to original position and insert the line.
     actions.edit.find()
     actions.user.insert_via_clipboard(placeholder)
     actions.key("escape")
-    actions.user.insert_via_clipboard(line)
+    actions.user.insert_via_clipboard(lines)

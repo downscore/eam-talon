@@ -28,9 +28,10 @@ def _perform_command_clear_move_cursor(text: str,
                                        insert_text: str,
                                        lambda_func: Optional[Callable[[str], str]],
                                        utility_functions: UtilityFunctions,
-                                       use_deletion_range: bool = True) -> list[EditorAction]:
-  """Clear the matched text and move the cursor where it was."""
-  del text, selection_range, match_to, insert_text, utility_functions
+                                       use_deletion_range: bool = False) -> list[EditorAction]:
+  """Clear the matched text and move the cursor where it was. Note: Unlike the clear command that it does not move the
+  cursor, this function does not use the deletion range by default."""
+  del text, selection_range, match_to, insert_text, utility_functions, lambda_func
   deletion_range = (match_from.deletion_range
                     if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
   return [
@@ -48,7 +49,7 @@ def _perform_command_clear_no_move(text: str,
                                    utility_functions: UtilityFunctions,
                                    use_deletion_range: bool = True) -> list[EditorAction]:
   """Clear the matched text but preserve cursor position."""
-  del text, match_to, insert_text, utility_functions
+  del text, match_to, insert_text, utility_functions, lambda_func
   deletion_range = (match_from.deletion_range
                     if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
 
@@ -76,7 +77,7 @@ def _perform_command_move_cursor_before(text: str, selection_range: TextRange, m
                                         lambda_func: Optional[Callable[[str], str]],
                                         utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Move cursor before the matched range."""
-  del text, selection_range, match_to, insert_text, utility_functions
+  del text, selection_range, match_to, insert_text, utility_functions, lambda_func
   return [
       EditorAction(EditorActionType.SET_SELECTION_RANGE,
                    TextRange(match_from.text_range.start, match_from.text_range.start))
@@ -88,7 +89,7 @@ def _perform_command_move_cursor_after(text: str, selection_range: TextRange, ma
                                        lambda_func: Optional[Callable[[str], str]],
                                        utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Move cursor after the matched range."""
-  del text, selection_range, match_to, insert_text, utility_functions
+  del text, selection_range, match_to, insert_text, utility_functions, lambda_func
   return [
       EditorAction(EditorActionType.SET_SELECTION_RANGE, TextRange(match_from.text_range.end,
                                                                    match_from.text_range.end))
@@ -112,7 +113,7 @@ def _perform_command_copy_to_clipboard(text: str, selection_range: TextRange, ma
                                        lambda_func: Optional[Callable[[str], str]],
                                        utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Copies the matched text to the clipboard without moving the cursor."""
-  del selection_range, match_to, insert_text, utility_functions
+  del selection_range, match_to, insert_text, utility_functions, lambda_func
   return [EditorAction(EditorActionType.SET_CLIPBOARD_WITH_HISTORY, text=match_from.text_range.extract(text))]
 
 
@@ -120,7 +121,7 @@ def _perform_command_bring(text: str, selection_range: TextRange, match_from: Te
                            insert_text: str, lambda_func: Optional[Callable[[str], str]],
                            utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Copies the matched text to the cursor position or the "to" match."""
-  del selection_range, insert_text, utility_functions
+  del selection_range, insert_text, utility_functions, lambda_func
   result: list[EditorAction] = []
   if match_to is not None:
     result.append(
@@ -187,7 +188,7 @@ def _perform_command_replace(text: str, selection_range: TextRange, match_from: 
                                                                                                              str]],
                              utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Replace the matched target with a given string."""
-  del text, match_to, utility_functions
+  del text, match_to, utility_functions, lambda_func
 
   # Compute selected range after replacement.
   range_after = selection_range
@@ -216,6 +217,7 @@ def _perform_command_replace_with_lambda(text: str, selection_range: TextRange, 
                                          lambda_func: Optional[Callable[[str], str]],
                                          utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Replace the matched string with lambda output."""
+  del insert_text
   if lambda_func is None:
     raise ValueError("Lambda function required for replace with lambda command")
   processed = lambda_func(match_from.text_range.extract(text))

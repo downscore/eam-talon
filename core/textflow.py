@@ -19,6 +19,7 @@ _COMMAND_TYPES_BY_SPOKEN = {
     "after": tf.CommandType.MOVE_CURSOR_AFTER,
     "bring": tf.CommandType.BRING,
     "junker": tf.CommandType.CLEAR_NO_MOVE,
+    "change": tf.CommandType.CLEAR_MOVE_CURSOR,
     "phony": tf.CommandType.NEXT_HOMOPHONE,
     "bigger": tf.CommandType.TITLE_CASE,
     "biggest": tf.CommandType.UPPERCASE,

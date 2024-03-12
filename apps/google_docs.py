@@ -59,6 +59,13 @@ class ExtensionActions:
   def insert_link():
     actions.key("cmd-k")
 
+  def insert_link_from_clipboard():
+    actions.key("cmd-k")
+    actions.sleep("100ms")
+    actions.edit.paste()
+    actions.sleep("100ms")
+    actions.key("enter")
+
   def style_title():
     actions.key("ctrl-alt-o")
     actions.sleep("50ms")

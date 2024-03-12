@@ -367,6 +367,12 @@ class ExtensionActions:
     actions.user.surround_selected_text("[", "]()")
     actions.key("left:1")
 
+  def insert_link_from_clipboard():
+    """Insert a link or make the selected text into a link using the URL in the clipboard."""
+    actions.user.surround_selected_text("[", "]()")
+    actions.key("left:1")
+    actions.edit.paste()
+
   def insert_via_clipboard(text: str):
     """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII
     character."""

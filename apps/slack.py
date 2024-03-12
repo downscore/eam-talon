@@ -38,6 +38,9 @@ class EditActions:
 class ExtensionActions:
   """Action overwrites."""
 
+  def insert_link():
+    actions.key("cmd-shift-u")
+
   def style_bold():
     actions.key("cmd-b")
 

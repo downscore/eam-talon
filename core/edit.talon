@@ -14,7 +14,7 @@ join lines:
 hatch: key(escape:2)
 
 # Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
-chooser <user.number_small>: key("down:{number_small-1} enter")
+pick <user.number_small>: key("down:{number_small-1} enter")
 
 # Symbol convenience commands
 args:

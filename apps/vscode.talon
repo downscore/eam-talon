@@ -15,6 +15,9 @@ comment line <user.number> [past <user.number>]:
 # Show autocomplete suggest dialogue.
 suggest: user.vscode("editor.action.triggerSuggest")
 
+# Accept suggestion.
+yes: key(tab)
+
 # Command palette
 please [<user.text>]:
   user.vscode("workbench.action.showCommands")

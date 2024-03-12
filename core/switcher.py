@@ -202,7 +202,7 @@ class Actions:
 
   def switcher_restore_window():
     """Restores the last saved window to focus."""
-    if _saved_window_id == None:
+    if _saved_window_id is None:
       raise ValueError("No window saved")
     _focus_window_by_id(_saved_window_id)
 

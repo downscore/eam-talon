@@ -1,6 +1,5 @@
 """Code for applying modifiers to matched text ranges."""
 
-import functools
 import re
 from .textflow_match import get_nth_regex_match
 from .textflow_types import Modifier, ModifierType, SearchDirection, TextMatch, TextRange

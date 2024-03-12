@@ -42,6 +42,9 @@ diamond:
 bracing:
   insert("{}")
   key(left)
+dunder:
+  insert("____")
+  key(left:2)
 pointer: "->"
 dub pointer: "=>"
 

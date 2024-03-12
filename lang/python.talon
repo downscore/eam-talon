@@ -3,6 +3,9 @@ tag: user.lang_python
 is none: insert(" is None")
 is not none: insert(" is not None")
 self taught: "self."
+arg self:
+  insert("(self)")
+  key(left)
 
 [make] dock string: insert("\"\"\"")
 make if:
@@ -32,7 +35,9 @@ make loop:
 make todo: insert("TODO: ")
 make return: insert("return ")
 make (null|none): insert("None")
-make class: insert("class ")
+make class:
+  insert("class :")
+  key(left)
 make break: insert("break")
 make continue: insert("continue")
 make pass: insert("pass")
@@ -47,7 +52,9 @@ make (len|size):
   insert("len()")
   key(left)
 make raise: insert("raise ")
-make with: insert("with ")
+make with:
+  insert("with :")
+  key(left)
 make value error:
   insert("raise ValueError(f\"\")")
   key(left:2)
@@ -99,15 +106,15 @@ import unit test: insert("import unittest\n")
 a sign: insert(" = ")
 make equal: insert(" == ")
 make not equal: insert(" != ")
-make minus assign: insert(" -= ")
+make minus equal: insert(" -= ")
 make minus: insert(" - ")
-make plus assign: insert(" += ")
+make plus equal: insert(" += ")
 make plus: insert(" + ")
-make multiply assign: insert(" *= ")
+make multiply equal: insert(" *= ")
 make multiply: insert(" * ")
-make divide assign: insert(" /= ")
+make divide equal: insert(" /= ")
 make divide: insert(" / ")
-make modulo assign: insert(" %= ")
+make modulo equal: insert(" %= ")
 make modulo: insert(" % ")
 make more equal: insert(" >= ")
 make more: insert(" > ")

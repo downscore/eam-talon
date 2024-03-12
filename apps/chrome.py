@@ -34,7 +34,7 @@ class AppActions:
 
   def tab_previous():
     actions.key("cmd-shift-a")
-    actions.sleep("100ms")
+    actions.sleep("250ms")
     actions.key("enter")
 
 

@@ -39,3 +39,6 @@ reformat clause: user.format_selection_sentence()
 
 word <user.word>: insert(user.word)
 ship word <user.word>: insert(user.format_title(user.word))
+
+# Repeat the last thing a formatter output.
+repeat {user.formatter}: insert(user.format_replay(formatter))

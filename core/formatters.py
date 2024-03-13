@@ -32,6 +32,11 @@ _FORMATTERS_BY_WORD = {
 mod.list("formatter", desc="List of all formatter words")
 ctx.lists["self.formatter"] = _FORMATTERS_BY_WORD.keys()
 
+# Last strings output from each formatter. Keyed by a single formatter enum value.
+# Strings sent to multiple formatters are stored under each individual formatter.
+# Not updated when a selection is reformatted.
+_LAST_OUTPUT_BY_FORMATTER = {}
+
 
 def _reformat_string(s: str, options: format_util.FormatOptions) -> str:
   """Reformat the given string with the given options, preserving padding."""
@@ -59,15 +64,20 @@ class Actions:
 
   def format_single(phrase: str, formatter_word: str) -> str:
     """Formats a phrase using the given formatter."""
-    formatter_enums =  [_FORMATTERS_BY_WORD[formatter_word]]
+    formatter_enums = [_FORMATTERS_BY_WORD[formatter_word]]
     options = format_util.get_format_options(formatter_enums)
-    return format_util.format_phrase(phrase, options)
+    result = format_util.format_phrase(phrase, options)
+    _LAST_OUTPUT_BY_FORMATTER[formatter_enums[0]] = result
+    return result
 
   def format_multiple(phrase: str, formatter_words: list[str]) -> str:
     """Formats a phrase using the given formatters."""
     formatter_enums = list(map(lambda f: _FORMATTERS_BY_WORD[f], formatter_words))
     options = format_util.get_format_options(formatter_enums)
-    return format_util.format_phrase(phrase, options)
+    result = format_util.format_phrase(phrase, options)
+    for formatter_enum in formatter_enums:
+      _LAST_OUTPUT_BY_FORMATTER[formatter_enum] = result
+    return result
 
   def format_selection(formatter_words: list[str]):
     """Formats the current selection in place using the given formatters."""
@@ -122,3 +132,11 @@ class Actions:
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.UPPERCASE
     return format_util.format_phrase(phrase, options)
+
+  def format_replay(formatter_word: str) -> str:
+    """Returns the last string output by the given formatter."""
+    formatter_enums = [_FORMATTERS_BY_WORD[formatter_word]]
+    if formatter_enums[0] not in _LAST_OUTPUT_BY_FORMATTER:
+      actions.app.notify(f"No output found. Formatter: {formatter_word}")
+      return ""
+    return _LAST_OUTPUT_BY_FORMATTER[formatter_enums[0]]

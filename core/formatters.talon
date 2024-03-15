@@ -23,10 +23,10 @@ say <user.prose> void:
 phrase <user.text>$: insert(text)
 reformat phrase: user.format_selection_phrase()
 
-title <user.prose>$: insert(user.format_title(prose))
-title <user.prose> anchor: insert(user.format_title(prose))
+title <user.prose>$: insert(user.format_title_with_history(prose))
+title <user.prose> anchor: insert(user.format_title_with_history(prose))
 title <user.prose> void:
-  insert(user.format_title(prose))
+  insert(user.format_title_with_history(prose))
   insert(" ")
 reformat title: user.format_selection_title()
 
@@ -42,3 +42,5 @@ ship word <user.word>: insert(user.format_title(user.word))
 
 # Repeat the last thing a formatter output.
 repeat {user.formatter}: insert(user.format_replay(formatter))
+repeat title: insert(user.format_replay_title())
+repeat clause: insert(user.format_replay_sentence())

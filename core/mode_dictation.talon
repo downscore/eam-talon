@@ -31,10 +31,10 @@ mode: dictation
   insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")
-title <user.prose>$: insert(user.format_title(prose))
-title <user.prose> anchor: insert(user.format_title(prose))
+title <user.prose>$: insert(user.format_title_with_history(prose))
+title <user.prose> anchor: insert(user.format_title_with_history(prose))
 title <user.prose> void:
-  insert(user.format_title(prose))
+  insert(user.format_title_with_history(prose))
   insert(" ")
 
 # Escaping to type things that would otherwise be commands.
@@ -80,10 +80,10 @@ drip: user.dictation_insert_prose(",")
 #"pasty"
 ^hasty$: edit.paste()
 #"title"
-^te (a|la) <user.prose>$: insert(user.format_title(prose))
-^te (a|la) <user.prose> anchor: insert(user.format_title(prose))
+^te (a|la) <user.prose>$: insert(user.format_title_with_history(prose))
+^te (a|la) <user.prose> anchor: insert(user.format_title_with_history(prose))
 ^te (a|la) <user.prose> void:
-  insert(user.format_title(prose))
+  insert(user.format_title_with_history(prose))
   insert(" ")
 
 

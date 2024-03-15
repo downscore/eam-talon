@@ -37,6 +37,10 @@ ctx.lists["self.formatter"] = _FORMATTERS_BY_WORD.keys()
 # Not updated when a selection is reformatted.
 _LAST_OUTPUT_BY_FORMATTER = {}
 
+# Last strings output in other formats.
+_LAST_TITLE = ""
+_LAST_SENTENCE = ""
+
 
 def _reformat_string(s: str, options: format_util.FormatOptions) -> str:
   """Reformat the given string with the given options, preserving padding."""
@@ -93,6 +97,13 @@ class Actions:
     """Formats a phrase using title casing."""
     return format_util.title_format_phrase(phrase)
 
+  def format_title_with_history(phrase: str) -> str:
+    """Formats a phrase using title casing."""
+    global _LAST_TITLE
+    result = format_util.title_format_phrase(phrase)
+    _LAST_TITLE = result
+    return result
+
   def format_selection_title():
     """Reformats the current selection as a title."""
     selected = actions.edit.selected_text()
@@ -103,9 +114,12 @@ class Actions:
 
   def format_sentence(phrase: str) -> str:
     """Formats a phrase using sentence casing."""
+    global _LAST_SENTENCE
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
-    return format_util.format_phrase(phrase, options)
+    result = format_util.format_phrase(phrase, options)
+    _LAST_SENTENCE = result
+    return result
 
   def format_selection_sentence():
     """Reformats the current selection as a sentence."""
@@ -140,3 +154,17 @@ class Actions:
       actions.app.notify(f"No output found. Formatter: {formatter_word}")
       return ""
     return _LAST_OUTPUT_BY_FORMATTER[formatter_enums[0]]
+
+  def format_replay_title() -> str:
+    """Returns the last string output by the title formatter."""
+    if not _LAST_TITLE:
+      actions.app.notify("No title output found.")
+      return ""
+    return _LAST_TITLE
+
+  def format_replay_sentence() -> str:
+    """Returns the last string output by the sentence formatter."""
+    if not _LAST_SENTENCE:
+      actions.app.notify("No sentence output found.")
+      return ""
+    return _LAST_SENTENCE

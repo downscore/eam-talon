@@ -39,7 +39,7 @@ class ExtensionActions:
   def delete_to_line_end():
     actions.key("ctrl-k")
 
-  def delete_word_left():
+  def delete_word_left(n: int = 1):
     # Deletes to the end of the line. Makes this command useful for the last word on the line.
     actions.edit.word_left()
     actions.user.delete_to_line_end()

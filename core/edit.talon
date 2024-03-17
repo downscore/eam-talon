@@ -17,7 +17,7 @@ hatch: key(escape:2)
 pick <user.number_small>: key("down:{number_small-1} enter")
 
 # Symbol convenience commands
-args:
+arcs:
   insert("()")
   key(left)
 subscript:

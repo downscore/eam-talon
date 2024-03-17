@@ -8,15 +8,19 @@ mode: dictation
 <user.prose> void:
   user.dictation_insert_prose(prose)
   insert(" ")
-<user.prose> quads:
+<user.prose> void (arcs|arts):
+  user.dictation_insert_prose(prose)
+  insert(" ()")
+  key("left")
+<user.prose> void quads:
   user.dictation_insert_prose(prose)
   insert(" \"\"")
   key("left")
-<user.prose> buried:
+<user.prose> void buried:
   user.dictation_insert_prose(prose)
   insert(" ``")
   key("left")
-<user.prose> latex:
+<user.prose> void latex:
   user.dictation_insert_prose(prose)
   insert(" $$")
   key("left")
@@ -27,7 +31,7 @@ mode: dictation
 {user.formatter}+ <user.formatter_text> void:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert(" ")
-{user.formatter}+ <user.formatter_text> (args|arcs):
+{user.formatter}+ <user.formatter_text> arcs:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")
@@ -61,14 +65,6 @@ drip: user.dictation_insert_prose(",")
 ^(punt|bunch|put|pudge)$: user.dictation_insert_prose(".")
 # "drip"
 ^(chip|trip)$: user.dictation_insert_prose(",")
-# "args"
-^arcs$:
-  insert("()")
-  key("left")
-# "void args"
-^void arcs$:
-  insert(" ()")
-  key("left")
 # "command mode".
 ^commandment$: user.mode_command()
 # "now do" (chainable).
@@ -85,7 +81,6 @@ drip: user.dictation_insert_prose(",")
 ^te (a|la) <user.prose> void:
   insert(user.format_title_with_history(prose))
   insert(" ")
-
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

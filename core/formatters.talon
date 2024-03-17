@@ -3,7 +3,7 @@
 {user.formatter}+ <user.formatter_text> void:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert(" ")
-{user.formatter}+ <user.formatter_text> (args|arcs):
+{user.formatter}+ <user.formatter_text> arcs:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")

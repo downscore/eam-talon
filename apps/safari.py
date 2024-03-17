@@ -27,17 +27,6 @@ app: safari
 class BrowserActions:
   """Browser action overwrites."""
 
-  def go(url: str):
-    toolbar = ui.active_window().children.find_one(AXRole="AXToolbar", max_depth=1)
-    address_field = toolbar.children.find_one(
-        AXRole="AXTextField",
-        AXIdentifier="WEB_BROWSER_ADDRESS_AND_SEARCH_FIELD",
-    )
-    # Need to focus the address bar so that the updated text is recognized.
-    address_field.AXFocused = True
-    address_field.AXValue = url
-    address_field.perform("AXConfirm")
-
   def address():
     script = """
       tell application "Safari"
@@ -51,6 +40,17 @@ class BrowserActions:
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def browser_go(url: str):
+    toolbar = ui.active_window().children.find_one(AXRole="AXToolbar", max_depth=1)
+    address_field = toolbar.children.find_one(
+        AXRole="AXTextField",
+        AXIdentifier="WEB_BROWSER_ADDRESS_AND_SEARCH_FIELD",
+    )
+    # Need to focus the address bar so that the updated text is recognized.
+    address_field.AXFocused = True
+    address_field.AXValue = url
+    address_field.perform("AXConfirm")
 
   def find():
     actions.key("cmd-f")

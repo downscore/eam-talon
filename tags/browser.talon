@@ -1,6 +1,6 @@
 tag: browser
 -
-go input: browser.focus_address()
-reload: browser.reload()
+go input: user.browser_focus_address()
+reload: user.browser_reload()
 copy address: user.browser_copy_address()
 tab private: user.browser_open_private_tab()

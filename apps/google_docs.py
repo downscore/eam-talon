@@ -32,7 +32,7 @@ class Actions:
   def google_docs_preview():
     """Switch to preview mode for the current doc."""
     doc_url = actions.browser.address()
-    actions.browser.go(get_preview_url(doc_url))
+    actions.user.browser_go(get_preview_url(doc_url))
 
 
 @ctx.action_class("user")

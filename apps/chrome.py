@@ -40,18 +40,18 @@ class BrowserActions:
                 end tell
             """)
 
-  def go(url: str):
+
+@ctx.action_class("user")
+class ExtensionActions:
+  """Action overwrites."""
+
+  def browser_go(url: str):
     applescript.run("""
                 tell application id "com.google.Chrome"
                     if not (exists (window 1)) then return
                     set window 1's active tab's URL to "[URL]"
                 end tell
             """.replace("[URL]", url))
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
 
   def tab_previous():
     actions.key("cmd-shift-a")

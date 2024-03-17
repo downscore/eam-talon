@@ -10,74 +10,30 @@ mod = Module()
 ctx = Context()
 
 
-@ctx.action_class("browser")
-class Actions:
-  """Default implementations for common browser actions."""
+@mod.action_class
+class ExtensionActions:
+  """Browser actions.
+  Note that many of these actions are also built-in to Talon in the "browser" namespace. They are defined here in the
+  "user" namespace to avoid conflicts with Talon internals.
 
-  # def address() -> str:
-  #   # Note: It looks like browser.address() is called several times by Talon on startup. It should not be implemented
-  #   # by performing any keyboard input, and should likely not be implemented at all unless its usage within Talon is
-  #   # understood.
-  #   pass
+  It looks like browser.address() is called several times by Talon on startup. It should not be implemented by
+  performing any keyboard input, and should likely not have a default implementation unless its usage within Talon is
+  understood."""
 
-  def bookmark():
-    actions.key("cmd-d")
-
-  def bookmark_tabs():
-    actions.key("cmd-shift-d")
-
-  def bookmarks():
-    actions.key("cmd-alt-b")
-
-  def bookmarks_bar():
-    actions.key("cmd-shift-b")
-
-  def focus_address():
-    actions.key("cmd-l")
-
-  def focus_search():
-    actions.browser.focus_address()
-
-  def go(url: str):
-    actions.browser.focus_address()
+  def browser_go(url: str):
+    """Navigate to the specified URL."""
+    actions.user.browser_focus_address()
     actions.sleep("50ms")
     actions.insert(url)
     actions.key("enter")
 
-  def go_back():
-    actions.key("cmd-[")
-
-  def go_blank():
-    actions.key("cmd-n")
-
-  def go_forward():
-    actions.key("cmd-]")
-
-  def go_home():
-    actions.key("cmd-shift-h")
-
-  def open_private_window():
-    actions.key("cmd-shift-n")
-
-  def reload():
+  def browser_reload():
+    """Reload the current page."""
     actions.key("cmd-r")
 
-  def reload_hard():
-    actions.key("cmd-shift-r")
-
-  def show_history():
-    actions.key("cmd-y")
-
-  def submit_form():
-    actions.key("enter")
-
-  def toggle_dev_tools():
-    actions.key("cmd-alt-i")
-
-
-@mod.action_class
-class ExtensionActions:
-  """Browser actions that are not built in to Talon."""
+  def browser_focus_address():
+    """Focus the browser address bar."""
+    actions.key("cmd-l")
 
   def browser_copy_address():
     """Copy the current browser address to the clipboard."""

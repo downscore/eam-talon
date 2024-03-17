@@ -73,12 +73,12 @@ after car <user.number>:
   key(right)
 
 # Selection
-take line: edit.select_line()
-take left: edit.extend_left()
-take right: edit.extend_right()
-take up: edit.extend_line_up()
-take down: edit.extend_line_down()
-take word: edit.select_word()
+select line: edit.select_line()
+select left: edit.extend_left()
+select right: edit.extend_right()
+select up: edit.extend_line_up()
+select down: edit.extend_line_down()
+select word: edit.select_word()
 lefter: edit.extend_word_left()
 writer: edit.extend_word_right()
 select all: edit.select_all()

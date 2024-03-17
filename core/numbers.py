@@ -46,7 +46,7 @@ def number_list_of_words(m) -> list[str]:
   return list(m)
 
 
-@mod.capture(rule=f"<user.number_list_of_words>")
+@mod.capture(rule="<user.number_list_of_words>")
 def number_string_of_digits(m) -> str:
   """Parses a number phrase, returning that number as a string of digits. e.g. "1025"."""
   return number_util.parse_number(m.number_list_of_words)

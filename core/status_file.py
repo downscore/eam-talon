@@ -22,12 +22,17 @@ def _get_status_file_path() -> Path:
 def _get_current_status() -> str:
   """Get a string containing the current speech system status."""
   result = []
-  for mode in scope.get("mode"):
-    result.append(f"mode {mode}")
-  for application in scope.get("app.app"):
-    result.append(f"app {application}")
-  for tag in registry.tags:
-    result.append(f"tag {tag}")
+  modes = scope.get("mode")
+  if modes:
+    for mode in modes:
+      result.append(f"mode {mode}")
+  apps = scope.get("app.app")
+  if apps:
+    for application in apps:
+      result.append(f"app {application}")
+  if registry.tags:
+    for tag in registry.tags:
+      result.append(f"tag {tag}")
   result.append("end")
   return "\n".join(result)
 

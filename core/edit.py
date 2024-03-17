@@ -65,13 +65,61 @@ class ExtensionActions:
     actions.user.select_word()
     actions.user.delete()
 
+  def up():
+    """Moves the cursor up."""
+    actions.key("up")
+
   def down():
     """Moves the cursor down."""
     actions.key("down")
 
+  def left():
+    """Moves the cursor left."""
+    actions.key("left")
+
+  def right():
+    """Moves the cursor right."""
+    actions.key("right")
+
+  def word_left():
+    """Moves the cursor left by one word."""
+    actions.key("alt-left")
+
+  def word_right():
+    """Moves the cursor right by one word."""
+    actions.key("alt-right")
+
+  def line_start():
+    """Moves the cursor to the start of the line."""
+    actions.key("cmd-left")
+
+  def line_end():
+    """Moves the cursor to the end of the line."""
+    actions.key("cmd-right")
+
+  def file_end():
+    """Moves the cursor to the end of the file."""
+    actions.key("cmd-down")
+
+  def file_start():
+    """Moves the cursor to the start of the file."""
+    actions.key("cmd-up")
+
+  def extend_up():
+    """Extends the selection up."""
+    actions.key("shift-up")
+
   def extend_down():
     """Extends the selection down."""
     actions.key("shift-down")
+
+  def extend_left():
+    """Extends the selection to the left."""
+    actions.key("shift-left")
+
+  def extend_right():
+    """Extends the selection to the right."""
+    actions.key("shift-right")
 
   def extend_file_end():
     """Extends the selection to the end of the file."""
@@ -81,14 +129,6 @@ class ExtensionActions:
     """Extends the selection to the start of the file."""
     actions.key("cmd-shift-up")
 
-  def extend_left():
-    """Extends the selection to the left."""
-    actions.key("shift-left")
-
-  def extend_line_down():
-    """Extends the selection down by one line."""
-    actions.key("shift-down")
-
   def extend_line_end():
     """Extends the selection to the end of the line."""
     actions.key("cmd-shift-right")
@@ -96,10 +136,6 @@ class ExtensionActions:
   def extend_line_start():
     """Extends the selection to the start of the line."""
     actions.key("cmd-shift-left")
-
-  def extend_line_up():
-    """Extends the selection up by one line."""
-    actions.key("shift-up")
 
   def extend_page_down():
     """Extends the selection down by one page."""
@@ -109,14 +145,6 @@ class ExtensionActions:
     """Extends the selection up by one page."""
     actions.key("cmd-shift-pageup")
 
-  def extend_right():
-    """Extends the selection to the right."""
-    actions.key("shift-right")
-
-  def extend_up():
-    """Extends the selection up."""
-    actions.key("shift-up")
-
   def extend_word_left():
     """Extends the selection to the left by one word."""
     actions.key("shift-alt-left")
@@ -125,13 +153,19 @@ class ExtensionActions:
     """Extends the selection to the right by one word."""
     actions.key("shift-alt-right")
 
-  def file_end():
-    """Moves the cursor to the end of the file."""
-    actions.key("cmd-down")
+  def select_all():
+    """Selects all text in the active editor."""
+    actions.key("cmd-a")
 
-  def file_start():
-    """Moves the cursor to the start of the file."""
-    actions.key("cmd-up")
+  def select_line():
+    """Selects the current line."""
+    actions.key("cmd-left cmd-shift-right shift-right")
+
+  def select_word():
+    """Selects the current word."""
+    actions.user.right()
+    actions.user.word_left()
+    actions.user.extend_word_right()
 
   def find():
     """Finds text in the active editor."""
@@ -153,23 +187,6 @@ class ExtensionActions:
     """Increases the indentation level."""
     actions.key("cmd-]")
 
-  def left():
-    """Moves the cursor left."""
-    actions.key("left")
-
-  def line_down():
-    """Moves the cursor down by one line."""
-    actions.key("down cmd-left")
-
-  def line_end():
-    """Moves the cursor to the end of the line."""
-    actions.key("cmd-right")
-
-  def line_insert_down():
-    """Inserts a new line below the current line."""
-    actions.user.line_end()
-    actions.key("enter")
-
   def line_insert_up():
     """Inserts a new line above the current line."""
     # Going to line end first can help consistently preserve indentation in code.
@@ -177,17 +194,10 @@ class ExtensionActions:
     actions.user.line_start()
     actions.key("enter up")
 
-  def line_start():
-    """Moves the cursor to the start of the line."""
-    actions.key("cmd-left")
-
-  def line_swap_down():
-    """Swaps the current line with the line below it."""
-    actions.user.select_line()
-    actions.user.cut()
-    actions.key("down")
-    actions.user.paste()
-    actions.key("left")
+  def line_insert_down():
+    """Inserts a new line below the current line."""
+    actions.user.line_end()
+    actions.key("enter")
 
   def line_swap_up():
     """Swaps the current line with the line above it."""
@@ -198,29 +208,21 @@ class ExtensionActions:
     actions.user.paste()
     actions.key("left")
 
-  def line_up():
-    """Moves the cursor up by one line."""
-    actions.key("up cmd-left")
+  def line_swap_down():
+    """Swaps the current line with the line below it."""
+    actions.user.select_line()
+    actions.user.cut()
+    actions.key("down")
+    actions.user.paste()
+    actions.key("left")
 
-  def page_down():
-    """Moves the cursor down by one page."""
-    actions.key("pagedown")
-
-  def page_up():
-    """Moves the cursor up by one page."""
-    actions.key("pageup")
-
-  def print():
-    """Prints the current file."""
-    actions.key("cmd-p")
+  def undo():
+    """Undoes the last action."""
+    actions.key("cmd-z")
 
   def redo():
     """Redoes the last action."""
     actions.key("cmd-shift-z")
-
-  def right():
-    """Moves the cursor right."""
-    actions.key("right")
 
   def save():
     """Saves the current file."""
@@ -229,36 +231,6 @@ class ExtensionActions:
   def save_all():
     """Saves all open files."""
     actions.key("cmd-shift-s")
-
-  def select_all():
-    """Selects all text in the active editor."""
-    actions.key("cmd-a")
-
-  def select_line():
-    """Selects the current line."""
-    actions.key("cmd-left cmd-shift-right shift-right")
-
-  def select_word():
-    """Selects the current word."""
-    actions.user.right()
-    actions.user.word_left()
-    actions.user.extend_word_right()
-
-  def undo():
-    """Undoes the last action."""
-    actions.key("cmd-z")
-
-  def up():
-    """Moves the cursor up."""
-    actions.key("up")
-
-  def word_left():
-    """Moves the cursor left by one word."""
-    actions.key("alt-left")
-
-  def word_right():
-    """Moves the cursor right by one word."""
-    actions.key("alt-right")
 
   def zoom_in():
     """Zooms in."""
@@ -295,10 +267,6 @@ class ExtensionActions:
     """Pops up a notification with the number of characters in the currently selected text."""
     characters = len(actions.user.selected_text())
     app.notify(f"Characters: {characters}")
-
-  def cursor_back():
-    """Jumps to previous cursor position."""
-    actions.key("cmd-,")
 
   def delete_to_line_end():
     """Delete from the cursor to the end of the line."""
@@ -341,15 +309,6 @@ class ExtensionActions:
   def find_everywhere():
     """Finds text across project."""
     actions.key("cmd-shift-f")
-
-  def find_toggle_match_by_case():
-    """Toggles find match by case sensitivity."""
-
-  def find_toggle_match_by_word():
-    """Toggles find match by whole words."""
-
-  def find_toggle_match_by_regex():
-    """Toggles find match by regex."""
 
   def fragment_cursor_after(n: int):
     """Moves the cursor after the nth fragment of the selected text. Index is 1-based."""
@@ -450,12 +409,6 @@ class ExtensionActions:
     """Search and replace for text in the active editor."""
     actions.key("cmd-h")
 
-  def replace_confirm():
-    """Confirms replace at current position."""
-
-  def replace_confirm_all():
-    """Confirms replace all."""
-
   def replace_everywhere():
     """Search and replaces for text in the entire project."""
     actions.key("cmd-shift-h")
@@ -477,12 +430,6 @@ class ExtensionActions:
     effective_to = min(len(selected), to_index) if to_index > 0 else from_index
     actions.key(f"left right:{from_index - 1}")
     actions.key(f"shift-right:{effective_to - from_index + 1}")
-
-  def select_next_occurrence(text: str):
-    """Selects the next occurrence of the text, and suppresses any find/replace dialogs."""
-
-  def select_previous_occurrence(text: str):
-    """Selects the previous occurrence of the text, and suppresses any find/replace dialogs."""
 
   def sort_lines_ascending():
     """Sorts the selected lines in ascending order."""

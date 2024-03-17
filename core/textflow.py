@@ -143,7 +143,11 @@ def _get_context() -> TextFlowContext:
       actions.app.notify(f"Enabling enhanced UI for {curr_app.name}")
       print(f"TextFlow: Enabling AXEnhancedUserInterface for app: {curr_app}")
       # Enable enhanced UI.
-      curr_app.element.AXEnhancedUserInterface = True
+      try:
+        curr_app.element.AXEnhancedUserInterface = True
+      except ui.UIErr:
+        # This can throw an exception but still succeed in enabling enhanced UI.
+        pass
       # Pause for UI to update before we try to access the focused element.
       actions.sleep("500ms")
 

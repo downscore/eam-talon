@@ -17,4 +17,4 @@ class Actions:
   def iterm_focus_new_tab():
     """Changes focus to iterm and opens a new tab."""
     actions.user.switcher_focus("iTerm2")
-    actions.app.tab_open()
+    actions.user.tab_open()

@@ -4,14 +4,15 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, actions
+from talon import Module, actions
 
-ctx = Context()
+mod = Module()
 
 
-@ctx.action_class("app")
+@mod.action_class
 class Actions:
-  """Default implementations for common app actions."""
+  """App actions."""
 
   def preferences():
+    """Opens app preferences."""
     actions.key("cmd-,")

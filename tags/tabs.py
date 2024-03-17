@@ -16,29 +16,29 @@ tag: user.tabs
 """
 
 
-@ctx.action_class("app")
-class AppActions:
-  """Default implementations for common app actions."""
+@mod.action_class
+class Actions:
+  """Tab-related actions."""
 
   def tab_close():
+    """Closes the current tab."""
     actions.key("cmd-w")
 
   def tab_next():
+    """Jumps to the next tab."""
     actions.key("cmd-shift-]")
 
   def tab_open():
+    """Opens a new tab."""
     actions.key("cmd-t")
 
   def tab_previous():
+    """Jumps to the previous tab."""
     actions.key("ctrl-tab")
 
   def tab_reopen():
+    """Reopens the last closed tab."""
     actions.key("cmd-shift-t")
-
-
-@mod.action_class
-class Actions:
-  """Tab-related actions not covered in the 'app' set."""
 
   def tab_jump(number: int):
     """Jumps to the specified tab."""
@@ -71,4 +71,4 @@ class Actions:
       return
     # Default implementation can only switch to the previous tab.
     # Using key("ctrl:down tab:{n} ctrl:up") doesn't seem to work.
-    actions.app.tab_previous()
+    actions.user.tab_previous()

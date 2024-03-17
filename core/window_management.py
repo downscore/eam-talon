@@ -145,35 +145,33 @@ def window_snap_position(m) -> RelativeScreenPos:
   return _SNAP_POSITIONS[m.window_snap_positions]
 
 
-@ctx.action_class("app")
-class AppActions:
-  """Default implementations for common app actions."""
-
-  def preferences():
-    actions.key("cmd-,")
+@mod.action_class
+class Actions:
+  """Actions for window management windows."""
 
   def window_close():
+    """Close the active window."""
     actions.key("cmd-w")
 
   def window_hide():
+    """Hide the active window."""
     actions.key("cmd-m")
 
   def window_hide_others():
+    """Hide all windows except the active one."""
     actions.key("cmd-alt-h")
 
   def window_next():
+    """Focus the next window."""
     actions.key("cmd-`")
 
   def window_open():
+    """Open a new window."""
     actions.key("cmd-n")
 
   def window_previous():
+    """Focus the previous window."""
     actions.key("cmd-shift-`")
-
-
-@mod.action_class
-class Actions:
-  """Actions for snapping windows."""
 
   def snap_window(pos: RelativeScreenPos) -> None:
     """Move the active window to a specific position on-screen."""

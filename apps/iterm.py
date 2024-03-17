@@ -56,11 +56,6 @@ class ExtensionActions:
   def split_close():
     actions.key("cmd-w")
 
-
-@ctx.action_class("app")
-class AppActions:
-  """Action overwrites."""
-
   def tab_close():
     # Close all panes in the tab.
     actions.key("cmd-alt-w")

@@ -37,8 +37,8 @@ class WinActions:
     return parts[0]
 
 
-@ctx.action_class("app")
-class AppActions:
+@ctx.action_class("user")
+class ExtensionActions:
   """Action overwrites."""
 
   def tab_open():
@@ -58,11 +58,6 @@ class AppActions:
 
   def window_open():
     actions.user.vscode("workbench.action.newWindow")
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
 
   # Note: Prevents using delete line command outside of editor (e.g. in Search panel).
   # def delete_line():

@@ -1,7 +1,7 @@
-window (new|open): app.window_open()
-window next: app.window_next()
-window last: app.window_previous()
-window close: app.window_close()
+window (new|open): user.window_open()
+window next: user.window_next()
+window last: user.window_previous()
+window close: user.window_close()
 
 snap <user.window_snap_position>: user.snap_window(window_snap_position)
 snap next [screen]: user.move_window_next_screen()

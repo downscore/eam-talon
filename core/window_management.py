@@ -153,14 +153,6 @@ class Actions:
     """Close the active window."""
     actions.key("cmd-w")
 
-  def window_hide():
-    """Hide the active window."""
-    actions.key("cmd-m")
-
-  def window_hide_others():
-    """Hide all windows except the active one."""
-    actions.key("cmd-alt-h")
-
   def window_next():
     """Focus the next window."""
     actions.key("cmd-`")

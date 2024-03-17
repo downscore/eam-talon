@@ -40,15 +40,6 @@ class Actions:
     """Reopens the last closed tab."""
     actions.key("cmd-shift-t")
 
-  def tab_jump(number: int):
-    """Jumps to the specified tab."""
-
-  def tab_final():
-    """Jumps to the final tab."""
-
-  def tab_duplicate():
-    """Duplicates the current tab."""
-
   def tab_left():
     """Jumps to the tab to the left."""
     actions.key("cmd-shift-[")

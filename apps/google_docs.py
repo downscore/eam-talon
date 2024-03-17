@@ -43,17 +43,17 @@ class ExtensionActions:
     # Google Docs has some unusual text selection behavior. It randomly inserts trailing new lines, and behavior inside
     # tables is unpredictable. To avoid problems, we only allow TextFlow to act on one line in Google Docs.
     actions.key("ctrl-shift-a")
-    result = actions.edit.selected_text()
+    result = actions.user.selected_text()
     if len(result) > 0:
-      actions.edit.right()
+      actions.user.right()
     return result
 
   def textflow_potato_get_text_after_cursor():
     # See above. TextFlow only acts on one line in Google Docs.
     actions.key("ctrl-shift-e")
-    result = actions.edit.selected_text()
+    result = actions.user.selected_text()
     if len(result) > 0:
-      actions.edit.left()
+      actions.user.left()
     return result
 
   def insert_link():
@@ -62,7 +62,7 @@ class ExtensionActions:
   def insert_link_from_clipboard():
     actions.key("cmd-k")
     actions.sleep("100ms")
-    actions.edit.paste()
+    actions.user.paste()
     actions.sleep("100ms")
     actions.key("enter")
 

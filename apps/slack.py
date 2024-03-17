@@ -19,24 +19,19 @@ app: slack
 """
 
 
-@ctx.action_class("edit")
-class EditActions:
+@ctx.action_class("user")
+class ExtensionActions:
   """Action overwrites."""
 
   def line_insert_down():
-    actions.edit.line_end()
+    actions.user.line_end()
     actions.key("shift-enter")
 
   def line_insert_up():
     # Going to line end first can help consistently preserve indentation in code.
-    actions.edit.line_end()
-    actions.edit.line_start()
+    actions.user.line_end()
+    actions.user.line_start()
     actions.key("shift-enter up")
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
 
   def insert_link():
     actions.key("cmd-shift-u")

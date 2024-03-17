@@ -16,9 +16,9 @@ _NUM_PRECEDING_CHARS = 2
 def _get_preceding_text() -> str:
   """Gets the preceding text to use for dictation."""
   for _ in range(_NUM_PRECEDING_CHARS):
-    actions.edit.extend_left()
-  preceding_text = actions.edit.selected_text()
-  actions.edit.right()
+    actions.user.extend_left()
+  preceding_text = actions.user.selected_text()
+  actions.user.right()
   return preceding_text
 
 

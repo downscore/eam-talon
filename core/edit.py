@@ -13,10 +13,10 @@ ctx = Context()
 
 def _get_selected_text_fragments():
   """Gets the selected text and its fragment ranges. If no text is selected, selects the current word."""
-  text = actions.edit.selected_text()
+  text = actions.user.selected_text()
   if len(text) == 0:
-    actions.edit.select_word()
-    text = actions.edit.selected_text()
+    actions.user.select_word()
+    text = actions.user.selected_text()
 
   # Special case: Ignore list item markers (e.g. in Apple Notes).
   if text.startswith("- "):
@@ -26,223 +26,274 @@ def _get_selected_text_fragments():
   return text, fragments
 
 
-@ctx.action_class("edit")
-class EditActions:
-  """Default implementations for built-in edit actions."""
+@mod.action_class
+class ExtensionActions:
+  """User-defined edit actions.
+  Note that many of these actions are also built-in to Talon in the "edit" namespace. After a Talon update that
+  (probably unintentionally) overrode these implementations, and following some unexpected internal Talon usages of
+  built-in actions, they were moved to user-defined actions to avoid the potential for problems in the future."""
 
   def copy():
+    """Copies the currently-selected text to the clipboard."""
     actions.key("cmd-c")
 
   def cut():
+    """Cuts the currently-selected text to the clipboard."""
     actions.key("cmd-x")
 
-  def delete():
-    actions.key("backspace")
-
-  def delete_line():
-    actions.edit.select_line()
-    actions.edit.delete()
-
-  def delete_word():
-    actions.edit.select_word()
-    actions.edit.delete()
-
-  def down():
-    actions.key("down")
-
-  def extend_down():
-    actions.key("shift-down")
-
-  def extend_file_end():
-    actions.key("cmd-shift-down")
-
-  def extend_file_start():
-    actions.key("cmd-shift-up")
-
-  def extend_left():
-    actions.key("shift-left")
-
-  def extend_line_down():
-    actions.key("shift-down")
-
-  def extend_line_end():
-    actions.key("cmd-shift-right")
-
-  def extend_line_start():
-    actions.key("cmd-shift-left")
-
-  def extend_line_up():
-    actions.key("shift-up")
-
-  def extend_page_down():
-    actions.key("cmd-shift-pagedown")
-
-  def extend_page_up():
-    actions.key("cmd-shift-pageup")
-
-  def extend_right():
-    actions.key("shift-right")
-
-  def extend_up():
-    actions.key("shift-up")
-
-  def extend_word_left():
-    actions.key("shift-alt-left")
-
-  def extend_word_right():
-    actions.key("shift-alt-right")
-
-  def file_end():
-    actions.key("cmd-down")
-
-  def file_start():
-    actions.key("cmd-up")
-
-  def find(text: str = ""):
-    actions.key("cmd-f")
-
-  def find_next():
-    actions.key("cmd-g")
-
-  def find_previous():
-    actions.key("cmd-shift-g")
-
-  def indent_less():
-    actions.key("cmd-[")
-
-  def indent_more():
-    actions.key("cmd-]")
-
-  def left():
-    actions.key("left")
-
-  def line_down():
-    actions.key("down cmd-left")
-
-  def line_end():
-    actions.key("cmd-right")
-
-  def line_insert_down():
-    actions.edit.line_end()
-    actions.key("enter")
-
-  def line_insert_up():
-    # Going to line end first can help consistently preserve indentation in code.
-    actions.edit.line_end()
-    actions.edit.line_start()
-    actions.key("enter up")
-
-  def line_start():
-    actions.key("cmd-left")
-
-  def line_swap_down():
-    actions.edit.select_line()
-    actions.edit.cut()
-    actions.key("down")
-    actions.edit.paste()
-    actions.key("left")
-
-  def line_swap_up():
-    actions.edit.select_line()
-    actions.edit.cut()
-    actions.sleep("50ms")
-    actions.key("up")
-    actions.edit.paste()
-    actions.key("left")
-
-  def line_up():
-    actions.key("up cmd-left")
-
-  def page_down():
-    actions.key("pagedown")
-
-  def page_up():
-    actions.key("pageup")
-
   def paste():
+    """Pastes the clipboard contents."""
     # Short sleep to allow UI to catch up for chained commands.
     actions.sleep("50ms")
     actions.key("cmd-v")
 
   def paste_match_style():
+    """Pastes the clipboard contents with the style of the surrounding text."""
     actions.key("cmd-shift-v")
 
+  def delete():
+    """Deletes the currently-selected text or the previous character."""
+    actions.key("backspace")
+
+  def delete_line():
+    """Deletes the entire line."""
+    actions.user.select_line()
+    actions.user.delete()
+
+  def delete_word():
+    """Deletes the current word."""
+    actions.user.select_word()
+    actions.user.delete()
+
+  def down():
+    """Moves the cursor down."""
+    actions.key("down")
+
+  def extend_down():
+    """Extends the selection down."""
+    actions.key("shift-down")
+
+  def extend_file_end():
+    """Extends the selection to the end of the file."""
+    actions.key("cmd-shift-down")
+
+  def extend_file_start():
+    """Extends the selection to the start of the file."""
+    actions.key("cmd-shift-up")
+
+  def extend_left():
+    """Extends the selection to the left."""
+    actions.key("shift-left")
+
+  def extend_line_down():
+    """Extends the selection down by one line."""
+    actions.key("shift-down")
+
+  def extend_line_end():
+    """Extends the selection to the end of the line."""
+    actions.key("cmd-shift-right")
+
+  def extend_line_start():
+    """Extends the selection to the start of the line."""
+    actions.key("cmd-shift-left")
+
+  def extend_line_up():
+    """Extends the selection up by one line."""
+    actions.key("shift-up")
+
+  def extend_page_down():
+    """Extends the selection down by one page."""
+    actions.key("cmd-shift-pagedown")
+
+  def extend_page_up():
+    """Extends the selection up by one page."""
+    actions.key("cmd-shift-pageup")
+
+  def extend_right():
+    """Extends the selection to the right."""
+    actions.key("shift-right")
+
+  def extend_up():
+    """Extends the selection up."""
+    actions.key("shift-up")
+
+  def extend_word_left():
+    """Extends the selection to the left by one word."""
+    actions.key("shift-alt-left")
+
+  def extend_word_right():
+    """Extends the selection to the right by one word."""
+    actions.key("shift-alt-right")
+
+  def file_end():
+    """Moves the cursor to the end of the file."""
+    actions.key("cmd-down")
+
+  def file_start():
+    """Moves the cursor to the start of the file."""
+    actions.key("cmd-up")
+
+  def find():
+    """Finds text in the active editor."""
+    actions.key("cmd-f")
+
+  def find_next():
+    """Finds the next occurrence of the text."""
+    actions.key("cmd-g")
+
+  def find_previous():
+    """Finds the previous occurrence of the text."""
+    actions.key("cmd-shift-g")
+
+  def indent_less():
+    """Decreases the indentation level."""
+    actions.key("cmd-[")
+
+  def indent_more():
+    """Increases the indentation level."""
+    actions.key("cmd-]")
+
+  def left():
+    """Moves the cursor left."""
+    actions.key("left")
+
+  def line_down():
+    """Moves the cursor down by one line."""
+    actions.key("down cmd-left")
+
+  def line_end():
+    """Moves the cursor to the end of the line."""
+    actions.key("cmd-right")
+
+  def line_insert_down():
+    """Inserts a new line below the current line."""
+    actions.user.line_end()
+    actions.key("enter")
+
+  def line_insert_up():
+    """Inserts a new line above the current line."""
+    # Going to line end first can help consistently preserve indentation in code.
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.key("enter up")
+
+  def line_start():
+    """Moves the cursor to the start of the line."""
+    actions.key("cmd-left")
+
+  def line_swap_down():
+    """Swaps the current line with the line below it."""
+    actions.user.select_line()
+    actions.user.cut()
+    actions.key("down")
+    actions.user.paste()
+    actions.key("left")
+
+  def line_swap_up():
+    """Swaps the current line with the line above it."""
+    actions.user.select_line()
+    actions.user.cut()
+    actions.sleep("50ms")
+    actions.key("up")
+    actions.user.paste()
+    actions.key("left")
+
+  def line_up():
+    """Moves the cursor up by one line."""
+    actions.key("up cmd-left")
+
+  def page_down():
+    """Moves the cursor down by one page."""
+    actions.key("pagedown")
+
+  def page_up():
+    """Moves the cursor up by one page."""
+    actions.key("pageup")
+
   def print():
+    """Prints the current file."""
     actions.key("cmd-p")
 
   def redo():
+    """Redoes the last action."""
     actions.key("cmd-shift-z")
 
   def right():
+    """Moves the cursor right."""
     actions.key("right")
 
   def save():
+    """Saves the current file."""
     actions.key("cmd-s")
 
   def save_all():
+    """Saves all open files."""
     actions.key("cmd-shift-s")
 
   def select_all():
+    """Selects all text in the active editor."""
     actions.key("cmd-a")
 
-  def select_line(n: int = 0):
+  def select_line():
+    """Selects the current line."""
     actions.key("cmd-left cmd-shift-right shift-right")
 
-  def select_none():
-    actions.key("right")
-
   def select_word():
-    actions.edit.right()
-    actions.edit.word_left()
-    actions.edit.extend_word_right()
+    """Selects the current word."""
+    actions.user.right()
+    actions.user.word_left()
+    actions.user.extend_word_right()
 
   def undo():
+    """Undoes the last action."""
     actions.key("cmd-z")
 
   def up():
+    """Moves the cursor up."""
     actions.key("up")
 
   def word_left():
+    """Moves the cursor left by one word."""
     actions.key("alt-left")
 
   def word_right():
+    """Moves the cursor right by one word."""
     actions.key("alt-right")
 
   def zoom_in():
+    """Zooms in."""
     actions.key("cmd-=")
 
   def zoom_out():
+    """Zooms out."""
     actions.key("cmd--")
 
   def zoom_reset():
+    """Resets the zoom level."""
     actions.key("cmd-0")
 
   def selected_text() -> str:
+    """Returns the currently-selected text. If no text is selected, returns an empty string."""
     with clip.capture() as s:
-      actions.edit.copy()
+      actions.user.copy()
     try:
       return s.text()
     except clip.NoChange:
       return ""
 
-
-@mod.action_class
-class ExtensionActions:
-  """Edit actions that are not built in to Talon."""
-
   def count_lines():
     """Pops up a notification with the number of lines in the currently selected text."""
-    lines = text_util.count_lines(actions.edit.selected_text())
+    lines = text_util.count_lines(actions.user.selected_text())
     app.notify(f"Lines: {lines}")
 
   def count_words():
     """Pops up a notification with the number of words in the currently selected text."""
-    words = text_util.count_words(actions.edit.selected_text())
+    words = text_util.count_words(actions.user.selected_text())
     app.notify(f"Words: {words}")
 
   def count_characters():
     """Pops up a notification with the number of characters in the currently selected text."""
-    characters = len(actions.edit.selected_text())
+    characters = len(actions.user.selected_text())
     app.notify(f"Characters: {characters}")
 
   def cursor_back():
@@ -251,37 +302,37 @@ class ExtensionActions:
 
   def delete_to_line_end():
     """Delete from the cursor to the end of the line."""
-    actions.edit.extend_line_end()
-    actions.edit.delete()
+    actions.user.extend_line_end()
+    actions.user.delete()
 
   def delete_to_line_start():
     """Delete from the cursor to the start of the line."""
-    actions.edit.extend_line_start()
-    actions.edit.delete()
+    actions.user.extend_line_start()
+    actions.user.delete()
 
   def delete_word_left(n: int = 1):
     """Delete one or more words to the left of the cursor."""
     for _ in range(n):
-      actions.edit.extend_word_left()
-      actions.edit.delete()
+      actions.user.extend_word_left()
+      actions.user.delete()
 
   def delete_word_right(n: int = 1):
     """Delete one or more words to the right of the cursor."""
     for _ in range(n):
-      actions.edit.extend_word_right()
-      actions.edit.delete()
+      actions.user.extend_word_right()
+      actions.user.delete()
 
   def duplicate_line():
     """Duplicate the current line."""
-    actions.edit.select_line()
-    line_text = actions.edit.selected_text()
-    actions.edit.right()
+    actions.user.select_line()
+    line_text = actions.user.selected_text()
+    actions.user.right()
     actions.user.insert_via_clipboard(line_text)
-    actions.edit.left()
+    actions.user.left()
 
   def expand_selection_to_adjacent_characters():
     """Expands the current selection to include adjacent characters on the left and right."""
-    selection_length = len(actions.edit.selected_text())
+    selection_length = len(actions.user.selected_text())
     # Disallow for long strings, as they can take a long time to select.
     if selection_length > 500:
       return
@@ -371,14 +422,14 @@ class ExtensionActions:
     """Insert a link or make the selected text into a link using the URL in the clipboard."""
     actions.user.surround_selected_text("[", "]()")
     actions.key("left:1")
-    actions.edit.paste()
+    actions.user.paste()
 
   def insert_via_clipboard(text: str):
     """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII
     character."""
     with clip.revert():
       clip.set_text(text)
-      actions.edit.paste()
+      actions.user.paste()
       # Sleep here so that clip.revert doesn't revert the clipboard too soon.
       actions.sleep("50ms")
 
@@ -415,10 +466,10 @@ class ExtensionActions:
     if to_index > 0 and to_index < from_index:
       return
 
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     if len(selected) == 0:
-      actions.edit.select_word()
-      selected = actions.edit.selected_text()
+      actions.user.select_word()
+      selected = actions.user.selected_text()
 
     if len(selected) == 0 or from_index <= 0 or from_index > len(selected):
       return
@@ -435,13 +486,13 @@ class ExtensionActions:
 
   def sort_lines_ascending():
     """Sorts the selected lines in ascending order."""
-    selected_text = actions.edit.selected_text()
+    selected_text = actions.user.selected_text()
     selected_text = text_util.sort_lines(selected_text)
     actions.user.insert_via_clipboard(selected_text)
 
   def sort_lines_descending():
     """Sorts the selected lines in descending order."""
-    selected_text = actions.edit.selected_text()
+    selected_text = actions.user.selected_text()
     selected_text = text_util.sort_lines(selected_text, reverse=False)
     actions.user.insert_via_clipboard(selected_text)
 
@@ -456,9 +507,9 @@ class ExtensionActions:
   def style_heading(number: int):
     """Make text the specified heading level."""
     # Check if the first word on the line is a heading specifier. If so, keep it selected.
-    actions.edit.line_start()
-    actions.edit.extend_word_right()
-    first_word = actions.edit.selected_text()
+    actions.user.line_start()
+    actions.user.extend_word_right()
+    first_word = actions.user.selected_text()
 
     # Clear the word if it's on the next line.
     if first_word.startswith("\n"):
@@ -474,7 +525,7 @@ class ExtensionActions:
     # specifier with trailing space.
     if not found_heading:
       prefix += " "
-      actions.edit.left()
+      actions.user.left()
 
     actions.insert(prefix)
 
@@ -503,23 +554,23 @@ class ExtensionActions:
 
   def style_bullet_list():
     """Create a bulleted list."""
-    actions.edit.line_start()
+    actions.user.line_start()
     actions.insert("- ")
 
   def style_numbered_list():
     """Create a numbered list."""
-    actions.edit.line_start()
+    actions.user.line_start()
     actions.insert("1. ")
 
   def style_checklist():
     """Create a checklist."""
-    actions.edit.line_start()
+    actions.user.line_start()
     actions.insert("- [ ] ")
 
   def style_toggle_check():
     """Toggle a checkbox."""
-    actions.edit.select_line()
-    line_text = actions.edit.selected_text()
+    actions.user.select_line()
+    line_text = actions.user.selected_text()
     if "[ ]" in line_text:
       line_text = line_text.replace("[ ]", "[x]")
     else:
@@ -527,11 +578,11 @@ class ExtensionActions:
     actions.user.insert_via_clipboard(line_text)
 
     # Go back to the original line (we just inserted a line break if it wasn't the last line in the file).
-    actions.edit.left()
+    actions.user.left()
 
   def surround_selected_text(prefix: str, suffix: str):
     """Surrounds the currently-selected text with the given prefix and suffix."""
-    text = actions.edit.selected_text()
+    text = actions.user.selected_text()
     if text != "":
       actions.user.insert_via_clipboard(f"{prefix}{text}{suffix}")
     else:

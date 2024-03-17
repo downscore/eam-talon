@@ -12,15 +12,15 @@ make if:
   insert("if :")
   key(left)
 make block:
-  edit.line_end()
+  user.line_end()
   insert(":")
   key(enter)
 make elf:
-  edit.line_end()
+  user.line_end()
   insert("elif :")
   key(left)
 make else:
-  edit.line_end()
+  user.line_end()
   insert("else:")
 make for:
   insert("for :")
@@ -179,7 +179,7 @@ hint union:
   key(left)
 
 comment inline:
-  edit.line_end()
+  user.line_end()
   insert("  # ")
 comment to do:
   insert("# TODO: ")

@@ -23,29 +23,6 @@ app: safari
 """
 
 
-@ctx.action_class("edit")
-class EditActions:
-  """Edit action overwrites."""
-
-  def find(text: str = ""):
-    actions.key("cmd-f")
-    # Add a brief pause so we don't swallow subsequent keystrokes before the find dialog opens.
-    actions.sleep("100ms")
-
-  def line_insert_down():
-    actions.edit.line_end()
-    actions.key("shift-enter")
-
-  def line_insert_up():
-    # Going to line end first can help consistently preserve indentation in code.
-    actions.edit.line_end()
-    actions.edit.line_start()
-    actions.key("shift-enter up")
-
-  def paste_match_style():
-    actions.key("cmd-shift-alt-v")
-
-
 @ctx.action_class("browser")
 class BrowserActions:
   """Browser action overwrites."""
@@ -74,6 +51,24 @@ class BrowserActions:
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def find():
+    actions.key("cmd-f")
+    # Add a brief pause so we don't swallow subsequent keystrokes before the find dialog opens.
+    actions.sleep("100ms")
+
+  def line_insert_down():
+    actions.user.line_end()
+    actions.key("shift-enter")
+
+  def line_insert_up():
+    # Going to line end first can help consistently preserve indentation in code.
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.key("shift-enter up")
+
+  def paste_match_style():
+    actions.key("cmd-shift-alt-v")
 
   def tab_switch_by_name(name: str):
     # TODO: Extract code to share with Chrome.

@@ -1,13 +1,13 @@
 # Convenience commands for common actions
 gail:
-  edit.down()
-  edit.line_end()
+  user.down()
+  user.line_end()
 spam: insert(", ")
-disk: edit.save()
+disk: user.save()
 join lines:
-  edit.line_end()
-  edit.line_start()
-  edit.extend_line_start()
+  user.line_end()
+  user.line_start()
+  user.extend_line_start()
   key(backspace:2)
   key(space)
 # Double tap escape
@@ -49,20 +49,20 @@ pointer: "->"
 dub pointer: "=>"
 
 # New lines
-slap: edit.line_insert_down()
-drink line: edit.line_insert_up()
+slap: user.line_insert_down()
+drink line: user.line_insert_up()
 
 # Navigation
-push: edit.right()
-pull: edit.left()
-goop: edit.up()
-gown: edit.down()
-stone: edit.word_left()
-step: edit.word_right()
-head: edit.line_start()
-tail: edit.line_end()
-jump top: edit.file_start()
-jump bottom: edit.file_end()
+push: user.right()
+pull: user.left()
+goop: user.up()
+gown: user.down()
+stone: user.word_left()
+step: user.word_right()
+head: user.line_start()
+tail: user.line_end()
+jump top: user.file_start()
+jump bottom: user.file_end()
 before fragment <user.number>: user.fragment_cursor_before(number)
 after fragment <user.number>: user.fragment_cursor_after(number)
 before car <user.number>:
@@ -73,19 +73,19 @@ after car <user.number>:
   key(right)
 
 # Selection
-select line: edit.select_line()
-select left: edit.extend_left()
-select right: edit.extend_right()
-select up: edit.extend_line_up()
-select down: edit.extend_line_down()
-select word: edit.select_word()
-lefter: edit.extend_word_left()
-writer: edit.extend_word_right()
-select all: edit.select_all()
-select head: edit.extend_line_start()
-select tail: edit.extend_line_end()
-select top: edit.extend_file_start()
-select bottom: edit.extend_file_end()
+select line: user.select_line()
+select left: user.extend_left()
+select right: user.extend_right()
+select up: user.extend_line_up()
+select down: user.extend_line_down()
+select word: user.select_word()
+lefter: user.extend_word_left()
+writer: user.extend_word_right()
+select all: user.select_all()
+select head: user.extend_line_start()
+select tail: user.extend_line_end()
+select top: user.extend_file_start()
+select bottom: user.extend_file_end()
 puffer: user.expand_selection_to_adjacent_characters()
 fragment <user.number>: user.fragment_select(number)
 fragment head <user.number>: user.fragment_select_head(number)
@@ -93,92 +93,92 @@ fragment tail <user.number>: user.fragment_select_tail(number)
 car <user.number> [past <user.number>]: user.select_character_range(number_1, number_2 or 0)
 
 # Deleting
-chuck line: edit.delete_line()
+chuck line: user.delete_line()
 chuck left: key(backspace)
 chuck right: key(delete)
 chuck up:
-  edit.extend_line_up()
-  edit.delete()
+  user.extend_line_up()
+  user.delete()
 chuck down:
-  edit.extend_line_down()
-  edit.delete()
-chuck word: edit.delete_word()
+  user.extend_line_down()
+  user.delete()
+chuck word: user.delete_word()
 scratcher: user.delete_word_left()
 swallow: user.delete_word_right()
 chuck head: user.delete_to_line_start()
 chuck tail: user.delete_to_line_end()
 chuck top:
-  edit.extend_file_start()
-  edit.delete()
+  user.extend_file_start()
+  user.delete()
 chuck bottom:
-  edit.extend_file_end()
-  edit.delete()
+  user.extend_file_end()
+  user.delete()
 chuck fragment <user.number>: user.fragment_delete(number)
 chuck car <user.number> [past <user.number>]:
   user.select_character_range(number_1, number_2 or 0)
-  edit.delete()
+  user.delete()
 
 # Copying to clipboard
 copy that: user.clipboard_history_copy()
-copy no history: edit.copy()
+copy no history: user.copy()
 copy word:
-  edit.select_word()
+  user.select_word()
   user.clipboard_history_copy()
 copy lefter:
-  edit.extend_word_left()
+  user.extend_word_left()
   user.clipboard_history_copy()
 copy righter:
-  edit.extend_word_right()
+  user.extend_word_right()
   user.clipboard_history_copy()
 copy line:
-  edit.select_line()
+  user.select_line()
   user.clipboard_history_copy()
 copy head:
-  edit.extend_line_start()
+  user.extend_line_start()
   user.clipboard_history_copy()
 copy tail:
-  edit.extend_line_end()
+  user.extend_line_end()
   user.clipboard_history_copy()
 
 # Cutting to clipboard
 cut that: user.clipboard_history_cut()
-cut no history: edit.cut()
+cut no history: user.cut()
 cut word:
-  edit.select_word()
+  user.select_word()
   user.clipboard_history_cut()
 cut lefter:
-  edit.extend_word_left()
+  user.extend_word_left()
   user.clipboard_history_cut()
 cut righter:
-  edit.extend_word_right()
+  user.extend_word_right()
   user.clipboard_history_cut()
 cut line:
-  edit.select_line()
+  user.select_line()
   user.clipboard_history_cut()
 cut head:
-  edit.extend_line_start()
+  user.extend_line_start()
   user.clipboard_history_cut()
 cut tail:
-  edit.extend_line_end()
+  user.extend_line_end()
   user.clipboard_history_cut()
 
 # Pasting from clipboard or clipboard history
-pasty: edit.paste()
-paste match: edit.paste_match_style()
+pasty: user.paste()
+paste match: user.paste_match_style()
 paste history <user.number_small>: user.clipboard_history_paste(number_small)
 paste line:
-  edit.line_start()
-  edit.line_start()
-  edit.paste()
+  user.line_start()
+  user.line_start()
+  user.paste()
 
 # Undo and redo
-nope: edit.undo()
-redo that: edit.redo()
+nope: user.undo()
+redo that: user.redo()
 
 # Searching and replacing
-hunt file: edit.find()
-hunt next: edit.find_next()
-hunt last: edit.find_previous()
+hunt file: user.find()
+hunt next: user.find_next()
+hunt last: user.find_previous()
 hunt all: user.find_everywhere()
 replace file: user.replace()
 replace all: user.replace_everywhere()
@@ -187,17 +187,17 @@ jump next <user.word>: user.jump_to_next_occurrence(user.word)
 
 # Line manipulation
 clone line: user.duplicate_line()
-drag up: edit.line_swap_up()
-drag down: edit.line_swap_down()
+drag up: user.line_swap_up()
+drag down: user.line_swap_down()
 
 # Indentation
-dedent: edit.indent_less()
-indent: edit.indent_more()
+dedent: user.indent_less()
+indent: user.indent_more()
 
 # Zoom
-zoom in: edit.zoom_in()
-zoom out: edit.zoom_out()
-zoom reset: edit.zoom_reset()
+zoom in: user.zoom_in()
+zoom out: user.zoom_out()
+zoom reset: user.zoom_reset()
 
 # Surrounding text with symbols.
 inside singles:

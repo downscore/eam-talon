@@ -17,28 +17,24 @@ tag: user.line_numbers
 """
 
 
-@ctx.action_class("edit")
-class EditActions:
-  """Overrides for built-in edit actions."""
+@mod.action_class
+class Actions:
+  """Line-number related actions."""
 
   def jump_line(n: int):
+    """Jumps to the specified line number."""
     actions.key("ctrl-g")
     actions.insert(str(n))
     actions.key("enter")
 
-
-@mod.action_class
-class Actions:
-  """Line number actions."""
-
   def select_line_range(from_index: int, to_index: int = 0):
     """Selects a range of lines. 1-based. If `to_index` is zero, selects the from line."""
-    actions.edit.jump_line(from_index)
+    actions.user.jump_line(from_index)
     if to_index <= from_index:
-      actions.edit.select_line()
+      actions.user.select_line()
     else:
       for _ in range(to_index - from_index + 1):
-        actions.edit.extend_down()
+        actions.user.extend_down()
 
   def bring_line_range(from_index: int, to_index: int = 0):
     """Copies a given line to the cursor location."""
@@ -50,21 +46,21 @@ class Actions:
     actions.user.insert_via_clipboard(placeholder)
 
     # In VS Code, jumps to beginning of line, before indentation.
-    actions.edit.jump_line(from_index)
+    actions.user.jump_line(from_index)
     if to_index <= from_index:
       # Get single line without trailing newline.
-      actions.edit.extend_line_end()
+      actions.user.extend_line_end()
     else:
       for _ in range(to_index - from_index + 1):
-        actions.edit.extend_down()
+        actions.user.extend_down()
       # Deselect the last line's newline.
-      actions.edit.extend_left()
+      actions.user.extend_left()
     actions.sleep("100ms")
 
-    lines = actions.edit.selected_text()
+    lines = actions.user.selected_text()
 
     # Go back to original position and insert the line.
-    actions.edit.find()
+    actions.user.find()
     actions.user.insert_via_clipboard(placeholder)
     actions.key("escape")
     actions.user.insert_via_clipboard(lines)

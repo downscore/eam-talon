@@ -18,7 +18,7 @@ class ExtensionActions:
 
   def base64_encode_selected():
     """Base64 encodes the selected text."""
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     if len(selected) == 0:
       return
     encoded_string = base64.b64encode(selected.encode("utf-8")).decode("utf-8")
@@ -26,7 +26,7 @@ class ExtensionActions:
 
   def base64_decode_selected():
     """Base64 decodes the selected text."""
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     if len(selected) == 0:
       return
     decoded_string = base64.b64decode(selected).decode("utf-8")
@@ -34,7 +34,7 @@ class ExtensionActions:
 
   def url_encode_selected():
     """URL encodes the selected text."""
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     if len(selected) == 0:
       return
     encoded_string = urllib.parse.quote(selected)
@@ -42,7 +42,7 @@ class ExtensionActions:
 
   def url_decode_selected():
     """URL decodes the selected text."""
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     if len(selected) == 0:
       return
     decoded_string = urllib.parse.unquote(selected)

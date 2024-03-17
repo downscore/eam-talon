@@ -29,18 +29,13 @@ class Actions:
     actions.key("enter")
 
 
-@ctx.action_class("edit")
-class EditActions:
-  """Edit action overwrites."""
-
-  def select_line(n: int = None):
-    # cmd-left stops before checkboxes in Obsidian.
-    actions.key("cmd-left:2 cmd-shift-right shift-right")
-
-
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def select_line():
+    # cmd-left stops before checkboxes in Obsidian.
+    actions.key("cmd-left:2 cmd-shift-right shift-right")
 
   def navigation_back():
     actions.key("cmd-alt-left")

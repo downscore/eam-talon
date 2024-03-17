@@ -75,13 +75,13 @@ class Actions:
 
   def clipboard_history_cut():
     """Cut and record text to history."""
-    _add_to_history(actions.edit.selected_text())
-    actions.edit.cut()
+    _add_to_history(actions.user.selected_text())
+    actions.user.cut()
 
   def clipboard_history_copy():
     """Copy and record text to history."""
-    _add_to_history(actions.edit.selected_text())
-    actions.edit.copy()
+    _add_to_history(actions.user.selected_text())
+    actions.user.copy()
 
   def clipboard_history_paste(index: int):
     """Copy and record text to history."""

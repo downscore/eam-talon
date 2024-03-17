@@ -87,7 +87,7 @@ class Actions:
     """Formats the current selection in place using the given formatters."""
     formatter_enums = list(map(lambda f: _FORMATTERS_BY_WORD[f], formatter_words))
     options = format_util.get_format_options(formatter_enums)
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
@@ -106,7 +106,7 @@ class Actions:
 
   def format_selection_title():
     """Reformats the current selection as a title."""
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     reformatted = _title_reformat_string(selected)
     if not reformatted:
       return
@@ -125,7 +125,7 @@ class Actions:
     """Reformats the current selection as a sentence."""
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
@@ -135,7 +135,7 @@ class Actions:
     """Reformats the current selection as a phrase."""
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.LOWERCASE
-    selected = actions.edit.selected_text()
+    selected = actions.user.selected_text()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return

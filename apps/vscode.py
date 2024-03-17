@@ -60,8 +60,8 @@ class AppActions:
     actions.user.vscode("workbench.action.newWindow")
 
 
-@ctx.action_class("edit")
-class EditActions:
+@ctx.action_class("user")
+class ExtensionActions:
   """Action overwrites."""
 
   # Note: Prevents using delete line command outside of editor (e.g. in Search panel).
@@ -103,20 +103,15 @@ class EditActions:
     actions.user.vscode("workbench.action.files.saveAll")
 
   # Note: Prevents using select line command outside of editor (e.g. in Search panel).
-  # def select_line(n: int = 0):
+  # def select_line():
   #   actions.user.vscode("expandLineSelection")
 
-  def select_line(n: int = 0):
+  def select_line():
     # Ensure leading white spaces included.
     actions.key("cmd-right cmd-left cmd-left cmd-shift-right shift-right")
 
   def zoom_reset():
     actions.key("cmd-keypad_0")
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
 
   def duplicate_line():
     actions.user.vscode("editor.action.copyLinesDownAction")

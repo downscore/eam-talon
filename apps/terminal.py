@@ -19,8 +19,8 @@ app: terminal
 """
 
 
-@ctx.action_class("edit")
-class EditActions:
+@ctx.action_class("user")
+class ExtensionActions:
   """Action overwrites."""
 
   def delete_line():
@@ -32,17 +32,12 @@ class EditActions:
   def line_start():
     actions.key("ctrl-a")
 
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
-
   def delete_to_line_end():
     actions.key("ctrl-k")
 
   def delete_word_left(n: int = 1):
     # Deletes to the end of the line. Makes this command useful for the last word on the line.
-    actions.edit.word_left()
+    actions.user.word_left()
     actions.user.delete_to_line_end()
 
   def split_up():

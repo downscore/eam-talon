@@ -2,7 +2,7 @@ tag: user.lang_cpp
 -
 # Terminates the current line with a semicolon and makes a new line below.
 glide:
-  edit.line_end()
+  user.line_end()
   insert(";")
   key(enter)
 
@@ -10,16 +10,16 @@ make if:
   insert("if ()")
   key(left)
 make block:
-  edit.line_end()
+  user.line_end()
   insert(" {}")
   key(left)
   key(enter)
 make elf:
-  edit.line_end()
+  user.line_end()
   insert(" else if ()")
   key(left)
 make else:
-  edit.line_end()
+  user.line_end()
   insert(" else {}")
   key(left)
   key(enter)
@@ -191,7 +191,7 @@ tip vector star:
   key(left:3)
 
 comment inline:
-  edit.line_end()
+  user.line_end()
   insert("  // ")
 comment block:
   insert("/**/")

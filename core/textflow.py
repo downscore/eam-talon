@@ -54,23 +54,23 @@ _POTATO_LINES_AFTER = 10
 
 # Input action functions keyed by potato action type.
 _POTATO_INPUT_ACTIONS_BY_TYPE = {
-    textflow_potato.PotatoEditorActionType.GO_UP: actions.edit.up,
-    textflow_potato.PotatoEditorActionType.GO_DOWN: actions.edit.down,
-    textflow_potato.PotatoEditorActionType.GO_LEFT: actions.edit.left,
-    textflow_potato.PotatoEditorActionType.GO_RIGHT: actions.edit.right,
-    textflow_potato.PotatoEditorActionType.GO_WORD_LEFT: actions.edit.word_left,
-    textflow_potato.PotatoEditorActionType.GO_WORD_RIGHT: actions.edit.word_right,
-    textflow_potato.PotatoEditorActionType.GO_LINE_START: actions.edit.line_start,
-    textflow_potato.PotatoEditorActionType.GO_LINE_END: actions.edit.line_end,
-    textflow_potato.PotatoEditorActionType.EXTEND_UP: actions.edit.extend_up,
-    textflow_potato.PotatoEditorActionType.EXTEND_DOWN: actions.edit.extend_down,
-    textflow_potato.PotatoEditorActionType.EXTEND_LEFT: actions.edit.extend_left,
-    textflow_potato.PotatoEditorActionType.EXTEND_RIGHT: actions.edit.extend_right,
-    textflow_potato.PotatoEditorActionType.EXTEND_WORD_LEFT: actions.edit.extend_word_left,
-    textflow_potato.PotatoEditorActionType.EXTEND_WORD_RIGHT: actions.edit.extend_word_right,
-    textflow_potato.PotatoEditorActionType.EXTEND_LINE_START: actions.edit.extend_line_start,
-    textflow_potato.PotatoEditorActionType.EXTEND_LINE_END: actions.edit.extend_line_end,
-    textflow_potato.PotatoEditorActionType.CLEAR: actions.edit.delete,
+    textflow_potato.PotatoEditorActionType.GO_UP: actions.user.up,
+    textflow_potato.PotatoEditorActionType.GO_DOWN: actions.user.down,
+    textflow_potato.PotatoEditorActionType.GO_LEFT: actions.user.left,
+    textflow_potato.PotatoEditorActionType.GO_RIGHT: actions.user.right,
+    textflow_potato.PotatoEditorActionType.GO_WORD_LEFT: actions.user.word_left,
+    textflow_potato.PotatoEditorActionType.GO_WORD_RIGHT: actions.user.word_right,
+    textflow_potato.PotatoEditorActionType.GO_LINE_START: actions.user.line_start,
+    textflow_potato.PotatoEditorActionType.GO_LINE_END: actions.user.line_end,
+    textflow_potato.PotatoEditorActionType.EXTEND_UP: actions.user.extend_up,
+    textflow_potato.PotatoEditorActionType.EXTEND_DOWN: actions.user.extend_down,
+    textflow_potato.PotatoEditorActionType.EXTEND_LEFT: actions.user.extend_left,
+    textflow_potato.PotatoEditorActionType.EXTEND_RIGHT: actions.user.extend_right,
+    textflow_potato.PotatoEditorActionType.EXTEND_WORD_LEFT: actions.user.extend_word_left,
+    textflow_potato.PotatoEditorActionType.EXTEND_WORD_RIGHT: actions.user.extend_word_right,
+    textflow_potato.PotatoEditorActionType.EXTEND_LINE_START: actions.user.extend_line_start,
+    textflow_potato.PotatoEditorActionType.EXTEND_LINE_END: actions.user.extend_line_end,
+    textflow_potato.PotatoEditorActionType.CLEAR: actions.user.delete,
     textflow_potato.PotatoEditorActionType.INSERT_TEXT: actions.user.insert_via_clipboard,
     textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_WITH_HISTORY: actions.user.clipboard_history_set_text,
     textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_NO_HISTORY: actions.clip.set_text,
@@ -105,7 +105,7 @@ def _get_context_potato_mode() -> TextFlowContext:
 
   # Collapse selection if necessary.
   if len(selected_text) > 0:
-    actions.edit.left()
+    actions.user.left()
 
   # Do not preserve the selection if it is long. Long selections are usually not useful in TextFlow and they can make
   # a potato-mode command execute very slowly.
@@ -120,7 +120,7 @@ def _get_context_potato_mode() -> TextFlowContext:
 
   # Restore the selection.
   for _ in range(len(selected_text)):
-    actions.edit.extend_right()
+    actions.user.extend_right()
 
   # Compute selected range.
   selection_range = tf.TextRange(len(text_before), len(text_before) + len(selected_text))
@@ -221,7 +221,7 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
 
   for action in editor_actions:
     if action.action_type == tf.EditorActionType.CLEAR:
-      actions.edit.delete()
+      actions.user.delete()
     elif action.action_type == tf.EditorActionType.INSERT_TEXT:
       actions.user.insert_via_clipboard(action.text)
     elif action.action_type == tf.EditorActionType.SET_CLIPBOARD_NO_HISTORY:
@@ -399,7 +399,7 @@ class Actions:
     """Gets the selected text. For editors that copy/cut the current line when nothing is selected, this should be
     overridden to return an empty string. Otherwise, most textflow commands will not work for targets after the
     cursor."""
-    return actions.edit.selected_text()
+    return actions.user.selected_text()
 
   def textflow_force_potato_mode() -> bool:
     """Returns whether to require potato mode even if the accessibility API is available. Required in some apps
@@ -450,9 +450,9 @@ class Actions:
     _run_command(command)
 
     # Make this work in vscode if there is leading white space.
-    actions.edit.line_end()
-    actions.edit.line_start()
-    actions.edit.line_start()
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.user.line_start()
     actions.key("enter")
     actions.key("up")
 
@@ -461,7 +461,7 @@ class Actions:
     target_from = tf.CompoundTarget(simple_target)
     command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, target_from)
     _run_command(command)
-    actions.edit.line_insert_down()
+    actions.user.line_insert_down()
 
   def textflow_segment_word(word1: str, word2: str):
     """Segment a word into two. e.g. overmatched->over matched."""
@@ -548,12 +548,12 @@ class Actions:
     selection behavior."""
     # Select a few lines above the cursor.
     for _ in range(0, _POTATO_LINES_BEFORE):
-      actions.edit.extend_up()
-    actions.edit.extend_line_start()
+      actions.user.extend_up()
+    actions.user.extend_line_start()
 
-    result = actions.edit.selected_text()
+    result = actions.user.selected_text()
     if len(result) > 0:
-      actions.edit.right()
+      actions.user.right()
     return result
 
   def textflow_potato_get_text_after_cursor():
@@ -561,10 +561,10 @@ class Actions:
     selection behavior."""
     # Select a few lines below the cursor.
     for _ in range(0, _POTATO_LINES_AFTER):
-      actions.edit.extend_down()
-    actions.edit.extend_line_end()
+      actions.user.extend_down()
+    actions.user.extend_line_end()
 
-    result = actions.edit.selected_text()
+    result = actions.user.selected_text()
     if len(result) > 0:
-      actions.edit.left()
+      actions.user.left()
     return result

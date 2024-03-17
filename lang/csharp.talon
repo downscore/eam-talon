@@ -2,7 +2,7 @@ tag: user.lang_csharp
 -
 # Terminates the current line with a semicolon and makes a new line below.
 glide:
-  edit.line_end()
+  user.line_end()
   insert(";")
   key(enter)
 
@@ -11,16 +11,16 @@ make if:
   insert("if ()")
   key(left)
 make block:
-  edit.line_end()
+  user.line_end()
   insert("{}")
   key(left)
   key(enter)
 make elf:
-  edit.line_end()
+  user.line_end()
   insert(" else if ()")
   key(left)
 make else:
-  edit.line_end()
+  user.line_end()
   insert(" else {}")
   key(left)
   key(enter)
@@ -117,7 +117,7 @@ tip optional: insert("?")
 tip var: insert("var")
 
 comment inline:
-  edit.line_end()
+  user.line_end()
   insert("  // ")
 comment block start:
   insert("/*")

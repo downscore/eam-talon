@@ -19,8 +19,8 @@ app: notes
 """
 
 
-@ctx.action_class("edit")
-class EditActions:
+@ctx.action_class("user")
+class ExtensionActions:
   """Action overwrites."""
 
   def line_swap_down():
@@ -31,11 +31,6 @@ class EditActions:
 
   def paste_match_style():
     actions.key("cmd-shift-alt-v")
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
 
   def style_title():
     actions.key("cmd-shift-t")

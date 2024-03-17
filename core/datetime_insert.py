@@ -15,19 +15,19 @@ mod = Module()
 class Actions:
   """Datetime actions."""
 
-  def time_format(fmt: str = None) -> str:
+  def time_format(fmt: str = "") -> str:
     """Return the current time, formatted.
         fmt: strftime()-style format string, defaults to ISO format."""
     now = datetime.datetime.now()
-    if fmt is None:
+    if fmt == "":
       return now.isoformat()
     return now.strftime(fmt)
 
-  def time_format_utc(fmt: str = None) -> str:
+  def time_format_utc(fmt: str = "") -> str:
     """Return the current UTC time, formatted.
         fmt: strftime()-style format string, defaults to ISO format."""
     now = datetime.datetime.utcnow()
-    if fmt is None:
+    if fmt == "":
       return now.isoformat()
     return now.strftime(fmt)
 
@@ -38,10 +38,10 @@ class Actions:
 
   def notify_selected_unix_to_datetime():
     """Convert the selected unix timestamp to a datetime and display it in a notification."""
-    dt = datetime_util.convert_unix_timestamp(actions.edit.selected_text())
+    dt = datetime_util.convert_unix_timestamp(actions.user.selected_text())
     actions.app.notify(str(dt))
 
   def clipboard_selected_unix_to_datetime():
     """Convert the selected unix timestamp to a datetime and copy it to the clipboard."""
-    dt = datetime_util.convert_unix_timestamp(actions.edit.selected_text())
+    dt = datetime_util.convert_unix_timestamp(actions.user.selected_text())
     clip.set_text(str(dt))

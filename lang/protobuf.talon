@@ -2,13 +2,13 @@ tag: user.lang_protobuf
 -
 # Terminates the current line with a semicolon and makes a new line below.
 glide:
-  edit.line_end()
+  user.line_end()
   insert(";")
   key(enter)
 
 # C++
 make block:
-  edit.line_end()
+  user.line_end()
   insert("{}")
   key(left)
   key(enter)
@@ -83,7 +83,7 @@ tip status or:
 tip status: insert("absl::Status")
 
 comment inline:
-  edit.line_end()
+  user.line_end()
   insert("  // ")
 comment block start:
   insert("/*")

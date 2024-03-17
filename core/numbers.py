@@ -32,10 +32,10 @@ ctx.lists["self.ordinals_small"] = _ORDINALS_SMALL_DICT.keys()
 
 def _get_selected_number() -> text_util.StrippedString:
   """Get the currently-selected number, or the number where the cursor is located."""
-  selected: str = actions.edit.selected_text()
+  selected: str = actions.user.selected_text()
   if len(selected) == 0:
-    actions.edit.select_word()
-    selected = actions.edit.selected_text()
+    actions.user.select_word()
+    selected = actions.user.selected_text()
   selected_stripped = text_util.StrippedString(selected, text_util.StripMethod.KEEP_FIRST_NUMBER)
   return selected_stripped
 

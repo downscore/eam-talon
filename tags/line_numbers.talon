@@ -1,31 +1,31 @@
 tag: user.line_numbers
 -
-jump line <user.number>: edit.jump_line(number)
+jump line <user.number>: user.jump_line(number)
 pour line <user.number>:
-  edit.jump_line(number)
-  edit.line_insert_down()
+  user.jump_line(number)
+  user.line_insert_down()
 drink line <user.number>:
-  edit.jump_line(number)
-  edit.line_insert_up()
+  user.jump_line(number)
+  user.line_insert_up()
 select line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
 chuck line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
-  edit.delete()
+  user.delete()
 copy line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
   user.clipboard_history_copy()
-  edit.right()
+  user.right()
 cut line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
   user.clipboard_history_cut()
-  edit.right()
+  user.right()
 indent line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
-  edit.indent_more()
-  edit.right()
+  user.indent_more()
+  user.right()
 dedent line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
-  edit.indent_less()
-  edit.right()
+  user.indent_less()
+  user.right()
 bring line <user.number> [past <user.number>]: user.bring_line_range(number_1, number_2 or 0)

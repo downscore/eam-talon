@@ -21,7 +21,7 @@ make yaml block:
   key("left:4")
 
 lister:
-  edit.line_insert_down()
+  user.line_insert_down()
   insert("* ")
 
 # Horizontal rule

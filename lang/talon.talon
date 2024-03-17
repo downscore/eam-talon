@@ -11,7 +11,7 @@ comment:
 
 make insert:
   insert("insert(\"\")")
-  key(left left)
+  key(left:2)
 make key:
   insert("key()")
   key(left)

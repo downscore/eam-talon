@@ -25,7 +25,7 @@ make else:
   key(enter)
 make for zero:
   insert("for (int i = 0; i < ; i++)")
-  key(left left left left left left)
+  key(left:6)
 make for const:
   insert("for (const auto& )")
   key(left)

@@ -26,7 +26,7 @@ make else:
   key(enter)
 make for zero:
   insert("for (var i = 0; i < ; i++)")
-  key(left left left left left left)
+  key(left:6)
 make for each:
   insert("foreach ()")
   key(left)

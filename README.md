@@ -3,7 +3,13 @@
 Custom Talon Voice scripts.
 
 These scripts are based on the Talon community scripts, but are almost entirely rewritten and pared-down. They only
-support MacOS and are heavily customized to my own usage.
+support MacOS and are heavily customized.
+
+These scripts are not currently compatible with [Cursorless](https://github.com/cursorless-dev/cursorless/tree/main),
+but have a feature called TextFlow that makes Cursorless-like commmands available globally. In it, words/tokens are
+typically identified using their first few letters. e.g. to select "identified", you could say `grab sit drum` or just
+`grab identified`. If the word or character sequence occurs in multiple places, you can disambiguate:
+`grab second last sit drum`, `grab next identified`.
 
 ## Attributions
 

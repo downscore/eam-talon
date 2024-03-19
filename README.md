@@ -2,7 +2,8 @@
 
 Custom Talon Voice scripts.
 
-These scripts only support MacOS and are heavily customized to my own usage.
+These scripts are based on the Talon community scripts, but are almost entirely rewritten and pared-down. They only
+support MacOS and are heavily customized to my own usage.
 
 ## Attributions
 

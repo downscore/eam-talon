@@ -180,9 +180,6 @@ def run_command(
   if decoded_contents["error"] is not None:
     raise ValueError(decoded_contents["error"])
 
-  # TODO: Do we need to sleep here? What problems does this address?
-  # actions.sleep("25ms")
-
   return decoded_contents["returnValue"]
 
 
@@ -213,6 +210,15 @@ class Actions:
     # Default implementation (VS Code not active) throws an exception.
     raise RuntimeError(f"Tried running (wait) VS Code command when VS Code not active. Command: {command_id}")
 
+  def vscode_return_value(command_id: str,
+                          arg1: Any = None,
+                          arg2: Any = None,
+                          arg3: Any = None,
+                          arg4: Any = None) -> Any:
+    """Executes a command via VS Code Command Server and returns its return value."""
+    # Default implementation (VS Code not active) throws an exception.
+    raise RuntimeError(f"Tried running (return) VS Code command when VS Code not active. Command: {command_id}")
+
 
 @ctx.action_class("user")
 class UserActions:
@@ -226,12 +232,17 @@ class UserActions:
     return True
 
   def vscode(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
-    """Executes a command via VS Code Command Server."""
     run_command(command_id, arg1, arg2, arg3, arg4)
 
   def vscode_and_wait(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
-    """Executes a command via VS Code Command Server and waits for it to finish."""
     run_command(command_id, arg1, arg2, arg3, arg4, wait_for_finish=True)
+
+  def vscode_return_value(command_id: str,
+                          arg1: Any = None,
+                          arg2: Any = None,
+                          arg3: Any = None,
+                          arg4: Any = None) -> Any:
+    return run_command(command_id, arg1, arg2, arg3, arg4, return_command_output=True)
 
 
 def pre_phrase(_: Any):

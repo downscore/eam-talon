@@ -88,7 +88,7 @@ class TextFlowContext:
   text: str
   selection_range: tf.TextRange
   # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe by default.
-  # If `textflow_get_context` is overridden but `textflow_execute_editor_actions` is not, the non-potato default
+  # If `textflow_get_context` is overridden but `textflow_set_selection_action` is not, the non-potato default
   # implementation is likely to fail (e.g. the overridden context action may not populate `editor_element`).
   potato_mode: bool = True
   # The starting offset of `text` in the active editor. Used when we are not operating on the entire contents of the
@@ -237,12 +237,7 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
     elif action.action_type == tf.EditorActionType.SET_SELECTION_RANGE:
       if action.text_range is None:
         raise ValueError("Set selection range action with missing range.")
-      if context.editor_element is None:
-        raise ValueError("Element missing for accessibility API action.")
-      select_span = types.span.Span(action.text_range.start + context.text_offset,
-                                    action.text_range.end + context.text_offset)
-
-      context.editor_element.AXSelectedTextRange = select_span
+      actions.user.textflow_set_selection_action(action, context)
 
     # Sleep to let the UI catch up to the commands.
     actions.sleep("50ms")
@@ -260,7 +255,7 @@ def _run_command(command: tf.Command):
   editor_actions = textflow.run_command(command, context.text, context.selection_range, utility_functions)
 
   # Execute the editor actions.
-  actions.user.textflow_execute_editor_actions(editor_actions, context)
+  _execute_editor_actions(editor_actions, context)
 
 
 def _capture_to_words(m) -> list[str]:
@@ -579,7 +574,13 @@ class Actions:
     """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility extensions."""
     return _get_context()
 
-  def textflow_execute_editor_actions(editor_actions: list[tf.EditorAction], context: TextFlowContext):
-    """Executes a set of editor actions, given a textflow context. Can be overwritten in apps with accessibility
+  def textflow_set_selection_action(editor_action: tf.EditorAction, context: TextFlowContext):
+    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with accessibility
     extensions."""
-    _execute_editor_actions(editor_actions, context)
+    if editor_action.text_range is None:
+      raise ValueError("Set selection range action with missing range.")
+    if context.editor_element is None:
+      raise ValueError("Element missing for accessibility API action.")
+    select_span = types.span.Span(editor_action.text_range.start + context.text_offset,
+                                  editor_action.text_range.end + context.text_offset)
+    context.editor_element.AXSelectedTextRange = select_span

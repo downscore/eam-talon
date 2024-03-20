@@ -54,6 +54,7 @@ make private: insert("private ")
 make public: insert("public ")
 make async: insert("async ")
 make await: insert("await ")
+make function: insert("function ")
 
 # Operators
 a sign: insert(" = ")

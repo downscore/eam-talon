@@ -87,9 +87,11 @@ class TextFlowContext:
   """Context, including text and selection range, that TextFlow will act in."""
   text: str
   selection_range: tf.TextRange
-  # Whether we are in potato mode.
-  potato_mode: bool = False
-  # The starting offset of `text` in the active editor. Used when we are cnot operating on the entire contents of the
+  # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe by default.
+  # If `textflow_get_context` is overridden but `textflow_execute_editor_actions` is not, the non-potato default
+  # implementation is likely to fail (e.g. the overridden context action may not populate `editor_element`).
+  potato_mode: bool = True
+  # The starting offset of `text` in the active editor. Used when we are not operating on the entire contents of the
   # editor. Not used in potato mode.
   text_offset: int = 0
   # The element that contains the text we are editing. Not used in potato mode.
@@ -197,7 +199,7 @@ def _get_context() -> TextFlowContext:
     raise ValueError(
         f"Unexpected selected text length. Expected: {selection_range.length()}, Actual: {len(selected_text)}")
 
-  return TextFlowContext(text, selection_range, editor_element=focused_element)
+  return TextFlowContext(text, selection_range, potato_mode=False, editor_element=focused_element)
 
 
 def _execute_editor_actions_potato_mode(editor_actions: list[tf.EditorAction], context: TextFlowContext):
@@ -249,7 +251,7 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
 def _run_command(command: tf.Command):
   """Runs the given command and executes the resulting input actions."""
   # Get the text we are acting on, along with other context information.
-  context = _get_context()
+  context = actions.user.textflow_get_context()
 
   # Collect required utility function.
   utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones, actions.user.get_next_homophone)
@@ -258,7 +260,7 @@ def _run_command(command: tf.Command):
   editor_actions = textflow.run_command(command, context.text, context.selection_range, utility_functions)
 
   # Execute the editor actions.
-  _execute_editor_actions(editor_actions, context)
+  actions.user.textflow_execute_editor_actions(editor_actions, context)
 
 
 def _capture_to_words(m) -> list[str]:
@@ -572,3 +574,12 @@ class Actions:
     if len(result) > 0:
       actions.user.left()
     return result
+
+  def textflow_get_context() -> TextFlowContext:
+    """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility extensions."""
+    return _get_context()
+
+  def textflow_execute_editor_actions(editor_actions: list[tf.EditorAction], context: TextFlowContext):
+    """Executes a set of editor actions, given a textflow context. Can be overwritten in apps with accessibility
+    extensions."""
+    _execute_editor_actions(editor_actions, context)

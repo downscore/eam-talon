@@ -122,7 +122,7 @@ def _get_prephrase_signal_path() -> Optional[Path]:
 
 def run_command(
     command_id: str,
-    *args: str,
+    *args: Any,
     wait_for_finish: bool = False,
     return_command_output: bool = False,
 ):
@@ -130,7 +130,7 @@ def run_command(
     Function args correspond to fields in the Command Server Request JSON. Returns the command output if requested.
     """
   # Convert variable args tuple to a list for use in the dict that will be serialized to JSON.
-  args_list = list(args)
+  args_list = [arg for arg in args if arg is not None]
 
   # Make sure the IPC path exists. It should be created by the Command Server Extension.
   ipc_path = _get_ipc_path()
@@ -203,12 +203,12 @@ class Actions:
     """Indicates whether the pre-phrase signal was emitted at the start of this phrase."""
     return _did_emit_pre_phrase_signal
 
-  def vscode(command_id: str):
+  def vscode(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
     """Executes a command via VS Code Command Server."""
     # Default implementation (VS Code not active) throws an exception.
     raise RuntimeError(f"Tried running VS Code command when VS Code not active. Command: {command_id}")
 
-  def vscode_and_wait(command_id: str):
+  def vscode_and_wait(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
     """Executes a command via VS Code Command Server and waits for it to finish."""
     # Default implementation (VS Code not active) throws an exception.
     raise RuntimeError(f"Tried running (wait) VS Code command when VS Code not active. Command: {command_id}")
@@ -225,15 +225,13 @@ class UserActions:
     signal_path.touch()
     return True
 
-  def vscode(command_id: str):
+  def vscode(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
     """Executes a command via VS Code Command Server."""
-    # Default implementation (VS Code not active) throws an exception.
-    run_command(command_id)
+    run_command(command_id, arg1, arg2, arg3, arg4)
 
-  def vscode_and_wait(command_id: str):
+  def vscode_and_wait(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
     """Executes a command via VS Code Command Server and waits for it to finish."""
-    # Default implementation (VS Code not active) throws an exception.
-    run_command(command_id, wait_for_finish=True)
+    run_command(command_id, arg1, arg2, arg3, arg4, wait_for_finish=True)
 
 
 def pre_phrase(_: Any):

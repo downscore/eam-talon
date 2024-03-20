@@ -50,5 +50,5 @@ class UserActions:
     extensions."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range.")
-    actions.user.vscode("eam-talon.setSelection", editor_action.text_range.start + context.text_offset,
-                        editor_action.text_range.end + context.text_offset)
+    actions.user.vscode_and_wait("eam-talon.setSelection", editor_action.text_range.start + context.text_offset,
+                                 editor_action.text_range.end + context.text_offset)

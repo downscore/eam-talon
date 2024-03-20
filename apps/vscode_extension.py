@@ -28,3 +28,6 @@ class UserActions:
 
   def select_line_range(from_index: int, to_index: int = 0):
     actions.user.vscode("eam-talon.selectLineRange", from_index, to_index if to_index > 0 else None)
+
+  def bring_line_range(from_index: int, to_index: int = 0):
+    actions.user.vscode("eam-talon.copyLinesToCursor", from_index, to_index if to_index > 0 else None)

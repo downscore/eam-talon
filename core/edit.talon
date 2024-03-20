@@ -167,7 +167,7 @@ cut tail:
 # Pasting from clipboard or clipboard history
 pasty: user.paste()
 paste match: user.paste_match_style()
-paste history <user.number_small>: user.clipboard_history_paste(number_small)
+pastry <user.number_small>: user.clipboard_history_paste(number_small)
 paste line:
   user.line_start()
   user.line_start()

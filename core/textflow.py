@@ -571,7 +571,8 @@ class Actions:
     return result
 
   def textflow_get_context() -> TextFlowContext:
-    """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility extensions."""
+    """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility extensions.
+    If this is overwritten, `potato_mode` in the result supercedes the `textflow_force_potato_mode` action."""
     return _get_context()
 
   def textflow_set_selection_action(editor_action: tf.EditorAction, context: TextFlowContext):

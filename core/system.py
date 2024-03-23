@@ -61,4 +61,5 @@ class Actions:
 
   def system_notify_say(text: str):
     """Says the given text."""
-    os.system(f"say \"{text}\"")
+    # TODO: Better text-to-speech implementation. This hangs sometimes.
+    # os.system(f"say \"{text}\"")

@@ -58,8 +58,3 @@ class Actions:
     toggling speech via a button (as opposed to a spoken command)."""
     actions.speech.toggle()
     actions.user.status_file_update()
-
-  def system_notify_say(text: str):
-    """Says the given text."""
-    # TODO: Better text-to-speech implementation. This hangs sometimes.
-    # os.system(f"say \"{text}\"")

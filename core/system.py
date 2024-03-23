@@ -4,7 +4,6 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-import os
 from talon import Module, actions, app, imgui, registry, scope
 
 mod = Module()

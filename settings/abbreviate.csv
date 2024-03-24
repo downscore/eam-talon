@@ -41,6 +41,7 @@ cfg,configuration
 ctx,context
 ctrl,control
 const,constant
+conv,convolution
 coord,coordinate
 coords,coordinates
 cos,cosine
@@ -167,6 +168,7 @@ reg,register
 reg,registery
 regex,regular expression
 regex,regular expressions
+ReLU,rectified linear
 repl,repel
 repr,represent
 repr,representation

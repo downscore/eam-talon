@@ -79,3 +79,8 @@ class Actions:
       actions.insert(format_util.format_phrase(prose, options))
     else:
       actions.insert(prose)
+
+  def dictation_repeat_line_insert_down(n: int):
+    """Inserts a new line below `n` times"""
+    for _ in range(n):
+      actions.user.line_insert_down()

@@ -49,6 +49,8 @@ scratcher [<user.ordinals_small>]:
   user.delete_word_left(ordinals_small or 1)
 swallow [<user.ordinals_small>]:
   user.delete_word_right(ordinals_small or 1)
+slap [<user.ordinals_small>]:
+  user.dictation_repeat_line_insert_down(ordinals_small or 1)
 
 # Insert punctuation with automatic spacing, and allow chaining with prose.
 scratcher punch:
@@ -71,16 +73,20 @@ drip: user.dictation_insert_prose(",")
 ^thou do: user.mode_command()
 # "style heading <number>".
 ^still (heading|hitting) <user.number_small>$: user.style_heading(number_small)
-#"tail"
+# "tail"
 ^(till|te)$: user.line_end()
-#"pasty"
+# "pasty"
 ^hasty$: user.paste()
-#"title"
+# "title"
 ^te (a|la) <user.prose>$: insert(user.format_title_with_history(prose))
 ^te (a|la) <user.prose> anchor: insert(user.format_title_with_history(prose))
 ^te (a|la) <user.prose> void:
   insert(user.format_title_with_history(prose))
   insert(" ")
+# "gail"
+^(gale|gill)$:
+  user.down()
+  user.line_end()
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

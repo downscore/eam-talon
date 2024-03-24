@@ -117,8 +117,6 @@ def run_command(
   # Make sure the IPC path exists. It should be created by the Command Server Extension.
   ipc_path = _get_ipc_path()
 
-  print(f"Using Obsidian Command Server IPC path: {ipc_path}")
-
   if not ipc_path.exists():
     raise FileNotFoundError(f"Command Server directory not found: {ipc_path}")
   request_path = ipc_path / "request.json"

@@ -91,6 +91,8 @@ class Actions:
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
+    for formatter_enum in formatter_enums:
+      _LAST_OUTPUT_BY_FORMATTER[formatter_enum] = reformatted
     actions.user.insert_via_clipboard(reformatted)
 
   def format_title(phrase: str) -> str:
@@ -106,10 +108,12 @@ class Actions:
 
   def format_selection_title():
     """Reformats the current selection as a title."""
+    global _LAST_TITLE
     selected = actions.user.selected_text()
     reformatted = _title_reformat_string(selected)
     if not reformatted:
       return
+    _LAST_TITLE = reformatted
     actions.user.insert_via_clipboard(reformatted)
 
   def format_sentence(phrase: str) -> str:
@@ -123,12 +127,14 @@ class Actions:
 
   def format_selection_sentence():
     """Reformats the current selection as a sentence."""
+    global _LAST_SENTENCE
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
     selected = actions.user.selected_text()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
+    _LAST_SENTENCE = reformatted
     actions.user.insert_via_clipboard(reformatted)
 
   def format_selection_phrase():

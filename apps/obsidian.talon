@@ -56,6 +56,12 @@ copilot answer:
   insert("Answer question")
   sleep(100ms)
   key(enter)
+copilot proofread:
+  user.obsidian("Copilot: Apply custom prompt to selection")
+  sleep(100ms)
+  insert("Proofread Dictated")
+  sleep(100ms)
+  key(enter)
 
 # Toggle source view
 source dog: user.obsidian("Toggle Live Preview/Source mode")

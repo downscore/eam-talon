@@ -56,6 +56,14 @@ class ExtensionActions:
       actions.user.left()
     return result
 
+  def line_insert_up():
+    actions.user.line_start()
+    actions.key("enter up")
+
+  def line_insert_down():
+    actions.user.line_end()
+    actions.key("enter")
+
   def insert_link():
     actions.key("cmd-k")
 

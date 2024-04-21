@@ -37,6 +37,7 @@ hard brake,hard break
 hard braking,hard breaking
 iterm,eye term
 JIRA
+jpeg,jay peg
 lat/long coords,lat long cords
 LLM
 min
@@ -86,6 +87,14 @@ add,ad
 dominance,dominants
 JSON,Jason
 main,maine
+
+# Escaping command words so they can be inlcuded in prose.
+scrape,scrape scrape
+punch,scrape punch
+drip,scrape drip
+bang,scrape bang
+quest,scrape quest
+stack,scrape stack
 
 # Misspellings, mistakes, or uncommon words in Talon model.
 2D,tutti
@@ -139,6 +148,7 @@ yeah,ya
 collide,clit
 pass,puss
 lane change,lynching
+scroll down,scrotal
 
 # Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
 end,ender

@@ -87,6 +87,8 @@ drip: user.dictation_insert_prose(",")
 ^(gale|gill)$:
   user.down()
   user.line_end()
+# "pull"
+pol: user.left()
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

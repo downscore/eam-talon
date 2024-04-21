@@ -72,6 +72,11 @@ make include:
   key(left)
 make abseil: insert("absl::")
 make standard: insert("std::")
+make namespace:
+  user.line_end()
+  insert("namespace {}  // namespace")
+  key(left:15)
+  key(enter)
 
 # Shortcuts for symbol names hard to type by voice.
 snake pushback: insert("push_back")

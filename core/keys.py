@@ -109,8 +109,8 @@ _PUNCTUATION_WORDS = {
     "bang": "!",
     "quest": "?",
     "dash": "-",
+    "stack": ":",
     # Prefixed punctuation.
-    "gram stack": ":",
     "gram semi": ";",
     "gram pound": "#",
     "gram score": "_",
@@ -146,7 +146,6 @@ ctx.lists["self.punctuation"] = _PUNCTUATION_WORDS
 
 # Symbol keys are a superset of punctuation words, and are usable as commands, but not necessarily in prose.
 _SYMBOL_KEYS = _PUNCTUATION_WORDS | {
-    "stack": ":",
     "semi": ";",
     "pound": "#",
     "score": "_",

@@ -31,6 +31,8 @@ ctx.lists["self.textflow_command_type"] = _COMMAND_TYPES_BY_SPOKEN.keys()
 _SEARCH_DIRECTION_BY_SPOKEN = {
     "next": tf.SearchDirection.FORWARD,
     "last": tf.SearchDirection.BACKWARD,
+    # Common misrecognition of "last".
+    "lust": tf.SearchDirection.BACKWARD,
 }
 mod.list("textflow_search_direction", desc="Search directions for textflow commands")
 ctx.lists["self.textflow_search_direction"] = _SEARCH_DIRECTION_BY_SPOKEN.keys()

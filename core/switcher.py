@@ -252,6 +252,28 @@ class Actions:
       pass
     raise ValueError("Could not find browser window")
 
+  def switcher_focus_terminal():
+    """Switch to the saved terminal window or try to find an app."""
+    if "terminal" in _window_id_by_name:
+      try:
+        _focus_window_by_id(_window_id_by_name["terminal"])
+        return
+      except ValueError:
+        # Could not find window. Delete the saved ID and fall back to switching apps.
+        del _window_id_by_name["terminal"]
+
+    # No saved window, or saved window could not be found. Try to switch to known terminals.
+    try:
+      actions.user.switcher_focus("iTerm2")
+      return
+    except ValueError:
+      pass
+    try:
+      actions.user.switcher_focus("Terminal")
+      return
+    except ValueError:
+      pass
+    raise ValueError("Could not find terminal window")
 
 def _on_app_change(event: str):
   del event

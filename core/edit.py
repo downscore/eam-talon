@@ -163,7 +163,8 @@ class ExtensionActions:
 
   def select_word():
     """Selects the current word."""
-    actions.user.right()
+    actions.user.left()
+    actions.user.word_right()
     actions.user.word_left()
     actions.user.extend_word_right()
 

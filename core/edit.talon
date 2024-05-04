@@ -115,7 +115,7 @@ chuck top:
 chuck bottom:
   user.extend_file_end()
   user.delete()
-chuck fragment <user.number>: user.fragment_delete(number)
+chuck fragment [<user.number>]: user.fragment_delete(number or -1)
 chuck car <user.number> [past <user.number>]:
   user.select_character_range(number_1, number_2 or 0)
   user.delete()

@@ -328,10 +328,17 @@ class ExtensionActions:
     actions.key(f"left right:{fragment[0]}")
 
   def fragment_delete(n: int):
-    """Deletes the nth fragment of the selected text. Index is 1-based."""
-    _, fragments = _get_selected_text_fragments()
-    if n <= 0 or n > len(fragments):
+    """Deletes the nth fragment of the selected text. Deletes the last fragment if n is negative. Index is 1-based."""
+    if n == 0:
       return
+    _, fragments = _get_selected_text_fragments()
+    if n > len(fragments):
+      return
+
+    # Negative index deletes the last fragment.
+    if n < 0:
+      n = len(fragments)
+
     fragment = fragments[n - 1]
 
     # Check if we need to delete a separator character before or after the fragment.

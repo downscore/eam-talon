@@ -338,7 +338,7 @@ class ExtensionActions:
 
     # Negative index deletes the last fragment.
     if n < 0:
-      n = len(fragments)
+      n = len(fragments)  # pylint: disable=self-cls-assignment
 
     fragment = fragments[n - 1]
 

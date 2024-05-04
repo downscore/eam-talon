@@ -8,6 +8,7 @@ import base64
 
 import urllib.parse
 from talon import Module, actions
+from .lib import encoding_util
 
 mod = Module()
 
@@ -32,6 +33,30 @@ class ExtensionActions:
     decoded_string = base64.b64decode(selected).decode("utf-8")
     actions.user.insert_via_clipboard(decoded_string)
 
+  def base64_decode_selected_show():
+    """Base64 decodes the selected text and displays it."""
+    selected = actions.user.selected_text()
+    if len(selected) == 0:
+      return
+    decoded_string = base64.b64decode(selected).decode("utf-8")
+    actions.app.notify(decoded_string)
+
+  def rot13_encode_selected():
+    """ROT13 encodes the selected text."""
+    selected = actions.user.selected_text()
+    if len(selected) == 0:
+      return
+    encoded_string = encoding_util.encode_rot13(selected)
+    actions.user.insert_via_clipboard(encoded_string)
+
+  def rot13_encode_selected_show():
+    """ROT13 encodes the selected text and displays it."""
+    selected = actions.user.selected_text()
+    if len(selected) == 0:
+      return
+    encoded_string = encoding_util.encode_rot13(selected)
+    actions.app.notify(encoded_string)
+
   def url_encode_selected():
     """URL encodes the selected text."""
     selected = actions.user.selected_text()
@@ -47,3 +72,11 @@ class ExtensionActions:
       return
     decoded_string = urllib.parse.unquote(selected)
     actions.user.insert_via_clipboard(decoded_string)
+
+  def url_decode_selected_show():
+    """URL decodes the selected text and displays it."""
+    selected = actions.user.selected_text()
+    if len(selected) == 0:
+      return
+    decoded_string = urllib.parse.unquote(selected)
+    actions.app.notify(decoded_string)

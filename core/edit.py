@@ -43,9 +43,10 @@ class ExtensionActions:
 
   def paste():
     """Pastes the clipboard contents."""
-    # Short sleep to allow UI to catch up for chained commands.
+    # Short sleeps to allow UI to catch up for chained commands.
     actions.sleep("50ms")
     actions.key("cmd-v")
+    actions.sleep("50ms")
 
   def paste_match_style():
     """Pastes the clipboard contents with the style of the surrounding text."""

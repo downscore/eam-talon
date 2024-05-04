@@ -26,6 +26,29 @@ class Actions:
 
   def finder_terminal_here():
     """Open a terminal in the same folder as the current Finder window."""
+    # Try in iTerm2 first.
+    try:
+      actions.user.switcher_focus("iTerm2")
+      applescript.run(r"""
+        tell application "Finder"
+            set currentPath to POSIX path of (target of front window as alias)
+        end tell
+
+        tell application "iTerm"
+            -- For new window instead of tab: create window with default profile
+            tell current window
+              create tab with default profile
+            end tell
+            tell the current session of the current window
+                write text "cd '" & currentPath & "'"
+            end tell
+        end tell
+      """)
+      return
+    except ValueError:
+      pass
+
+    # Fall back to Terminal.
     applescript.run(r"""
       tell application "Finder"
           set myWin to window 1

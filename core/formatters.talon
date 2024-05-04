@@ -7,6 +7,9 @@
   insert(user.format_multiple(formatter_text, formatter_list))
   insert("()")
   key("left")
+{user.formatter}+ <user.formatter_text> punch:
+  insert(user.format_multiple(formatter_text, formatter_list))
+  insert(".")
 {user.formatter}+ <user.formatter_text> assign:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert(" = ")

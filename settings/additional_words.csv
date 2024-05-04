@@ -29,14 +29,13 @@ DNS
 enqueue
 etc.,etsy
 eval
+FPS
 GELU,jay loo
 GELU,jolo
 Google Docs,Google docks
 gonna
 GPT
 GUI,gooey
-hard brake,hard break
-hard braking,hard breaking
 iterm,eye term
 JAX
 JIRA
@@ -89,7 +88,15 @@ vscode, V S code
 
 # Homophones (setting preferred word)
 add,ad
+brake hard,break hard
+brake harder,break harder
+brake lights,break lights
+braking distance,breaking distance
+braking hard,breaking hard
 dominance,dominants
+hard brake,hard break
+hard braking,hard breaking
+harder braking,harder breaking
 JSON,Jason
 main,maine
 
@@ -111,8 +118,10 @@ allow,alow
 and are,antar
 auto,oto
 beginning,begining
+by,bey
 candidate,candide
 candidate,candida
+cider,sider
 collinear,colinear
 comms,coms
 constraint,en strain
@@ -142,11 +151,13 @@ ramp lane,rampling
 router,rotter
 say,se
 sum,som
+sure,sur
 talon,Tallon
 the,te
 then on,Denon
 this,dis
 were,weir
+when,wen
 yeah,ya
 
 # Same as above, but for words recognized as profanity or sensitive terms.
@@ -154,6 +165,7 @@ collide,clit
 pass,puss
 lane change,lynching
 scroll down,scrotal
+paren,porn
 
 # Aliases for words that are often misrecognized (e.g. "end" is usually heard as "and").
 end,ender

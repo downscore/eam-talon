@@ -72,6 +72,10 @@ panel terminal: user.vscode("workbench.action.terminal.focus")
 format dock: user.vscode("editor.action.formatDocument")
 format selection: user.vscode("editor.action.formatSelection")
 
+# Changes
+change next: user.vscode("workbench.action.editor.nextChange")
+change last: user.vscode("workbench.action.editor.previousChange")
+
 # File errors
 problem next: user.vscode("editor.action.marker.nextInFiles")
 problem last: user.vscode("editor.action.marker.prevInFiles")

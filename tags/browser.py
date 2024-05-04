@@ -42,3 +42,11 @@ class ExtensionActions:
   def browser_open_private_tab():
     """Open a new private tab."""
     actions.key("cmd-shift-n")
+
+  def browser_bookmarks():
+    """Open the browser bookmarks."""
+    actions.key("cmd-alt-b")
+
+  def browser_add_bookmark():
+    """Add a bookmark for the current page."""
+    actions.key("cmd-d")

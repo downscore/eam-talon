@@ -70,6 +70,14 @@ class ExtensionActions:
   def paste_match_style():
     actions.key("cmd-shift-alt-v")
 
+  def tab_list(name: str):
+    actions.key("cmd-shift-\\")
+    actions.sleep("250ms")
+    if name:
+      actions.key("cmd-f")
+      actions.insert(name)
+      actions.sleep("50ms")
+
   def tab_switch_by_name(name: str):
     # TODO: Extract code to share with Chrome.
     tab_delimiter = "|||"

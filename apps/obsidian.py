@@ -58,6 +58,14 @@ class ExtensionActions:
     else:
       actions.key(f"cmd-o down:{n} enter")
 
+  def tab_list(name: str):
+    # Use quick open dialog.
+    actions.key("cmd-o")
+    actions.sleep("250ms")
+    if name:
+      actions.insert(name)
+      actions.sleep("50ms")
+
   def tab_switch_by_name(name: str):
     actions.key("cmd-o")
     actions.insert(name)

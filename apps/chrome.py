@@ -53,11 +53,6 @@ class ExtensionActions:
                 end tell
             """.replace("[URL]", url))
 
-  def tab_previous():
-    actions.key("cmd-shift-a")
-    actions.sleep("250ms")
-    actions.key("enter")
-
   def find():
     actions.key("cmd-f")
     # Add a brief pause so we don't swallow subsequent keystrokes before the find dialog opens.
@@ -72,6 +67,18 @@ class ExtensionActions:
     actions.user.line_end()
     actions.user.line_start()
     actions.key("shift-enter up")
+
+  def tab_previous():
+    actions.key("cmd-shift-a")
+    actions.sleep("250ms")
+    actions.key("enter")
+
+  def tab_list(name: str):
+    actions.key("cmd-shift-a")
+    actions.sleep("250ms")
+    if name:
+      actions.insert(name)
+      actions.sleep("50ms")
 
   def tab_switch_by_name(name: str):
     # TODO: Extract code to share with Safari.

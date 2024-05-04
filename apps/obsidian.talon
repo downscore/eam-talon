@@ -9,13 +9,6 @@ please [<user.text>]:
   key(cmd-p)
   insert(user.text or "")
 
-# Show the quick open dialogue.
-# TODO: Make this a command usable across applications.
-tab list [<user.text>]:
-  key(cmd-o)
-  sleep(250ms)
-  insert(text or "")
-
 # Focus the editor.
 # TODO: Make this a command usable across applications.
 editor: user.obsidian("Focus on last note")
@@ -24,7 +17,8 @@ editor: user.obsidian("Focus on last note")
 bar dog: user.obsidian("Toggle left sidebar")
 bar files: user.obsidian("File: Show file explorer")
 bar search: user.obsidian("Search: Search in all files")
-bar bookmarks: user.obsidian("Bookmarks: Show bookmarks")
+# Reusing "bookmarks" command from browsers.
+bookmarks: user.obsidian("Bookmarks: Show bookmarks")
 
 # Right sidebar
 panel dog: user.obsidian("Toggle right sidebar")

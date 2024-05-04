@@ -28,14 +28,6 @@ lucky <user.text>:
   sleep(200ms)
   key(enter)
 
-# Files
-tab list [<user.text>] [<user.file_extension>]:
-  user.vscode("workbench.action.quickOpen")
-  sleep(250ms)
-  insert(text or "")
-  insert(file_extension or "")
-  sleep(250ms)
-
 # Moving cursor between matches
 blinker next: user.vscode("editor.action.moveSelectionToNextFindMatch")
 blinker last: user.vscode("editor.action.moveSelectionToPreviousFindMatch")

@@ -59,3 +59,11 @@ class ExtensionActions:
   def tab_close():
     # Close all panes in the tab.
     actions.key("cmd-alt-w")
+
+  def tab_list(name: str):
+    # Use "open quickly" command.
+    actions.key("cmd-shift-o")
+    actions.sleep("250ms")
+    if name:
+      actions.insert(name)
+      actions.sleep("50ms")

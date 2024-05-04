@@ -164,6 +164,13 @@ class ExtensionActions:
     else:
       actions.key(f"cmd-p down:{n} enter")
 
+  def tab_list(name: str):
+    actions.user.vscode("workbench.action.quickOpen")
+    actions.sleep("250ms")
+    if name:
+      actions.insert(name or "")
+      actions.sleep("50ms")
+
   def tab_switch_by_name(name: str):
     actions.user.vscode("workbench.action.quickOpen")
     actions.sleep("250ms")

@@ -55,6 +55,9 @@ class Actions:
   def tab_switch_by_name(name: str):
     """Switches to a tab by name."""
 
+  def tab_list(name: str):
+    """Lists open tabs and applies an optional search string."""
+
   def tab_nth_previous(n: int):
     """Switches to the nth previous tab."""
     # Make sure number of tab switches is reasonable.

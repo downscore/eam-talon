@@ -51,3 +51,11 @@ class ExtensionActions:
     actions.sleep("50ms")
     actions.insert(path)
     actions.key("enter")
+
+  def tab_list(name: str):
+    actions.key("cmd-shift-\\")
+    actions.sleep("250ms")
+    if name:
+      actions.key("cmd-f")
+      actions.insert(name)
+      actions.sleep("50ms")

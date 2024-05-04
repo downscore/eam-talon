@@ -1,4 +1,4 @@
 os: mac
 -
-notifications close: user.macos_close_all_notifications()
+notes close: user.macos_close_all_notifications()
 hidden files dog: key(cmd-shift-.)

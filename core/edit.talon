@@ -202,30 +202,24 @@ zoom out: user.zoom_out()
 zoom reset: user.zoom_reset()
 
 # Surrounding text with symbols.
-inside singles:
-  user.surround_selected_text("'", "'")
-inside doubles:
-  user.surround_selected_text("\"", "\"")
-inside escaped singles:
-  user.surround_selected_text("\\'", "\\'")
-inside escaped doubles:
-  user.surround_selected_text("\\\"", "\\\"")
-inside parens:
-  user.surround_selected_text("(", ")")
-inside squares:
-  user.surround_selected_text("[", "]")
-inside braces:
-  user.surround_selected_text("{{", "}}")
-inside percents:
-  user.surround_selected_text("%", "%")
-inside (graves | back ticks):
-  user.surround_selected_text("`", "`")
-inside spaces:
-	user.surround_selected_text(" ", " ")
-inside triangles:
-  user.surround_selected_text("<", ">")
-inside dollars:
-  user.surround_selected_text("$", "$")
+inside singles: user.surround_selected_text("'", "'")
+inside doubles: user.surround_selected_text("\"", "\"")
+inside escaped singles: user.surround_selected_text("\\'", "\\'")
+inside escaped doubles: user.surround_selected_text("\\\"", "\\\"")
+inside parens: user.surround_selected_text("(", ")")
+inside squares: user.surround_selected_text("[", "]")
+inside braces: user.surround_selected_text("{{", "}}")
+inside percents: user.surround_selected_text("%", "%")
+inside (graves | back ticks): user.surround_selected_text("`", "`")
+inside spaces: user.surround_selected_text(" ", " ")
+inside triangles: user.surround_selected_text("<", ">")
+inside dollars: user.surround_selected_text("$", "$")
+inside block comment: user.surround_selected_text("/*", "*/")
+
+# Default to markdown-style blocks if no language is active.
+make block:
+  insert("```\n\n```")
+  key("left:4")
 
 # Insert a link or make the selected text into a link.
 link insert: user.insert_link()

@@ -3,6 +3,7 @@ tag: user.shell
 tag(): user.file_manager
 
 hunt command: user.shell_search_commands()
+hunt tree: user.shell_search_files()
 
 folder go [<user.text>]:
   insert("cd ")

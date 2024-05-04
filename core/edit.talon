@@ -248,5 +248,5 @@ sort lines: user.sort_lines_ascending()
 sort lines descending: user.sort_lines_descending()
 
 # Special characters.
-moji hunt: key("cmd-ctrl-space")
+hunt moji: key("cmd-ctrl-space")
 moji {user.unicode}: user.insert_via_clipboard(user.unicode)

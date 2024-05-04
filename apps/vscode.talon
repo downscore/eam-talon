@@ -89,11 +89,11 @@ markdown preview: user.vscode("markdown.showPreviewToSide")
 minimap dog: user.vscode("editor.action.toggleMinimap")
 
 # Find references and symbols
-symbol hunt file [<user.text>]:
+hunt symbol file [<user.text>]:
   user.vscode("workbench.action.gotoSymbol")
   sleep(50ms)
   insert(text or "")
-symbol hunt all [<user.text>]:
+hunt symbol all [<user.text>]:
   user.vscode("workbench.action.showAllSymbols")
   sleep(50ms)
   insert(text or "")

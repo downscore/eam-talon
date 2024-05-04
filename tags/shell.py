@@ -24,6 +24,9 @@ class Actions:
     """Searches through commands."""
     actions.key("ctrl-r")
 
+  def shell_search_files():
+    """Searches through files."""
+    actions.key("ctrl-t")
 
 @ctx.action_class("user")
 class ExtensionActions:

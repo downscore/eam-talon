@@ -1,21 +1,3 @@
-# Convenience commands for common actions
-gail:
-  user.down()
-  user.line_end()
-spam: insert(", ")
-disk: user.save()
-join lines:
-  user.line_end()
-  user.line_start()
-  user.extend_line_start()
-  key(backspace:2)
-  key(space)
-# Double tap escape
-hatch: key(escape:2)
-
-# Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
-pick <user.number_small>: key("down:{number_small-1} enter")
-
 # Symbol convenience commands
 arcs:
   insert("()")
@@ -57,6 +39,9 @@ push: user.right()
 pull: user.left()
 goop: user.up()
 gown: user.down()
+gail:
+  user.down()
+  user.line_end()
 stone: user.word_left()
 step: user.word_right()
 head: user.line_start()
@@ -191,6 +176,12 @@ jump next <user.word>: user.jump_to_next_occurrence(user.word)
 dupe line: user.duplicate_line()
 drag up: user.line_swap_up()
 drag down: user.line_swap_down()
+join lines:
+  user.line_end()
+  user.line_start()
+  user.extend_line_start()
+  key(backspace:2)
+  key(space)
 
 # Indentation
 dedent: user.indent_less()
@@ -216,15 +207,6 @@ inside triangles: user.surround_selected_text("<", ">")
 inside dollars: user.surround_selected_text("$", "$")
 inside block comment: user.surround_selected_text("/*", "*/")
 
-# Default to markdown-style blocks if no language is active.
-make block:
-  insert("```\n\n```")
-  key("left:4")
-
-# Insert a link or make the selected text into a link.
-link insert: user.insert_link()
-link paste: user.insert_link_from_clipboard()
-
 # Text styles
 style title: user.style_title()
 style subtitle: user.style_subtitle()
@@ -246,6 +228,27 @@ count words: user.count_words()
 count characters: user.count_characters()
 sort lines: user.sort_lines_ascending()
 sort lines descending: user.sort_lines_descending()
+
+# Insert a link or make the selected text into a link.
+link insert: user.insert_link()
+link paste: user.insert_link_from_clipboard()
+
+# Comma and space
+spam: insert(", ")
+
+# Double tap escape
+hatch: key(escape:2)
+
+# Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
+pick <user.number_small>: key("down:{number_small-1} enter")
+
+# Save open file
+disk: user.save()
+
+# Default to markdown-style blocks if no language is active.
+make block:
+  insert("```\n\n```")
+  key("left:4")
 
 # Special characters.
 hunt moji: key("cmd-ctrl-space")

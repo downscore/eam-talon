@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import os
 from talon import Context, Module, actions
 from ..core.lib import textflow_types as tf
 from ..core import textflow as tft
@@ -24,6 +25,15 @@ class Actions:
 @ctx.action_class("user")
 class UserActions:
   """Action overrides available only when the Obsidian extension is installed."""
+
+  def select_word():
+    # Use a plugin command to reliably select the word under the cursor.
+    actions.user.obsidian_command("selectWord")
+
+  def switcher_get_current_directory() -> str:
+    # Get the directory from the currently-open file.
+    file_path = actions.user.obsidian_command_return_value("getFilename")
+    return os.path.dirname(file_path)
 
   def jump_line(n: int):
     actions.user.obsidian_command("jumpToLine", n)

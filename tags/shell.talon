@@ -9,14 +9,22 @@ folder go [<user.text>]:
   insert("cd ")
   insert(user.text or "")
 
-make directory [<user.text>]:
-  insert("mkdir ")
-  insert(user.text or "")
-
+seedy: insert("cd ")
 l s: insert("ls ")
 s s h: insert("ssh ")
 dot net: insert("dotnet ")
 code here: insert("code .")
+where am i: insert("pwd")
+
+grep [<user.text>]:
+  insert("grep \"")
+  insert(text or "")
+  insert("\"")
+  key("left")
+
+# Pipe contents to/from clipboard
+to clipboard: insert(" | pbcopy")
+from clipboard: insert("pbpaste | ")
 
 # Open file with default app
 open file: insert("open ")

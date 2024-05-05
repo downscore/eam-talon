@@ -15,6 +15,7 @@ ctx.matches = r"""
 tag: user.file_manager
 """
 
+
 @mod.action_class
 class Actions:
   """File management actions."""
@@ -24,3 +25,6 @@ class Actions:
 
   def file_manager_open_directory(path: str):
     """Open the given directory."""
+
+  def file_manager_make_directory(name: str = ""):
+    """Make a new directory."""

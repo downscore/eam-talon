@@ -135,16 +135,20 @@ def launch_applications(m) -> str:
 class Actions:
   """Actions related to launching and switching between apps."""
 
-  def get_running_app(name: str) -> ui.App:
+  def switcher_get_running_app(name: str) -> ui.App:
     """Gets the first available running app with `name`."""
     for running_app in ui.apps():
       if running_app.name == name and not running_app.background:
         return running_app
     raise ValueError(f'App not running: "{name}"')
 
+  def switcher_get_current_directory() -> str:
+    """Returns the current directory of the active window. Empty string if unknown or not applicable."""
+    return ""
+
   def switcher_focus(name: str):
     """Focuses an application by name."""
-    running_app = actions.user.get_running_app(name)
+    running_app = actions.user.switcher_get_running_app(name)
     running_app.focus()
 
     # Hacky solution to do this reliably on Mac.
@@ -190,6 +194,17 @@ class Actions:
   def switcher_hide_launch():
     """Hides list of launch applications."""
     launch_gui.hide()
+
+  def switcher_new_terminal_tab(directory: str = ""):
+    """Open a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
+    the current user's home."""
+    actions.user.switcher_focus_terminal()
+    actions.user.tab_open()
+    if directory:
+      actions.user.insert_via_clipboard(f"cd \"{directory.strip()}\"")
+      actions.key("enter")
+      actions.insert("ls")
+      actions.key("enter")
 
   def switcher_save_current_window_by_name(name: str):
     """Saves the current window as the window with the given name."""
@@ -274,6 +289,7 @@ class Actions:
     except ValueError:
       pass
     raise ValueError("Could not find terminal window")
+
 
 def _on_app_change(event: str):
   del event

@@ -89,7 +89,7 @@ def _bring_forward(window: ui.Window):
 
 
 def _get_app_window(app_name: str) -> ui.Window:
-  return actions.self.get_running_app(app_name).active_window
+  return actions.self.switcher_get_running_app(app_name).active_window
 
 
 def _move_window_to_screen(window: ui.Window, screen: ui.Screen):

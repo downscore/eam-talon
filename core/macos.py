@@ -1,4 +1,4 @@
-"""Talon code for Finder support."""
+"""Talon code for MacOS support."""
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false

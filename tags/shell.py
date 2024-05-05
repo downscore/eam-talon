@@ -28,6 +28,7 @@ class Actions:
     """Searches through files."""
     actions.key("ctrl-t")
 
+
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
@@ -37,3 +38,6 @@ class ExtensionActions:
 
   def file_manager_open_directory(path: str):
     actions.insert(f"cd {path}")
+
+  def file_manager_make_directory(name: str = ""):
+    actions.insert(f"mkdir {name}")

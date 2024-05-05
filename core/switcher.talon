@@ -15,3 +15,8 @@ obsidian: user.switcher_focus("Obsidian")
 coder: user.switcher_focus_coder()
 browser: user.switcher_focus_browser()
 terminal: user.switcher_focus_terminal()
+
+# Global shortcuts for opening a new terminal tab.
+terminal new: user.switcher_new_terminal_tab()
+terminal here: user.switcher_new_terminal_tab(user.switcher_get_current_directory())
+terminal paste: user.switcher_new_terminal_tab(clip.text())

@@ -3,21 +3,20 @@ tag: user.lang_markdown
 make block:
   insert("```\n\n```")
   key("left:4")
-
 make python block:
   insert("```python\n\n```")
   key("left:4")
-
 make C P P block:
   insert("```C++\n\n```")
   key("left:4")
-
 make jason block:
   insert("```json\n\n```")
   key("left:4")
-
 make yaml block:
   insert("```yaml\n\n```")
+  key("left:4")
+make tinychart block:
+  insert("```tinychart\n\n```")
   key("left:4")
 
 lister:

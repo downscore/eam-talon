@@ -11,7 +11,7 @@ ctx = Context()
 
 
 @mod.action_class
-class ExtensionActions:
+class BrowserActions:
   """Browser actions.
   Note that many of these actions are also built-in to Talon in the "browser" namespace. They are defined here in the
   "user" namespace to avoid conflicts with Talon internals.
@@ -35,10 +35,6 @@ class ExtensionActions:
     """Focus the browser address bar."""
     actions.key("cmd-l")
 
-  def browser_copy_address():
-    """Copy the current browser address to the clipboard."""
-    actions.user.clipboard_history_set_text(actions.browser.address())
-
   def browser_open_private_tab():
     """Open a new private tab."""
     actions.key("cmd-shift-n")
@@ -50,3 +46,11 @@ class ExtensionActions:
   def browser_add_bookmark():
     """Add a bookmark for the current page."""
     actions.key("cmd-d")
+
+
+@ctx.action_class("user")
+class ExtensionActions:
+  """Action overwrites."""
+
+  def app_get_current_location() -> str:
+    return actions.browser.address()

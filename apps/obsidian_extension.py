@@ -30,10 +30,13 @@ class UserActions:
     # Use a plugin command to reliably select the word under the cursor.
     actions.user.obsidian_command("selectWord")
 
-  def switcher_get_current_directory() -> str:
+  def app_get_current_directory() -> str:
     # Get the directory from the currently-open file.
     file_path = actions.user.obsidian_command_return_value("getFilename")
     return os.path.dirname(file_path)
+
+  def app_get_current_location() -> str:
+    return actions.user.obsidian_command_return_value("getFilename")
 
   def jump_line(n: int):
     actions.user.obsidian_command("jumpToLine", n)

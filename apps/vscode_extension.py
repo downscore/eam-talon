@@ -35,10 +35,13 @@ class UserActions:
   def bring_line_range(from_index: int, to_index: int = 0):
     actions.user.vscode("eam-talon.copyLinesToCursor", from_index, to_index if to_index > 0 else None)
 
-  def switcher_get_current_directory() -> str:
+  def app_get_current_directory() -> str:
     # Get the directory from the currently-open file.
     file_path = actions.user.vscode_return_value("eam-talon.getFilename")
     return os.path.dirname(file_path)
+
+  def app_get_current_location() -> str:
+    return actions.user.vscode_return_value("eam-talon.getFilename")
 
   def textflow_get_context() -> tft.TextFlowContext:
     context = actions.user.vscode_return_value("eam-talon.getTextFlowContext")

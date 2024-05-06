@@ -5,7 +5,7 @@
 # mypy: ignore-errors
 
 import datetime
-from talon import Module, actions, clip
+from talon import Module, actions
 from .lib import datetime_util
 
 mod = Module()
@@ -44,4 +44,4 @@ class Actions:
   def clipboard_selected_unix_to_datetime():
     """Convert the selected unix timestamp to a datetime and copy it to the clipboard."""
     dt = datetime_util.convert_unix_timestamp(actions.user.selected_text())
-    clip.set_text(str(dt))
+    actions.user.clipboard_history_set_text(str(dt))

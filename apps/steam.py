@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module
+from talon import Context, Module, actions
 
 mod = Module()
 ctx = Context()
@@ -23,6 +23,9 @@ app: steam
 class ExtensionActions:
   """Action overwrites."""
 
-  def switcher_get_current_directory() -> str:
+  def app_get_current_directory() -> str:
     # Use the Anki user data directory as current.
     return "/Users/${USER}/Library/Application Support/Steam/steamapps/common/"
+
+  def app_get_current_location() -> str:
+    return actions.user.app_get_current_directory()

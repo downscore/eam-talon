@@ -6,7 +6,7 @@
 
 from pathlib import Path
 from tempfile import gettempdir
-from talon import Module, app, clip, imgui, registry, scope, speech_system, ui
+from talon import Module, actions, app, imgui, registry, scope, speech_system, ui
 
 mod = Module()
 
@@ -75,7 +75,7 @@ class Actions:
 
   def status_file_copy_path():
     """Copy the path of the status file to the clipboard."""
-    clip.set_text(str(_get_status_file_path()))
+    actions.user.clipboard_history_set_text(str(_get_status_file_path()))
 
   def status_file_update():
     """Check the system status and update the new status file if necessary."""

@@ -142,10 +142,6 @@ class Actions:
         return running_app
     raise ValueError(f'App not running: "{name}"')
 
-  def switcher_get_current_directory() -> str:
-    """Returns the current directory of the active window. Empty string if unknown or not applicable."""
-    return ""
-
   def switcher_focus(name: str):
     """Focuses an application by name."""
     running_app = actions.user.switcher_get_running_app(name)

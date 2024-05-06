@@ -47,9 +47,15 @@ class ExtensionActions:
       actions.insert(name)
       actions.sleep("50ms")
 
-  def switcher_get_current_directory() -> str:
+  def app_get_current_directory() -> str:
     return applescript.run(r"""
       tell application "Finder"
           set currentPath to POSIX path of (target of front window as alias)
       end tell
       return currentPath""")
+
+  def app_get_current_location() -> str:
+    return actions.user.app_get_current_directory()
+
+  def app_copy_current_location():
+    actions.key("alt-cmd-c")

@@ -22,6 +22,6 @@ app: anki
 class ExtensionActions:
   """Action overwrites."""
 
-  def switcher_get_current_directory() -> str:
+  def app_get_current_directory() -> str:
     # Use the Anki user data directory as current.
     return "/Users/${USER}/Library/Application Support/Anki2"

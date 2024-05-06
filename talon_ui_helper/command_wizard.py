@@ -62,7 +62,7 @@ def handle_image_click_builder(result):
       "    sleep(0.05)",
       "    user.mouse_helper_position_restore()",
   ])
-  actions.clip.set_text(command)
+  actions.user.clipboard_history_set_text(command)
   actions.app.notify("Copied new command to clipboard")
 
 
@@ -85,7 +85,7 @@ def handle_multi_image_builder(result):
       f'    matches = user.mouse_helper_find_template_relative("{filename}"{offset_bit})',
       "    user.marker_ui_show(matches)",
   ])
-  actions.clip.set_text(command)
+  actions.user.clipboard_history_set_text(command)
   actions.app.notify("Copied new command to clipboard")
 
 
@@ -123,7 +123,7 @@ def handle_blob_detect_builder(result):
       f'    bounding_rectangle = user.mouse_helper_calculate_relative_rect("{offsets}", "active_window")',
       "    user.mouse_helper_blob_picker(bounding_rectangle)",
   ])
-  actions.clip.set_text(command)
+  actions.user.clipboard_history_set_text(command)
   actions.app.notify("Copied new command to clipboard")
 
 

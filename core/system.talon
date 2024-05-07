@@ -9,9 +9,8 @@ anchor: skip()
 # Short pause. Can be used to insert pauses into chained commands or a macro.
 stumble: sleep(250ms)
 
-# Cancel previous or following commands.
-^[<phrase>] cancel$: app.notify("Command canceled")
-ignore [<phrase>]$: app.notify("Command ignored")
+# Cancel commands.
+^[<phrase>] cancel command$: app.notify("Command canceled")
 
 # System debugging commands.
 speech debug context: user.system_context_ui_toggle()

@@ -26,6 +26,11 @@ class Actions:
 class UserActions:
   """Action overrides available only when the VS Code extension is installed."""
 
+  def selected_text() -> str:
+    # By default, copying in VS Code with an empty selection copies the entire line, making it impossible to reliably
+    # detect when no text is selected. This command will return the empty string when nothing is selected.
+    return actions.user.vscode_return_value("eam-talon.getSelectedText")
+
   def jump_line(n: int):
     actions.user.vscode("eam-talon.jumpToLine", n)
 

@@ -26,6 +26,11 @@ class Actions:
 class UserActions:
   """Action overrides available only when the Obsidian extension is installed."""
 
+  def selected_text() -> str:
+    # Copying in Obsidian with an empty selection copies the entire line, making it impossible to reliably detect when
+    # no text is selected. This command will return the empty string when nothing is selected.
+    return actions.user.obsidian_command_return_value("getSelectedText")
+
   def select_word():
     # Use a plugin command to reliably select the word under the cursor.
     actions.user.obsidian_command("selectWord")

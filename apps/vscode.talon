@@ -109,5 +109,5 @@ breakpoint toggle: user.vscode("editor.debug.action.toggleBreakpoint")
 
 # Selecting search results
 hunt results:
-    bounding_rectangle = user.mouse_helper_calculate_relative_rect("58.0 194.0 194.0 -28.0", "active_window")
-    user.mouse_helper_blob_picker(bounding_rectangle)
+  bounding_rectangle = user.mouse_helper_calculate_relative_rect("58.0 194.0 194.0 -28.0", "active_window")
+  user.mouse_helper_blob_picker(bounding_rectangle)

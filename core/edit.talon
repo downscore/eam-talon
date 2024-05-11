@@ -114,7 +114,7 @@ copy word:
 copy lefter:
   user.extend_word_left()
   user.clipboard_history_copy()
-copy righter:
+copy writer:
   user.extend_word_right()
   user.clipboard_history_copy()
 copy line:
@@ -136,7 +136,7 @@ cut word:
 cut lefter:
   user.extend_word_left()
   user.clipboard_history_cut()
-cut righter:
+cut writer:
   user.extend_word_right()
   user.clipboard_history_cut()
 cut line:
@@ -206,6 +206,9 @@ inside spaces: user.surround_selected_text(" ", " ")
 inside triangles: user.surround_selected_text("<", ">")
 inside dollars: user.surround_selected_text("$", "$")
 inside block comment: user.surround_selected_text("/*", "*/")
+
+# Pushing symbols around.
+# shove right:
 
 # Text styles
 style title: user.style_title()

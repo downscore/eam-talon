@@ -64,7 +64,7 @@ source dog: user.obsidian("Toggle Live Preview/Source mode")
 daily note: user.obsidian("Daily notes: Open today's daily note")
 
 # Wiki-link syntax
-make link:
+wiki link:
   insert("[[]]")
   key("left:2")
 

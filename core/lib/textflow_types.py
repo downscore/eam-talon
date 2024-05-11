@@ -67,6 +67,7 @@ class TokenMatchMethod(Enum):
   # Matches LINE_START, then falls back to WORD_START_THEN_SUBSTRING.
   LINE_START_THEN_WORD_START_THEN_SUBSTRING = 8
 
+
 @dataclass
 class TokenMatchOptions:
   """Options for matching a token from some text."""
@@ -103,6 +104,10 @@ class ModifierType(Enum):
   COMMENT = 10
   # Take the string containing the token.
   STRING = 11
+  # The current scope in python code. Includes all contiguous lines at the current or greater indentation level.
+  PYTHON_SCOPE = 12
+  # The current scope in C-like code. Includes all content between the previous opening brace and its closing brace.
+  C_SCOPE = 13
 
 
 @dataclass
@@ -111,6 +116,8 @@ class Modifier:
   modifier_type: ModifierType = ModifierType.NONE
   # Range for taking fragments or chars from the token.
   modifier_range: Optional[TextRange] = None
+  # Delimiter for modifiers where applicable. Empty string to use default.
+  delimiter: str = ""
 
 
 @unique

@@ -11,6 +11,17 @@ def _make_match(start: int, end: int) -> TextMatch:
   return TextMatch(TextRange(start, end))
 
 
+def _get_line_at_index(text: str, index: int) -> TextRange:
+  """Get the line containing the given index."""
+  start_index = index
+  while start_index > 0 and text[start_index - 1] != "\n":
+    start_index -= 1
+  end_index = index
+  while end_index < len(text) - 1 and text[end_index] != "\n":
+    end_index += 1
+  return TextRange(start_index, min(end_index + 1, len(text)))
+
+
 def _apply_chars_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes characters from the matched token."""
   del text  # Unused.
@@ -45,13 +56,8 @@ def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modif
 def _apply_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the line containing the token."""
   del modifier  # Unused.
-  start_index = input_match.text_range.start
-  while start_index > 0 and text[start_index - 1] != "\n":
-    start_index -= 1
-  end_index = input_match.text_range.start  # Start of token to ensure we always take a single line.
-  while end_index < len(text) - 1 and text[end_index] != "\n":
-    end_index += 1
-  return _make_match(start_index, end_index + 1)
+  line_range = _get_line_at_index(text, input_match.text_range.start)
+  return TextMatch(line_range)
 
 
 def _apply_line_head_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -154,18 +160,104 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
 
 
 def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the C-style string containing the token."""
-  del modifier  # Unused.
+  """Takes the content between symmetric delimiters containing the token. Defaults to C-style string."""
+  delimiter = "\"" if modifier.delimiter == "" else modifier.delimiter
   start_index = input_match.text_range.start
-  while start_index > 0 and text[start_index] != "\"":
+  while start_index > 0 and text[start_index] != delimiter:
     start_index -= 1
   end_index = input_match.text_range.end
-  while end_index < len(text) and text[end_index - 1] != "\"":
+  while end_index < len(text) and text[end_index - 1] != delimiter:
     end_index += 1
 
   # Make sure a string was matched.
-  if text[start_index] != "\"" or text[end_index - 1] != "\"":
+  if text[start_index] != delimiter or text[end_index - 1] != delimiter:
     return input_match
+
+  return _make_match(start_index, end_index)
+
+
+def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the current scope in Python code."""
+  del modifier  # Unused.
+
+  # Find the indentation level of the current or last non-empty line.
+  indentation_search_index = input_match.text_range.start
+  min_indentation_level = None
+  while indentation_search_index >= 0 and min_indentation_level is None:
+    line_range = _get_line_at_index(text, indentation_search_index)
+    line_text = line_range.extract(text)
+    # Make sure the line isn't just whitespace.
+    if line_text.strip() != "":
+      # We found a non-whitespace line. Use its indentation level.
+      min_indentation_level = len(line_text) - len(line_text.lstrip())
+      break
+    # Move to the previous line.
+    indentation_search_index = line_range.start - 1
+
+  # Make sure we found an indentation level.
+  if min_indentation_level is None:
+    raise ValueError("Could not find indentation level for Python scope")
+
+  # Find the start of the current scope.
+  start_line_range = _get_line_at_index(text, input_match.text_range.start)
+  first_non_whitespace_line_range = start_line_range
+  while start_line_range.start > 0:
+    previous_line_range = _get_line_at_index(text, start_line_range.start - 1)
+    previous_line_text = previous_line_range.extract(text)
+    is_whitespace = previous_line_text.strip() == ""
+    # Stop if we find a non-whitespace line with less indentation.
+    if not is_whitespace and len(previous_line_text) - len(previous_line_text.lstrip()) < min_indentation_level:
+      break
+    start_line_range = previous_line_range
+    if not is_whitespace:
+      first_non_whitespace_line_range = start_line_range
+
+  # Find the end of the current scope.
+  end_line_range = start_line_range
+  last_non_whitespace_line_range = end_line_range
+  while end_line_range.end < len(text):
+    next_line_range = _get_line_at_index(text, end_line_range.end)
+    next_line_text = next_line_range.extract(text)
+    is_whitespace = next_line_text.strip() == ""
+    # Stop if we find a line with less indentation.
+    if not is_whitespace and len(next_line_text) - len(next_line_text.lstrip()) < min_indentation_level:
+      break
+    end_line_range = next_line_range
+    if not is_whitespace:
+      last_non_whitespace_line_range = end_line_range
+
+  # Return the scope, excluding surrounding lines that are just whitespace.
+  return _make_match(first_non_whitespace_line_range.start, last_non_whitespace_line_range.end)
+
+
+def _apply_c_scope_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the current scope in C-style code."""
+  del modifier  # Unused.
+
+  # Find the first opening brace before the match.
+  start_index = input_match.text_range.start
+  while start_index > 0 and text[start_index - 1] != "{":
+    start_index -= 1
+
+  # Don't include the newline after the opening brace if present.
+  if (start_index < len(text) and text[start_index] == "\n"):
+    start_index += 1
+
+  # Find the corresponding closing brace. Keep track of the number of open nested braces.
+  nested_braces = 0
+  end_index = start_index
+  while end_index < len(text):
+    if text[end_index] == "{":
+      nested_braces += 1
+    elif text[end_index] == "}":
+      if nested_braces <= 0:
+        break
+      nested_braces -= 1
+    end_index += 1
+
+  # Remove indentation before the closing brace.
+  while end_index > start_index and text[end_index - 1] in [" ", "\t"]:
+    end_index -= 1
 
   return _make_match(start_index, end_index)
 
@@ -179,11 +271,17 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.BLOCK: _apply_block_modifier,
     ModifierType.COMMENT: _apply_comment_modifier,
     ModifierType.STRING: _apply_string_modifier,
+    ModifierType.PYTHON_SCOPE: _apply_python_scope_modifier,
+    ModifierType.C_SCOPE: _apply_c_scope_modifier,
 }
 
 
 def apply_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Applies a modifier to the given range and returns the new range."""
+  # Just return the input match unmodified if the text is empty.
+  if len(text) == 0:
+    return input_match
+
   if input_match.text_range.end > len(text):
     raise ValueError(f"Match beyond end of text: {input_match}")
   if modifier.modifier_type == ModifierType.NONE:

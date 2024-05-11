@@ -14,6 +14,13 @@ class TestLineModifier(unittest.TestCase):
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "This is a test string.")
 
+  def test_apply_line_modifier_trailing_newline(self):
+    text = "This is a test string.\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "")
+
   def test_apply_line_modifier_multi_line(self):
     text = "This is a test string.\nAnother line of text."
     input_match = TextMatch(TextRange(10, 14))  # "test"
@@ -194,6 +201,13 @@ class TestStringModifier(unittest.TestCase):
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "\"test string\"")
 
+  def test_apply_string_modifier_different_delimiter(self):
+    text = "This is a 'test string'."
+    input_match = TextMatch(TextRange(11, 15))  # "test"
+    modifier = Modifier(ModifierType.STRING, None, "'")
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "'test string'")
+
   def test_apply_string_modifier_nested_string(self):
     text = "This is a \"nested \"test\" string\"."
     input_match = TextMatch(TextRange(19, 23))  # "test"
@@ -371,3 +385,163 @@ class TestLineTailModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.LINE_TAIL)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "al text.")
+
+
+class TestPythonScopeModifier(unittest.TestCase):
+  """Tests for applying Python scope modifiers."""
+
+  def test_not_in_code(self):
+    text = "\n\nprint('Hello, world!')"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier)
+
+  def test_single_line(self):
+    text = "print('Hello, world!')"
+    input_match = TextMatch(TextRange(7, 12))
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "print('Hello, world!')")
+
+  def test_single_line_cursor_at_file_start(self):
+    text = "print('Hello, world!')"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "print('Hello, world!')")
+
+  def test_single_line_trailing_newline(self):
+    text = "print('Hello, world!')\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "print('Hello, world!')\n")
+
+  def test_function(self):
+    text = """
+      def test_function():
+          print('Hello, world!')
+          x = 5
+          y = x + 1
+          return y
+
+      def test_function2():
+          print('Test!')
+          a = 3
+    """
+    input_match = TextMatch(TextRange(38, 43))  # print
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 28)
+    self.assertEqual(result.text_range.end, 116)
+
+  def test_function_with_indentation(self):
+    text = """
+      def test_function():
+          print('Hello, world!')
+          if x > 6:
+            x = x + 5
+          return x
+
+      def test_function2():
+          print('Test!')
+          a = 3
+    """
+    input_match = TextMatch(TextRange(38, 43))  # print
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 28)
+    self.assertEqual(result.text_range.end, 122)
+
+  def test_function_with_empty_linw(self):
+    # "Empty" line has some space characters.
+    text = """
+      def test_function():
+          print('Hello, world!')
+
+          x = x + 5
+          return x
+
+      def test_function2():
+          print('Test!')
+          a = 3
+    """
+    input_match = TextMatch(TextRange(38, 43))  # print
+    modifier = Modifier(ModifierType.PYTHON_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 28)
+    self.assertEqual(result.text_range.end, 101)
+
+
+class TestCScopeModifier(unittest.TestCase):
+  """Tests for applying C scope modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.C_SCOPE)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_not_in_code(self):
+    text = "\n\ncout << \"Hello, world!\";"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "\ncout << \"Hello, world!\";")
+
+  def test_opening_brace_only(self):
+    text = "{"
+    input_match = TextMatch(TextRange(1, 1))
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 1)
+    self.assertEqual(result.text_range.end, 1)
+
+  def test_single_line(self):
+    text = "{ cout << \"Hello, world!\"; }"
+    input_match = TextMatch(TextRange(11, 16))  # "Hello"
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), " cout << \"Hello, world!\";")
+
+  def test_function(self):
+    text = """
+      void test_function() {
+          cout << "Hello, world!";
+          int x = 5;
+          int y = x + 1;
+      }
+
+      void test_function2() {
+          cout << "Test!";
+          int a = 3;
+      }
+    """
+    input_match = TextMatch(TextRange(49, 54))  # "Hello"
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 30)
+    self.assertEqual(result.text_range.end, 111)
+
+  def test_function_nested_scope(self):
+    text = """
+      void test_function() {
+          cout << "Hello, world!";
+          int x = 5;
+          if (x > 6) {
+            x = x + 5;
+          }
+          int y = x + 1;
+      }
+
+      void test_function2() {
+          cout << "Test!";
+          int a = 3;
+      }
+    """
+    input_match = TextMatch(TextRange(49, 54))  # "Hello"
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 30)
+    self.assertEqual(result.text_range.end, 169)

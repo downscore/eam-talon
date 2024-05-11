@@ -328,40 +328,49 @@ class ExtensionActions:
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[0]}")
 
-  def fragment_delete(n: int):
-    """Deletes the nth fragment of the selected text. Deletes the last fragment if n is negative. Index is 1-based."""
-    if n == 0:
+  def fragment_delete(from_index: int, to_index: int = 0):
+    """Deletes the given fragment or range of fragments of the selected text. Deletes the last fragment if `from_index`
+    is negative. Index is 1-based."""
+    if from_index == 0:
       return
     _, fragments = _get_selected_text_fragments()
-    if n > len(fragments):
+    if from_index > len(fragments):
       return
 
     # Negative index deletes the last fragment.
-    if n < 0:
-      n = len(fragments)  # pylint: disable=self-cls-assignment
+    if from_index < 0:
+      from_index = len(fragments)  # pylint: disable=self-cls-assignment
 
-    fragment = fragments[n - 1]
+    from_fragment = fragments[from_index - 1]
+    if to_index > 0 and to_index <= len(fragments):
+      to_fragment = fragments[to_index - 1]
+    else:
+      to_fragment = from_fragment
 
     # Check if we need to delete a separator character before or after the fragment.
-    delete_before = n > 1 and fragments[n - 2][1] < fragment[0]
+    delete_before = from_index > 1 and fragments[from_index - 2][1] < from_fragment[0]
     # Using int(n) below to suppress pylint error.
-    delete_after = not delete_before and n < len(fragments) and fragment[1] < fragments[int(n)][0]
+    delete_after = not delete_before and from_index < len(fragments) and to_fragment[1] < fragments[int(from_index)][0]
 
-    start_index = fragment[0] - (1 if delete_before else 0)
-    length = fragment[1] - fragment[0] + (1 if delete_before or delete_after else 0)
+    start_index = from_fragment[0] - (1 if delete_before else 0)
+    length = to_fragment[1] - from_fragment[0] + (1 if delete_before or delete_after else 0)
 
     actions.key(f"left right:{start_index}")
     actions.key(f"shift-right:{length}")
     actions.key("backspace")
 
-  def fragment_select(n: int):
-    """Selects the nth fragment of the selected text. Index is 1-based."""
+  def fragment_select(from_index: int, to_index: int = 0):
+    """Selects a fragment or range of fragments of the selected text. Index is 1-based."""
     _, fragments = _get_selected_text_fragments()
-    if n <= 0 or n > len(fragments):
+    if from_index <= 0 or from_index > len(fragments):
       return
-    fragment = fragments[n - 1]
-    actions.key(f"left right:{fragment[0]}")
-    actions.key(f"shift-right:{fragment[1] - fragment[0]}")
+    from_fragment = fragments[from_index - 1]
+    if to_index > 0 and to_index <= len(fragments):
+      to_fragment = fragments[to_index - 1]
+    else:
+      to_fragment = from_fragment
+    actions.key(f"left right:{from_fragment[0]}")
+    actions.key(f"shift-right:{to_fragment[1] - from_fragment[0]}")
 
   def fragment_select_head(n: int):
     """Selects from the nth fragment of the selected text to the start. Index is 1-based."""

@@ -74,7 +74,7 @@ select tail: user.extend_line_end()
 select top: user.extend_file_start()
 select bottom: user.extend_file_end()
 puffer: user.expand_selection_to_adjacent_characters()
-fragment <user.number>: user.fragment_select(number)
+fragment <user.number> [past <user.number>]: user.fragment_select(number_1, number_2 or 0)
 fragment head <user.number>: user.fragment_select_head(number)
 fragment tail <user.number>: user.fragment_select_tail(number)
 car <user.number> [past <user.number>]: user.select_character_range(number_1, number_2 or 0)
@@ -100,7 +100,7 @@ chuck top:
 chuck bottom:
   user.extend_file_end()
   user.delete()
-chuck fragment [<user.number>]: user.fragment_delete(number or -1)
+chuck fragment [<user.number>] [past <user.number>]: user.fragment_delete(number_1 or -1, number_2 or 0)
 chuck car <user.number> [past <user.number>]:
   user.select_character_range(number_1, number_2 or 0)
   user.delete()

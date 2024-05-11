@@ -1,3 +1,6 @@
+# Move the mouse.
+slide <user.mouse_directions>: user.mouse_move_delta(mouse_directions)
+
 # Click at current position.
 mouse touch: mouse_click()
 mouse right: mouse_click(1)
@@ -12,8 +15,8 @@ mouse middle: mouse_click(2)
     key("{modifiers}:up")
 
 # Scroll mouse wheel.
-scroll small up: mouse_scroll(100.0)
-scroll small down: mouse_scroll(-100.0)
+scroll north: mouse_scroll(100.0)
+scroll south: mouse_scroll(-100.0)
 scroll up: mouse_scroll(500.0)
 scroll down: mouse_scroll(-500.0)
 scroll left: mouse_scroll(0.0, 100.0)

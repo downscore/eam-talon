@@ -208,7 +208,8 @@ inside dollars: user.surround_selected_text("$", "$")
 inside block comment: user.surround_selected_text("/*", "*/")
 
 # Pushing symbols around.
-# shove right:
+shove left: user.push_word_left()
+shove right: user.push_word_right()
 
 # Text styles
 style title: user.style_title()

@@ -97,7 +97,7 @@ def load_lists_from_csv(filename: str) -> List[List[str]]:
   return result
 
 
-def load_coords_from_csv(filename: str) -> Dict[str, Tuple[int, int]]:
+def load_coords_from_csv(filename: str) -> Dict[str, Tuple[float, float]]:
   """Loads a dictionary of labeled coordinates from a CSV file with Talon resource monitoring. Strips labels."""
   path = _SETTINGS_DIR / filename
 
@@ -105,7 +105,7 @@ def load_coords_from_csv(filename: str) -> Dict[str, Tuple[int, int]]:
   with resource.open(str(path), "r") as f:
     rows = list(csv.reader(f))
 
-  result: Dict[str, Tuple[int, int]] = {}
+  result: Dict[str, Tuple[float, float]] = {}
 
   # Skip header row.
   for row in rows[1:]:

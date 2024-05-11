@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from dataclasses import dataclass
 import re
 from typing import Any, Optional, Tuple, Union
 from talon import Context, Module, actions, canvas, screen, ui
@@ -15,6 +16,26 @@ from .user_settings import append_to_csv, load_coords_from_csv
 
 mod = Module()
 ctx = Context()
+
+
+@dataclass()
+class MouseCoordinateDelta:
+  x: int = 0
+  y: int = 0
+
+
+_COORDINATE_DELTAS_BY_SPOKEN: dict[str, MouseCoordinateDelta] = {
+    "north": MouseCoordinateDelta(y=-100),
+    "south": MouseCoordinateDelta(y=100),
+    "west": MouseCoordinateDelta(x=-100),
+    "east": MouseCoordinateDelta(x=100),
+    "up": MouseCoordinateDelta(y=-300),
+    "down": MouseCoordinateDelta(y=300),
+    "left": MouseCoordinateDelta(x=-300),
+    "right": MouseCoordinateDelta(x=300),
+}
+mod.list("mouse_direction", desc="Mouse movement directions")
+ctx.lists["self.mouse_direction"] = _COORDINATE_DELTAS_BY_SPOKEN.keys()
 
 # Available labels for matches.
 _LABELS = "abcdefghijklmnopqrstuvwxyz0123456789"
@@ -33,6 +54,17 @@ _regex_from_last_search: Optional[re.Pattern] = None
 _target_rects_from_last_search = []
 # Button we want to click when we find a search result. None if we just want to move the mouse.
 _button_from_last_search: Optional[int] = None
+
+
+@mod.capture(rule="{self.mouse_direction}+")
+def mouse_directions(m) -> MouseCoordinateDelta:
+  """Maps a set of spoken mouse directions to the sum of coordinate deltas."""
+  result = MouseCoordinateDelta()
+  for direction in m.mouse_direction_list:
+    delta = _COORDINATE_DELTAS_BY_SPOKEN[direction]
+    result.x += delta.x
+    result.y += delta.y
+  return result
 
 
 class OcrUi:
@@ -98,7 +130,7 @@ class OcrUi:
 
 
 # UI instance for selecting OCR matches. Populated when the UI is visible.
-_ocr_ui: OcrUi = None
+_ocr_ui: Optional[OcrUi] = None
 
 
 def _ocr_active_context() -> list[Any]:
@@ -144,6 +176,12 @@ def _ocr_move_mouse_to_rect(rect: Rect):
 @mod.action_class
 class Actions:
   """Mouse actions."""
+
+  def mouse_move_delta(delta: MouseCoordinateDelta):
+    """Moves the mouse by the given delta."""
+    x: float = actions.mouse_x() + delta.x
+    y: float = actions.mouse_y() + delta.y
+    actions.mouse_move(x, y)
 
   def mouse_click_label(label: str, button: int = 0):
     """Clicks the given label with the given mouse button and restores the mouse position."""

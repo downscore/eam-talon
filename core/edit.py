@@ -414,6 +414,22 @@ class ExtensionActions:
     actions.insert(text)
     actions.key("escape")
 
+  def push_word_left():
+    """Pushes the word or symbol to the left of the cursor left by one word."""
+    actions.user.extend_word_left()
+    word = actions.user.selected_text()
+    actions.user.delete()
+    actions.user.word_left()
+    actions.user.insert_via_clipboard(word)
+
+  def push_word_right():
+    """Pushes the word or symbol to the right of the cursor right by one word."""
+    actions.user.extend_word_right()
+    word = actions.user.selected_text()
+    actions.user.delete()
+    actions.user.word_right()
+    actions.user.insert_via_clipboard(word)
+
   def replace():
     """Search and replace for text in the active editor."""
     actions.key("cmd-h")

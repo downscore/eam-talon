@@ -4,7 +4,7 @@ mode: command
 mode: dictation
 -
 # Switch to mixed mode and insert some prose at the same time.
-^prose [<user.prose>]$:
+prose [<user.prose>]$:
   user.mode_mixed()
   user.dictation_insert_prose(prose or "")
 

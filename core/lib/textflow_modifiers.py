@@ -262,6 +262,65 @@ def _apply_c_scope_modifier(text: str, input_match: TextMatch, modifier: Modifie
   return _make_match(start_index, end_index)
 
 
+def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the current argument."""
+  del modifier  # Unused.
+
+  # Find the first argument delimiter before the match. Track close parentheses to handle nested calls.
+  start_index = input_match.text_range.start
+  close_parentheses = 0
+  while start_index > 0:
+    if text[start_index - 1] == ")":
+      close_parentheses += 1
+    elif text[start_index - 1] == "(":
+      if close_parentheses == 0:
+        break
+      close_parentheses -= 1
+    elif text[start_index - 1] in (",", ";") and close_parentheses == 0:
+      break
+    start_index -= 1
+
+  # Deletion range start includes leading whitespace, but remove it from the selection range.
+  deletion_start_index = start_index
+  while start_index < len(text) and text[start_index] in [" ", "\t", "\n"]:
+    start_index += 1
+
+  # Try to include leading comma in deletion range. There are cases where we may not want to delete a leading semicolon,
+  # so we ignore semicolons for now.
+  found_leading_comma = False
+  if deletion_start_index > 0 and text[deletion_start_index - 1] == ",":
+    deletion_start_index -= 1
+    found_leading_comma = True
+
+  # Find the next argument delimiter after the match. Track open parentheses to handle nested calls.
+  end_index = input_match.text_range.end
+  open_parentheses = 0
+  while end_index < len(text):
+    if text[end_index] == "(":
+      open_parentheses += 1
+    elif text[end_index] == ")":
+      if open_parentheses == 0:
+        break
+      open_parentheses -= 1
+    elif text[end_index] in (",", ";") and open_parentheses == 0:
+      break
+    end_index += 1
+
+  # Deletion range end includes trailing whitespace, but remove it from the selection range.
+  deletion_end_index = end_index
+  while end_index > start_index and text[end_index - 1] in [" ", "\t", "\n"]:
+    end_index -= 1
+
+  # If we did not include a leading comma in the deletion range, try to find a trailing comma.
+  if not found_leading_comma and deletion_end_index < len(text) and text[deletion_end_index] == ",":
+    deletion_end_index += 1
+    # Include a whitespace character after the comma, if present.
+    if deletion_end_index < len(text) and text[deletion_end_index] in [" ", "\t"]:
+      deletion_end_index += 1
+
+  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -269,6 +328,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.LINE_HEAD: _apply_line_head_modifier,
     ModifierType.LINE_TAIL: _apply_line_tail_modifier,
     ModifierType.BLOCK: _apply_block_modifier,
+    ModifierType.ARG: _apply_argument_modifier,
     ModifierType.COMMENT: _apply_comment_modifier,
     ModifierType.STRING: _apply_string_modifier,
     ModifierType.PYTHON_SCOPE: _apply_python_scope_modifier,

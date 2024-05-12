@@ -545,3 +545,67 @@ class TestCScopeModifier(unittest.TestCase):
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.start, 30)
     self.assertEqual(result.text_range.end, 169)
+
+
+class TestArgumentModifier(unittest.TestCase):
+  """Tests for applying argument modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARG)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_call(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(14, 15))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg2")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", arg2")
+
+  def test_first_argument(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(9, 10))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg1")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "arg1, ")
+
+  def test_last_argument(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(21, 22))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg3")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", arg3")
+
+  def test_surrounding_whitespace(self):
+    text = "my_func( arg );"
+    input_match = TextMatch(TextRange(10, 11))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " arg ")
+
+  def test_nested_call_before(self):
+    text = "f1(arg1, f2(arg2), arg3);"
+    input_match = TextMatch(TextRange(17, 17))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "f2(arg2)")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", f2(arg2)")
+
+  def test_nested_call_after(self):
+    text = "f1(arg1, f2(arg2), arg3);"
+    input_match = TextMatch(TextRange(10, 11))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "f2(arg2)")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", f2(arg2)")

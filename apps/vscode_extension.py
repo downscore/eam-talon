@@ -32,13 +32,16 @@ class UserActions:
     return actions.user.vscode_return_value("eam-talon.getSelectedText")
 
   def jump_line(n: int):
-    actions.user.vscode("eam-talon.jumpToLine", n)
+    actions.user.vscode_and_wait("eam-talon.jumpToLine", n)
+    actions.sleep("50ms")
 
   def select_line_range(from_index: int, to_index: int = 0):
-    actions.user.vscode("eam-talon.selectLineRange", from_index, to_index if to_index > 0 else None)
+    actions.user.vscode_and_wait("eam-talon.selectLineRange", from_index, to_index if to_index > 0 else None)
+    actions.sleep("50ms")
 
   def bring_line_range(from_index: int, to_index: int = 0):
-    actions.user.vscode("eam-talon.copyLinesToCursor", from_index, to_index if to_index > 0 else None)
+    actions.user.vscode_and_wait("eam-talon.copyLinesToCursor", from_index, to_index if to_index > 0 else None)
+    actions.sleep("50ms")
 
   def app_get_current_directory() -> str:
     # Get the directory from the currently-open file.

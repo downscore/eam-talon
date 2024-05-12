@@ -503,18 +503,6 @@ class Actions:
                          tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
     _run_command(command)
 
-  def textflow_move_before_scope():
-    """Moves the cursor before the current scope."""
-    command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
-                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
-    _run_command(command)
-
-  def textflow_move_after_scope():
-    """Moves the cursor after the current scope."""
-    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER,
-                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
-    _run_command(command)
-
   def textflow_new_line_above(simple_target: tf.SimpleTarget):
     """Inserts a new line above the given target and moves the cursor to it."""
     target_from = tf.CompoundTarget(simple_target)

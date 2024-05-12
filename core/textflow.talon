@@ -73,8 +73,6 @@ cut comment:
 # The escaped version, "before scrape sentence", must be used instead.
 before sentence: user.textflow_move_before_sentence()
 after sentence: user.textflow_move_after_sentence()
-before scope: user.textflow_move_before_scope()
-after scope: user.textflow_move_after_scope()
 
 # Insert newline relative to target.
 drink <user.textflow_simple_target>:

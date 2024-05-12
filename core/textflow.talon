@@ -54,6 +54,12 @@ copy string:
 copy comment:
   user.textflow_select_comment()
   user.clipboard_history_copy()
+copy brackets:
+  user.textflow_select_brackets()
+  user.clipboard_history_copy()
+copy invoke:
+  user.textflow_select_function_call()
+  user.clipboard_history_copy()
 
 # Cut commands using TextFlow modifiers.
 cut sentence:
@@ -70,6 +76,12 @@ cut string:
   user.clipboard_history_cut()
 cut comment:
   user.textflow_select_comment()
+  user.clipboard_history_cut()
+cut brackets:
+  user.textflow_select_brackets()
+  user.clipboard_history_cut()
+cut invoke:
+  user.textflow_select_function_call()
   user.clipboard_history_cut()
 
 # Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to

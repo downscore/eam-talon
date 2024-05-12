@@ -58,7 +58,8 @@ after car <user.number>:
   key(right)
 
 # Selection
-pick line: user.select_line()
+# Poor recognition for "pick line", so added "icline" to help.
+(pick line|icline): user.select_line()
 pick left: user.extend_left()
 pick right: user.extend_right()
 pick up: user.extend_up()

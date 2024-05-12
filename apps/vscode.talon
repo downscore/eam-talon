@@ -32,6 +32,9 @@ lucky <user.text>:
 blinker next: user.vscode("editor.action.moveSelectionToNextFindMatch")
 blinker last: user.vscode("editor.action.moveSelectionToPreviousFindMatch")
 
+# Jump to a matching bracket.
+jump bracket: user.vscode("editor.action.jumpToBracket")
+
 # Execution
 test run all: user.vscode("testing.runAll")
 test run file: user.vscode("testing.runCurrentFile")

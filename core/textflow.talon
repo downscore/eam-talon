@@ -23,11 +23,47 @@ pick scope: user.textflow_select_scope()
 pick argument: user.textflow_select_argument()
 pick string: user.textflow_select_string()
 pick comment: user.textflow_select_comment()
+
+# Deletion commands using TextFlow modifiers.
 chuck sentence: user.textflow_delete_sentence()
 chuck scope: user.textflow_delete_scope()
 chuck argument: user.textflow_delete_argument()
 chuck string: user.textflow_delete_string()
 chuck comment: user.textflow_delete_comment()
+
+# Copy commands using TextFlow modifiers.
+copy sentence:
+  user.textflow_select_sentence()
+  user.clipboard_history_copy()
+copy scope:
+  user.textflow_select_scope()
+  user.clipboard_history_copy()
+copy argument:
+  user.textflow_select_argument()
+  user.clipboard_history_copy()
+copy string:
+  user.textflow_select_string()
+  user.clipboard_history_copy()
+copy comment:
+  user.textflow_select_comment()
+  user.clipboard_history_copy()
+
+# Cut commands using TextFlow modifiers.
+cut sentence:
+  user.textflow_select_sentence()
+  user.clipboard_history_cut()
+cut scope:
+  user.textflow_select_scope()
+  user.clipboard_history_cut()
+cut argument:
+  user.textflow_select_argument()
+  user.clipboard_history_cut()
+cut string:
+  user.textflow_select_string()
+  user.clipboard_history_cut()
+cut comment:
+  user.textflow_select_comment()
+  user.clipboard_history_cut()
 
 # Insert newline relative to target.
 drink <user.textflow_simple_target>:

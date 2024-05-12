@@ -62,27 +62,13 @@ copy invoke:
   user.clipboard_history_copy()
 
 # Cut commands using TextFlow modifiers.
-cut sentence:
-  user.textflow_select_sentence()
-  user.clipboard_history_cut()
-cut scope:
-  user.textflow_select_scope()
-  user.clipboard_history_cut()
-cut argument:
-  user.textflow_select_argument()
-  user.clipboard_history_cut()
-cut string:
-  user.textflow_select_string()
-  user.clipboard_history_cut()
-cut comment:
-  user.textflow_select_comment()
-  user.clipboard_history_cut()
-cut brackets:
-  user.textflow_select_brackets()
-  user.clipboard_history_cut()
-cut invoke:
-  user.textflow_select_function_call()
-  user.clipboard_history_cut()
+cut sentence: user.textflow_cut_sentence()
+cut scope: user.textflow_cut_scope()
+cut argument: user.textflow_cut_argument()
+cut string: user.textflow_cut_string()
+cut comment: user.textflow_cut_comment()
+cut brackets: user.textflow_cut_brackets()
+cut invoke: user.textflow_cut_function_call()
 
 # Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to
 # navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in front of the word "sentence".

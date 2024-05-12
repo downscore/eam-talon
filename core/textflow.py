@@ -474,6 +474,46 @@ class Actions:
     command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
     _run_command(command)
 
+  def textflow_cut_sentence():
+    """Cuts the current sentence to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
+    _run_command(command)
+
+  def textflow_cut_scope():
+    """Cuts the current scope to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
+    _run_command(command)
+
+  def textflow_cut_comment():
+    """Cuts the current comment to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
+    _run_command(command)
+
+  def textflow_cut_argument():
+    """Cuts the current argument in a function call to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    _run_command(command)
+
+  def textflow_cut_string():
+    """Cuts the current string contents to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+    _run_command(command)
+
+  def textflow_cut_function_call():
+    """Cuts the current function call to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
+    _run_command(command)
+
+  def textflow_cut_brackets():
+    """Cuts the current brackets contents to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
+    _run_command(command)
+
   def textflow_delete_sentence():
     """Deletes the current sentence."""
     command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,

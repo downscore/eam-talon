@@ -67,6 +67,13 @@ class TestCommentModifier(unittest.TestCase):
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "#test comment string.")
 
+  def test_line_comment_between_code(self):
+    text = "y -= 4\n# My comment.\nx += 5"
+    input_match = TextMatch(TextRange(9, 11))  # "My"
+    modifier = Modifier(ModifierType.COMMENT, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "# My comment.")
+
   def test_apply_comment_modifier_multi_line(self):
     text = "This is a /*test comment\nmultiline string.*/"
     input_match = TextMatch(TextRange(12, 16))  # "test"
@@ -199,35 +206,35 @@ class TestStringModifier(unittest.TestCase):
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "\"test string\"")
+    self.assertEqual(result.text_range.extract(text), "test string")
 
   def test_apply_string_modifier_different_delimiter(self):
     text = "This is a 'test string'."
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None, "'")
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "'test string'")
+    self.assertEqual(result.text_range.extract(text), "test string")
 
   def test_apply_string_modifier_nested_string(self):
     text = "This is a \"nested \"test\" string\"."
     input_match = TextMatch(TextRange(19, 23))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "\"test\"")
+    self.assertEqual(result.text_range.extract(text), "test")
 
   def test_apply_string_modifier_nested_string_outside(self):
     text = "This is a \"nested \"test\" string\"."
     input_match = TextMatch(TextRange(11, 17))  # "nested"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "\"nested \"")
+    self.assertEqual(result.text_range.extract(text), "nested ")
 
   def test_apply_string_modifier_multiple_strings(self):
     text = "This is a \"test string\" and \"another string\"."
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "\"test string\"")
+    self.assertEqual(result.text_range.extract(text), "test string")
 
   def test_apply_string_modifier_no_string(self):
     text = "This is a test string."
@@ -235,7 +242,7 @@ class TestStringModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
     # Modifier does not modify result.
-    self.assertEqual(result.text_range.extract(text), "test")
+    self.assertEqual(result.text_range.extract(text), "This is a test string.")
 
   def test_apply_string_modifier_invalid_match(self):
     text = "This is a \"test string\"."
@@ -524,7 +531,29 @@ class TestCScopeModifier(unittest.TestCase):
     self.assertEqual(result.text_range.start, 30)
     self.assertEqual(result.text_range.end, 111)
 
-  def test_function_nested_scope(self):
+  def test_function_nested_before(self):
+    text = """
+      void test_function() {
+          cout << "Hello, world!";
+          int x = 5;
+          if (x > 6) {
+            x = x + 5;
+          }
+          int y = x + 1;
+      }
+
+      void test_function2() {
+          cout << "Test!";
+          int a = 3;
+      }
+    """
+    input_match = TextMatch(TextRange(154, 157))  # "int"
+    modifier = Modifier(ModifierType.C_SCOPE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.start, 30)
+    self.assertEqual(result.text_range.end, 169)
+
+  def test_function_nested_after(self):
     text = """
       void test_function() {
           cout << "Hello, world!";
@@ -646,3 +675,12 @@ class TestSentenceModifier(unittest.TestCase):
     self.assertEqual(result.text_range.extract(text), "Here is another sentence!")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), " Here is another sentence!")
+
+  def test_newline_delimited(self):
+    text = "## Markdown Header\n\nThis is my sentence."
+    input_match = TextMatch(TextRange(25, 27))
+    modifier = Modifier(ModifierType.SENTENCE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "This is my sentence.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This is my sentence.")

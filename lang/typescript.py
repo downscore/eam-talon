@@ -5,6 +5,7 @@
 # mypy: ignore-errors
 
 from talon import Context, Module
+from ..core.lib import textflow_types as tf
 
 mod = Module()
 ctx = Context()
@@ -12,3 +13,11 @@ ctx = Context()
 ctx.matches = r"""
 tag: user.lang_typescript
 """
+
+
+@ctx.action_class("user")
+class ExtensionActions:
+  """Action overwrites."""
+
+  def textflow_get_scope_modifier() -> tf.ModifierType:
+    return tf.ModifierType.C_SCOPE

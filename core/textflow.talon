@@ -2,14 +2,6 @@
 <user.textflow_command_type> <user.textflow_compound_target>:
   user.textflow_execute_command(textflow_command_type, textflow_compound_target)
 
-# Core commands - Current block as target.
-<user.textflow_command_type> block:
-  user.textflow_execute_command_current_block(textflow_command_type)
-
-# Core commands - Target modified to a full line. Tries to match beginning of line first.
-<user.textflow_command_type> row <user.textflow_simple_target>:
-  user.textflow_execute_line_command(textflow_command_type, textflow_simple_target)
-
 # Core commands - Compound target starting from the cursor position.
 <user.textflow_command_type> <user.textflow_target_combo_type> <user.textflow_simple_target>:
   user.textflow_execute_command_from_cursor(textflow_command_type, textflow_target_combo_type, textflow_simple_target)
@@ -24,6 +16,18 @@
   user.textflow_execute_command(textflow_command_type, textflow_definite)
 <user.textflow_command_type> <user.textflow_indefinite>:
   user.textflow_execute_command(textflow_command_type, textflow_indefinite)
+
+# Selection commands using TextFlow modifiers.
+pick sentence: user.textflow_select_sentence()
+pick scope: user.textflow_select_scope()
+pick argument: user.textflow_select_argument()
+pick string: user.textflow_select_string()
+pick comment: user.textflow_select_comment()
+chuck sentence: user.textflow_delete_sentence()
+chuck scope: user.textflow_delete_scope()
+chuck argument: user.textflow_delete_argument()
+chuck string: user.textflow_delete_string()
+chuck comment: user.textflow_delete_comment()
 
 # Insert newline relative to target.
 drink <user.textflow_simple_target>:
@@ -78,7 +82,7 @@ singularize <user.textflow_word>:
 singularize <user.textflow_compound_target>:
   user.textflow_make_singular(textflow_compound_target)
 
-# Surround a word in quotes.
+# Surround a word or target in quotes.
 doubleize <user.textflow_word>:
   user.textflow_surround_text(textflow_word, "\"")
 doubleize <user.textflow_compound_target>:
@@ -88,7 +92,7 @@ singleize <user.textflow_word>:
 singleize <user.textflow_compound_target>:
   user.textflow_surround_text(textflow_compound_target, "'")
 
-# Add a comma after a word.
+# Add a comma after a word or target.
 dripize <user.textflow_word>:
   user.textflow_surround_text(textflow_word, "", ",")
 dripize <user.textflow_compound_target>:

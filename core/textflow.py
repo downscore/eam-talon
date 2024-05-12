@@ -416,24 +416,11 @@ class Actions:
     command = tf.Command(command_type, target_from, target_to)
     _run_command(command)
 
-  def textflow_execute_line_command(command_type: tf.CommandType, simple_target: tf.SimpleTarget):
-    """"Execute a textflow command on a line."""
-    simple_target.match_options.match_method = tf.TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING
-    target_from = tf.CompoundTarget(simple_target, modifier=tf.Modifier(tf.ModifierType.LINE))
-    command = tf.Command(command_type, target_from)
-    _run_command(command)
-
   def textflow_execute_command_from_cursor(command_type: tf.CommandType, combo_type: tf.TargetCombinationType,
                                            simple_target: tf.SimpleTarget):
     """"Executes a textflow command using the cursor as the first simple target."""
     compound_target = tf.CompoundTarget(target_to=simple_target, target_combo=combo_type)
     command = tf.Command(command_type, compound_target)
-    _run_command(command)
-
-  def textflow_execute_command_current_block(command_type: tf.CommandType):
-    """"Executes a textflow command on the current block."""
-    target_from = tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BLOCK))
-    command = tf.Command(command_type, target_from)
     _run_command(command)
 
   def textflow_replace(target_from: tf.CompoundTarget, prose: str):
@@ -444,6 +431,64 @@ class Actions:
   def textflow_replace_word(target_from: tf.CompoundTarget, word: str):
     """"Executes a textflow replace word command, matching original case."""
     command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=word)
+    _run_command(command)
+
+  def textflow_get_scope_modifier() -> tf.ModifierType:
+    """Gets the current scope modifier type."""
+    # Default to Python-style scopes.
+    return tf.ModifierType.PYTHON_SCOPE
+
+  def textflow_select_sentence():
+    """Selects the current sentence."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
+    _run_command(command)
+
+  def textflow_select_scope():
+    """Selects the current scope."""
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
+    _run_command(command)
+
+  def textflow_select_comment():
+    """Selects the current comment."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
+    _run_command(command)
+
+  def textflow_select_argument():
+    """Selects the current argument in a function call."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    _run_command(command)
+
+  def textflow_select_string():
+    """Selects the current string contents."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+    _run_command(command)
+
+  def textflow_delete_sentence():
+    """Deletes the current sentence."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
+    _run_command(command)
+
+  def textflow_delete_scope():
+    """Deletes the current scope."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
+    _run_command(command)
+
+  def textflow_delete_comment():
+    """Deletes the current comment."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
+    _run_command(command)
+
+  def textflow_delete_argument():
+    """Deletes the current argument in a function call."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    _run_command(command)
+
+  def textflow_delete_string():
+    """Deletes the current string contents."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
     _run_command(command)
 
   def textflow_new_line_above(simple_target: tf.SimpleTarget):

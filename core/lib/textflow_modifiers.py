@@ -147,7 +147,7 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
   # Use start of input match to ensure we always take a single line if not a block comment.
   end_index = input_match.text_range.start
   if not block_comment:
-    while end_index < len(text) and (end_index == len(text) - 1 or text[end_index + 1] != "\n"):
+    while end_index < len(text) and text[end_index] != "\n":
       end_index += 1
   else:
     while end_index < len(text) - 1:
@@ -160,18 +160,14 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
 
 
 def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the content between symmetric delimiters containing the token. Defaults to C-style string."""
+  """Takes the content between symmetric delimiters containing the token. Defaults to C-style strings."""
   delimiter = "\"" if modifier.delimiter == "" else modifier.delimiter
   start_index = input_match.text_range.start
-  while start_index > 0 and text[start_index] != delimiter:
+  while start_index > 0 and text[start_index - 1] != delimiter:
     start_index -= 1
   end_index = input_match.text_range.end
-  while end_index < len(text) and text[end_index - 1] != delimiter:
+  while end_index < len(text) and text[end_index] != delimiter:
     end_index += 1
-
-  # Make sure a string was matched.
-  if text[start_index] != delimiter or text[end_index - 1] != delimiter:
-    return input_match
 
   return _make_match(start_index, end_index)
 
@@ -234,9 +230,16 @@ def _apply_c_scope_modifier(text: str, input_match: TextMatch, modifier: Modifie
   """Takes the current scope in C-style code."""
   del modifier  # Unused.
 
-  # Find the first opening brace before the match.
+  # Find the first opening brace before the match. Keep track of the number of close braces.
+  close_braces = 0
   start_index = input_match.text_range.start
-  while start_index > 0 and text[start_index - 1] != "{":
+  while start_index > 0:
+    if text[start_index - 1] == "}":
+      close_braces += 1
+    elif text[start_index - 1] == "{":
+      if close_braces <= 0:
+        break
+      close_braces -= 1
     start_index -= 1
 
   # Don't include the newline after the opening brace if present.
@@ -244,15 +247,15 @@ def _apply_c_scope_modifier(text: str, input_match: TextMatch, modifier: Modifie
     start_index += 1
 
   # Find the corresponding closing brace. Keep track of the number of open nested braces.
-  nested_braces = 0
+  open_braces = 0
   end_index = start_index
   while end_index < len(text):
     if text[end_index] == "{":
-      nested_braces += 1
+      open_braces += 1
     elif text[end_index] == "}":
-      if nested_braces <= 0:
+      if open_braces <= 0:
         break
-      nested_braces -= 1
+      open_braces -= 1
     end_index += 1
 
   # Remove indentation before the closing brace.
@@ -325,7 +328,7 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
   """Takes the current sentence. Suitable for English prose."""
   del modifier  # Unused.
 
-  sentence_delimiters = [".", "!", "?"]
+  sentence_delimiters = [".", "!", "?", "\n"]
 
   # Find the end of the previous sentence.
   start_index = input_match.text_range.start

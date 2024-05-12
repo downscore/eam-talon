@@ -684,3 +684,100 @@ class TestSentenceModifier(unittest.TestCase):
     self.assertEqual(result.text_range.extract(text), "This is my sentence.")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), "This is my sentence.")
+
+
+class TestCallModifier(unittest.TestCase):
+  """Tests for applying function call modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_single_call(self):
+    text = "func(x, y);"
+    input_match = TextMatch(TextRange(1, 2))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+  def test_single_cursor_at_func_name_start(self):
+    text = "func(x, y);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+  def test_single_cursor_at_open_parenthesis(self):
+    text = "func(x, y);"
+    input_match = TextMatch(TextRange(4, 4))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+  def test_nested_call(self):
+    text = "func(x, func2(y));"
+    input_match = TextMatch(TextRange(1, 2))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, func2(y))")
+
+  def test_complex_call(self):
+    text = "(*obj)->get_thing().field[0].method(arg1, &arg2, arg3);"
+    input_match = TextMatch(TextRange(20, 21))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "(*obj)->get_thing().field[0].method(arg1, &arg2, arg3)")
+
+  def test_parenthesis_before_call(self):
+    text = "(func(x, func2(y));"
+    input_match = TextMatch(TextRange(2, 3))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, func2(y))")
+
+
+class TestBracketModifier(unittest.TestCase):
+  """Tests for applying bracket modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_brackets(self):
+    text = "[test]"
+    input_match = TextMatch(TextRange(1, 2))
+    modifier = Modifier(ModifierType.BRACKETS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+  def test_no_opening_bracket(self):
+    text = "test]"
+    input_match = TextMatch(TextRange(1, 2))
+    modifier = Modifier(ModifierType.BRACKETS)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier)
+
+  def test_nested_brackets_outside(self):
+    text = "([test])"
+    input_match = TextMatch(TextRange(2, 3))
+    modifier = Modifier(ModifierType.BRACKETS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+  def test_nested_brackets_before(self):
+    text = "[before[nest]after]"
+    input_match = TextMatch(TextRange(14, 15))
+    modifier = Modifier(ModifierType.BRACKETS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "before[nest]after")
+
+  def test_nested_brackets_after(self):
+    text = "[before[nest]after]"
+    input_match = TextMatch(TextRange(3, 4))
+    modifier = Modifier(ModifierType.BRACKETS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "before[nest]after")

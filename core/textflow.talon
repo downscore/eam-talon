@@ -26,6 +26,8 @@ pick scope: user.textflow_select_scope()
 pick argument: user.textflow_select_argument()
 pick string: user.textflow_select_string()
 pick comment: user.textflow_select_comment()
+pick brackets: user.textflow_select_brackets()
+pick invoke: user.textflow_select_function_call()
 
 # Deletion commands using TextFlow modifiers.
 chuck sentence: user.textflow_delete_sentence()
@@ -33,6 +35,8 @@ chuck scope: user.textflow_delete_scope()
 chuck argument: user.textflow_delete_argument()
 chuck string: user.textflow_delete_string()
 chuck comment: user.textflow_delete_comment()
+chuck brackets: user.textflow_delete_brackets()
+chuck invoke: user.textflow_delete_function_call()
 
 # Copy commands using TextFlow modifiers.
 copy sentence:
@@ -75,84 +79,55 @@ before sentence: user.textflow_move_before_sentence()
 after sentence: user.textflow_move_after_sentence()
 
 # Insert newline relative to target.
-drink <user.textflow_simple_target>:
-  user.textflow_new_line_above(textflow_simple_target)
-pour <user.textflow_simple_target>:
-  user.textflow_new_line_below(textflow_simple_target)
+drink <user.textflow_simple_target>: user.textflow_new_line_above(textflow_simple_target)
+pour <user.textflow_simple_target>: user.textflow_new_line_below(textflow_simple_target)
 
 # Replace a target with prose (includes punctuation).
-swap <user.textflow_compound_target> with <user.prose>$:
-  user.textflow_replace(textflow_compound_target, prose)
-swap <user.textflow_compound_target> with <user.prose> anchor:
-  user.textflow_replace(textflow_compound_target, prose)
+swap <user.textflow_compound_target> with <user.prose>$: user.textflow_replace(textflow_compound_target, prose)
+swap <user.textflow_compound_target> with <user.prose> anchor: user.textflow_replace(textflow_compound_target, prose)
 
 # Single word replacement.
-swap <user.textflow_word> with <user.word>:
-  user.textflow_replace_word(textflow_word, word)
+swap <user.textflow_word> with <user.word>: user.textflow_replace_word(textflow_word, word)
 
 # Swap articles (a <-> the).
-swap <user.textflow_definite>:
-  user.textflow_replace_word(textflow_definite, "a")
-swap <user.textflow_indefinite>:
-  user.textflow_replace_word(textflow_indefinite, "the")
+swap <user.textflow_definite>: user.textflow_replace_word(textflow_definite, "a")
+swap <user.textflow_indefinite>: user.textflow_replace_word(textflow_indefinite, "the")
 
 # Segmenting or joining words.
 # Note: Including a match ordinal and search direction here makes parsing very ambiguous.
-segment <user.word> <user.word>:
-  user.textflow_segment_word(word_1, word_2)
-join up <user.word> <user.word>:
-  user.textflow_join_words(word_1, word_2)
-hyphenate <user.word> <user.word>:
-  user.textflow_hyphenate_words(word_1, word_2)
+segment <user.word> <user.word>: user.textflow_segment_word(word_1, word_2)
+join up <user.word> <user.word>: user.textflow_join_words(word_1, word_2)
+hyphenate <user.word> <user.word>: user.textflow_hyphenate_words(word_1, word_2)
 
 # Convert a number written as words to digits ("one thousand and twenty five" -> "1025").
-numberize <user.number_list_of_words>:
-  user.textflow_words_to_digits(number_list_of_words)
+numberize <user.number_list_of_words>: user.textflow_words_to_digits(number_list_of_words)
 
 # Make a word possessive ("dog" -> "dog's", "its" -> "it's").
-possessivize <user.textflow_word>:
-  user.textflow_make_possessive(textflow_word)
-possessivize <user.textflow_compound_target>:
-  user.textflow_make_possessive(textflow_compound_target)
+possessivize <user.textflow_word>: user.textflow_make_possessive(textflow_word)
+possessivize <user.textflow_compound_target>: user.textflow_make_possessive(textflow_compound_target)
 
 # Make a word plural ("dog" -> "dogs", "it" -> "its").
-pluralize <user.textflow_word>:
-  user.textflow_make_plural(textflow_word)
-pluralize <user.textflow_compound_target>:
-  user.textflow_make_plural(textflow_compound_target)
+pluralize <user.textflow_word>: user.textflow_make_plural(textflow_word)
+pluralize <user.textflow_compound_target>: user.textflow_make_plural(textflow_compound_target)
 
 # Make a word singular ("dogs" -> "dog", "it's" -> "it").
-singularize <user.textflow_word>:
-  user.textflow_make_singular(textflow_word)
-singularize <user.textflow_compound_target>:
-  user.textflow_make_singular(textflow_compound_target)
+singularize <user.textflow_word>: user.textflow_make_singular(textflow_word)
+singularize <user.textflow_compound_target>: user.textflow_make_singular(textflow_compound_target)
 
 # Surround a word or target in quotes.
-doubleize <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "\"")
-doubleize <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "\"")
-singleize <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "'")
-singleize <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "'")
+doubleize <user.textflow_word>: user.textflow_surround_text(textflow_word, "\"")
+doubleize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "\"")
+singleize <user.textflow_word>: user.textflow_surround_text(textflow_word, "'")
+singleize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "'")
 
 # Add a comma after a word or target.
-dripize <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "", ",")
-dripize <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "", ",")
+dripize <user.textflow_word>:user.textflow_surround_text(textflow_word, "", ",")
+dripize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "", ",")
 
 # Add markdown formatting.
-boldize <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "**")
-boldize <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "**")
-italicize <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "*")
-italicize <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "*")
-strike through <user.textflow_word>:
-  user.textflow_surround_text(textflow_word, "~~")
-strike through <user.textflow_compound_target>:
-  user.textflow_surround_text(textflow_compound_target, "~~")
+boldize <user.textflow_word>: user.textflow_surround_text(textflow_word, "**")
+boldize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "**")
+italicize <user.textflow_word>: user.textflow_surround_text(textflow_word, "*")
+italicize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "*")
+strike through <user.textflow_word>: user.textflow_surround_text(textflow_word, "~~")
+strike through <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "~~")

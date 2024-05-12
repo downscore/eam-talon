@@ -367,6 +367,91 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
   return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
 
 
+def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the current function call. Assumes the input match is in the function name, not inside the parentheses."""
+  del modifier  # Unused.
+
+  # Find the start of the function call.
+  # Try to be permissive and include balanced parentheses to allow complex C++ calls such as:
+  # (*obj)->get_thing().field[0].method(arg1, &arg2, arg3);
+  start_index = input_match.text_range.start
+  nested_parentheses = 0
+  while start_index > 0 and (text[start_index - 1].isalnum() or
+                             text[start_index - 1] in ("_", ".", "-", ">", "*", "(", ")", "[", "]")):
+    if text[start_index - 1] == "(":
+      if nested_parentheses == 0:
+        break
+      nested_parentheses -= 1
+    elif text[start_index - 1] == ")":
+      nested_parentheses += 1
+    start_index -= 1
+
+  # Find the end of the function call. Look for an opening parenthesis after the input match, then its balanced close.
+  # Use the input match so we can get the entire call if the input match is in `method` in the example above.
+  end_index = input_match.text_range.end
+  nested_parentheses = -1  # Start with -1 to so we stop after closing the first open parenthesis.
+  while end_index < len(text):
+    if text[end_index] == "(":
+      nested_parentheses += 1
+    elif text[end_index] == ")":
+      if nested_parentheses == 0:
+        # Include closing parenthesis.
+        end_index += 1
+        break
+      nested_parentheses -= 1
+    end_index += 1
+
+  return _make_match(start_index, end_index)
+
+
+def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the contents of surrounding brackets."""
+  del modifier  # Unused.
+
+  bracket_pairs = {"(": ")", "[": "]", "{": "}", "<": ">"}
+
+  # Find the first opening bracket before the match without a matching closing bracket.
+  start_index = input_match.text_range.start
+  nesting_level_by_bracket = {}
+  # Initialize nesting level at zero for all bracket types.
+  for bracket in bracket_pairs:
+    nesting_level_by_bracket[bracket] = 0
+  opening_bracket = None
+  while start_index > 0:
+    c = text[start_index - 1]
+    if c in bracket_pairs:
+      nesting_level_by_bracket[c] -= 1
+      if nesting_level_by_bracket[c] < 0:
+        opening_bracket = c
+        break
+    elif c in bracket_pairs.values():
+      # Get key for value c
+      for bracket, close_bracket in bracket_pairs.items():
+        if close_bracket == c:
+          nesting_level_by_bracket[bracket] += 1
+          break
+    start_index -= 1
+
+  # Make sure we found an opening bracket.
+  if opening_bracket is None:
+    raise ValueError("Could not find opening bracket")
+
+  # Find the corresponding closing bracket.
+  end_index = start_index
+  nesting_level = 0
+  while end_index < len(text):
+    c = text[end_index]
+    if c == opening_bracket:
+      nesting_level += 1
+    elif c == bracket_pairs[opening_bracket]:
+      if nesting_level == 0:
+        break
+      nesting_level -= 1
+    end_index += 1
+
+  return _make_match(start_index, end_index)
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -375,11 +460,13 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.LINE_TAIL: _apply_line_tail_modifier,
     ModifierType.BLOCK: _apply_block_modifier,
     ModifierType.ARG: _apply_argument_modifier,
+    ModifierType.CALL: _apply_call_modifier,
     ModifierType.COMMENT: _apply_comment_modifier,
     ModifierType.STRING: _apply_string_modifier,
     ModifierType.PYTHON_SCOPE: _apply_python_scope_modifier,
     ModifierType.C_SCOPE: _apply_c_scope_modifier,
     ModifierType.SENTENCE: _apply_sentence_modifier,
+    ModifierType.BRACKETS: _apply_brackets_modifier,
 }
 
 

@@ -464,6 +464,16 @@ class Actions:
     command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
     _run_command(command)
 
+  def textflow_select_function_call():
+    """Selects the current function call."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
+    _run_command(command)
+
+  def textflow_select_brackets():
+    """Selects the current brackets contents."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
+    _run_command(command)
+
   def textflow_delete_sentence():
     """Deletes the current sentence."""
     command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
@@ -489,6 +499,17 @@ class Actions:
   def textflow_delete_string():
     """Deletes the current string contents."""
     command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+    _run_command(command)
+
+  def textflow_delete_function_call():
+    """Deletes the current function call."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
+    _run_command(command)
+
+  def textflow_delete_brackets():
+    """Deletes the current brackets contents."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
     _run_command(command)
 
   def textflow_move_before_sentence():

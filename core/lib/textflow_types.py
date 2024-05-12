@@ -110,6 +110,8 @@ class ModifierType(Enum):
   C_SCOPE = 13
   # Take a sentence in English prose.
   SENTENCE = 14
+  # Take the contents of a pair of brackets containing the target.
+  BRACKETS = 15
 
 
 @dataclass

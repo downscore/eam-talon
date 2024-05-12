@@ -9,6 +9,9 @@
 # Core commands - Single word target.
 <user.textflow_command_type> <user.textflow_word>:
   user.textflow_execute_command(textflow_command_type, textflow_word)
+# Escaped version of the above.
+<user.textflow_command_type> scrape <user.textflow_word>:
+  user.textflow_execute_command(textflow_command_type, textflow_word)
 
 # Core commands - Articles (a/the) as target. e.g. "grab indefinite".
 # This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in it.
@@ -64,6 +67,14 @@ cut string:
 cut comment:
   user.textflow_select_comment()
   user.clipboard_history_cut()
+
+# Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to
+# navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in front of the word "sentence".
+# The escaped version, "before scrape sentence", must be used instead.
+before sentence: user.textflow_move_before_sentence()
+after sentence: user.textflow_move_after_sentence()
+before scope: user.textflow_move_before_scope()
+after scope: user.textflow_move_after_scope()
 
 # Insert newline relative to target.
 drink <user.textflow_simple_target>:

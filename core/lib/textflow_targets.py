@@ -41,8 +41,15 @@ def _get_best_token_match(target: SimpleTarget, text_before: str, text_after,
     match_after = match_token(text_after, target.match_options, SearchDirection.FORWARD,
                               utility_functions.get_homophones)
   if match_before is not None and match_after is not None:
-    # We have matches before and after the cursor. Select the closer match. Break ties by choosing the match after the
-    # cursor.
+    # We have matches before and after the cursor. If one match is on the current line, prefer it.
+    line_break_before = "\n" in text_before[match_before.text_range.end:]
+    line_break_after = "\n" in text_after[0:match_after.text_range.start]
+    if line_break_before and not line_break_after:
+      return (SearchDirection.FORWARD, match_after)
+    if line_break_after and not line_break_before:
+      return (SearchDirection.BACKWARD, match_before)
+
+    # Select the closer match. Break ties by choosing the match after the cursor.
     dist_before = len(text_before) - match_before.text_range.end
     dist_after = match_after.text_range.start
     if dist_after <= dist_before:

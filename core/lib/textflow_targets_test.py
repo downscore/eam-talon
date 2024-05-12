@@ -179,6 +179,14 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "adipiscing")
 
+  def test_match_current_line_first(self):
+    text = "line 1 test\nline 2 end test"
+    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START, 1, "test")))
+    match = match_compound_target(target, text, TextRange(13, 14), UTILITY_FUNCTIONS)
+    assert match is not None
+    self.assertEqual(match.text_range.start, 23)
+    self.assertEqual(match.text_range.end, 27)
+
   def test_match_last_token(self):
     target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 1), SearchDirection.BACKWARD))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)

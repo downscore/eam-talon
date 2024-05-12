@@ -12,11 +12,14 @@ ctx = Context()
 
 # Formatters keyed by word.
 # Note: Sentence and Title formatters are separate as they do not need to be combined with other formatters.
-_FORMATTERS_BY_WORD = {
-    # Case formatters. They do not modify separators or surround strings.
+_CASE_FORMATTERS_BY_WORD = {
+    # Case formatters do not modify separators or surround strings. They can be chained with other formatters.
     "allcaps": format_util.Formatters.UPPERCASE,
     "alldown": format_util.Formatters.LOWERCASE,
-
+}
+mod.list("case_formatter", desc="List of case formatter words")
+ctx.lists["self.case_formatter"] = _CASE_FORMATTERS_BY_WORD.keys()
+_FORMATTERS_BY_WORD = {
     # Join formatters. May also change case.
     "camel": format_util.Formatters.CAMEL,
     "dotted": format_util.Formatters.DOT_SEPARATED,
@@ -29,6 +32,7 @@ _FORMATTERS_BY_WORD = {
     # Haven't found a use yet for slash separation formatter.
     # "slasher": format_util.Formatters.SLASH_SEPARATED,
 }
+_FORMATTERS_BY_WORD.update(_CASE_FORMATTERS_BY_WORD)
 mod.list("formatter", desc="List of all formatter words")
 ctx.lists["self.formatter"] = _FORMATTERS_BY_WORD.keys()
 
@@ -40,6 +44,17 @@ _LAST_OUTPUT_BY_FORMATTER = {}
 # Last strings output in other formats.
 _LAST_TITLE = ""
 _LAST_SENTENCE = ""
+
+
+@mod.capture(rule="[{self.case_formatter}] {self.formatter}")
+def formatters(m) -> list[str]:
+  """Matches valid formatter combinations. Matches case formatter, if any, first. E.g. "allcaps smash"."""
+  result = [m.formatter]
+  try:
+    result.append(m.case_formatter)
+  except AttributeError:
+    pass
+  return result
 
 
 def _reformat_string(s: str, options: format_util.FormatOptions) -> str:

@@ -1,19 +1,19 @@
-{user.formatter}+ <user.formatter_text>$: insert(user.format_multiple(formatter_text, formatter_list))
-{user.formatter}+ <user.formatter_text> anchor: insert(user.format_multiple(formatter_text, formatter_list))
-{user.formatter}+ <user.formatter_text> void:
-  insert(user.format_multiple(formatter_text, formatter_list))
+<user.formatters> <user.formatter_text>$: insert(user.format_multiple(formatter_text, formatters))
+<user.formatters> <user.formatter_text> anchor: insert(user.format_multiple(formatter_text, formatters))
+<user.formatters> <user.formatter_text> void:
+  insert(user.format_multiple(formatter_text, formatters))
   insert(" ")
-{user.formatter}+ <user.formatter_text> arcs:
-  insert(user.format_multiple(formatter_text, formatter_list))
+<user.formatters> <user.formatter_text> arcs:
+  insert(user.format_multiple(formatter_text, formatters))
   insert("()")
   key("left")
-{user.formatter}+ <user.formatter_text> punch:
-  insert(user.format_multiple(formatter_text, formatter_list))
+<user.formatters> <user.formatter_text> punch:
+  insert(user.format_multiple(formatter_text, formatters))
   insert(".")
-{user.formatter}+ <user.formatter_text> assign:
-  insert(user.format_multiple(formatter_text, formatter_list))
+<user.formatters> <user.formatter_text> assign:
+  insert(user.format_multiple(formatter_text, formatters))
   insert(" = ")
-reformat {user.formatter}+: user.format_selection(formatter_list)
+reformat <user.formatters>: user.format_selection(formatters)
 
 # "phrase" is used to insert the all of the following text verbatim.
 # "say/title/clause" support punctuation keywords (via "prose") and anchoring.

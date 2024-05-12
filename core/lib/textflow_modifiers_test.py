@@ -609,3 +609,40 @@ class TestArgumentModifier(unittest.TestCase):
     self.assertEqual(result.text_range.extract(text), "f2(arg2)")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), ", f2(arg2)")
+
+
+class TestSentenceModifier(unittest.TestCase):
+  """Tests for applying sentence modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.SENTENCE)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_single_sentence(self):
+    text = "This is a sentence."
+    input_match = TextMatch(TextRange(7, 9))
+    modifier = Modifier(ModifierType.SENTENCE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "This is a sentence.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This is a sentence.")
+
+  def test_first_sentence(self):
+    text = "This is a sentence. Here is another sentence!"
+    input_match = TextMatch(TextRange(7, 9))
+    modifier = Modifier(ModifierType.SENTENCE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "This is a sentence.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This is a sentence. ")
+
+  def test_last_sentence(self):
+    text = "This is a sentence. Here is another sentence!"
+    input_match = TextMatch(TextRange(25, 27))
+    modifier = Modifier(ModifierType.SENTENCE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Here is another sentence!")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " Here is another sentence!")

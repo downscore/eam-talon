@@ -108,6 +108,8 @@ class ModifierType(Enum):
   PYTHON_SCOPE = 12
   # The current scope in C-like code. Includes all content between the previous opening brace and its closing brace.
   C_SCOPE = 13
+  # Take a sentence in English prose.
+  SENTENCE = 14
 
 
 @dataclass

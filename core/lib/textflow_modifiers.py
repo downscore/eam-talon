@@ -321,6 +321,49 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
 
 
+def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the current sentence. Suitable for English prose."""
+  del modifier  # Unused.
+
+  sentence_delimiters = [".", "!", "?"]
+
+  # Find the end of the previous sentence.
+  start_index = input_match.text_range.start
+  while start_index > 0:
+    if text[start_index - 1] in sentence_delimiters:
+      break
+    start_index -= 1
+
+  # Remove leading whitespace from the range.
+  while start_index < len(text) and text[start_index] in [" ", "\t", "\n"]:
+    start_index += 1
+
+  # Find the end of the current sentence.
+  end_index = input_match.text_range.end
+  while end_index < len(text):
+    if text[end_index] in sentence_delimiters:
+      end_index += 1  # Include the delimiter.
+      break
+    end_index += 1
+
+  # Prefer to include trailing spaces in the deletion range, as leading spaces may be indentation or other formatting.
+  included_trailing_spaces = False
+  deletion_end_index = end_index
+  # Limit to 2 trailing spaces.
+  while deletion_end_index < len(text) and text[deletion_end_index] == " " and deletion_end_index - end_index < 2:
+    deletion_end_index += 1
+    included_trailing_spaces = True
+
+  # Include leading spaces in the deletion range if necessary.
+  deletion_start_index = start_index
+  if not included_trailing_spaces:
+    # Limit to 2 leading spaces.
+    while deletion_start_index > 0 and text[deletion_start_index - 1] == " " and start_index - deletion_start_index < 2:
+      deletion_start_index -= 1
+
+  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -333,6 +376,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.STRING: _apply_string_modifier,
     ModifierType.PYTHON_SCOPE: _apply_python_scope_modifier,
     ModifierType.C_SCOPE: _apply_c_scope_modifier,
+    ModifierType.SENTENCE: _apply_sentence_modifier,
 }
 
 

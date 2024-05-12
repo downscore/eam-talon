@@ -47,3 +47,8 @@ ship word <user.word>: insert(user.format_title(user.word))
 repeat {user.formatter}: insert(user.format_replay(formatter))
 repeat title: insert(user.format_replay_title())
 repeat clause: insert(user.format_replay_sentence())
+
+# Convenience reformatting commands consistent with TextFlow commands.
+bigger that: user.format_selection_title()
+smaller that: user.format_selection_phrase()
+biggest that: user.format_selection_single("allcaps")

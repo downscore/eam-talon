@@ -13,10 +13,7 @@ ctx = Context()
 
 def _get_selected_text_fragments():
   """Gets the selected text and its fragment ranges. If no text is selected, selects the current word."""
-  text = actions.user.selected_text()
-  if len(text) == 0:
-    actions.user.select_word()
-    text = actions.user.selected_text()
+  text = actions.user.selected_text_or_word()
 
   # Special case: Ignore list item markers (e.g. in Apple Notes).
   if text.startswith("- "):
@@ -255,6 +252,14 @@ class ExtensionActions:
     except clip.NoChange:
       return ""
 
+  def selected_text_or_word() -> str:
+    """Returns the currently-selected text. If no text is selected, tries to select the current word and return that."""
+    selected = actions.user.selected_text()
+    if selected:
+      return selected
+    actions.user.select_word()
+    return actions.user.selected_text()
+
   def count_lines():
     """Pops up a notification with the number of lines in the currently selected text."""
     lines = text_util.count_lines(actions.user.selected_text())
@@ -453,11 +458,7 @@ class ExtensionActions:
     if to_index > 0 and to_index < from_index:
       return
 
-    selected = actions.user.selected_text()
-    if len(selected) == 0:
-      actions.user.select_word()
-      selected = actions.user.selected_text()
-
+    selected = actions.user.selected_text_or_word()
     if len(selected) == 0 or from_index <= 0 or from_index > len(selected):
       return
 

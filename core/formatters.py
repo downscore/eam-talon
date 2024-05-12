@@ -68,11 +68,7 @@ class Actions:
 
   def format_single(phrase: str, formatter_word: str) -> str:
     """Formats a phrase using the given formatter."""
-    formatter_enums = [_FORMATTERS_BY_WORD[formatter_word]]
-    options = format_util.get_format_options(formatter_enums)
-    result = format_util.format_phrase(phrase, options)
-    _LAST_OUTPUT_BY_FORMATTER[formatter_enums[0]] = result
-    return result
+    return actions.user.format_multiple(phrase, [formatter_word])
 
   def format_multiple(phrase: str, formatter_words: list[str]) -> str:
     """Formats a phrase using the given formatters."""
@@ -87,13 +83,17 @@ class Actions:
     """Formats the current selection in place using the given formatters."""
     formatter_enums = list(map(lambda f: _FORMATTERS_BY_WORD[f], formatter_words))
     options = format_util.get_format_options(formatter_enums)
-    selected = actions.user.selected_text()
+    selected = actions.user.selected_text_or_word()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
     for formatter_enum in formatter_enums:
       _LAST_OUTPUT_BY_FORMATTER[formatter_enum] = reformatted
     actions.user.insert_via_clipboard(reformatted)
+
+  def format_selection_single(formatter_word: str):
+    """Formats the current selection in place using the given formatter."""
+    actions.user.format_selection([formatter_word])
 
   def format_title(phrase: str) -> str:
     """Formats a phrase using title casing."""
@@ -109,7 +109,7 @@ class Actions:
   def format_selection_title():
     """Reformats the current selection as a title."""
     global _LAST_TITLE
-    selected = actions.user.selected_text()
+    selected = actions.user.selected_text_or_word()
     reformatted = _title_reformat_string(selected)
     if not reformatted:
       return
@@ -130,7 +130,7 @@ class Actions:
     global _LAST_SENTENCE
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
-    selected = actions.user.selected_text()
+    selected = actions.user.selected_text_or_word()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
@@ -141,7 +141,7 @@ class Actions:
     """Reformats the current selection as a phrase."""
     options = format_util.FormatOptions()
     options.first_capitalization = format_util.WordCapitalization.LOWERCASE
-    selected = actions.user.selected_text()
+    selected = actions.user.selected_text_or_word()
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return

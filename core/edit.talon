@@ -58,21 +58,22 @@ after car <user.number>:
   key(right)
 
 # Selection
-block line: user.select_line()
-block left: user.extend_left()
-block right: user.extend_right()
-block up: user.extend_up()
-block down: user.extend_down()
-block page up: user.extend_page_up()
-block page down: user.extend_page_down()
-block word: user.select_word()
+pick line: user.select_line()
+pick left: user.extend_left()
+pick right: user.extend_right()
+pick up: user.extend_up()
+pick down: user.extend_down()
+pick page up: user.extend_page_up()
+pick page down: user.extend_page_down()
+pick word: user.select_word()
 lefter: user.extend_word_left()
 writer: user.extend_word_right()
-block all: user.select_all()
-block head: user.extend_line_start()
-block tail: user.extend_line_end()
-block top: user.extend_file_start()
-block bottom: user.extend_file_end()
+# "pick all" has poor recognition, so we also support "pickle".
+(pick all|pickle): user.select_all()
+pick head: user.extend_line_start()
+pick tail: user.extend_line_end()
+pick top: user.extend_file_start()
+pick bottom: user.extend_file_end()
 puffer: user.expand_selection_to_adjacent_characters()
 fragment <user.number> [past <user.number>]: user.fragment_select(number_1, number_2 or 0)
 fragment head <user.number>: user.fragment_select_head(number)
@@ -243,8 +244,10 @@ spam: insert(", ")
 # Double tap escape
 hatch: key(escape:2)
 
-# Pick an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
-pick <user.number_small>: key("down:{number_small-1} enter")
+# Choose an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
+choose <user.number_small>: key("down:{number_small-1} enter")
+# "choose six" has really bad recognition, so we have a special command for it.
+choosix: key("down:5 enter")
 
 # Save open file
 disk: user.save()

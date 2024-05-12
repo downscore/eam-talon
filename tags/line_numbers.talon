@@ -7,7 +7,7 @@ pour line <user.number>:
 drink line <user.number>:
   user.jump_line(number)
   user.line_insert_up()
-select line <user.number> [past <user.number>]:
+pick line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)
 chuck line <user.number> [past <user.number>]:
   user.select_line_range(number_1, number_2 or 0)

@@ -33,9 +33,14 @@ class Actions:
 class ExtensionActions:
   """Action overwrites."""
 
+  # The implementation below doesn't work well on wrapped lines (includes the first character after the wrap).
+  # def select_line():
+  #   # cmd-left stops before checkboxes in Obsidian.
+  #   actions.key("cmd-left:2 cmd-shift-right shift-right")
+
   def select_line():
-    # cmd-left stops before checkboxes in Obsidian.
-    actions.key("cmd-left:2 cmd-shift-right shift-right")
+    # Use textflow so we can properly handle wrapped lines.
+    actions.user.textflow_select_line()
 
   def navigation_back():
     actions.key("cmd-alt-left")

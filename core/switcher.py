@@ -128,7 +128,7 @@ def running_applications(m) -> str:
 @mod.capture(rule="{self.launch_app_name}")
 def launch_applications(m) -> str:
   """Returns a single application name."""
-  return m.launch
+  return m.launch_app_name
 
 
 @mod.action_class

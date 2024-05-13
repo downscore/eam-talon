@@ -564,6 +564,39 @@ class Actions:
                          tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
     _run_command(command)
 
+  def textflow_move_argument_left():
+    """Moves the current argument to the left."""
+    actions.user.textflow_select_argument()
+    argument = actions.user.selected_text()
+    if not argument:
+      return
+    actions.key("left")
+    actions.user.textflow_delete_argument()
+
+    # Move before the argument that is now under the cursor.
+    command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    _run_command(command)
+
+    # Re-insert the deleted argument.
+    actions.user.insert_via_clipboard(argument + ", ")
+
+  def textflow_move_argument_right():
+    """Moves the current argument to the right."""
+    actions.user.textflow_select_argument()
+    argument = actions.user.selected_text()
+    if not argument:
+      return
+    actions.key("left")
+    actions.user.textflow_delete_argument()
+
+    # Move after the argument that is now under the cursor.
+    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    _run_command(command)
+
+    # Re-insert the deleted argument.
+    actions.user.insert_via_clipboard(", " + argument)
+
   def textflow_new_line_above(simple_target: tf.SimpleTarget):
     """Inserts a new line above the given target and moves the cursor to it."""
     target_from = tf.CompoundTarget(simple_target)

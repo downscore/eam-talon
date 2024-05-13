@@ -76,6 +76,10 @@ cut invoke: user.textflow_cut_function_call()
 before sentence: user.textflow_move_before_sentence()
 after sentence: user.textflow_move_after_sentence()
 
+# Moving arguments left or right.
+drag argument left: user.textflow_move_argument_left()
+drag argument right: user.textflow_move_argument_right()
+
 # Insert newline relative to target.
 drink <user.textflow_simple_target>: user.textflow_new_line_above(textflow_simple_target)
 pour <user.textflow_simple_target>: user.textflow_new_line_below(textflow_simple_target)

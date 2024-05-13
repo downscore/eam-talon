@@ -13,5 +13,11 @@ coconut [<phrase>]$:
 ^papaya$:
   user.mode_enable_speech()
 
+# Switch to command mode and sleep at the same time. Without this, in dictation mode "now do coconut" results in
+# switching to command mode and writing "coconut" without sleeping.
+now do coconut [<phrase>]$:
+  user.mode_command()
+  user.mode_disable_speech()
+
 # Allow media control without enabling speech.
 media (play | pause): key(play)

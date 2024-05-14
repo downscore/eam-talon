@@ -1,0 +1,10 @@
+Hostname,Spoken
+# Note: This file should be restricted to commonly-used hosts with unique spoken forms only, as the spoken forms become
+# commands on their own.
+
+mail.google.com,gmail
+calendar.google.com,calendar
+youtube.com,youtube
+stackoverflow.com,stack overflow
+arxiv.org,archive
+docs.python.org,python docs

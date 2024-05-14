@@ -15,6 +15,9 @@ ctx = Context()
 mod.list("website", desc="A website.")
 ctx.lists["self.website"] = load_dict_from_csv("websites.csv")
 
+mod.list("hostname", desc="A hostname for website.")
+ctx.lists["self.hostname"] = load_dict_from_csv("hostnames.csv")
+
 mod.list(
     "search_engine",
     desc="A search engine. Any instance of %s will be replaced by query text",
@@ -25,11 +28,11 @@ ctx.lists["self.search_engine"] = load_dict_from_csv("search_engines.csv")
 @mod.action_class
 class Actions:
 
-  def open_url(url: str):
+  def website_open_url(url: str):
     """Visit the given URL."""
     webbrowser.open(url)
 
-  def search_with_search_engine(search_template: str, search_text: str):
+  def website_search_with_search_engine(search_template: str, search_text: str):
     """Search a search engine for given text"""
     url = search_template.replace("%s", quote_plus(search_text))
     webbrowser.open(url)

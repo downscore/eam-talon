@@ -5,6 +5,7 @@
 # mypy: ignore-errors
 
 from talon import Context, Module, actions
+from ..core.lib import browser_util
 
 mod = Module()
 ctx = Context()
@@ -21,31 +22,40 @@ class BrowserActions:
   understood."""
 
   def browser_go(url: str):
-    """Navigate to the specified URL."""
+    """Navigates to the specified URL."""
     actions.user.browser_focus_address()
     actions.sleep("50ms")
     actions.insert(url)
     actions.key("enter")
 
   def browser_reload():
-    """Reload the current page."""
+    """Reloads the current page."""
     actions.key("cmd-r")
 
   def browser_focus_address():
-    """Focus the browser address bar."""
+    """Focuses the browser address bar."""
     actions.key("cmd-l")
 
   def browser_open_private_tab():
-    """Open a new private tab."""
+    """Opens a new private tab."""
     actions.key("cmd-shift-n")
 
   def browser_bookmarks():
-    """Open the browser bookmarks."""
+    """Opens the browser bookmarks."""
     actions.key("cmd-alt-b")
 
   def browser_add_bookmark():
-    """Add a bookmark for the current page."""
+    """Adds a bookmark for the current page."""
     actions.key("cmd-d")
+
+  def browser_get_all_tabs() -> list[browser_util.Tab]:
+    """Gets all open tabs in all open windows."""
+    # Implementation most likely requires AppleScript, an extension, or similar.
+    raise NotImplementedError()
+
+  def browser_focus_tab(window_index: int, tab_index: int):
+    """Focuses the specified tab. Window and tab indices are 1-based."""
+    raise NotImplementedError()
 
 
 @ctx.action_class("user")

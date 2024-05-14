@@ -9,7 +9,7 @@ import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
 import time
-from .lib import format_util
+from .lib import browser_util, format_util
 from .user_settings import load_dict_from_csv
 
 mod = Module()
@@ -103,6 +103,32 @@ def _focus_window_by_id(window_id: int):
       time.sleep(sleep_secs)
 
 
+def _is_chrome_running() -> bool:
+  """Returns whether Chrome is running with open windows."""
+  for running_app in ui.apps():
+    if running_app.name == "Google Chrome" and not running_app.background:
+      return True
+  return False
+
+
+def _is_chrome_focused() -> bool:
+  """Returns whether Chrome is focused."""
+  return ui.active_app().name == "Google Chrome"
+
+
+def _is_safari_running() -> bool:
+  """Returns whether Safari is running with open windows."""
+  for running_app in ui.apps():
+    if running_app.name == "Safari" and not running_app.background:
+      return True
+  return False
+
+
+def _is_safari_focused() -> bool:
+  """Returns whether Safari is focused."""
+  return ui.active_app().name == "Safari"
+
+
 @imgui.open()
 def running_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   gui.text("Names of running applications")
@@ -156,7 +182,7 @@ class Actions:
         time.sleep(sleep_secs)
 
   def switcher_focus_google_meet():
-    """Focus browser window with Google Meet open."""
+    """Focuses browser window with Google Meet open."""
     for window in ui.windows():
       if window.app.name not in ("Google Chrome", "Safari") or not window.title.startswith("Meet - "):
         continue
@@ -192,7 +218,7 @@ class Actions:
     launch_gui.hide()
 
   def switcher_new_terminal_tab(directory: str = ""):
-    """Open a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
+    """Opens a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
     the current user's home."""
     actions.user.switcher_focus_terminal()
     actions.user.tab_open()
@@ -218,7 +244,7 @@ class Actions:
     _focus_window_by_id(_saved_window_id)
 
   def switcher_focus_coder():
-    """Switch to the saved IDE window or try to find an app."""
+    """Switches to the saved IDE window or try to find an app."""
     if "coder" in _window_id_by_name:
       try:
         _focus_window_by_id(_window_id_by_name["coder"])
@@ -241,7 +267,7 @@ class Actions:
     raise ValueError("Could not find IDE window")
 
   def switcher_focus_browser():
-    """Switch to the saved browser window or try to find an app."""
+    """Switches to the saved browser window or try to find an app."""
     if "browser" in _window_id_by_name:
       try:
         _focus_window_by_id(_window_id_by_name["browser"])
@@ -264,7 +290,7 @@ class Actions:
     raise ValueError("Could not find browser window")
 
   def switcher_focus_terminal():
-    """Switch to the saved terminal window or try to find an app."""
+    """Switches to the saved terminal window or try to find an app."""
     if "terminal" in _window_id_by_name:
       try:
         _focus_window_by_id(_window_id_by_name["terminal"])
@@ -285,6 +311,39 @@ class Actions:
     except ValueError:
       pass
     raise ValueError("Could not find terminal window")
+
+  def switcher_focus_browser_tab_by_hostname(hostname: str):
+    """Switches to the browser tab with the given hostname in the URL. If a tab is already focused and multiple tabs
+    match, focuses the next one."""
+    if _is_chrome_running():
+      get_all_tabs_action = actions.user.chrome_get_all_tabs
+      focus_tab_action = actions.user.chrome_focus_tab
+      is_browser_focused = _is_chrome_focused()
+    elif _is_safari_running():
+      get_all_tabs_action = actions.user.safari_get_all_tabs
+      focus_tab_action = actions.user.safari_focus_tab
+      is_browser_focused = _is_safari_focused()
+    else:
+      raise ValueError("Did not find running browser.")
+
+    # Get all tabs matching the given hostname.
+    tabs: list[browser_util.Tab] = get_all_tabs_action()
+    matches = browser_util.get_tabs_matching_hostname(tabs, hostname)
+    if len(matches) == 0:
+      raise ValueError(f"No tabs found with hostname: {hostname}")
+
+    # Check if we are already focused on a matching tab.
+    focused_tab_index = browser_util.get_focused_tab_list_index(matches)
+    if not is_browser_focused and focused_tab_index is not None:
+      # The browser is not focused, but it is already on a matching tab. Switch to it.
+      focus_tab_action(matches[focused_tab_index].window_index, matches[focused_tab_index].index)
+    elif is_browser_focused and focused_tab_index is not None and len(matches) > 1:
+      # We are already focused on a matching tab with more available. Go to the next matching tab.
+      next_index = (focused_tab_index + 1) % len(matches)
+      focus_tab_action(matches[next_index].window_index, matches[next_index].index)
+    else:
+      # Go to the first matching tab.
+      focus_tab_action(matches[0].window_index, matches[0].index)
 
 
 def _on_app_change(event: str):

@@ -8,6 +8,7 @@ import collections
 import re
 from talon import Context, Module, actions, ui
 from talon.mac import applescript
+from ..core.lib import browser_util
 from ..core.lib.textflow_match import get_phrase_regex
 
 mod = Module()
@@ -79,7 +80,7 @@ class ExtensionActions:
       actions.sleep("50ms")
 
   def tab_switch_by_name(name: str):
-    # TODO: Extract code to share with Chrome.
+    # TODO: Implement in browser tag using browser_get_all_tabs and other actions.
     tab_delimiter = "|||"
     script = f"set my_delimiter to \"{tab_delimiter}\"\n\n"
     script += """
@@ -141,3 +142,9 @@ class ExtensionActions:
       end tell
       """
     applescript.run(set_tab_script)
+
+  def browser_get_all_tabs() -> list[browser_util.Tab]:
+    return actions.user.safari_get_all_tabs()
+
+  def browser_focus_tab(window_index: int, tab_index: int):
+    return actions.user.safari_focus_tab(window_index, tab_index)

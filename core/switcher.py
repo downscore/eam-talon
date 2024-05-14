@@ -278,7 +278,7 @@ class Actions:
 
     # No saved window, or saved window could not be found. Try to switch to known browsers.
     try:
-      actions.user.switcher_focus("Chrome")
+      actions.user.switcher_focus("Google Chrome")
       return
     except ValueError:
       pass

@@ -47,9 +47,8 @@ class Actions:
         set window_list to every window
         repeat with w from 1 to count window_list
           set current_window to item w of window_list
-          set window_index to index of current_window -- can instead use id of current_window
           set active_tab_index to active tab index of current_window
-          set end of output to {my_window_delimiter & window_index & "," & active_tab_index & my_window_delimiter}
+          set end of output to {my_window_delimiter & w & "," & active_tab_index & my_window_delimiter}
           set tab_list to every tab of current_window
           repeat with t from 1 to count tab_list
             set tab_url to url of tab t of current_window

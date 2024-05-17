@@ -89,6 +89,8 @@ drip: user.dictation_insert_prose(",")
   user.line_end()
 # "pull"
 pol: user.left()
+# "coconut"
+^cooking up$: user.mode_disable_speech()
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

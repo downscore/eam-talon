@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions
+from talon import Context, Module
 from talon.mac import applescript
 from ..core.lib import browser_util
 
@@ -16,7 +16,7 @@ ctx = Context()
 class Actions:
   """Safari global actions."""
 
-  def safari_insert_address():
+  def safari_get_current_address():
     """Insert the address of the active Safari tab."""
     script = """
       tell application "Safari"
@@ -24,8 +24,7 @@ class Actions:
       end tell
       return theUrl
       """
-    result = applescript.run(script)
-    actions.user.insert_via_clipboard(result)
+    return applescript.run(script)
 
   def safari_get_all_tabs() -> list[browser_util.Tab]:
     """Gets all open tabs in all open windows. This is a version of `browser_get_all_tabs` that can be used when

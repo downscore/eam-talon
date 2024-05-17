@@ -103,28 +103,28 @@ def _focus_window_by_id(window_id: int):
       time.sleep(sleep_secs)
 
 
-def _is_chrome_running() -> bool:
-  """Returns whether Chrome is running with open windows."""
+def is_chrome_running() -> bool:
+  """Returns whether Chrome is running. May return true if Chrome has no open windows"""
   for running_app in ui.apps():
     if running_app.name == "Google Chrome" and not running_app.background:
       return True
   return False
 
 
-def _is_chrome_focused() -> bool:
+def is_chrome_focused() -> bool:
   """Returns whether Chrome is focused."""
   return ui.active_app().name == "Google Chrome"
 
 
-def _is_safari_running() -> bool:
-  """Returns whether Safari is running with open windows."""
+def is_safari_running() -> bool:
+  """Returns whether Safari. May return true if Safari has no open windows."""
   for running_app in ui.apps():
     if running_app.name == "Safari" and not running_app.background:
       return True
   return False
 
 
-def _is_safari_focused() -> bool:
+def is_safari_focused() -> bool:
   """Returns whether Safari is focused."""
   return ui.active_app().name == "Safari"
 
@@ -315,14 +315,14 @@ class Actions:
   def switcher_focus_browser_tab_by_hostname(hostname: str):
     """Switches to the browser tab with the given hostname in the URL. If a tab is already focused and multiple tabs
     match, focuses the next one."""
-    if _is_chrome_running():
+    if is_chrome_running():
       get_all_tabs_action = actions.user.chrome_get_all_tabs
       focus_tab_action = actions.user.chrome_focus_tab
-      is_browser_focused = _is_chrome_focused()
-    elif _is_safari_running():
+      is_browser_focused = is_chrome_focused()
+    elif is_safari_running():
       get_all_tabs_action = actions.user.safari_get_all_tabs
       focus_tab_action = actions.user.safari_focus_tab
-      is_browser_focused = _is_safari_focused()
+      is_browser_focused = is_safari_focused()
     else:
       raise ValueError("Did not find running browser.")
 

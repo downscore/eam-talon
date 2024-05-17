@@ -237,6 +237,9 @@ sort lines descending: user.sort_lines_descending()
 # Insert a link or make the selected text into a link.
 link insert: user.insert_link()
 link paste: user.insert_link_from_clipboard()
+link self: user.insert_self_link()
+link browser: user.insert_link_from_browser_address()
+
 
 # Comma and space
 spam: insert(", ")

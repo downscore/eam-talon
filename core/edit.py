@@ -4,8 +4,10 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import re
 from talon import Context, Module, actions, app, clip
 from .lib import format_util, text_util
+from . import switcher
 
 mod = Module()
 ctx = Context()
@@ -402,9 +404,28 @@ class ExtensionActions:
 
   def insert_link_from_clipboard():
     """Insert a link or make the selected text into a link using the URL in the clipboard."""
-    actions.user.surround_selected_text("[", "]()")
-    actions.key("left:1")
-    actions.user.paste()
+    # Prepend "http://" to special links that don't have a protocol.
+    regex = r"^[a-zA-Z]{1,2}/"
+    clipboard_text = clip.text()
+    if clipboard_text and re.match(regex, clipboard_text):
+      clipboard_text = f"http://{clipboard_text}"
+
+    actions.user.surround_selected_text("[", f"]({clipboard_text})")
+
+  def insert_link_from_browser_address():
+    """Insert a link or make the selected text into a link using the URL in the last viewed browser tab."""
+    if switcher.is_chrome_running():
+      address = actions.user.chrome_get_current_address()
+    elif switcher.is_safari_running():
+      address = actions.user.safari_get_current_address()
+    else:
+      raise ValueError("Didn't find a supported browser running.")
+    actions.user.surround_selected_text("[", f"]({address})")
+
+  def insert_self_link():
+    """Make the selected text into a link to itself."""
+    selected = actions.user.selected_text()
+    actions.user.surround_selected_text("[", f"](http://{selected})")
 
   def insert_via_clipboard(text: str):
     """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII

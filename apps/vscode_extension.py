@@ -35,7 +35,7 @@ class UserActions:
     actions.user.vscode_and_wait("eam-talon.jumpToLine", n)
     actions.sleep("50ms")
 
-  def select_line_range(from_index: int, to_index: int = 0):
+  def select_line_range_including_line_break(from_index: int, to_index: int = 0):
     actions.user.vscode_and_wait("eam-talon.selectLineRange", from_index, to_index if to_index > 0 else None)
     actions.sleep("50ms")
 

@@ -59,7 +59,7 @@ after car <user.number>:
 
 # Selection
 # Poor recognition for "pick line", so added "icline" to help.
-(pick line|icline): user.select_line()
+(pick line|icline): user.select_line_including_line_break()
 pick left: user.extend_left()
 pick right: user.extend_right()
 pick up: user.extend_up()
@@ -119,7 +119,7 @@ copy writer:
   user.extend_word_right()
   user.clipboard_history_copy()
 copy line:
-  user.select_line()
+  user.select_line_including_line_break()
   user.clipboard_history_copy()
 copy head:
   user.extend_line_start()
@@ -141,7 +141,7 @@ cut writer:
   user.extend_word_right()
   user.clipboard_history_cut()
 cut line:
-  user.select_line()
+  user.select_line_including_line_break()
   user.clipboard_history_cut()
 cut head:
   user.extend_line_start()

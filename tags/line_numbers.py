@@ -27,11 +27,12 @@ class Actions:
     actions.insert(str(n))
     actions.key("enter")
 
-  def select_line_range(from_index: int, to_index: int = 0):
-    """Selects a range of lines. 1-based. If `to_index` is zero, selects the from line."""
+  def select_line_range_including_line_break(from_index: int, to_index: int = 0):
+    """Selects a range of lines. 1-based. Selects trailing line break if present. If `to_index` is zero, selects the
+    from line."""
     actions.user.jump_line(from_index)
     if to_index <= from_index:
-      actions.user.select_line()
+      actions.user.select_line_including_line_break()
     else:
       for _ in range(to_index - from_index + 1):
         actions.user.extend_down()

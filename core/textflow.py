@@ -438,9 +438,9 @@ class Actions:
     # Default to Python-style scopes.
     return tf.ModifierType.PYTHON_SCOPE
 
-  def textflow_select_line():
-    """Selects the current line using TextFlow. May work better than the default select line command when line wrapping
-    is enabled."""
+  def textflow_select_line_including_line_break():
+    """Selects the current line using TextFlow. Includes the trailing line break if present. May work better than the
+    default select line command when line wrapping is enabled."""
     command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.LINE)))
     _run_command(command)
 

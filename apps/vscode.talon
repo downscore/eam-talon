@@ -9,7 +9,7 @@ tag(): user.tabs
 # Toggle comments.
 comment dog: user.vscode("editor.action.commentLine")
 comment line <user.number> [past <user.number>]:
-  user.select_line_range(number_1, number_2 or 0)
+  user.select_line_range_including_line_break(number_1, number_2 or 0)
   user.vscode("editor.action.commentLine")
 
 # Show autocomplete suggest dialogue.

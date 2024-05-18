@@ -101,7 +101,7 @@ class ExtensionActions:
   # def select_line():
   #   actions.user.vscode("expandLineSelection")
 
-  def select_line():
+  def select_line_including_line_break():
     # Ensure leading white spaces included.
     actions.key("cmd-right cmd-left cmd-left cmd-shift-right shift-right")
 

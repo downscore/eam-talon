@@ -57,7 +57,7 @@ class ExtensionActions:
 
   def delete_line():
     """Deletes the entire line."""
-    actions.user.select_line()
+    actions.user.select_line_including_line_break()
     actions.user.delete()
 
   def delete_word():
@@ -157,8 +157,8 @@ class ExtensionActions:
     """Selects all text in the active editor."""
     actions.key("cmd-a")
 
-  def select_line():
-    """Selects the current line."""
+  def select_line_including_line_break():
+    """Selects the current line including the trailing line break if present."""
     actions.key("cmd-left cmd-shift-right shift-right")
 
   def select_word():
@@ -202,7 +202,7 @@ class ExtensionActions:
 
   def line_swap_up():
     """Swaps the current line with the line above it."""
-    actions.user.select_line()
+    actions.user.select_line_including_line_break()
     actions.user.cut()
     actions.sleep("50ms")
     actions.key("up")
@@ -211,7 +211,7 @@ class ExtensionActions:
 
   def line_swap_down():
     """Swaps the current line with the line below it."""
-    actions.user.select_line()
+    actions.user.select_line_including_line_break()
     actions.user.cut()
     actions.key("down")
     actions.user.paste()
@@ -301,7 +301,7 @@ class ExtensionActions:
 
   def duplicate_line():
     """Duplicate the current line."""
-    actions.user.select_line()
+    actions.user.select_line_including_line_break()
     line_text = actions.user.selected_text()
     actions.user.right()
     actions.user.insert_via_clipboard(line_text)
@@ -572,7 +572,7 @@ class ExtensionActions:
 
   def style_toggle_check():
     """Toggle a checkbox."""
-    actions.user.select_line()
+    actions.user.select_line_including_line_break()
     line_text = actions.user.selected_text()
     if "[ ]" in line_text:
       line_text = line_text.replace("[ ]", "[x]")

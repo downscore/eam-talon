@@ -46,7 +46,7 @@ class UserActions:
   def jump_line(n: int):
     actions.user.obsidian_command("jumpToLine", n)
 
-  def select_line_range(from_index: int, to_index: int = 0):
+  def select_line_range_including_line_break(from_index: int, to_index: int = 0):
     actions.user.obsidian_command("selectLineRange", from_index, to_index if to_index > 0 else None)
 
   def bring_line_range(from_index: int, to_index: int = 0):

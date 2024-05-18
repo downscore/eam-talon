@@ -96,7 +96,7 @@ class Actions:
 
   def number_add(n: int):
     """Adds n to any selected numbers."""
-    selected: str = actions.user.selected_text()
+    selected: str = actions.user.selected_text_or_word()
 
     # Match all numbers in selected text using a regex. Also matches negative numbers.
     regex = r"[-]?\d+"
@@ -110,7 +110,7 @@ class Actions:
 
   def number_multiply(n: int):
     """Multiplies n with any selected numbers."""
-    selected: str = actions.user.selected_text()
+    selected: str = actions.user.selected_text_or_word()
 
     # Match all numbers in selected text using a regex. Also matches negative numbers.
     regex = r"[-]?\d+"
@@ -120,7 +120,7 @@ class Actions:
 
   def number_divide(n: int):
     """Divides any selected numbers by n. Truncates results to integers."""
-    selected: str = actions.user.selected_text()
+    selected: str = actions.user.selected_text_or_word()
 
     # Match all numbers in selected text using a regex. Also matches negative numbers.
     regex = r"[-]?\d+"

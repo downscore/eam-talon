@@ -11,15 +11,17 @@ def _make_match(start: int, end: int) -> TextMatch:
   return TextMatch(TextRange(start, end))
 
 
-def _get_line_at_index(text: str, index: int) -> TextRange:
+def _get_line_at_index(text: str, index: int, include_line_break: bool = True) -> TextRange:
   """Get the line containing the given index."""
   start_index = index
   while start_index > 0 and text[start_index - 1] != "\n":
     start_index -= 1
   end_index = index
-  while end_index < len(text) - 1 and text[end_index] != "\n":
+  while end_index < len(text) and text[end_index] != "\n":
     end_index += 1
-  return TextRange(start_index, min(end_index + 1, len(text)))
+  if include_line_break and end_index < len(text) and text[end_index] == "\n":
+    end_index += 1
+  return TextRange(start_index, end_index)
 
 
 def _apply_chars_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -53,10 +55,17 @@ def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modif
   return _make_match(fragment_ranges[start_fragment][0], fragment_ranges[end_fragment - 1][1])
 
 
-def _apply_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the line containing the token."""
   del modifier  # Unused.
   line_range = _get_line_at_index(text, input_match.text_range.start)
+  return TextMatch(line_range)
+
+
+def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the line containing the token."""
+  del modifier  # Unused.
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=False)
   return TextMatch(line_range)
 
 
@@ -455,7 +464,8 @@ def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifi
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
-    ModifierType.LINE: _apply_line_modifier,
+    ModifierType.LINE_INCLUDING_LINE_BREAK: _apply_line_including_line_break_modifier,
+    ModifierType.LINE_EXCLUDING_LINE_BREAK: _apply_line_excluding_line_break_modifier,
     ModifierType.LINE_HEAD: _apply_line_head_modifier,
     ModifierType.LINE_TAIL: _apply_line_tail_modifier,
     ModifierType.BLOCK: _apply_block_modifier,

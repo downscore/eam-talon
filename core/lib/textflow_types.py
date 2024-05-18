@@ -88,30 +88,32 @@ class ModifierType(Enum):
   CHARS = 2
   # Take a range of fragments in the token itself.
   FRAGMENTS = 3
-  # Take the line containing the token.
-  LINE = 4
+  # Take the line containing the token. Include the trailing line break if present.
+  LINE_INCLUDING_LINE_BREAK = 4
+  # Take the line containing the token. Do not include trailing line breaks.
+  LINE_EXCLUDING_LINE_BREAK = 5
   # Take the token and the rest of the line before it.
-  LINE_HEAD = 5
+  LINE_HEAD = 6
   # Take the token and the rest of the line after it.
-  LINE_TAIL = 6
+  LINE_TAIL = 7
   # Take the block/paragraph containing the token.
-  BLOCK = 7
+  BLOCK = 8
   # Take the function call argument or C-style for loop segment (; separated) containing the token.
-  ARG = 8
+  ARG = 9
   # Take the function call containing the token.
-  CALL = 9
+  CALL = 10
   # Take the comment containing the token.
-  COMMENT = 10
+  COMMENT = 11
   # Take the string containing the token.
-  STRING = 11
+  STRING = 12
   # The current scope in python code. Includes all contiguous lines at the current or greater indentation level.
-  PYTHON_SCOPE = 12
+  PYTHON_SCOPE = 13
   # The current scope in C-like code. Includes all content between the previous opening brace and its closing brace.
-  C_SCOPE = 13
+  C_SCOPE = 14
   # Take a sentence in English prose.
-  SENTENCE = 14
+  SENTENCE = 15
   # Take the contents of a pair of brackets containing the target.
-  BRACKETS = 15
+  BRACKETS = 16
 
 
 @dataclass

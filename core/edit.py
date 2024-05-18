@@ -157,8 +157,12 @@ class ExtensionActions:
     """Selects all text in the active editor."""
     actions.key("cmd-a")
 
+  def select_line_excluding_line_break():
+    """Selects the current line, not including the trailing line break if present."""
+    actions.key("cmd-left cmd-shift-right")
+
   def select_line_including_line_break():
-    """Selects the current line including the trailing line break if present."""
+    """Selects the current line, including the trailing line break if present."""
     actions.key("cmd-left cmd-shift-right shift-right")
 
   def select_word():

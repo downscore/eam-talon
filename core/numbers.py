@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import re
 from talon import Context, Module, actions
 from .lib import number_util, ordinal_util, text_util
 
@@ -93,74 +94,36 @@ def repeat_ordinal(m) -> int:
 class Actions:
   """Actions related to numbers."""
 
-  def number_increment():
-    """Increments the selected number."""
-    selected_stripped = _get_selected_number()
-
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
-
-    incremented = int(selected_stripped.stripped) + 1
-    text = selected_stripped.apply_padding(str(incremented))
-    actions.user.insert_via_clipboard(text)
-
-  def number_decrement():
-    """Decrements the selected number."""
-    selected_stripped = _get_selected_number()
-
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
-
-    decremented = int(selected_stripped.stripped) - 1
-    text = selected_stripped.apply_padding(str(decremented))
-    actions.user.insert_via_clipboard(text)
-
   def number_add(n: int):
-    """Adds n to the selected number."""
-    selected_stripped = _get_selected_number()
+    """Adds n to any selected numbers."""
+    selected: str = actions.user.selected_text()
 
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
+    # Match all numbers in selected text using a regex. Also matches negative numbers.
+    regex = r"[-]?\d+"
+    replace = re.sub(regex, lambda match: str(int(match.group(0)) + n), selected)
 
-    result = int(selected_stripped.stripped) + n
-    text = selected_stripped.apply_padding(str(result))
-    actions.user.insert_via_clipboard(text)
+    actions.user.insert_via_clipboard(replace)
 
   def number_subtract(n: int):
-    """Subtracts n from the selected number."""
-    selected_stripped = _get_selected_number()
-
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
-
-    result = int(selected_stripped.stripped) - n
-    text = selected_stripped.apply_padding(str(result))
-    actions.user.insert_via_clipboard(text)
+    """Subtracts n from any selected numbers."""
+    actions.user.number_add(n * -1)  # `-n` causes pylint warning.
 
   def number_multiply(n: int):
-    """Multiplies n with the selected number."""
-    selected_stripped = _get_selected_number()
+    """Multiplies n with any selected numbers."""
+    selected: str = actions.user.selected_text()
 
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
+    # Match all numbers in selected text using a regex. Also matches negative numbers.
+    regex = r"[-]?\d+"
+    replace = re.sub(regex, lambda match: str(int(match.group(0)) * n), selected)
 
-    result = int(selected_stripped.stripped) * n
-    text = selected_stripped.apply_padding(str(result))
-    actions.user.insert_via_clipboard(text)
+    actions.user.insert_via_clipboard(replace)
 
   def number_divide(n: int):
-    """Divides the selected number by n. Truncates result to integer."""
-    selected_stripped = _get_selected_number()
+    """Divides any selected numbers by n. Truncates results to integers."""
+    selected: str = actions.user.selected_text()
 
-    if len(selected_stripped.stripped) == 0:
-      print(f"Invalid number: {selected_stripped}")
-      return
+    # Match all numbers in selected text using a regex. Also matches negative numbers.
+    regex = r"[-]?\d+"
+    replace = re.sub(regex, lambda match: str(int(match.group(0)) // n), selected)
 
-    result = int(int(selected_stripped.stripped) / n)
-    text = selected_stripped.apply_padding(str(result))
-    actions.user.insert_via_clipboard(text)
+    actions.user.insert_via_clipboard(replace)

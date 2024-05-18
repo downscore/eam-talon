@@ -59,7 +59,7 @@ after car <user.number>:
 
 # Selection
 # Poor recognition for "pick line", so added "icline" to help.
-(pick line|icline): user.select_line_including_line_break()
+(pick line|icline): user.select_line_excluding_line_break()
 pick left: user.extend_left()
 pick right: user.extend_right()
 pick up: user.extend_up()

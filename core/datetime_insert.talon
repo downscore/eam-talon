@@ -1,4 +1,4 @@
-date now insert:
+date insert:
   insert(user.time_format("%Y-%m-%d"))
 timestamp insert:
   insert(user.time_format("%Y-%m-%d %H:%M:%S"))

@@ -631,6 +631,18 @@ class Actions:
     _run_command(command)
     actions.user.line_insert_down()
 
+  def textflow_insert_line_below_current():
+    """Inserts a line below the current line without moving the cursor to it."""
+    target_from = tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.END_OF_LINE))
+    command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text="\n")
+    _run_command(command)
+
+  def textflow_insert_line_above_current():
+    """Inserts a line below the current line without moving the cursor to it."""
+    target_from = tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.START_OF_LINE))
+    command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text="\n")
+    _run_command(command)
+
   def textflow_segment_word(word1: str, word2: str):
     """Segment a word into two. e.g. overmatched->over matched."""
     target_from = tf.CompoundTarget(

@@ -80,9 +80,13 @@ after sentence: user.textflow_move_after_sentence()
 drag argument left: user.textflow_move_argument_left()
 drag argument right: user.textflow_move_argument_right()
 
-# Insert newline relative to target.
+# Insert newlines relative to target.
 drink <user.textflow_simple_target>: user.textflow_new_line_above(textflow_simple_target)
 pour <user.textflow_simple_target>: user.textflow_new_line_below(textflow_simple_target)
+
+# Insert newlines relative to current line without moving the cursor.
+spike line: user.textflow_insert_line_above_current()
+float line: user.textflow_insert_line_below_current()
 
 # Replace a target with prose (includes punctuation).
 swap <user.textflow_compound_target> with <user.prose>$: user.textflow_replace(textflow_compound_target, prose)

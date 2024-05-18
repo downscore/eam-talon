@@ -114,6 +114,10 @@ class ModifierType(Enum):
   SENTENCE = 15
   # Take the contents of a pair of brackets containing the target.
   BRACKETS = 16
+  # Take the start of the line (empty selection after previous line break or at start of file).
+  START_OF_LINE = 17
+  # Take the end of the line (empty selection after line break or at end of file).
+  END_OF_LINE = 18
 
 
 @dataclass

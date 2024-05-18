@@ -11,7 +11,7 @@ def _make_match(start: int, end: int) -> TextMatch:
   return TextMatch(TextRange(start, end))
 
 
-def _get_line_at_index(text: str, index: int, include_line_break: bool = True) -> TextRange:
+def _get_line_at_index(text: str, index: int, include_line_break: bool) -> TextRange:
   """Get the line containing the given index."""
   start_index = index
   while start_index > 0 and text[start_index - 1] != "\n":
@@ -56,21 +56,35 @@ def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modif
 
 
 def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the line containing the token."""
+  """Takes the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start)
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
   return TextMatch(line_range)
 
 
 def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the line containing the token."""
+  """Takes the line containing the match."""
   del modifier  # Unused.
   line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=False)
   return TextMatch(line_range)
 
 
+def _apply_end_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the end of the line containing the match."""
+  del modifier  # Unused.
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  return _make_match(line_range.end, line_range.end)
+
+
+def _apply_start_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the start of the line containing the match."""
+  del modifier  # Unused.
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  return _make_match(line_range.start, line_range.start)
+
+
 def _apply_line_head_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the start of the line containing the token."""
+  """Takes the start of the line containing the match."""
   del modifier  # Unused.
   start_index = input_match.text_range.start
   while start_index > 0 and text[start_index - 1] != "\n":
@@ -79,9 +93,9 @@ def _apply_line_head_modifier(text: str, input_match: TextMatch, modifier: Modif
 
 
 def _apply_line_tail_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the end of the line containing the token."""
+  """Takes the end of the line containing the match."""
   del modifier  # Unused.
-  end_index = input_match.text_range.start  # Start of token to ensure we always take a single line.
+  end_index = input_match.text_range.start  # Start of match to ensure we always take a single line.
   while end_index < len(text) and text[end_index] != "\n":
     end_index += 1
   return _make_match(input_match.text_range.start, end_index)
@@ -133,7 +147,7 @@ def _apply_block_modifier(text: str, input_match: TextMatch, modifier: Modifier)
 
 
 def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the comment containing the token."""
+  """Takes the comment containing the match."""
   del modifier  # Unused.
   block_comment = False
   start_index = input_match.text_range.start
@@ -169,7 +183,7 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
 
 
 def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the content between symmetric delimiters containing the token. Defaults to C-style strings."""
+  """Takes the content between symmetric delimiters containing the match. Defaults to C-style strings."""
   delimiter = "\"" if modifier.delimiter == "" else modifier.delimiter
   start_index = input_match.text_range.start
   while start_index > 0 and text[start_index - 1] != delimiter:
@@ -189,7 +203,7 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
   indentation_search_index = input_match.text_range.start
   min_indentation_level = None
   while indentation_search_index >= 0 and min_indentation_level is None:
-    line_range = _get_line_at_index(text, indentation_search_index)
+    line_range = _get_line_at_index(text, indentation_search_index, include_line_break=True)
     line_text = line_range.extract(text)
     # Make sure the line isn't just whitespace.
     if line_text.strip() != "":
@@ -204,10 +218,10 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
     raise ValueError("Could not find indentation level for Python scope")
 
   # Find the start of the current scope.
-  start_line_range = _get_line_at_index(text, input_match.text_range.start)
+  start_line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
   first_non_whitespace_line_range = start_line_range
   while start_line_range.start > 0:
-    previous_line_range = _get_line_at_index(text, start_line_range.start - 1)
+    previous_line_range = _get_line_at_index(text, start_line_range.start - 1, include_line_break=True)
     previous_line_text = previous_line_range.extract(text)
     is_whitespace = previous_line_text.strip() == ""
     # Stop if we find a non-whitespace line with less indentation.
@@ -221,7 +235,7 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
   end_line_range = start_line_range
   last_non_whitespace_line_range = end_line_range
   while end_line_range.end < len(text):
-    next_line_range = _get_line_at_index(text, end_line_range.end)
+    next_line_range = _get_line_at_index(text, end_line_range.end, include_line_break=True)
     next_line_text = next_line_range.extract(text)
     is_whitespace = next_line_text.strip() == ""
     # Stop if we find a line with less indentation.
@@ -477,6 +491,8 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.C_SCOPE: _apply_c_scope_modifier,
     ModifierType.SENTENCE: _apply_sentence_modifier,
     ModifierType.BRACKETS: _apply_brackets_modifier,
+    ModifierType.END_OF_LINE: _apply_end_of_line_modifier,
+    ModifierType.START_OF_LINE: _apply_start_of_line_modifier,
 }
 
 

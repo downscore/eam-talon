@@ -47,6 +47,7 @@ class TestLineIncludingLineBreakModifier(unittest.TestCase):
     input_match = TextMatch(TextRange(23, 23))  # empty line
     modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK, None)
     result = apply_modifier(text, input_match, modifier)
+
     self.assertEqual(result, TextMatch(TextRange(23, 24)))
 
   def test_apply_line_modifier_invalid_match(self):
@@ -834,3 +835,81 @@ class TestBracketModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.BRACKETS)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "before[nest]after")
+
+
+class TestStartOfLineModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_single_line(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.START_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(0, 0)))
+
+  def test_trailing_newline(self):
+    text = "This is a test string.\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.START_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+  def test_multi_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.START_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(0, 0)))
+
+  def test_last_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.START_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+  def test_middle_line(self):
+    text = "This is a test string.\nAnother line of text.\nThe last line."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.START_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+
+class TestEndOfLineModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_single_line(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.END_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(22, 22)))
+
+  def test_trailing_newline(self):
+    text = "This is a test string.\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.END_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+  def test_multi_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.END_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+  def test_last_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.END_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(44, 44)))
+
+  def test_middle_line(self):
+    text = "This is a test string.\nAnother line of text.\nThe last line."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.END_OF_LINE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(45, 45)))

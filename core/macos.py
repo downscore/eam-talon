@@ -4,6 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import subprocess
 from talon import Context, Module
 from talon.mac import applescript
 
@@ -37,3 +38,7 @@ class Actions:
           end repeat
         end try
       end tell""")
+
+  def macos_beep():
+    """Plays a system beep sound."""
+    subprocess.Popen(["afplay", "/System/Library/Sounds/Ping.aiff"])

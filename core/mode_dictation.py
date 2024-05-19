@@ -10,16 +10,7 @@ from .lib import format_util
 
 mod = Module()
 
-_NUM_PRECEDING_CHARS = 2
-
-
-def _get_preceding_text() -> str:
-  """Gets the preceding text to use for dictation."""
-  for _ in range(_NUM_PRECEDING_CHARS):
-    actions.user.extend_left()
-  preceding_text = actions.user.selected_text()
-  actions.user.right()
-  return preceding_text
+NUM_PRECEDING_CHARS = 2
 
 
 def _backspace_required(preceding_text: str, next_text: str) -> bool:
@@ -33,13 +24,17 @@ def _backspace_required(preceding_text: str, next_text: str) -> bool:
 
 def _space_required(preceding_text: str, next_text: str) -> bool:
   """Determines if a space is required between the preceding and next text."""
-  # Assume there is no preceding text if the text is too long (the editor may copy the entire line if no selection).
-  if len(preceding_text) == 0 or len(preceding_text) > _NUM_PRECEDING_CHARS:
+  if len(preceding_text) == 0:
     return False
   if len(next_text) == 0:
     return False
   preceding_char = preceding_text[-1]
   next_char = next_text[0]
+
+  # Special case: No space after a double quote if there is a space before it.
+  if len(preceding_text) >= 2 and preceding_text[-2:] == " \" ":  # Check for space before double quote.
+    return False
+
   if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\"", "/"):
     return False
   if preceding_char in (" ", "#", "@", "\n", "(", "[", "{", "<", "-", "_", "/", "'"):
@@ -49,8 +44,7 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
 
 def _capitalization_required(preceding_text: str) -> bool:
   """Determines if capitalization is required for the next word."""
-  # Assume there is no preceding text if the text is too long (the editor may copy the entire line if no selection).
-  if len(preceding_text) < 2 or len(preceding_text) > _NUM_PRECEDING_CHARS:
+  if len(preceding_text) < 2:
     return True
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
   if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", "_", "/", "'", "\"", "`",
@@ -68,7 +62,7 @@ class Actions:
     maintained state based on what is inserted."""
     if prose is None or prose == "":
       return
-    preceding_text = _get_preceding_text()
+    preceding_text = actions.user.dictation_get_preceding_text()
     if _backspace_required(preceding_text, prose):
       actions.key("backspace")
     if _space_required(preceding_text, prose):
@@ -84,3 +78,15 @@ class Actions:
     """Inserts a new line below `n` times"""
     for _ in range(n):
       actions.user.line_insert_down()
+
+  def dictation_get_preceding_text() -> str:
+    """Gets the preceding text to use for dictation."""
+    for _ in range(NUM_PRECEDING_CHARS):
+      actions.user.extend_left()
+    preceding_text = actions.user.selected_text()
+
+    # Deselect preceding text only if it was not empty.
+    if preceding_text:
+      actions.user.right()
+
+    return preceding_text

@@ -241,7 +241,7 @@ link self: user.insert_self_link()
 link browser: user.insert_link_from_browser_address()
 
 # Flip booleans or comparisons.
-flip flop: user.flip_boolean_or_comparison()
+flipper: user.flip_boolean_or_comparison()
 
 # Comma and space
 spam: insert(", ")

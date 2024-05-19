@@ -111,6 +111,16 @@ class GetTabsMatchingHostnameTestCase(unittest.TestCase):
     # Not a valid hostname.
     self.assertEqual(get_tabs_matching_hostname(self.tabs, "url3"), [])
 
+  def test_partial_match(self):
+    result = get_tabs_matching_hostname(self.tabs, "example.com")
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0].index, 1)
+    self.assertEqual(result[0].title, "title1")
+    self.assertEqual(result[0].url, "http://host.example.com")
+    self.assertEqual(result[1].index, 2)
+    self.assertEqual(result[1].title, "title4")
+    self.assertEqual(result[1].url, "http://host.example.com/url4")
+
 
 class GetFocusedTabListIndexTestCase(unittest.TestCase):
   """Test for getting the list index of the focused tab."""

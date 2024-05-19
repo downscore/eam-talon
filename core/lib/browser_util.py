@@ -83,12 +83,15 @@ def parse_tab_list_string(tab_list_string: str) -> list[Tab]:
 
 def get_tabs_matching_hostname(tabs: list[Tab], hostname: str) -> list[Tab]:
   """Returns a list of tabs with URLs matching the given hostname."""
+  if not hostname:
+    return []
+
   result: list[Tab] = []
   for tab in tabs:
     url = urlparse(tab.url)
 
-    # Check if the tab's URL matches the hostname (case insensitive).
-    if url.hostname and url.hostname.lower() == hostname.lower():
+    # Check if the tab's URL contains the hostname (case insensitive).
+    if url.hostname and hostname.lower() in url.hostname.lower():
       result.append(tab)
   return result
 

@@ -469,6 +469,28 @@ class ExtensionActions:
     actions.user.word_right()
     actions.user.insert_via_clipboard(word)
 
+  def flip_boolean_or_comparison():
+    """Flips a boolean value or comparison in the selected text."""
+    selected = actions.user.selected_text_or_word()
+
+    replaced = selected.replace("true", "false")
+    if replaced == selected:
+      replaced = selected.replace("false", "true")
+    if replaced == selected:
+      replaced = selected.replace("True", "False")
+    if replaced == selected:
+      replaced = selected.replace("False", "True")
+    if replaced == selected:
+      replaced = selected.replace("TRUE", "FALSE")
+    if replaced == selected:
+      replaced = selected.replace("FALSE", "TRUE")
+    if replaced == selected:
+      replaced = selected.replace("<", ">")
+    if replaced == selected:
+      replaced = selected.replace(">", "<")
+
+    actions.user.insert_via_clipboard(replaced)
+
   def replace():
     """Search and replace for text in the active editor."""
     actions.key("cmd-h")

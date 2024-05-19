@@ -6,7 +6,7 @@
 
 import re
 from talon import Context, Module, actions
-from .lib import number_util, ordinal_util, text_util
+from .lib import number_util, ordinal_util
 
 mod = Module()
 ctx = Context()
@@ -29,16 +29,6 @@ ctx.lists["self.ordinals"] = _ORDINALS_DICT.keys()
 
 mod.list("ordinals_small", desc="Smaller list of ordinals used for repeating commands.")
 ctx.lists["self.ordinals_small"] = _ORDINALS_SMALL_DICT.keys()
-
-
-def _get_selected_number() -> text_util.StrippedString:
-  """Get the currently-selected number, or the number where the cursor is located."""
-  selected: str = actions.user.selected_text()
-  if len(selected) == 0:
-    actions.user.select_word()
-    selected = actions.user.selected_text()
-  selected_stripped = text_util.StrippedString(selected, text_util.StripMethod.KEEP_FIRST_NUMBER)
-  return selected_stripped
 
 
 @mod.capture(rule=f"{_ALT_FIRST_NUMBER_WORDS} {_ALT_NUMBER_WORDS}* (and {_ALT_NUMBER_WORDS}+)*")

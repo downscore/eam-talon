@@ -21,10 +21,7 @@ class Actions:
 
   def homophones_selected_word():
     """Replaces the selected word with the next homophone. Attempts to match case."""
-    selected: str = actions.user.selected_text()
-    if len(selected) == 0:
-      actions.user.select_word()
-      selected = actions.user.selected_text()
+    selected: str = actions.user.selected_text_or_word()
     selected_stripped = text_util.StrippedString(selected)
 
     if len(selected_stripped.stripped) == 0 or " " in selected_stripped.stripped:

@@ -250,7 +250,7 @@ def _run_command(command: tf.Command):
   # Get the text we are acting on, along with other context information.
   context = actions.user.textflow_get_context()
 
-  # Collect required utility function.
+  # Collect required utility functions.
   utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones, actions.user.get_next_homophone)
 
   # Run the command.

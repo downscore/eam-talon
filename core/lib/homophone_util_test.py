@@ -40,6 +40,12 @@ class NextHomophoneDictSingleSetTestCase(unittest.TestCase):
     actual = get_next_homophone_dict_for_single_set(phones)
     self.assertDictEqual(expected, actual)
 
+  def test_uncommon_word(self):
+    phones = ["frees", "freeze", "*frieze"]
+    expected = {"frees": "freeze", "freeze": "frieze", "frieze": "frees"}
+    actual = get_next_homophone_dict_for_single_set(phones)
+    self.assertDictEqual(expected, actual)
+
   def test_empty_input(self):
     with self.assertRaises(ValueError):
       get_next_homophone_dict_for_single_set([])
@@ -73,6 +79,12 @@ class NextHomophoneDictTestCase(unittest.TestCase):
         "there": "they're",
         "they're": "their"
     }
+    actual = get_next_homophone_dict(phones)
+    self.assertDictEqual(expected, actual)
+
+  def test_uncommon_word(self):
+    phones = [["here", "*hear"], ["thrown", "*throne"]]
+    expected = {"here": "hear", "hear": "here", "thrown": "throne", "throne": "thrown"}
     actual = get_next_homophone_dict(phones)
     self.assertDictEqual(expected, actual)
 

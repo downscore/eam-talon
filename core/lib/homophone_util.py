@@ -1,46 +1,51 @@
 """Util functions for homophones."""
 
+from dataclasses import dataclass
 from typing import Dict
 
 
-def get_next_homophone_dict_for_single_set(homophones_set: list[str]) -> Dict[str, str]:
-  """Given a list of a single set of homophones, get a dictionary mapping each word to the next homophone in the list.
-  Keys are all lowercase. Values have case preserved from input list. Both are stripped."""
-  if (len(homophones_set)) < 2:
-    raise ValueError("Homophones list must have at least 2 elements.")
-  result: Dict[str, str] = {}
-  for i, word in enumerate(homophones_set):
-    if len(word) == 0:
-      raise ValueError("Empty string in homophones list.")
+@dataclass
+class HomophoneSet:
+  """A set of homophones."""
+  words_excluding_uncommon: list[str]
+  uncommon_words: list[str]
 
-    # Remove leading asterisk (indicating uncommon word) if present.
-    if word.startswith("*"):
-      word = word[1:]
+  def get_next_word(self, word: str) -> str:
+    """Get the next word for the given word."""
+    for i, curr_word in enumerate(self.words_excluding_uncommon):
+      if curr_word == word:
+        next_index = (i + 1) % len(self.words_excluding_uncommon)
+        return self.words_excluding_uncommon[next_index]
 
-    next_index = (i + 1) % len(homophones_set)
-    next_word = homophones_set[next_index].strip()
+    if not word in self.uncommon_words:
+      raise ValueError(f"Word not found in homophone set: {word}")
 
-    # Remove leading asterisk (indicating uncommon word) from next word if present.
-    if next_word.startswith("*"):
-      next_word = next_word[1:]
+    # Word is uncommon, so just return the first word in the set.
+    return self.words_excluding_uncommon[0]
 
-    result[word.strip().lower()] = next_word
+
+def get_homophone_sets(homophones: list[list[str]]) -> list[HomophoneSet]:
+  """Given a list of homophones, return a list of HomophoneSets."""
+  result = []
+  for homophones_set in homophones:
+    words_excluding_uncommon = []
+    uncommon_words = []
+    for word in homophones_set:
+      # Uncommon words have an asterisk prepended.
+      if word.startswith("*"):
+        uncommon_words.append(word[1:])
+      else:
+        words_excluding_uncommon.append(word)
+    result.append(HomophoneSet(words_excluding_uncommon, uncommon_words))
   return result
 
 
-def get_next_homophone_dict(homophones_sets: list[list[str]]) -> Dict[str, str]:
-  """Given lists of homophones, get a dictionay mapping each word to its next homophone in the list (wrapping around at
-  the end). Keys are all lowercase. Values have case preserved from input list. Both are stripped."""
+def get_word_to_homophone_set_dict(homophone_sets: list[HomophoneSet]) -> Dict[str, HomophoneSet]:
+  """Given a list of homophones, return a list of HomophoneSets."""
   result = {}
-  for homophones_set in homophones_sets:
-    # Check for dupes.
-    for word in homophones_set:
-      # Remove leading asterisk (indicating uncommon word) if present.
-      # TODO: Do not have entries pointing to uncommon words, but don't break getting full homophone sets.
-      if word.startswith("*"):
-        word = word[1:]
-
-      if word.lower() in result:
-        raise ValueError(f"Duplicate entry: {word}")
-    result.update(get_next_homophone_dict_for_single_set(homophones_set))
+  for homophone_set in homophone_sets:
+    for word in homophone_set.words_excluding_uncommon:
+      result[word] = homophone_set
+    for word in homophone_set.uncommon_words:
+      result[word] = homophone_set
   return result

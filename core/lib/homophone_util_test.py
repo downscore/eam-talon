@@ -1,99 +1,59 @@
 """Tests for homophone utils."""
 
 import unittest
-from .homophone_util import get_next_homophone_dict, get_next_homophone_dict_for_single_set
+from .homophone_util import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 
-class NextHomophoneDictSingleSetTestCase(unittest.TestCase):
-  """Tests for getting a dict for a single set of homophones."""
-
-  def test_two_phones(self):
-    phones = ["here", "hear"]
-    expected = {"here": "hear", "hear": "here"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_two_phones_padded(self):
-    phones = [" here ", " hear "]
-    # Keys and values are stripped.
-    expected = {"here": "hear", "hear": "here"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_two_phones_capitalized(self):
-    phones = ["Here", "Hear"]
-    # Keys are lowercased.
-    expected = {"here": "Hear", "hear": "Here"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_two_phones_padded_capitalized(self):
-    phones = [" Here ", " Hear "]
-    # Keys are lowercased.
-    expected = {"here": "Hear", "hear": "Here"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_three_phones(self):
-    phones = ["their", "there", "they're"]
-    expected = {"their": "there", "there": "they're", "they're": "their"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_uncommon_word(self):
-    phones = ["frees", "freeze", "*frieze"]
-    expected = {"frees": "freeze", "freeze": "frieze", "frieze": "frees"}
-    actual = get_next_homophone_dict_for_single_set(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_empty_input(self):
-    with self.assertRaises(ValueError):
-      get_next_homophone_dict_for_single_set([])
-
-  def test_one_phone(self):
-    with self.assertRaises(ValueError):
-      get_next_homophone_dict_for_single_set(["here"])
-
-  def test_empty_string(self):
-    with self.assertRaises(ValueError):
-      get_next_homophone_dict_for_single_set(["here", ""])
-
-
-class NextHomophoneDictTestCase(unittest.TestCase):
-  """Tests for getting a dict for multiple sets of homophones."""
+class GetHomophoneSetsTestCase(unittest.TestCase):
+  """Tests for homophone util."""
 
   def test_two_sets(self):
     phones = [["here", "hear"], ["thrown", "throne"]]
-    expected = {"here": "hear", "hear": "here", "thrown": "throne", "throne": "thrown"}
-    actual = get_next_homophone_dict(phones)
-    self.assertDictEqual(expected, actual)
-
-  def test_three_sets(self):
-    phones = [["here", "hear"], ["thrown", "throne"], ["their", "there", "they're"]]
-    expected = {
-        "here": "hear",
-        "hear": "here",
-        "thrown": "throne",
-        "throne": "thrown",
-        "their": "there",
-        "there": "they're",
-        "they're": "their"
-    }
-    actual = get_next_homophone_dict(phones)
-    self.assertDictEqual(expected, actual)
+    expected = [HomophoneSet(["here", "hear"], []), HomophoneSet(["thrown", "throne"], [])]
+    actual = get_homophone_sets(phones)
+    self.assertEqual(expected, actual)
 
   def test_uncommon_word(self):
-    phones = [["here", "*hear"], ["thrown", "*throne"]]
-    expected = {"here": "hear", "hear": "here", "thrown": "throne", "throne": "thrown"}
-    actual = get_next_homophone_dict(phones)
-    self.assertDictEqual(expected, actual)
+    phones = [["here", "hear"], ["frees", "freeze", "*frieze"]]
+    expected = [HomophoneSet(["here", "hear"], []), HomophoneSet(["frees", "freeze"], ["frieze"])]
+    actual = get_homophone_sets(phones)
+    self.assertEqual(expected, actual)
 
-  def test_empty_input(self):
-    self.assertEqual(get_next_homophone_dict([]), {})
 
-  def test_duplicate_word(self):
-    # For this implementation, each word needs to show up exactly once. Words with multiple pronunciations (e.g. "read"
-    # and "tear") must have their homophones mashed together in one list (e.g. ["read", "red", "reed"]).
-    phones = [["read", "red"], ["read", "reed"]]
+class GetWordToHomophoneSetDictTestCase(unittest.TestCase):
+  """Tests for homophone util."""
+
+  def test_two_sets(self):
+    homophone_sets = [HomophoneSet(["here", "hear"], []), HomophoneSet(["thrown", "throne"], [])]
+    expected = {
+        "here": homophone_sets[0],
+        "hear": homophone_sets[0],
+        "thrown": homophone_sets[1],
+        "throne": homophone_sets[1]
+    }
+    actual = get_word_to_homophone_set_dict(homophone_sets)
+    self.assertEqual(expected, actual)
+
+  def test_uncommon_word(self):
+    homophone_sets = [HomophoneSet(["here", "hear"], []), HomophoneSet(["frees", "freeze"], ["frieze"])]
+    expected = {
+        "here": homophone_sets[0],
+        "hear": homophone_sets[0],
+        "frees": homophone_sets[1],
+        "freeze": homophone_sets[1],
+        "frieze": homophone_sets[1]
+    }
+    actual = get_word_to_homophone_set_dict(homophone_sets)
+    self.assertEqual(expected, actual)
+
+
+class HomophoneSetGetNextWordTestCase(unittest.TestCase):
+  """Tests for homophone util."""
+
+  def test_uncommon_word(self):
+    homophone_set = HomophoneSet(["frees", "freeze"], ["frieze"])
+    self.assertEqual(homophone_set.get_next_word("frees"), "freeze")
+    self.assertEqual(homophone_set.get_next_word("freeze"), "frees")
+    self.assertEqual(homophone_set.get_next_word("frieze"), "frees")
     with self.assertRaises(ValueError):
-      get_next_homophone_dict(phones)
+      homophone_set.get_next_word("unknown")

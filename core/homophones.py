@@ -12,7 +12,8 @@ from .user_settings import load_lists_from_csv
 mod = Module()
 ctx = Context()
 
-_NEXT_HOMOPHONE_DICT = homophone_util.get_next_homophone_dict(load_lists_from_csv("homophones.csv"))
+_HOMOPHONE_SETS = homophone_util.get_homophone_sets(load_lists_from_csv("homophones.csv"))
+_WORD_TO_HOMOPHONE_SET = homophone_util.get_word_to_homophone_set_dict(_HOMOPHONE_SETS)
 
 
 @mod.action_class
@@ -32,12 +33,13 @@ class Actions:
     guessed_capitalization = format_util.guess_capitalization(selected_stripped.stripped)
     word_key = selected_stripped.stripped.lower().replace("’", "'")
 
-    if word_key not in _NEXT_HOMOPHONE_DICT:
+    if word_key not in _WORD_TO_HOMOPHONE_SET:
       actions.app.notify(f"No homophones found: {word_key}")
       return
 
     # Get homophone, trying to match original case and whitespace padding.
-    result = format_util.format_word_capitalization(_NEXT_HOMOPHONE_DICT[word_key], guessed_capitalization)
+    homophone_set = _WORD_TO_HOMOPHONE_SET[word_key]
+    result = format_util.format_word_capitalization(homophone_set.get_next_word(word_key), guessed_capitalization)
     result = selected_stripped.apply_padding(result)
 
     # Insert homophone.
@@ -45,17 +47,16 @@ class Actions:
 
   def get_all_homophones(word: str) -> list[str]:
     """Gets a list of all homophones for the given word, including the given word."""
-    result = [word]
-    curr_word = word
-    while curr_word in _NEXT_HOMOPHONE_DICT:
-      curr_word = _NEXT_HOMOPHONE_DICT[curr_word]
-      if curr_word in result:
-        break
-      result.append(curr_word)
-    return result
+    if word not in _WORD_TO_HOMOPHONE_SET:
+      return [word]
+
+    homophone_set = _WORD_TO_HOMOPHONE_SET[word]
+
+    # Return concatenation of common and uncommon word lists
+    return homophone_set.words_excluding_uncommon + homophone_set.uncommon_words
 
   def get_next_homophone(word: str) -> Optional[str]:
     """Gets the next homophone for the given word, or None if there are no homophones for it."""
-    if word not in _NEXT_HOMOPHONE_DICT:
+    if word not in _WORD_TO_HOMOPHONE_SET:
       return None
-    return _NEXT_HOMOPHONE_DICT[word]
+    return _WORD_TO_HOMOPHONE_SET[word].get_next_word(word)

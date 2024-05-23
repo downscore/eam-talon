@@ -61,9 +61,10 @@ def _focus_tab_and_window_with_context(interface: BrowserInterface, context: bro
     return
 
   # Focus the window, then focus the tab.
-  window.focus()
-  # Chrome requires a pause here in some cases.
-  actions.sleep("500ms")
+  if window != ui.active_window():
+    window.focus()
+    # Chrome requires a pause here in some cases.
+    actions.sleep("500ms")
   interface.focus_tab(tab_index)
 
 

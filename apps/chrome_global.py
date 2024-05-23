@@ -88,7 +88,7 @@ class Actions:
       """
     applescript.run(set_tab_script)
 
-  def chrome_focus_tab(window_index: int, tab_index: int):
+  def chrome_focus_tab(tab_index: int):
     """Focuses the specified tab in the front window. Tab indices are 1-based. This can be used when Chrome doesn't
     have focus."""
     set_tab_script = f"""

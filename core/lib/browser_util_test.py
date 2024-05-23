@@ -164,10 +164,10 @@ class MatchWindowsTestCase(unittest.TestCase):
     ]
     self.windows = [
         Window(1, ""),
-        Window(2, "title3"),
+        Window(2, "title3 - Browser (Work)"),
         Window(3, ""),
-        Window(4, "title5^^^"),  # Include a delimiter in the title.
-        Window(5, "title5"),
+        Window(4, "title^^^5 - Browser (Personal)"),  # Include a delimiter in the title.
+        Window(5, "title5 - Browser (Work)"),
         Window(6, ""),
     ]
 

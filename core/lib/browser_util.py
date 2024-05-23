@@ -148,7 +148,7 @@ def match_windows(tabs: list[Tab], windows: list[Any]) -> BrowserContext:
     # Find the first window with a matching title.
     for window in titled_windows:
       # The AppleScript titles have delimiters removed, so remove them from window titles too.
-      if _remove_delimiters(window.title) == active_tab_title:
+      if _remove_delimiters(window.title).startswith(active_tab_title):
         result.window_ids[i] = window.id
         titled_windows.remove(window)
         break

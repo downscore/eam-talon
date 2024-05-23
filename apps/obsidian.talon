@@ -79,3 +79,6 @@ folder new:
 
 # Create a new file
 file new: key(cmd-n)
+
+# Insert a template
+template insert: user.obsidian("Templates: Insert template")

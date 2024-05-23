@@ -11,7 +11,7 @@ def _make_match(start: int, end: int) -> TextMatch:
   return TextMatch(TextRange(start, end))
 
 
-def _get_line_at_index(text: str, index: int, include_line_break: bool) -> TextRange:
+def _get_line_at_index(text: str, index: int, include_trailing_line_break: bool) -> TextRange:
   """Get the line containing the given index."""
   start_index = index
   while start_index > 0 and text[start_index - 1] != "\n":
@@ -19,7 +19,7 @@ def _get_line_at_index(text: str, index: int, include_line_break: bool) -> TextR
   end_index = index
   while end_index < len(text) and text[end_index] != "\n":
     end_index += 1
-  if include_line_break and end_index < len(text) and text[end_index] == "\n":
+  if include_trailing_line_break and end_index < len(text) and text[end_index] == "\n":
     end_index += 1
   return TextRange(start_index, end_index)
 
@@ -58,33 +58,33 @@ def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modif
 def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
   return TextMatch(line_range)
 
 
 def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=False)
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=False)
   return TextMatch(line_range)
 
 
 def _apply_end_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the end of the line containing the match."""
+  """Takes an empty match at the end of the line containing the input match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
   return _make_match(line_range.end, line_range.end)
 
 
 def _apply_start_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the start of the line containing the match."""
+  """Takes an empty match at the start of the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
   return _make_match(line_range.start, line_range.start)
 
 
 def _apply_line_head_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the start of the line containing the match."""
+  """Takes from the start of the line containing the match to the end of the match."""
   del modifier  # Unused.
   start_index = input_match.text_range.start
   while start_index > 0 and text[start_index - 1] != "\n":
@@ -93,7 +93,7 @@ def _apply_line_head_modifier(text: str, input_match: TextMatch, modifier: Modif
 
 
 def _apply_line_tail_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the end of the line containing the match."""
+  """Takes from the start of the match to the end of the line containing the match."""
   del modifier  # Unused.
   end_index = input_match.text_range.start  # Start of match to ensure we always take a single line.
   while end_index < len(text) and text[end_index] != "\n":
@@ -203,7 +203,7 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
   indentation_search_index = input_match.text_range.start
   min_indentation_level = None
   while indentation_search_index >= 0 and min_indentation_level is None:
-    line_range = _get_line_at_index(text, indentation_search_index, include_line_break=True)
+    line_range = _get_line_at_index(text, indentation_search_index, include_trailing_line_break=True)
     line_text = line_range.extract(text)
     # Make sure the line isn't just whitespace.
     if line_text.strip() != "":
@@ -218,10 +218,10 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
     raise ValueError("Could not find indentation level for Python scope")
 
   # Find the start of the current scope.
-  start_line_range = _get_line_at_index(text, input_match.text_range.start, include_line_break=True)
+  start_line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
   first_non_whitespace_line_range = start_line_range
   while start_line_range.start > 0:
-    previous_line_range = _get_line_at_index(text, start_line_range.start - 1, include_line_break=True)
+    previous_line_range = _get_line_at_index(text, start_line_range.start - 1, include_trailing_line_break=True)
     previous_line_text = previous_line_range.extract(text)
     is_whitespace = previous_line_text.strip() == ""
     # Stop if we find a non-whitespace line with less indentation.
@@ -235,7 +235,7 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
   end_line_range = start_line_range
   last_non_whitespace_line_range = end_line_range
   while end_line_range.end < len(text):
-    next_line_range = _get_line_at_index(text, end_line_range.end, include_line_break=True)
+    next_line_range = _get_line_at_index(text, end_line_range.end, include_trailing_line_break=True)
     next_line_text = next_line_range.extract(text)
     is_whitespace = next_line_text.strip() == ""
     # Stop if we find a line with less indentation.
@@ -475,6 +475,37 @@ def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifi
   return _make_match(start_index, end_index)
 
 
+def _apply_between_whitespace_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the contents of surrounding whitespace (including line breaks)."""
+  del modifier  # Unused.
+
+  delimiters = [" ", "\t", "\n"]
+
+  # Find whitespace before the input match.
+  start_index = input_match.text_range.start
+  while start_index > 0 and text[start_index - 1] not in delimiters:
+    start_index -= 1
+
+  # Find whitespace after the input match.
+  end_index = input_match.text_range.end
+  while end_index < len(text) and text[end_index] not in delimiters:
+    end_index += 1
+
+  # Try to include trailing whitespace in the deletion range.
+  deletion_end_index = end_index
+  included_trailing_whitespace = False
+  if deletion_end_index < len(text) and text[deletion_end_index] in delimiters:
+    deletion_end_index += 1
+    included_trailing_whitespace = True
+
+  # If we couldn't include trailing whitespace, try to include leading whitespace.
+  deletion_start_index = start_index
+  if not included_trailing_whitespace and deletion_start_index > 0 and text[deletion_start_index - 1] in delimiters:
+    deletion_start_index -= 1
+
+  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -493,6 +524,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.BRACKETS: _apply_brackets_modifier,
     ModifierType.END_OF_LINE: _apply_end_of_line_modifier,
     ModifierType.START_OF_LINE: _apply_start_of_line_modifier,
+    ModifierType.BETWEEN_WHITESPACE: _apply_between_whitespace_modifier,
 }
 
 

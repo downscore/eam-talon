@@ -118,6 +118,8 @@ class ModifierType(Enum):
   START_OF_LINE = 17
   # Take the end of the line (empty selection after line break or at end of file).
   END_OF_LINE = 18
+  # Take all text between whitespace characters.
+  BETWEEN_WHITESPACE = 19
 
 
 @dataclass

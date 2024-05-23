@@ -913,3 +913,42 @@ class TestEndOfLineModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.END_OF_LINE, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(45, 45)))
+
+
+class TestBetweenWhitespaceModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_single_word(self):
+    text = "test"
+    input_match = TextMatch(TextRange(1, 1))
+    modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(0, 4), deletion_range=TextRange(0, 4)))
+
+  def test_sentence(self):
+    text = "This is a test."
+    input_match = TextMatch(TextRange(5, 5))
+    modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(5, 7), deletion_range=TextRange(5, 8)))
+
+  def test_end_of_sentence(self):
+    text = "This is a test."
+    input_match = TextMatch(TextRange(11, 12))
+    modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(10, 15), deletion_range=TextRange(9, 15)))
+
+  def test_line_breaks(self):
+    text = "This\nis\na test."
+    input_match = TextMatch(TextRange(5, 5))
+    modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(5, 7), deletion_range=TextRange(5, 8)))
+
+  def test_path_in_sentence(self):
+    text = "Path ~/test/a_b/c-d/* is invalid."
+    input_match = TextMatch(TextRange(6, 7))
+    modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(5, 21), deletion_range=TextRange(5, 22)))

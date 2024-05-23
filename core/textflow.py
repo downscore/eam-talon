@@ -473,9 +473,16 @@ class Actions:
     command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
     _run_command(command)
 
-  def textflow_select_string():
-    """Selects the current string contents."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+  def textflow_select_inside_delimiters(delimiter: str = "\""):
+    """Selects the contents between two delimiters."""
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
+    _run_command(command)
+
+  def textflow_select_between_whitespace():
+    """Selects the current content inside whitespace to the clipboard."""
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
     _run_command(command)
 
   def textflow_select_function_call():
@@ -511,10 +518,16 @@ class Actions:
     command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
     _run_command(command)
 
-  def textflow_cut_string():
-    """Cuts the current string contents to the clipboard."""
+  def textflow_cut_inside_delimiters(delimiter: str = "\""):
+    """Cuts the current content between two delimiters to the clipboard."""
     command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
+    _run_command(command)
+
+  def textflow_cut_between_whitespace():
+    """Cuts the current content inside whitespace to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
     _run_command(command)
 
   def textflow_cut_function_call():
@@ -550,9 +563,16 @@ class Actions:
     command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
     _run_command(command)
 
-  def textflow_delete_string():
-    """Deletes the current string contents."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING)))
+  def textflow_delete_inside_delimiters(delimiter: str = "\""):
+    """Deletes the contents contained between two delimiters."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
+    _run_command(command)
+
+  def textflow_delete_between_whitespace():
+    """Deletes the current content inside whitespace to the clipboard."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
     _run_command(command)
 
   def textflow_delete_function_call():

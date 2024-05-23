@@ -8,6 +8,13 @@ TD = TAB_DELIMITER
 WD = WINDOW_DELIMITER
 
 
+# Fake window type.
+@dataclass
+class Window:
+  id: int
+  title: str
+
+
 class ParseTabListTestCase(unittest.TestCase):
   """Test for parsing tab list."""
 
@@ -139,3 +146,37 @@ class GetFocusedTabListIndexTestCase(unittest.TestCase):
 
   def test_get_index(self):
     self.assertEqual(get_focused_tab_list_index(self.tabs), 2)
+
+
+class MatchWindowsTestCase(unittest.TestCase):
+  """Test for browser utility."""
+
+  def setUp(self):
+    self.tabs = [
+        Tab(1, 1, False, "title1", "http://host.example.com"),
+        Tab(1, 2, False, "title2", "url2"),
+        Tab(1, 3, True, "title3", "url3"),  # Focused (active in window 1).
+        Tab(2, 1, False, "title4", "url4"),
+        Tab(2, 2, True, "title5", "http://host.example.com/url5"),
+        Tab(3, 1, False, "title4", "url4"),
+        Tab(3, 2, True, "title5", "http://host.example.com/url5"),
+        Tab(4, 1, True, "", "no_url"),
+    ]
+    self.windows = [
+        Window(1, ""),
+        Window(2, "title3"),
+        Window(3, ""),
+        Window(4, "title5^^^"),  # Include a delimiter in the title.
+        Window(5, "title5"),
+        Window(6, ""),
+    ]
+
+  def test_empty_list(self):
+    self.assertEqual(match_windows([], []), BrowserContext([], []))
+
+  def test_no_windows(self):
+    self.assertEqual(match_windows(self.tabs, []), BrowserContext(self.tabs, [None] * 4))
+
+  def test_match_windows(self):
+    expected = BrowserContext(self.tabs, [2, 4, 5, None])
+    self.assertEqual(match_windows(self.tabs, self.windows), expected)

@@ -1,12 +1,21 @@
 """Library for helping with browser-related tasks."""
 
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 # Delimiters for dumping tab information via AppleScript.
 TAB_DELIMITER = "|||"
 WINDOW_DELIMITER = "^^^"
+
+
+@dataclass
+class BrowserContext:
+  """Information about the current browser state, including open tabs and windows."""
+  tabs: list["Tab"] = field(default_factory=list)
+  # Browser window IDs. The list will be empty if no windows were matched.
+  # An entry will be None if that window could not be matched.
+  window_ids: list[Optional[int]] = field(default_factory=list)
 
 
 @dataclass
@@ -27,6 +36,11 @@ class Tab:
 
   # The Url of the tab.
   url: str = ""
+
+
+def _remove_delimiters(s: str) -> str:
+  """Removes tab and window delimiters from a string."""
+  return s.replace(TAB_DELIMITER, "").replace(WINDOW_DELIMITER, "")
 
 
 def parse_tab_list_string(tab_list_string: str) -> list[Tab]:
@@ -102,3 +116,41 @@ def get_focused_tab_list_index(tabs: list[Tab]) -> Optional[int]:
     if tab.active and tab.window_index == 1:
       return i
   return None
+
+
+def match_windows(tabs: list[Tab], windows: list[Any]) -> BrowserContext:
+  """Matches the given tabs to the given windows."""
+  result = BrowserContext(tabs=tabs)
+
+  # Make sure there are some tabs.
+  if not tabs:
+    return result
+
+  num_windows = max(tab.window_index for tab in tabs)  # Window indices are 1-based.
+  result.window_ids = [None] * num_windows
+
+  # Get titles from active tabs for each window.
+  active_tab_titles: list[Optional[str]] = [None] * num_windows
+  for tab in tabs:
+    if tab.active:
+      active_tab_titles[tab.window_index - 1] = tab.title
+
+  # In Chrome, we sometimes see untitled ghost windows, or untitled windows for Chrome Apps. The Chrome App windows can
+  # show up with a single tab with a title and URL in the AppleScript output.
+  #
+  # We only match windows that have a title, so we will not match Chrome App windows. If two windows have the same
+  # title, we break ties by expecting the AppleScript output and window list to be in the same order for those windows.
+  titled_windows = [window for window in windows if window.title]
+  for i, active_tab_title in enumerate(active_tab_titles):
+    if not active_tab_title:
+      continue
+
+    # Find the first window with a matching title.
+    for window in titled_windows:
+      # The AppleScript titles have delimiters removed, so remove them from window titles too.
+      if _remove_delimiters(window.title) == active_tab_title:
+        result.window_ids[i] = window.id
+        titled_windows.remove(window)
+        break
+
+  return result

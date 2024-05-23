@@ -7,7 +7,6 @@
 import re
 from talon import Context, Module, actions, app, clip
 from .lib import format_util, text_util
-from . import switcher
 
 mod = Module()
 ctx = Context()
@@ -418,12 +417,7 @@ class ExtensionActions:
 
   def insert_link_from_browser_address():
     """Insert a link or make the selected text into a link using the URL in the last viewed browser tab."""
-    if switcher.is_chrome_running():
-      address = actions.user.chrome_get_current_address()
-    elif switcher.is_safari_running():
-      address = actions.user.safari_get_current_address()
-    else:
-      raise ValueError("Didn't find a supported browser running.")
+    address = actions.user.cross_browser_get_current_address()
     actions.user.surround_selected_text("[", f"]({address})")
 
   def insert_self_link():

@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module
+from talon import Context, Module, ui
 from talon.mac import applescript
 from ..core.lib import browser_util
 
@@ -15,6 +15,17 @@ ctx = Context()
 @mod.action_class
 class Actions:
   """Safari global actions."""
+
+  def safari_is_focused() -> bool:
+    """Returns whether Safari is focused."""
+    return ui.active_app().name == "Safari"
+
+  def safari_get_app() -> ui.App:
+    """Gets the running Safari app. Returns None if Safari is not running."""
+    for running_app in ui.apps():
+      if running_app.name == "Safari" and not running_app.background:
+        return running_app
+    return None
 
   def safari_get_current_address():
     """Insert the address of the active Safari tab."""
@@ -64,14 +75,26 @@ class Actions:
     tab_list_string = applescript.run(script)
     return browser_util.parse_tab_list_string(tab_list_string)
 
-  def safari_focus_tab(window_index: int, tab_index: int):
-    """Focuses the specified tab. Window and tab indices are 1-based. This is a version of `browser_focus_tab` that can
-    be used when Safari doesn't have focus."""
+  def safari_focus_tab_and_window(window_index: int, tab_index: int):
+    """Focuses the specified tab and window. Window and tab indices are 1-based. This can be used when Safari doesn't
+    have focus."""
     set_tab_script = f"""
       tell application "Safari"
         set current_window to window {window_index}
         tell current_window to set current tab to tab {tab_index}
         set index of current_window to 1 -- Brings the window to the front
+        activate
+      end tell
+      """
+    applescript.run(set_tab_script)
+
+  def safari_focus_tab(tab_index: int):
+    """Focuses the specified tab in the front window. Tab indices are 1-based. This can be used when Safari doesn't
+    have focus."""
+    set_tab_script = f"""
+      tell application "Safari"
+        set current_window to front window
+        tell current_window to set current tab to tab {tab_index}
         activate
       end tell
       """

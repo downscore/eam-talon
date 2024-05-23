@@ -38,6 +38,9 @@ make (null|none): insert("None")
 make class:
   insert("class :")
   key(left)
+make data class:
+  insert("@dataclass\nclass :")
+  key(left)
 make break: insert("break")
 make continue: insert("continue")
 make pass: insert("pass")

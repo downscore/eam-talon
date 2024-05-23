@@ -9,7 +9,7 @@ import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
 import time
-from .lib import browser_util, format_util
+from .lib import format_util
 from .user_settings import load_dict_from_csv
 
 mod = Module()
@@ -311,39 +311,6 @@ class Actions:
     except ValueError:
       pass
     raise ValueError("Could not find terminal window")
-
-  def switcher_focus_browser_tab_by_hostname(hostname: str):
-    """Switches to the browser tab with the given hostname in the URL. If a tab is already focused and multiple tabs
-    match, focuses the next one."""
-    if is_chrome_running():
-      get_all_tabs_action = actions.user.chrome_get_all_tabs
-      focus_tab_action = actions.user.chrome_focus_tab
-      is_browser_focused = is_chrome_focused()
-    elif is_safari_running():
-      get_all_tabs_action = actions.user.safari_get_all_tabs
-      focus_tab_action = actions.user.safari_focus_tab
-      is_browser_focused = is_safari_focused()
-    else:
-      raise ValueError("Did not find running browser.")
-
-    # Get all tabs matching the given hostname.
-    tabs: list[browser_util.Tab] = get_all_tabs_action()
-    matches = browser_util.get_tabs_matching_hostname(tabs, hostname)
-    if len(matches) == 0:
-      raise ValueError(f"No tabs found with hostname: {hostname}")
-
-    # Check if we are already focused on a matching tab.
-    focused_tab_index = browser_util.get_focused_tab_list_index(matches)
-    if not is_browser_focused and focused_tab_index is not None:
-      # The browser is not focused, but it is already on a matching tab. Switch to it.
-      focus_tab_action(matches[focused_tab_index].window_index, matches[focused_tab_index].index)
-    elif is_browser_focused and focused_tab_index is not None and len(matches) > 1:
-      # We are already focused on a matching tab with more available. Go to the next matching tab.
-      next_index = (focused_tab_index + 1) % len(matches)
-      focus_tab_action(matches[next_index].window_index, matches[next_index].index)
-    else:
-      # Go to the first matching tab.
-      focus_tab_action(matches[0].window_index, matches[0].index)
 
 
 def _on_app_change(event: str):

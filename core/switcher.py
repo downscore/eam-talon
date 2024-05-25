@@ -139,7 +139,7 @@ class Actions:
       return
     window.focus()
     # Pause to give the window time to focus. Chrome in particular can take a while to be ready for subsequent commands.
-    actions.sleep("500ms")
+    actions.sleep("250ms")
 
   def switcher_focus_window_by_id(window_id: int):
     """Focuses the window with the given ID. Does nothing if the window is already focused."""

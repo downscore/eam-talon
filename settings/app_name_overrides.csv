@@ -1,7 +1,5 @@
-App Name,Spoken Form
-DataGrip,grip
-iTerm2,term
-ONENOTE,one note
-Google Chrome,chrome
-Code - Insiders,code
-System Settings,settings
+Spoken Form,App Name
+term,iTerm2
+chrome,Google Chrome
+code,Code - Insiders
+settings,System Settings

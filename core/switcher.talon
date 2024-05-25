@@ -1,8 +1,14 @@
+# Changing focus.
 app <user.running_applications>: user.switcher_focus(running_applications)
 app last: key(cmd-tab)
 
+# Lists of applications.
 app list running: user.switcher_toggle_running()
 app list launch: user.switcher_toggle_launch()
+app list launch next: user.switcher_launch_next_page()
+app list launch last: user.switcher_launch_previous_page()
+
+# Launching applications.
 app launch <user.launch_applications>: user.switcher_launch(launch_applications)
 
 # Saving windows for shortcuts.

@@ -9,14 +9,17 @@ import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
 import time
-from .lib import format_util
+from .lib import app_util
 from .user_settings import load_dict_from_csv
 
 mod = Module()
 ctx = Context()
 
+# Max lines per page for app lists.
+_MAX_LINES_PER_PAGE = 45
+
 # Load app name overrides from file and monitor for updates.
-_OVERRIDES = load_dict_from_csv("app_name_overrides.csv")
+_OVERRIDES_SPOKEN_BY_APP_NAME = load_dict_from_csv("app_name_overrides.csv")
 
 # Initialize empty lists. They will be populated on ready, and when apps are opened or closed.
 mod.list("running_app_name", desc="All running applications")
@@ -37,6 +40,10 @@ _window_id_by_name: dict[str, int] = {}
 # Saved window ID for restoring focus.
 _saved_window_id: Optional[int] = None
 
+# Current page for app lists.
+_running_page = 0
+_launch_page = 0
+
 
 def _update_running_list():
   running = {}
@@ -44,8 +51,8 @@ def _update_running_list():
     name = curr_app.name
     running[name.lower()] = name
 
-  for spoken in _OVERRIDES:
-    app_name = _OVERRIDES[spoken]
+  for app_name in _OVERRIDES_SPOKEN_BY_APP_NAME:
+    spoken = _OVERRIDES_SPOKEN_BY_APP_NAME[app_name]
     key = app_name.lower()
     if key in running:
       del running[key]
@@ -63,23 +70,8 @@ def _update_launch_list():
       path = os.path.join(base, name)
       if name.startswith(".") or not name.endswith(".app"):
         continue
-      # Remove everything after the last dot in the filename.
-      name = name.rsplit(".", 1)[0]
-      # Unformat the name (split on case changes, etc.).
-      name = format_util.unformat_phrase(name)
-      name = name.lower()
-      # Remove all characters except the alphabet and spaces.
-      filtered = ""
-      for c in name:
-        if not c.isalpha() and c != " ":
-          continue
-        filtered += c
-      filtered = filtered.strip()
-      # TODO: Replace numbers with spoken forms.
-      # TODO: Apply overrides.
-      # TODO: Gui list of launchable applications.
-      # TODO: Util function for normalizing names.
-      launch[filtered] = path
+      app_launch_string = app_util.filename_to_app_launch_string(name, _OVERRIDES_SPOKEN_BY_APP_NAME)
+      launch[app_launch_string] = path
   ctx.lists["self.launch_app_name"] = launch
 
 
@@ -103,30 +95,24 @@ def _focus_window_by_id(window_id: int):
       time.sleep(sleep_secs)
 
 
-def is_chrome_running() -> bool:
-  """Returns whether Chrome is running. May return true if Chrome has no open windows"""
-  for running_app in ui.apps():
-    if running_app.name == "Google Chrome" and not running_app.background:
-      return True
-  return False
+def _focus_window_by_type(type_name: str, app_names: list[str]):
+  """Tries to focus a window given its type name and possible app names."""
+  if type_name in _window_id_by_name:
+    try:
+      _focus_window_by_id(_window_id_by_name[type_name])
+      return
+    except ValueError:
+      # Could not find window. Delete the saved ID and fall back to switching to apps.
+      del _window_id_by_name[type_name]
 
-
-def is_chrome_focused() -> bool:
-  """Returns whether Chrome is focused."""
-  return ui.active_app().name == "Google Chrome"
-
-
-def is_safari_running() -> bool:
-  """Returns whether Safari. May return true if Safari has no open windows."""
-  for running_app in ui.apps():
-    if running_app.name == "Safari" and not running_app.background:
-      return True
-  return False
-
-
-def is_safari_focused() -> bool:
-  """Returns whether Safari is focused."""
-  return ui.active_app().name == "Safari"
+  # No saved window, or saved window could not be found. Try to switch to known applications.
+  for app_name in app_names:
+    try:
+      actions.user.switcher_focus(app_name)
+      return
+    except ValueError:
+      pass
+  raise ValueError(f"Could not find window. Type: {type_name}")
 
 
 @imgui.open()
@@ -139,9 +125,14 @@ def running_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
 
 @imgui.open()
 def launch_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
-  gui.text("Names of launchable applications")
+  apps = list(ctx.lists["self.launch_app_name"])
+  apps.sort()
+
+  gui.text(f"Launchable Apps ({_launch_page + 1}/{len(apps) // _MAX_LINES_PER_PAGE + 1})")
   gui.line()
-  for line in ctx.lists["self.launch_app_name"]:
+
+  page_content = apps[_launch_page * _MAX_LINES_PER_PAGE:(_launch_page + 1) * _MAX_LINES_PER_PAGE]
+  for line in page_content:
     gui.text(line)
 
 
@@ -197,25 +188,31 @@ class Actions:
 
   def switcher_toggle_running():
     """Shows/hides all running applications."""
+    global _running_page
+    _running_page = 0
     if running_gui.showing:
       running_gui.hide()
     else:
       running_gui.show()
 
-  def switcher_hide_running():
-    """Hides list of running applications."""
-    running_gui.hide()
-
   def switcher_toggle_launch():
     """Shows/hides all launch applications."""
+    global _launch_page
+    _launch_page = 0
     if launch_gui.showing:
       launch_gui.hide()
     else:
       launch_gui.show()
 
-  def switcher_hide_launch():
-    """Hides list of launch applications."""
-    launch_gui.hide()
+  def switcher_launch_next_page():
+    """Shows the next page of launchable applications."""
+    global _launch_page
+    _launch_page = (_launch_page + 1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
+
+  def switcher_launch_previous_page():
+    """Shows the previous page of launchable applications."""
+    global _launch_page
+    _launch_page = (_launch_page - 1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
 
   def switcher_new_terminal_tab(directory: str = ""):
     """Opens a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
@@ -245,72 +242,15 @@ class Actions:
 
   def switcher_focus_coder():
     """Switches to the saved IDE window or try to find an app."""
-    if "coder" in _window_id_by_name:
-      try:
-        _focus_window_by_id(_window_id_by_name["coder"])
-        return
-      except ValueError:
-        # Could not find window. Delete the saved ID and fall back to switching apps.
-        del _window_id_by_name["coder"]
-
-    # No saved window, or saved window could not be found. Try to switch to known IDEs.
-    try:
-      actions.user.switcher_focus("Code - Insiders")
-      return
-    except ValueError:
-      pass
-    try:
-      actions.user.switcher_focus("Code")
-      return
-    except ValueError:
-      pass
-    raise ValueError("Could not find IDE window")
+    _focus_window_by_type("coder", ["Code - Insiders", "Code"])
 
   def switcher_focus_browser():
     """Switches to the saved browser window or try to find an app."""
-    if "browser" in _window_id_by_name:
-      try:
-        _focus_window_by_id(_window_id_by_name["browser"])
-        return
-      except ValueError:
-        # Could not find window. Delete the saved ID and fall back to switching apps.
-        del _window_id_by_name["browser"]
-
-    # No saved window, or saved window could not be found. Try to switch to known browsers.
-    try:
-      actions.user.switcher_focus("Google Chrome")
-      return
-    except ValueError:
-      pass
-    try:
-      actions.user.switcher_focus("Safari")
-      return
-    except ValueError:
-      pass
-    raise ValueError("Could not find browser window")
+    _focus_window_by_type("browser", ["Google Chrome", "Safari"])
 
   def switcher_focus_terminal():
     """Switches to the saved terminal window or try to find an app."""
-    if "terminal" in _window_id_by_name:
-      try:
-        _focus_window_by_id(_window_id_by_name["terminal"])
-        return
-      except ValueError:
-        # Could not find window. Delete the saved ID and fall back to switching apps.
-        del _window_id_by_name["terminal"]
-
-    # No saved window, or saved window could not be found. Try to switch to known terminals.
-    try:
-      actions.user.switcher_focus("iTerm2")
-      return
-    except ValueError:
-      pass
-    try:
-      actions.user.switcher_focus("Terminal")
-      return
-    except ValueError:
-      pass
-    raise ValueError("Could not find terminal window")
+    _focus_window_by_type("terminal", ["iTerm2", "Terminal"])
 
 
 def _on_app_change(event: str):

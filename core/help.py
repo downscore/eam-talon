@@ -140,12 +140,12 @@ class Actions:
   def help_next_page():
     """Moves to the next help page."""
     global _help_page
-    _help_page = min(_help_page + 1, len(_help_contents) // _MAX_LINES_PER_PAGE)
+    _help_page = (_help_page + 1) % (len(_help_contents) // _MAX_LINES_PER_PAGE + 1)
 
   def help_previous_page():
     """Moves to the previous help page."""
     global _help_page
-    _help_page = max(_help_page - 1, 0)
+    _help_page = (_help_page - 1) % (len(_help_contents) // _MAX_LINES_PER_PAGE + 1)
 
   def help_set_page(page: int):
     """Jumps to a given help page."""

@@ -145,6 +145,3 @@ class ExtensionActions:
 
   def browser_get_all_tabs() -> list[browser_util.Tab]:
     return actions.user.safari_get_all_tabs()
-
-  def browser_focus_tab(window_index: int, tab_index: int):
-    return actions.user.safari_focus_tab_and_window(window_index, tab_index)

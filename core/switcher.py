@@ -4,16 +4,23 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from dataclasses import dataclass
 from typing import Optional
-import talon
 from talon import Context, Module, app, imgui, ui, actions
 import os
-import time
-from .lib import app_util
+from .lib import app_util, browser_util
 from .user_settings import load_dict_from_csv
 
 mod = Module()
 ctx = Context()
+
+
+@dataclass
+class FocusedWindowAndTab:
+  """Struct used to remember the focused window, and potentially tab in that window."""
+  window_id: int
+  tab_index: Optional[int] = None  # Tab index is 1-based.
+
 
 # Max lines per page for app lists.
 _MAX_LINES_PER_PAGE = 45
@@ -37,8 +44,8 @@ _MAC_APPLICATION_DIRECTORIES = [
 # Remembered window IDs keyed by name.
 _window_id_by_name: dict[str, int] = {}
 
-# Saved window ID for restoring focus.
-_saved_window_id: Optional[int] = None
+# Remembered focused window.
+_saved_focused_window: Optional[FocusedWindowAndTab] = None
 
 # Current page for app lists.
 _running_page = 0
@@ -73,46 +80,6 @@ def _update_launch_list():
       app_launch_string = app_util.filename_to_app_launch_string(name, _OVERRIDES_SPOKEN_BY_APP_NAME)
       launch[app_launch_string] = path
   ctx.lists["self.launch_app_name"] = launch
-
-
-def _focus_window_by_id(window_id: int):
-  window_found = False
-  for window in ui.windows():
-    if window.id != window_id:
-      continue
-    window_found = True
-    window.focus()
-    return
-  if not window_found:
-    raise ValueError(f"Could not find window. ID: {window_id}")
-
-  # Hack to wait for window to be focused on Macos.
-  timeout_secs = 1
-  sleep_secs = 0.1
-  start_time_secs = time.monotonic()
-  if talon.app.platform == "mac":
-    while ui.active_window().id != window_id and time.monotonic() - start_time_secs < timeout_secs:
-      time.sleep(sleep_secs)
-
-
-def _focus_window_by_type(type_name: str, app_names: list[str]):
-  """Tries to focus a window given its type name and possible app names."""
-  if type_name in _window_id_by_name:
-    try:
-      _focus_window_by_id(_window_id_by_name[type_name])
-      return
-    except ValueError:
-      # Could not find window. Delete the saved ID and fall back to switching to apps.
-      del _window_id_by_name[type_name]
-
-  # No saved window, or saved window could not be found. Try to switch to known applications.
-  for app_name in app_names:
-    try:
-      actions.user.switcher_focus(app_name)
-      return
-    except ValueError:
-      pass
-  raise ValueError(f"Could not find window. Type: {type_name}")
 
 
 @imgui.open()
@@ -159,25 +126,64 @@ class Actions:
         return running_app
     raise ValueError(f'App not running: "{name}"')
 
-  def switcher_focus(name: str):
+  def switcher_focus_app_by_name(name: str):
     """Focuses an application by name."""
     running_app = actions.user.switcher_get_running_app(name)
     running_app.focus()
+    # Pause to give the app time to focus. Chrome in particular can take a while to be ready for subsequent commands.
+    actions.sleep("500ms")
 
-    # Hacky solution to do this reliably on Mac.
-    timeout_secs = 1
-    sleep_secs = 0.1
-    start_time_secs = time.monotonic()
-    if talon.app.platform == "mac":
-      while ui.active_app() != running_app and time.monotonic() - start_time_secs < timeout_secs:
-        time.sleep(sleep_secs)
+  def switcher_focus_window(window: ui.Window):
+    """Focuses the given window. Does nothing if the window is already focused."""
+    if ui.active_window().id == window.id:
+      return
+    window.focus()
+    # Pause to give the window time to focus. Chrome in particular can take a while to be ready for subsequent commands.
+    actions.sleep("500ms")
+
+  def switcher_focus_window_by_id(window_id: int):
+    """Focuses the window with the given ID. Does nothing if the window is already focused."""
+    for window in ui.windows():
+      if window.id != window_id:
+        continue
+      actions.user.switcher_focus_window(window)
+      return
+    raise ValueError(f"Could not find window. ID: {window_id}")
+
+  def switcher_focus_window_by_type(type_name: str, app_name1: str = "", app_name2: str = "", app_name3: str = ""):
+    """Tries to focus a window given its type name and possible app names."""
+    # Talon doesn't support list arguments, so use optional arguments instead.
+    app_names: list[str] = []
+    if app_name1:
+      app_names.append(app_name1)
+    if app_name2:
+      app_names.append(app_name2)
+    if app_name3:
+      app_names.append(app_name3)
+
+    if type_name in _window_id_by_name:
+      try:
+        actions.user.switcher_focus_window_by_id(_window_id_by_name[type_name])
+        return
+      except ValueError:
+        # Could not find window. Delete the saved ID and fall back to switching to apps.
+        del _window_id_by_name[type_name]
+
+    # No saved window, or saved window could not be found. Try to switch to known applications.
+    for app_name in app_names:
+      try:
+        actions.user.switcher_focus_app_by_name(app_name)
+        return
+      except ValueError:
+        pass
+    raise ValueError(f"Could not find window. Type: {type_name}")
 
   def switcher_focus_google_meet():
     """Focuses browser window with Google Meet open."""
     for window in ui.windows():
       if window.app.name not in ("Google Chrome", "Safari") or not window.title.startswith("Meet - "):
         continue
-      window.focus()
+      actions.user.switcher_focus_window(window)
       return
     # If we didn't find the window, bail out so we don't send subsequent commands to the wrong window.
     raise ValueError("Could not find Google Meet window")
@@ -229,28 +235,35 @@ class Actions:
     """Saves the current window as the window with the given name."""
     _window_id_by_name[name] = ui.active_window().id
 
-  def switcher_save_window():
-    """Saves the current window so it can be restored later."""
-    global _saved_window_id
-    _saved_window_id = ui.active_window().id
+  def switcher_save_focus():
+    """Saves the current window, and possibly tab in that window, to be restored to focus later."""
+    global _saved_focused_window
+    result = FocusedWindowAndTab(ui.active_window().id)
+    # Check if a browser is currently focused.
+    if actions.user.cross_browser_is_browser_focused():
+      context: browser_util.BrowserContext = actions.user.cross_browser_get_context()
 
-  def switcher_restore_window():
-    """Restores the last saved window to focus."""
-    if _saved_window_id is None:
-      raise ValueError("No window saved")
-    _focus_window_by_id(_saved_window_id)
+      # Print an error if window IDs don't match.
+      if not context.window_ids:
+        print("Saving focus: Browser context does not have window IDs.")
+      if context.window_ids[0] != result.window_id:
+        print(f"Saving focus: Window IDs do not match. Context: {context.window_ids[0]}, "
+              "Active Window: {result.window_id}")
 
-  def switcher_focus_coder():
-    """Switches to the saved IDE window or try to find an app."""
-    _focus_window_by_type("coder", ["Code - Insiders", "Code"])
+      # Get first active tab from the context.
+      active_tab: Optional[browser_util.Tab] = next(
+          filter(lambda tab: tab.active and tab.window_index == 1, context.tabs), None)
+      if active_tab:
+        result.tab_index = active_tab.index
+    _saved_focused_window = result
 
-  def switcher_focus_browser():
-    """Switches to the saved browser window or try to find an app."""
-    _focus_window_by_type("browser", ["Google Chrome", "Safari"])
-
-  def switcher_focus_terminal():
-    """Switches to the saved terminal window or try to find an app."""
-    _focus_window_by_type("terminal", ["iTerm2", "Terminal"])
+  def switcher_restore_focus():
+    """Restores saved window and possibly tab to focus."""
+    if not _saved_focused_window:
+      raise ValueError("No saved focus to restore.")
+    actions.user.switcher_focus_window_by_id(_saved_focused_window.window_id)
+    if _saved_focused_window.tab_index:
+      actions.user.cross_browser_focus_tab(_saved_focused_window.tab_index)
 
 
 def _on_app_change(event: str):

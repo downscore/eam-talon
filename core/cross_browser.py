@@ -61,10 +61,7 @@ def _focus_tab_and_window_with_context(interface: BrowserInterface, context: bro
     return
 
   # Focus the window, then focus the tab.
-  if window != ui.active_window():
-    window.focus()
-    # Chrome requires a pause here in some cases.
-    actions.sleep("500ms")
+  actions.user.switcher_focus_window(window)
   interface.focus_tab(tab_index)
 
 
@@ -123,3 +120,7 @@ class Actions:
     else:
       # Go to the first matching tab.
       _focus_tab_and_window_with_context(interface, context, matching_tabs[0].window_index, matching_tabs[0].index)
+
+  def cross_browser_is_browser_focused():
+    """Returns whether the browser is currently focused."""
+    return _get_active_browser_interface().is_focused()

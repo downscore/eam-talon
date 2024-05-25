@@ -53,10 +53,6 @@ class BrowserActions:
     # Implementation most likely requires AppleScript, an extension, or similar.
     raise NotImplementedError()
 
-  def browser_focus_tab(window_index: int, tab_index: int):
-    """Focuses the specified tab. Window and tab indices are 1-based."""
-    raise NotImplementedError()
-
 
 @ctx.action_class("user")
 class ExtensionActions:

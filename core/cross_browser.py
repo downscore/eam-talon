@@ -79,6 +79,10 @@ class Actions:
     tabs = interface.get_all_tabs()
     return browser_util.match_windows(tabs, interface.app.windows())
 
+  def cross_browser_focus_tab(tab_index: int):
+    """Focuses the tab with the given index in the front window of the running browser. Index is 1-based."""
+    _get_active_browser_interface().focus_tab(tab_index)
+
   def cross_browser_focus_tab_and_window(window_index: int, tab_index: int):
     """Focuses the given window and tab in the running browser. Window and tab indices are 1-based. This may be
     unreliable if multiple windows or Chrome apps are open. Prefer to use the context-based actions when possible."""

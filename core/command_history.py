@@ -12,8 +12,8 @@ mod = Module()
 _GUI_CHARS_PER_LINE = 80
 
 # We keep command_history_size lines of history, but by default display only command_history_display of them.
-setting_command_history_size = mod.setting("command_history_size", int, default=50)
-setting_command_history_display = mod.setting("command_history_display", int, default=10)
+_COMMAND_HISTORY_SIZE = 50
+_COMMAND_HISTORY_DISPLAY = 10
 
 _show_more_history = False
 _command_history = []
@@ -37,7 +37,7 @@ def _on_phrase(j):
 
   # Add the new command to history and delete oldest commands if necessary.
   _command_history.append(val)
-  _command_history = _command_history[-setting_command_history_size.get():]
+  _command_history = _command_history[-_COMMAND_HISTORY_SIZE:]
 
 
 @imgui.open(y=0)
@@ -45,7 +45,7 @@ def gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   """Creates a gui displaying command history."""
   gui.text("Command History")
   gui.line()
-  text = (_command_history[:] if _show_more_history else _command_history[-setting_command_history_display.get():])
+  text = (_command_history[:] if _show_more_history else _command_history[-_COMMAND_HISTORY_DISPLAY:])
   for line in text:
     display_line = line[:_GUI_CHARS_PER_LINE]
     if len(line) > _GUI_CHARS_PER_LINE:

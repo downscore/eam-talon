@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Module, actions
+from talon import Module, actions, scope
 
 mod = Module()
 mod.mode("game", desc="Game mode. Disables most text editing commands.")
@@ -49,3 +49,10 @@ class ExtensionActions:
     actions.mode.disable("user.game")
     actions.mode.enable("command")
     actions.mode.enable("dictation")
+
+  def mode_mixed_toggle():
+    """Toggles between mixed (dictation + command) and command mode."""
+    if "dictation" in scope.get("mode"):
+      actions.user.mode_command()
+    else:
+      actions.user.mode_mixed()

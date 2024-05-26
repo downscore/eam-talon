@@ -485,6 +485,11 @@ class Actions:
                          tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
     _run_command(command)
 
+  def textflow_select_markdown_link():
+    """Selects the current link in markdown syntax."""
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
+    _run_command(command)
+
   def textflow_select_function_call():
     """Selects the current function call."""
     command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
@@ -530,6 +535,12 @@ class Actions:
                          tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
     _run_command(command)
 
+  def textflow_cut_markdown_link():
+    """Cuts the current link in markdown syntax to the clipboard."""
+    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
+    _run_command(command)
+
   def textflow_cut_function_call():
     """Cuts the current function call to the clipboard."""
     command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
@@ -570,9 +581,15 @@ class Actions:
     _run_command(command)
 
   def textflow_delete_between_whitespace():
-    """Deletes the current content inside whitespace to the clipboard."""
+    """Deletes the current content inside whitespace."""
     command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
                          tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
+    _run_command(command)
+
+  def textflow_delete_markdown_link():
+    """Deletes the current link in markdown syntax."""
+    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
     _run_command(command)
 
   def textflow_delete_function_call():

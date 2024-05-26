@@ -952,3 +952,42 @@ class TestBetweenWhitespaceModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.BETWEEN_WHITESPACE, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(5, 21), deletion_range=TextRange(5, 22)))
+
+
+class TestMarkdownLinkModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_link_only(self):
+    text = "[link](url)"
+    input_match = TextMatch(TextRange(1, 1))
+    modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(0, 11)))
+
+  def test_from_link_text(self):
+    text = "This is a [link](url) to a site"
+    input_match = TextMatch(TextRange(12, 13))
+    modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(10, 21)))
+
+  def test_from_url(self):
+    text = "This is a [link](url) to a site"
+    input_match = TextMatch(TextRange(18, 19))
+    modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(10, 21)))
+
+  def test_from_link_text_bracket(self):
+    text = "This is a [link](url) to a site"
+    input_match = TextMatch(TextRange(10, 10))
+    modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(10, 21)))
+
+  def test_from_url_bracket(self):
+    text = "This is a [link](url) to a site"
+    input_match = TextMatch(TextRange(21, 21))
+    modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(10, 21)))

@@ -120,6 +120,8 @@ class ModifierType(Enum):
   END_OF_LINE = 18
   # Take all text between whitespace characters.
   BETWEEN_WHITESPACE = 19
+  # Select a link in markdown syntax.
+  MARKDOWN_LINK = 20
 
 
 @dataclass

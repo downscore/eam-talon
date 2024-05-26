@@ -506,6 +506,23 @@ def _apply_between_whitespace_modifier(text: str, input_match: TextMatch, modifi
   return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
 
 
+def _apply_markdown_link_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes a full link in markdown syntax, including brackets. Example: [link text](http://example.com)"""
+  del modifier  # Unused.
+
+  # Find the start of the link: "["
+  start_index = input_match.text_range.start
+  while start_index > 0 and text[start_index] != "[":
+    start_index -= 1
+
+  # Find the end of the link: ")"
+  end_index = start_index
+  while end_index < len(text) and text[end_index] != ")":
+    end_index += 1
+
+  return _make_match(start_index, end_index + 1)
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -525,6 +542,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.END_OF_LINE: _apply_end_of_line_modifier,
     ModifierType.START_OF_LINE: _apply_start_of_line_modifier,
     ModifierType.BETWEEN_WHITESPACE: _apply_between_whitespace_modifier,
+    ModifierType.MARKDOWN_LINK: _apply_markdown_link_modifier,
 }
 
 

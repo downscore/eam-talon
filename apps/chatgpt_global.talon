@@ -1,0 +1,6 @@
+copilot answer question: user.chatgpt_run_prompt("answer_question.md")
+copilot proofread: user.chatgpt_run_prompt("proofread.md")
+copilot improve code: user.chatgpt_run_prompt("improve_code.md")
+copilot write C P P: user.chatgpt_run_prompt("write_cpp.md")
+copilot write python: user.chatgpt_run_prompt("write_python.md")
+copilot write applescript: user.chatgpt_run_prompt("write_python.md")

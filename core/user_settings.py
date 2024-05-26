@@ -11,6 +11,7 @@ from talon import resource
 
 # NOTE: This requires this module to be one folder below the top-level.
 _SETTINGS_DIR = Path(__file__).parents[1] / "settings"
+_PROMPTS_DIR = Path(__file__).parents[1] / "prompts"
 _PRIVATE_SETTINGS_DIR = Path(__file__).parents[2] / "private"
 
 
@@ -159,3 +160,10 @@ def append_to_csv(filename: str, row: List[str]):
   with open(str(path), "a", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(row)
+
+
+def load_prompt(filename: str) -> str:
+  """Loads a prompt from a file."""
+  path = _PROMPTS_DIR / filename
+  with open(str(path), "r", encoding="utf-8") as f:
+    return f.read()

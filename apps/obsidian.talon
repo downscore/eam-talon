@@ -34,28 +34,6 @@ panel calendar:
     mouse_click(0)
     sleep(0.05)
     user.mouse_helper_position_restore()
-panel copilot:
-    user.mouse_helper_position_save()
-    user.mouse_helper_move_image_relative("2024-01-23_21.45.59.000813.png", 0)
-    sleep(0.05)
-    mouse_click(0)
-    sleep(0.05)
-    user.mouse_helper_position_restore()
-
-# Use AI magic.
-# TODO: Make this a command usable across applications.
-copilot answer:
-  user.obsidian("Copilot: Apply custom prompt to selection")
-  sleep(100ms)
-  insert("Answer question")
-  sleep(100ms)
-  key(enter)
-copilot proofread:
-  user.obsidian("Copilot: Apply custom prompt to selection")
-  sleep(100ms)
-  insert("Proofread Dictated")
-  sleep(100ms)
-  key(enter)
 
 # Toggle source view
 source dog: user.obsidian("Toggle Live Preview/Source mode")

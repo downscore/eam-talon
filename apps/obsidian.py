@@ -40,7 +40,7 @@ class ExtensionActions:
 
   def select_line_including_line_break():
     # Use textflow so we can properly handle wrapped lines.
-    actions.user.textflow_select_line_including_line_break()
+    actions.user.textflow_execute_command_enum_strings("SELECT", "LINE_INCLUDING_LINE_BREAK")
 
   def navigation_back():
     actions.key("cmd-alt-left")

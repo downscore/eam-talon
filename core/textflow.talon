@@ -21,84 +21,84 @@
   user.textflow_execute_command(textflow_command_type, textflow_indefinite)
 
 # Selection commands using TextFlow modifiers.
-pick sentence: user.textflow_select_sentence()
-pick scope: user.textflow_select_scope()
-pick argument: user.textflow_select_argument()
-pick doubles: user.textflow_select_inside_delimiters("\"")
-pick singles: user.textflow_select_inside_delimiters("'")
-pick graves: user.textflow_select_inside_delimiters("`")
-pick whitespace: user.textflow_select_between_whitespace()
-pick link: user.textflow_select_markdown_link()
-pick comment: user.textflow_select_comment()
-pick brackets: user.textflow_select_brackets()
-pick invoke: user.textflow_select_function_call()
+pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
+pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
+pick argument: ser.textflow_execute_command_enum_strings("SELECT", "ARG")
+pick doubles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
+pick singles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
+pick graves: user.textflow_execute_command_enum_strings("SELECT", "STRING", "`")
+pick whitespace: user.textflow_execute_command_enum_strings("SELECT", "BETWEEN_WHITESPACE")
+pick link: user.textflow_execute_command_enum_strings("SELECT", "MARKDOWN_LINK")
+pick comment: user.textflow_execute_command_enum_strings("SELECT", "COMMENT")
+pick brackets: user.textflow_execute_command_enum_strings("SELECT", "BRACKETS")
+pick invoke: user.textflow_execute_command_enum_strings("SELECT", "CALL")
 
 # Deletion commands using TextFlow modifiers.
-chuck sentence: user.textflow_delete_sentence()
-chuck scope: user.textflow_delete_scope()
-chuck argument: user.textflow_delete_argument()
-chuck doubles: user.textflow_delete_inside_delimiters("\"")
-chuck singles: user.textflow_delete_inside_delimiters("'")
-chuck graves: user.textflow_delete_inside_delimiters("`")
-chuck whitespace: user.textflow_delete_between_whitespace()
-chuck link: user.textflow_delete_markdown_link()
-chuck comment: user.textflow_delete_comment()
-chuck brackets: user.textflow_delete_brackets()
-chuck invoke: user.textflow_delete_function_call()
+chuck sentence: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE")
+chuck scope: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SCOPE")
+chuck argument: ser.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "ARG")
+chuck doubles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "\"")
+chuck singles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "'")
+chuck graves: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "`")
+chuck whitespace: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "BETWEEN_WHITESPACE")
+chuck link: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "MARKDOWN_LINK")
+chuck comment: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "COMMENT")
+chuck brackets: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "BRACKETS")
+chuck invoke: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "CALL")
 
 # Copy commands using TextFlow modifiers.
 copy sentence:
-  user.textflow_select_sentence()
+  user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
   user.clipboard_history_copy()
 copy scope:
-  user.textflow_select_scope()
+  user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
   user.clipboard_history_copy()
 copy argument:
-  user.textflow_select_argument()
+  user.textflow_execute_command_enum_strings("SELECT", "ARGUMENT")
   user.clipboard_history_copy()
 copy doubles:
-  user.textflow_select_inside_delimiters("\"")
+  user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
   user.clipboard_history_copy()
 copy singles:
-  user.textflow_select_inside_delimiters("'")
+  user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
   user.clipboard_history_copy()
 copy graves:
-  user.textflow_select_inside_delimiters("`")
+  user.textflow_execute_command_enum_strings("SELECT", "STRING", "`")
   user.clipboard_history_copy()
 copy whitespace:
-  user.textflow_select_between_whitespace()
+  user.textflow_execute_command_enum_strings("SELECT", "BETWEEN_WHITESPACE")
   user.clipboard_history_copy()
 copy link:
-  user.textflow_select_markdown_link()
+  user.textflow_execute_command_enum_strings("SELECT", "MARKDOWN_LINK")
   user.clipboard_history_copy()
 copy comment:
-  user.textflow_select_comment()
+  user.textflow_execute_command_enum_strings("SELECT", "COMMENT")
   user.clipboard_history_copy()
 copy brackets:
-  user.textflow_select_brackets()
+  user.textflow_execute_command_enum_strings("SELECT", "BRACKETS")
   user.clipboard_history_copy()
 copy invoke:
-  user.textflow_select_function_call()
+  user.textflow_execute_command_enum_strings("SELECT", "CALL")
   user.clipboard_history_copy()
 
 # Cut commands using TextFlow modifiers.
-cut sentence: user.textflow_cut_sentence()
-cut scope: user.textflow_cut_scope()
-cut argument: user.textflow_cut_argument()
-cut doubles: user.textflow_cut_inside_delimiters("\"")
-cut singles: user.textflow_cut_inside_delimiters("'")
-cut graves: user.textflow_cut_inside_delimiters("`")
-cut whitespace: user.textflow_cut_between_whitespace()
-cut link: user.textflow_cut_markdown_link()
-cut comment: user.textflow_cut_comment()
-cut brackets: user.textflow_cut_brackets()
-cut invoke: user.textflow_cut_function_call()
+cut sentence: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SENTENCE")
+cut scope: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SCOPE")
+cut argument: ser.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "ARG")
+cut doubles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "\"")
+cut singles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "'")
+cut graves: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "`")
+cut whitespace: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "BETWEEN_WHITESPACE")
+cut link: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "MARKDOWN_LINK")
+cut comment: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "COMMENT")
+cut brackets: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "BRACKETS")
+cut invoke: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "CALL")
 
 # Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to
 # navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in front of the word "sentence".
 # The escaped version, "before hatch sentence", must be used instead.
-before sentence: user.textflow_move_before_sentence()
-after sentence: user.textflow_move_after_sentence()
+before sentence: user.textflow_execute_command_enum_strings("MOVE_CURSOR_BEFORE", "SENTENCE")
+after sentence: user.textflow_execute_command_enum_strings("MOVE_CURSOR_AFTER", "SENTENCE")
 
 # Moving arguments left or right.
 drag argument left: user.textflow_move_argument_left()

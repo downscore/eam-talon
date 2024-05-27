@@ -433,196 +433,37 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text=word)
     _run_command(command)
 
+  def textflow_execute_command_selection(command_type: tf.CommandType,
+                                         modifier_type: tf.ModifierType = tf.ModifierType.NONE,
+                                         delimiter: str = ""):
+    """"Executes a textflow command on the current selection with an optional modifier."""
+    command = tf.Command(command_type, tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter)))
+    _run_command(command)
+
+  def textflow_execute_command_enum_strings(command_type: str, modifier_type: str = "", delimiter: str = ""):
+    """"Executes a textflow command on the current selection with an optional modifier. Uses string enum values.
+    "SCOPE" is a special modifier that gets the appropriate modifier for the current context."""
+    effective_modifier_type = tf.ModifierType.NONE
+    if modifier_type:
+      if modifier_type == "SCOPE":
+        effective_modifier_type = actions.user.textflow_get_scope_modifier()
+      else:
+        effective_modifier_type = tf.ModifierType[modifier_type]
+    actions.user.textflow_execute_command_selection(tf.CommandType[command_type], effective_modifier_type, delimiter)
+
   def textflow_get_scope_modifier() -> tf.ModifierType:
     """Gets the current scope modifier type."""
     # Default to Python-style scopes.
     return tf.ModifierType.PYTHON_SCOPE
 
-  def textflow_select_line_excluding_line_break():
-    """Selects the current line using TextFlow. Does not include the trailing line break if present. May work better
-    than the default select line commands when line wrapping is enabled."""
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.LINE_EXCLUDING_LINE_BREAK)))
-    _run_command(command)
-
-  def textflow_select_line_including_line_break():
-    """Selects the current line using TextFlow. Includes the trailing line break if present. May work better than the
-    default select line commands when line wrapping is enabled."""
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.LINE_INCLUDING_LINE_BREAK)))
-    _run_command(command)
-
-  def textflow_select_sentence():
-    """Selects the current sentence."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
-    _run_command(command)
-
-  def textflow_select_scope():
-    """Selects the current scope."""
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
-    _run_command(command)
-
-  def textflow_select_comment():
-    """Selects the current comment."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
-    _run_command(command)
-
-  def textflow_select_argument():
-    """Selects the current argument in a function call."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
-    _run_command(command)
-
-  def textflow_select_inside_delimiters(delimiter: str = "\""):
-    """Selects the contents between two delimiters."""
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
-    _run_command(command)
-
-  def textflow_select_between_whitespace():
-    """Selects the current content inside whitespace to the clipboard."""
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
-    _run_command(command)
-
-  def textflow_select_markdown_link():
-    """Selects the current link in markdown syntax."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
-    _run_command(command)
-
-  def textflow_select_function_call():
-    """Selects the current function call."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
-    _run_command(command)
-
-  def textflow_select_brackets():
-    """Selects the current brackets contents."""
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
-    _run_command(command)
-
-  def textflow_cut_sentence():
-    """Cuts the current sentence to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
-    _run_command(command)
-
-  def textflow_cut_scope():
-    """Cuts the current scope to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
-    _run_command(command)
-
-  def textflow_cut_comment():
-    """Cuts the current comment to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
-    _run_command(command)
-
-  def textflow_cut_argument():
-    """Cuts the current argument in a function call to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
-    _run_command(command)
-
-  def textflow_cut_inside_delimiters(delimiter: str = "\""):
-    """Cuts the current content between two delimiters to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
-    _run_command(command)
-
-  def textflow_cut_between_whitespace():
-    """Cuts the current content inside whitespace to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
-    _run_command(command)
-
-  def textflow_cut_markdown_link():
-    """Cuts the current link in markdown syntax to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
-    _run_command(command)
-
-  def textflow_cut_function_call():
-    """Cuts the current function call to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
-    _run_command(command)
-
-  def textflow_cut_brackets():
-    """Cuts the current brackets contents to the clipboard."""
-    command = tf.Command(tf.CommandType.CUT_TO_CLIPBOARD,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
-    _run_command(command)
-
-  def textflow_delete_sentence():
-    """Deletes the current sentence."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
-    _run_command(command)
-
-  def textflow_delete_scope():
-    """Deletes the current scope."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(actions.user.textflow_get_scope_modifier())))
-    _run_command(command)
-
-  def textflow_delete_comment():
-    """Deletes the current comment."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.COMMENT)))
-    _run_command(command)
-
-  def textflow_delete_argument():
-    """Deletes the current argument in a function call."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
-    _run_command(command)
-
-  def textflow_delete_inside_delimiters(delimiter: str = "\""):
-    """Deletes the contents contained between two delimiters."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.STRING, delimiter=delimiter)))
-    _run_command(command)
-
-  def textflow_delete_between_whitespace():
-    """Deletes the current content inside whitespace."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BETWEEN_WHITESPACE)))
-    _run_command(command)
-
-  def textflow_delete_markdown_link():
-    """Deletes the current link in markdown syntax."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.MARKDOWN_LINK)))
-    _run_command(command)
-
-  def textflow_delete_function_call():
-    """Deletes the current function call."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL)))
-    _run_command(command)
-
-  def textflow_delete_brackets():
-    """Deletes the current brackets contents."""
-    command = tf.Command(tf.CommandType.CLEAR_NO_MOVE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS)))
-    _run_command(command)
-
-  def textflow_move_before_sentence():
-    """Moves the cursor before the current sentence."""
-    command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
-    _run_command(command)
-
-  def textflow_move_after_sentence():
-    """Moves the cursor after the current sentence."""
-    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.SENTENCE)))
-    _run_command(command)
-
   def textflow_move_argument_left():
     """Moves the current argument to the left."""
-    actions.user.textflow_select_argument()
+    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARG)
     argument = actions.user.selected_text()
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_delete_argument()
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARG)
 
     # Move before the argument that is now under the cursor.
     command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
@@ -634,12 +475,17 @@ class Actions:
 
   def textflow_move_argument_right():
     """Moves the current argument to the right."""
-    actions.user.textflow_select_argument()
+    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARG)
     argument = actions.user.selected_text()
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_delete_argument()
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARG)
+
+    # The modifier prefers to delete leading commas instead of trailing ones, so we need to move right to get to the
+    # next argument. This causes odd behavior if the cursor is already in the rightmost argument, but it allows moving
+    # arguments that aren't the leftmost.
+    actions.key("right")
 
     # Move after the argument that is now under the cursor.
     command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
@@ -653,13 +499,7 @@ class Actions:
     target_from = tf.CompoundTarget(simple_target)
     command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE, target_from)
     _run_command(command)
-
-    # Make this work in vscode if there is leading white space.
-    actions.user.line_end()
-    actions.user.line_start()
-    actions.user.line_start()
-    actions.key("enter")
-    actions.key("up")
+    actions.user.line_insert_up()
 
   def textflow_new_line_below(simple_target: tf.SimpleTarget):
     """Inserts a new line below the given target and moves the cursor to it."""

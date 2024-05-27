@@ -520,6 +520,14 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text="\n")
     _run_command(command)
 
+  def textflow_move_cursor_after_markdown_section(section_name: str):
+    """Moves the cursor to the end of the given markdown section. Sections are separated by headings."""
+    target_from = tf.CompoundTarget(tf.SimpleTarget(
+        tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"# {section_name}\n")),
+                                    modifier=tf.Modifier(tf.ModifierType.END_OF_MARKDOWN_SECTION))
+    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, target_from)
+    _run_command(command)
+
   def textflow_segment_word(word1: str, word2: str):
     """Segment a word into two. e.g. overmatched->over matched."""
     target_from = tf.CompoundTarget(

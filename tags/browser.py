@@ -53,6 +53,22 @@ class BrowserActions:
     # Implementation most likely requires AppleScript, an extension, or similar.
     raise NotImplementedError()
 
+  def browser_add_tab_to_context_and_close():
+    """Adds the current tab to the context section of the current Obisidan doc and closes it."""
+    url = actions.user.app_get_current_location()
+    title = actions.win.title()
+
+    # Remove browser-specific suffixes from the title. Keep the title up until the partial suffix.
+    partial_suffix = " - Google Chrome"
+    if partial_suffix in title:
+      title = title[:title.index(partial_suffix)]
+
+    actions.user.tab_close()
+    actions.user.switcher_focus_app_by_name("Obsidian")
+    actions.user.textflow_move_cursor_after_markdown_section("Context")
+    actions.user.line_insert_down()
+    actions.user.insert_via_clipboard(f"[{title}]({url})")
+
 
 @ctx.action_class("user")
 class ExtensionActions:

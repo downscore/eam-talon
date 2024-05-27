@@ -10,7 +10,7 @@
 <user.textflow_command_type> <user.textflow_word>:
   user.textflow_execute_command(textflow_command_type, textflow_word)
 # Escaped version of the above.
-<user.textflow_command_type> scrape <user.textflow_word>:
+<user.textflow_command_type> hatch <user.textflow_word>:
   user.textflow_execute_command(textflow_command_type, textflow_word)
 
 # Core commands - Articles (a/the) as target. e.g. "grab indefinite".
@@ -96,7 +96,7 @@ cut invoke: user.textflow_cut_function_call()
 
 # Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to
 # navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in front of the word "sentence".
-# The escaped version, "before scrape sentence", must be used instead.
+# The escaped version, "before hatch sentence", must be used instead.
 before sentence: user.textflow_move_before_sentence()
 after sentence: user.textflow_move_after_sentence()
 

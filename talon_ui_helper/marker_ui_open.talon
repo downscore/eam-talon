@@ -2,7 +2,7 @@ mode: command
 mode: user.game
 tag: user.marker_ui_showing
 -
-scrape:
+(scrape|hatch):
     user.marker_ui_hide()
 
 <user.letter>:

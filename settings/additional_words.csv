@@ -102,12 +102,12 @@ JSON,Jason
 main,maine
 
 # Escaping command words so they can be inlcuded in prose.
-scrape,scrape scrape
-punch,scrape punch
-drip,scrape drip
-bang,scrape bang
-quest,scrape quest
-stack,scrape stack
+hatch,hatch hatch
+punch,hatch punch
+drip,hatch drip
+bang,hatch bang
+quest,hatch quest
+stack,hatch stack
 
 # Misspellings, mistakes, or uncommon words in Talon model.
 2D,tutti

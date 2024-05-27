@@ -28,6 +28,11 @@ lucky <user.text>:
   sleep(200ms)
   key(enter)
 
+# Jump to related files.
+jump test: user.vscode_jump_to_test()
+jump python: user.vscode_jump_to_related_file_with_extension(".py")
+jump talon: user.vscode_jump_to_related_file_with_extension(".talon")
+
 # Moving cursor between matches
 blinker next: user.vscode("editor.action.moveSelectionToNextFindMatch")
 blinker last: user.vscode("editor.action.moveSelectionToPreviousFindMatch")

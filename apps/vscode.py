@@ -5,6 +5,7 @@
 # mypy: ignore-errors
 
 from talon import Context, Module, actions
+from ..core.lib import path_util
 
 mod = Module()
 ctx = Context()
@@ -22,6 +23,33 @@ and app.bundle: com.visualstudio.code.oss
 ctx.matches = r"""
 app: vscode
 """
+
+
+@mod.action_class
+class Actions:
+  """VS Code-specific actions."""
+
+  def vscode_jump_to_file(path: str):
+    """Jumps to the given file in VS Code."""
+    actions.key("cmd-p")
+    actions.sleep("200ms")
+    actions.user.insert_via_clipboard(path)
+    actions.key("enter")
+
+  def vscode_jump_to_test():
+    """Jumps to the test file for the current file in VS Code."""
+    current_path = actions.user.app_get_current_location()
+    # Default to python test files.
+    # TODO: Override for other languages.
+    test_path = path_util.get_test_path(current_path, ".py")
+    actions.user.vscode_jump_to_file(test_path)
+
+  def vscode_jump_to_related_file_with_extension(extension: str):
+    """Jumps to a related file with the given extension in VS Code."""
+    current_path = actions.user.app_get_current_location()
+    new_path = path_util.remove_test_suffix(current_path)
+    new_path = path_util.replace_file_extension(new_path, extension)
+    actions.user.vscode_jump_to_file(new_path)
 
 
 @ctx.action_class("win")

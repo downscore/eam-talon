@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Module, actions, app, imgui, registry, scope
+from talon import Module, actions, app, imgui, registry, scope, ui
 
 mod = Module()
 
@@ -12,25 +12,16 @@ mod = Module()
 @imgui.open(y=0)
 def context_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   """Creates a gui displaying active context."""
-  gui.text("Tags")
-  gui.line()
   for tag in registry.tags:
-    gui.text(str(tag))
-  gui.spacer()
+    gui.text(f"Tag: {str(tag)}")
   gui.spacer()
 
-  gui.text("Modes")
-  gui.line()
   for mode in scope.get("mode"):
-    gui.text(str(mode))
-  gui.spacer()
+    gui.text(f"Mode: {str(mode)}")
   gui.spacer()
 
-  gui.text("Apps")
-  gui.line()
   for application in scope.get("app.app"):
-    gui.text(str(application))
-  gui.spacer()
+    gui.text(f"App: {str(application)}")
   gui.spacer()
 
   gui.text(f"app.name: {actions.app.name()}")
@@ -39,6 +30,7 @@ def context_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   # gui.text(f"browser.address: {actions.browser.address()}")
   gui.text(f"win.title: {actions.win.title()}")
   gui.text(f"win.file_ext: {actions.win.file_ext()}")
+  gui.text(f"ui.active_window().id: {ui.active_window().id}")
 
 
 @mod.action_class

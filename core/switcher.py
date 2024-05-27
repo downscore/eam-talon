@@ -139,7 +139,7 @@ class Actions:
       return
     window.focus()
     # Pause to give the window time to focus. Chrome in particular can take a while to be ready for subsequent commands.
-    actions.sleep("250ms")
+    actions.sleep("500ms")
 
   def switcher_focus_window_by_id(window_id: int):
     """Focuses the window with the given ID. Does nothing if the window is already focused."""
@@ -261,6 +261,7 @@ class Actions:
     """Restores saved window and possibly tab to focus."""
     if not _saved_focused_window:
       raise ValueError("No saved focus to restore.")
+    print(f"Restoring focus: {_saved_focused_window}")
     actions.user.switcher_focus_window_by_id(_saved_focused_window.window_id)
     if _saved_focused_window.tab_index:
       actions.user.cross_browser_focus_tab(_saved_focused_window.tab_index)

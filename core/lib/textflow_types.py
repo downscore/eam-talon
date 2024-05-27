@@ -122,6 +122,11 @@ class ModifierType(Enum):
   BETWEEN_WHITESPACE = 19
   # Select a link in markdown syntax.
   MARKDOWN_LINK = 20
+  # Empty selection before the line break on the last non-whitespace line in a markdown section.
+  # "Markdown sections" are delimited by any headings or EOF.
+  # Moving the cursor before the last line break can be useful for maintaining indentation or list types when adding a
+  # new line below.
+  END_OF_MARKDOWN_SECTION = 21
 
 
 @dataclass

@@ -523,6 +523,47 @@ def _apply_markdown_link_modifier(text: str, input_match: TextMatch, modifier: M
   return _make_match(start_index, end_index + 1)
 
 
+def _apply_end_of_markdown_section_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes an empty selection before the line break on the last non-whitespace line in a markdown section."""
+  del modifier  # Unused.
+
+  # Regex that matches pound symbols followed by a space.
+  heading_regex = re.compile(r"^#+ ", re.IGNORECASE)
+
+  # Search backwards so we can start on a non-whitespace line.
+  curr_index = input_match.text_range.end
+  while curr_index > 0:
+    line_range = _get_line_at_index(text, curr_index, include_trailing_line_break=True)
+    line_text = line_range.extract(text)
+
+    if line_text.strip() != "":
+      break
+
+    # Move to the previous line.
+    curr_index = line_range.start - 1
+
+  # Move through the text line by line.
+  is_first_line = True
+  result_index = curr_index
+  while curr_index < len(text):
+    line_range = _get_line_at_index(text, curr_index, include_trailing_line_break=True)
+    line_text = line_range.extract(text)
+
+    # Ignore headings on the first line, otherwise terminate the search when we see a heading.
+    if not is_first_line and heading_regex.match(line_text):
+      break
+
+    # If this line is not just whitespace, update the result index.
+    if line_text.strip() != "":
+      result_index = max(line_range.start, line_range.end - 1 if line_text.endswith("\n") else line_range.end)
+
+    # Move to the next line.
+    curr_index = line_range.end
+    is_first_line = False
+
+  return _make_match(result_index, result_index)
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.CHARS: _apply_chars_modifier,
     ModifierType.FRAGMENTS: _apply_fragments_modifier,
@@ -543,6 +584,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.START_OF_LINE: _apply_start_of_line_modifier,
     ModifierType.BETWEEN_WHITESPACE: _apply_between_whitespace_modifier,
     ModifierType.MARKDOWN_LINK: _apply_markdown_link_modifier,
+    ModifierType.END_OF_MARKDOWN_SECTION: _apply_end_of_markdown_section_modifier,
 }
 
 

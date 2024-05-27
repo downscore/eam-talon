@@ -991,3 +991,49 @@ class TestMarkdownLinkModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.MARKDOWN_LINK, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(10, 21)))
+
+
+class TestEndOfMarkdownSectionModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_no_headings(self):
+    text = "[link](url)"
+    input_match = TextMatch(TextRange(1, 1))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(11, 11)))
+
+  def test_from_start_of_heading(self):
+    text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(38, 38)))
+
+  def test_from_end_of_heading(self):
+    text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
+    input_match = TextMatch(TextRange(10, 10))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(38, 38)))
+
+  def test_from_after_heading(self):
+    text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
+    input_match = TextMatch(TextRange(11, 11))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(38, 38)))
+
+  def test_from_whitespace_before_next_heading(self):
+    text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
+    input_match = TextMatch(TextRange(39, 39))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(38, 38)))
+
+  def test_search_until_eof(self):
+    text = "## Heading\nTest line one\nTest line two\n\n"
+    input_match = TextMatch(TextRange(13, 13))
+    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result, TextMatch(TextRange(38, 38)))

@@ -178,16 +178,6 @@ class Actions:
         pass
     raise ValueError(f"Could not find window. Type: {type_name}")
 
-  def switcher_focus_google_meet():
-    """Focuses browser window with Google Meet open."""
-    for window in ui.windows():
-      if window.app.name not in ("Google Chrome", "Safari") or not window.title.startswith("Meet - "):
-        continue
-      actions.user.switcher_focus_window(window)
-      return
-    # If we didn't find the window, bail out so we don't send subsequent commands to the wrong window.
-    raise ValueError("Could not find Google Meet window")
-
   def switcher_launch(path: str):
     """Launches a new application by path."""
     ui.launch(path=path)

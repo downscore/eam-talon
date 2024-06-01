@@ -43,6 +43,12 @@ class UserActions:
     actions.user.vscode_and_wait("eam-talon.copyLinesToCursor", from_index, to_index if to_index > 0 else None)
     actions.sleep("50ms")
 
+  def line_numbers_insert_line_above_no_move(n: int):
+    actions.user.vscode_and_wait("eam-talon.insertNewLineAbove", n)
+
+  def line_numbers_insert_line_below_no_move(n: int):
+    actions.user.vscode_and_wait("eam-talon.insertNewLineBelow", n)
+
   def app_get_current_directory() -> str:
     # Get the directory from the currently-open file.
     file_path = actions.user.vscode_return_value("eam-talon.getFilename")

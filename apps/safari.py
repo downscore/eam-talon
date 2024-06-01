@@ -69,7 +69,9 @@ class ExtensionActions:
     actions.key("shift-enter up")
 
   def paste_match_style():
+    actions.sleep("50ms")
     actions.key("cmd-shift-alt-v")
+    actions.sleep("50ms")
 
   def tab_list(name: str):
     actions.key("cmd-shift-\\")

@@ -137,6 +137,8 @@ class Actions:
     """Focuses the given window. Does nothing if the window is already focused."""
     if ui.active_window().id == window.id:
       return
+    # Focus the window twice. In some cases (e.g. multiple fullscreen Chrome windows), this seems to be necessary.
+    window.focus()
     window.focus()
     # Pause to give the window time to focus. Chrome in particular can take a while to be ready for subsequent commands.
     actions.sleep("500ms")

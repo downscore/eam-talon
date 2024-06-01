@@ -48,7 +48,10 @@ class ExtensionActions:
 
   def paste_match_style():
     """Pastes the clipboard contents with the style of the surrounding text."""
+    # Short sleeps to allow UI to catch up for chained commands.
+    actions.sleep("50ms")
     actions.key("cmd-shift-v")
+    actions.sleep("50ms")
 
   def delete():
     """Deletes the currently-selected text or the previous character."""

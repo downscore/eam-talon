@@ -1,10 +1,10 @@
 tag: user.line_numbers
 -
 jump line <user.number>: user.jump_line(number)
-pour line <user.number>:
+(pour|float) line <user.number>:
   user.jump_line(number)
   user.line_insert_down()
-drink line <user.number>:
+(drink|spike) line <user.number>:
   user.jump_line(number)
   user.line_insert_up()
 pick line <user.number> [past <user.number>]:

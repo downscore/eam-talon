@@ -63,6 +63,9 @@ class BrowserActions:
     if partial_suffix in title:
       title = title[:title.index(partial_suffix)]
 
+    # Remove square brackets from the title, as they might interfere with the markdown syntax.
+    title = title.replace("[", "").replace("]", "")
+
     actions.user.tab_close()
     actions.user.switcher_focus_app_by_name("Obsidian")
     actions.user.textflow_move_cursor_after_markdown_section("Context")

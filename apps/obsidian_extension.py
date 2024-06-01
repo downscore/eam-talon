@@ -46,6 +46,12 @@ class UserActions:
   def jump_line(n: int):
     actions.user.obsidian_command("jumpToLine", n)
 
+  def line_numbers_insert_line_above_no_move(n: int):
+    actions.user.obsidian_command("insertNewLineAbove", n)
+
+  def line_numbers_insert_line_below_no_move(n: int):
+    actions.user.obsidian_command("insertNewLineBelow", n)
+
   def select_line_range_including_line_break(from_index: int, to_index: int = 0):
     actions.user.obsidian_command("selectLineRange", from_index, to_index if to_index > 0 else None)
 

@@ -17,6 +17,25 @@ tag: user.line_numbers
 """
 
 
+def _insert_placeholder() -> str:
+  """Inserts a unique placeholder at the cursor position and returns it."""
+  # Insert some unique placeholder text so we can find the current position again later.
+  # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
+  # Reusing the same placeholder can result in the cursor not jumping to it, so we always create a unique one.
+  placeholder_uuid = uuid.uuid4()
+  placeholder = f"!!!LineNumbers{str(placeholder_uuid)[:5]}!!!"
+  actions.user.insert_via_clipboard(placeholder)
+  return placeholder
+
+
+def _restore_position_from_placeholder(placeholder: str):
+  """Finds the given placeholder text, moves the cursor to it, and deletes it."""
+  actions.user.find()
+  actions.user.insert_via_clipboard(placeholder)
+  actions.key("escape")
+  actions.key("backspace")
+
+
 @mod.action_class
 class Actions:
   """Line-number related actions."""
@@ -39,15 +58,13 @@ class Actions:
 
   def bring_line_range(from_index: int, to_index: int = 0):
     """Copies a given line to the cursor location."""
-    # Insert some unique placeholder text so we can find the insertion position later.
-    # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
-    # Reusing the same placeholder can result in the cursor not jumping to it, so we always create a unique one.
-    placeholder_uuid = uuid.uuid4()
-    placeholder = f"!!!BringLine{str(placeholder_uuid)[:5]}!!!"
-    actions.user.insert_via_clipboard(placeholder)
+    placeholder = _insert_placeholder()
 
-    # In VS Code, jumps to beginning of line, before indentation.
+    # Jump to the beginning of the first line, before indentation.
     actions.user.jump_line(from_index)
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.user.line_start()
     if to_index <= from_index:
       # Get single line without trailing newline.
       actions.user.extend_line_end()
@@ -61,7 +78,29 @@ class Actions:
     lines = actions.user.selected_text()
 
     # Go back to original position and insert the line.
-    actions.user.find()
-    actions.user.insert_via_clipboard(placeholder)
-    actions.key("escape")
+    _restore_position_from_placeholder(placeholder)
     actions.user.insert_via_clipboard(lines)
+
+  def line_numbers_insert_line_above_no_move(n: int):
+    """Inserts a line above the given line number without moving the cursor."""
+    placeholder = _insert_placeholder()
+
+    # Jump to the beginning of the line, before indentation.
+    actions.user.jump_line(n)
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.user.line_start()
+
+    actions.insert("\n")
+    _restore_position_from_placeholder(placeholder)
+
+  def line_numbers_insert_line_below_no_move(n: int):
+    """Inserts a line below the given line number without moving the cursor."""
+    placeholder = _insert_placeholder()
+
+    # Jump to the end of the line.
+    actions.user.jump_line(n)
+    actions.user.line_end()
+
+    actions.insert("\n")
+    _restore_position_from_placeholder(placeholder)

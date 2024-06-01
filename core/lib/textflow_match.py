@@ -33,7 +33,7 @@ def get_phrase_regex(words: list[str], get_homophones: Callable[[str], list[str]
     phones = list(map(lambda w: re.escape(w.lower()), get_homophones(word)))
     phones_alt = ""
     if len(phones) > 1:
-      phones_alt = f"({'|'.join(phones)})".format()  # pylint: disable=inconsistent-quotes
+      phones_alt = f"({'|'.join(phones)})"  # pylint: disable=inconsistent-quotes
     elif len(phones) == 1:
       phones_alt = phones[0]
     if len(phones_alt) > 0:

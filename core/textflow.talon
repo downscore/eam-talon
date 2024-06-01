@@ -161,3 +161,8 @@ italicize <user.textflow_word>: user.textflow_surround_text(textflow_word, "*")
 italicize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "*")
 strike through <user.textflow_word>: user.textflow_surround_text(textflow_word, "~~")
 strike through <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "~~")
+
+# Special homophones.
+phony they are: user.textflow_swap_homophone_to_word("they're")
+phony over there: user.textflow_swap_homophone_to_word("there")
+phony their possessive: user.textflow_swap_homophone_to_word("their")

@@ -271,6 +271,21 @@ def _capture_to_words(m) -> list[str]:
   return words
 
 
+def _get_ordinal_and_search_direction(m):
+  """Get the ordinal and search direction from a capture."""
+  try:
+    nth = m.ordinals_small
+  except AttributeError:
+    nth = 1
+
+  try:
+    direction = m.textflow_search_direction
+  except AttributeError:
+    direction = None
+
+  return nth, direction
+
+
 @mod.capture(rule="{self.textflow_command_type}")
 def textflow_command_type(m) -> tf.CommandType:
   """Maps a spoken command to the command type."""
@@ -305,15 +320,7 @@ def textflow_phrase(m) -> str:
              "(<user.textflow_substring> | <user.textflow_phrase> | token)")
 def textflow_simple_target(m) -> tf.SimpleTarget:
   """A textflow simple target."""
-  try:
-    nth = m.ordinals_small
-  except AttributeError:
-    nth = 1
-
-  try:
-    direction = m.textflow_search_direction
-  except AttributeError:
-    direction = None
+  nth, direction = _get_ordinal_and_search_direction(m)
 
   try:
     return tf.SimpleTarget(tf.TokenMatchOptions(nth_match=nth, search=m.textflow_substring), direction)
@@ -332,16 +339,7 @@ def textflow_simple_target(m) -> tf.SimpleTarget:
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] <user.word>")
 def textflow_word(m) -> tf.CompoundTarget:
   """A textflow target matching a single word with homophones."""
-  try:
-    nth = m.ordinals_small
-  except AttributeError:
-    nth = 1
-
-  try:
-    direction = m.textflow_search_direction
-  except AttributeError:
-    direction = None
-
+  nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
       tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.word), direction))
 
@@ -349,16 +347,7 @@ def textflow_word(m) -> tf.CompoundTarget:
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] definite")
 def textflow_definite(m) -> tf.CompoundTarget:
   """A textflow target matching the word "the"."""
-  try:
-    nth = m.ordinals_small
-  except AttributeError:
-    nth = 1
-
-  try:
-    direction = m.textflow_search_direction
-  except AttributeError:
-    direction = None
-
+  nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
       tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="the"), direction))
 
@@ -366,16 +355,7 @@ def textflow_definite(m) -> tf.CompoundTarget:
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] indefinite")
 def textflow_indefinite(m) -> tf.CompoundTarget:
   """A textflow target matching the word "a"."""
-  try:
-    nth = m.ordinals_small
-  except AttributeError:
-    nth = 1
-
-  try:
-    direction = m.textflow_search_direction
-  except AttributeError:
-    direction = None
-
+  nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
       tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="a"), direction))
 
@@ -526,6 +506,13 @@ class Actions:
         tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"# {section_name}\n")),
                                     modifier=tf.Modifier(tf.ModifierType.END_OF_MARKDOWN_SECTION))
     command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, target_from)
+    _run_command(command)
+
+  def textflow_swap_homophone_to_word(word: str):
+    """Finds the nearest homophone for the given word and swaps it to the word."""
+    # TODO: This will match the word itself and word substrings. Also add ordinal and search direction.
+    target_from = tf.CompoundTarget(tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=word)))
+    command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text=word)
     _run_command(command)
 
   def textflow_segment_word(word1: str, word2: str):

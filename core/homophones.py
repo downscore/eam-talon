@@ -13,7 +13,9 @@ mod = Module()
 ctx = Context()
 
 _HOMOPHONE_SETS = homophone_util.get_homophone_sets(load_lists_from_csv("homophones.csv"))
-_WORD_TO_HOMOPHONE_SET = homophone_util.get_word_to_homophone_set_dict(_HOMOPHONE_SETS)
+_HOMOGRAPH_HOMOPHONE_SETS = homophone_util.get_homograph_homophone_sets(
+    load_lists_from_csv("homophones_homographs.csv"))
+_WORD_TO_HOMOPHONE_SET = homophone_util.get_word_to_homophone_set_dict(_HOMOPHONE_SETS, _HOMOGRAPH_HOMOPHONE_SETS)
 
 
 @mod.action_class

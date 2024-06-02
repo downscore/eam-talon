@@ -1,4 +1,5 @@
 # Each line is a variable-length (2+) set of comma-separated homophones. Uncommon words have an asterisk prepended.
+# Homographs with homophones (e.g. "read" -> "red" or "reed") are included in homophones_homographs.csv
 able,Abel
 acclamation,acclimation
 acts,ax
@@ -457,7 +458,6 @@ latter,ladder
 lay,lei
 lays,laze,*leis
 leach,leech
-lead,led
 leak,leek
 leaks,leeks
 lean,lien
@@ -652,7 +652,6 @@ rains,reigns,reins
 raise,rays,raze
 raises,razes
 rapper,wrapper
-read,red,*reed
 real,reel
 residents,residence
 rest,wrest
@@ -782,8 +781,6 @@ tax,tacks
 tea,tee
 team,teem
 teams,teems
-tear,tier,*tare
-tears,tiers,*tares
 tease,teas,tees
 tens,tends
 tense,tents

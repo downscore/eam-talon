@@ -1,0 +1,10 @@
+# Each line begins with a word that has homographs, followed by one or more comma-separated homophones.
+# Uncommon words have an asterisk prepended.
+read,*reed
+read,red
+tear,tier
+tear,*tare
+tears,tiers
+tears,*tares
+lead,led
+lead,*lede

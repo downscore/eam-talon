@@ -73,6 +73,7 @@ substring
 T-intersection,tea intersection
 tech
 TextFlow
+TODO
 # Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
 tokenize
 under-documented,under documented
@@ -102,6 +103,7 @@ hard braking,hard breaking
 harder braking,harder breaking
 JSON,Jason
 main,maine
+parking brake,parking break
 
 # Escaping command words so they can be inlcuded in prose.
 hatch,hatch hatch

@@ -62,6 +62,9 @@ bar source: user.vscode("workbench.view.scm")
 bar test: user.vscode("workbench.view.testing.focus")
 bar copilot: user.vscode("workbench.panel.chat.view.copilot.focus")
 
+# Secondary sidebar (right side)
+secondary dog: user.vscode("workbench.action.toggleAuxiliaryBar")
+
 # Lower panel
 panel dog: user.vscode("workbench.action.togglePanel")
 panel output: user.vscode("workbench.panel.output.focus")

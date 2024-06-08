@@ -11,6 +11,7 @@ from talon import Context, Module, actions, canvas, screen, ui
 from talon.experimental import ocr
 from talon.types import Rect
 from talon.skia.typeface import Typeface
+from .lib.ocr_util import get_closest_ocr_result_index
 from .lib.textflow_match import get_phrase_regex
 from .user_settings import append_to_csv, load_coords_from_csv
 
@@ -279,14 +280,8 @@ class Actions:
     y: float = actions.mouse_y()
 
     # Find the closest OCR result to the mouse coordinates.
-    closest_result = None
-    closest_distance_squared = None
-    for result in ocr_results:
-      distance_squared = (result.rect.x + result.rect.width / 2 - x)**2 + (result.rect.y + result.rect.height / 2 -
-                                                                           y)**2
-      if closest_distance_squared is None or distance_squared < closest_distance_squared:
-        closest_result = result
-        closest_distance_squared = distance_squared
+    closest_result_index = get_closest_ocr_result_index(ocr_results, x, y)
+    closest_result = ocr_results[closest_result_index] if closest_result_index is not None else None
     if closest_result is None:
       actions.app.notify("No nearby text found")
       return

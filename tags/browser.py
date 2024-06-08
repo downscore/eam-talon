@@ -10,6 +10,27 @@ from ..core.lib import browser_util
 mod = Module()
 ctx = Context()
 
+ctx.matches = r"""
+tag: browser
+"""
+
+
+def _get_tab_title() -> str:
+  """Gets the title of the current tab for use with saving context links in markdown."""
+  title = actions.win.title()
+  partial_suffix = " - Google Chrome"
+  if partial_suffix in title:
+    title = title[:title.index(partial_suffix)]
+  title = title.replace("[", "").replace("]", "").replace("(", "").replace(")", "")
+  return title
+
+
+def _add_new_context_line():
+  """Focuses Obsidian and adds a new line to the context section of the current document."""
+  actions.user.switcher_focus_app_by_name("Obsidian")
+  actions.user.textflow_move_cursor_after_markdown_section("Context")
+  actions.user.line_insert_down()
+
 
 @mod.action_class
 class BrowserActions:
@@ -56,20 +77,16 @@ class BrowserActions:
   def browser_add_tab_to_context_and_close():
     """Adds the current tab to the context section of the current Obisidan doc and closes it."""
     url = actions.user.app_get_current_location()
-    title = actions.win.title()
-
-    # Remove browser-specific suffixes from the title. Keep the title up until the partial suffix.
-    partial_suffix = " - Google Chrome"
-    if partial_suffix in title:
-      title = title[:title.index(partial_suffix)]
-
-    # Remove square brackets from the title, as they might interfere with the markdown syntax.
-    title = title.replace("[", "").replace("]", "")
-
+    title = _get_tab_title()
     actions.user.tab_close()
-    actions.user.switcher_focus_app_by_name("Obsidian")
-    actions.user.textflow_move_cursor_after_markdown_section("Context")
-    actions.user.line_insert_down()
+    _add_new_context_line()
+    actions.user.insert_via_clipboard(f"[{title}]({url})")
+
+  def browser_add_tab_to_context_keep_open():
+    """Adds the current tab to the context section of the current Obisidan doc but does not close it."""
+    url = actions.user.app_get_current_location()
+    title = _get_tab_title()
+    _add_new_context_line()
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
 

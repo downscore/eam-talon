@@ -98,7 +98,7 @@ class Actions:
     _macro.pop(index)
 
   def macro_save(label: str):
-    """Saves the current mouse coordinates to file."""
+    """Saves the current macro to file."""
     rows = [label]
     rows.extend(_macro)
     append_to_csv(_MACROS_FILENAME, rows)

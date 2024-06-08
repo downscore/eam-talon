@@ -51,6 +51,14 @@ def _load_dict_internal(filename: str, rows: list[list[str]]) -> Dict[str, str]:
   return result
 
 
+def _append_to_csv_internal(path: Path, row: List[str]):
+  """Appends a row to a CSV file with the given path."""
+  # Do not use resource.open to avoid race condition. We want file to reload after we are finished writing to it.
+  with open(str(path), "a", encoding="utf-8") as f:
+    writer = csv.writer(f)
+    writer.writerow(row)
+
+
 def get_settings_file_path(filename: str) -> Path:
   """Get the full path to a settings file."""
   return _SETTINGS_DIR / filename
@@ -155,11 +163,13 @@ def load_macros_from_csv(filename: str) -> Dict[str, list[str]]:
 def append_to_csv(filename: str, row: List[str]):
   """Append a row to an existing CSV file."""
   path = _SETTINGS_DIR / filename
+  _append_to_csv_internal(path, row)
 
-  # Do not use resource.open to avoid race condition. We want file to reload after we are finished writing to it.
-  with open(str(path), "a", encoding="utf-8") as f:
-    writer = csv.writer(f)
-    writer.writerow(row)
+
+def append_to_private_csv(filename: str, row: List[str]):
+  """Append a row to an existing CSV file."""
+  path = _PRIVATE_SETTINGS_DIR / filename
+  _append_to_csv_internal(path, row)
 
 
 def load_prompt(filename: str) -> str:

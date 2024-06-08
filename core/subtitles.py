@@ -10,7 +10,7 @@ mod = Module()
 
 # Subtitle configuration.
 _MAX_TEXT_LENGTH = 60
-_TIMEOUT_MS = 1000
+_TIMEOUT_MS = 1500
 _TEXT_SIZE_PIXELS = 20
 _TEXT_TYPEFACE = "MesloLGS NF"
 _TEXT_COLOR = "ffffff"

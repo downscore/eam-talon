@@ -239,7 +239,7 @@ class Actions:
 
   def mouse_ocr_ui_activate_label(label: Union[str, int]):
     """Activates (moves the mouse to or clicks on) the given label."""
-    label = str(label)
+    label = str(label)  # pylint: disable=self-cls-assignment
 
     # Zip labels to matches and create a dictionary.
     rects_by_label = dict(zip(_LABELS, _target_rects_from_last_search))

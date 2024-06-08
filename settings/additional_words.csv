@@ -104,6 +104,7 @@ harder braking,harder breaking
 JSON,Jason
 main,maine
 parking brake,parking break
+pure,pier
 
 # Escaping command words so they can be inlcuded in prose.
 hatch,hatch hatch
@@ -140,9 +141,12 @@ euclidean,euclidian
 fills,fils
 gemini,geminate
 graph,graf
+in manual,Immanuel
+it,et
 lane,lang
 last,lust
 Markov,Markoff
+me too,metoo
 minimizes,minimises
 new,nu
 okay,ok

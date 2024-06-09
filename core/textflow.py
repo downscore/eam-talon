@@ -420,15 +420,20 @@ class Actions:
     command = tf.Command(command_type, tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter)))
     _run_command(command)
 
-  def textflow_execute_command_enum_strings(command_type: str, modifier_type: str = "", delimiter: str = ""):
-    """"Executes a textflow command on the current selection with an optional modifier. Uses string enum values.
-    "SCOPE" is a special modifier that gets the appropriate modifier for the current context."""
-    effective_modifier_type = tf.ModifierType.NONE
+  def textflow_modifier_type_from_string(modifier_type: str) -> tf.ModifierType:
+    """Converts a string to a modifier type. "SCOPE" is a special modifier that gets the appropriate modifier for the
+    current context."""
+    result = tf.ModifierType.NONE
     if modifier_type:
       if modifier_type == "SCOPE":
-        effective_modifier_type = actions.user.textflow_get_scope_modifier()
+        result = actions.user.textflow_get_scope_modifier()
       else:
-        effective_modifier_type = tf.ModifierType[modifier_type]
+        result = tf.ModifierType[modifier_type]
+    return result
+
+  def textflow_execute_command_enum_strings(command_type: str, modifier_type: str = "", delimiter: str = ""):
+    """"Executes a textflow command on the current selection with an optional modifier. Uses string enum values."""
+    effective_modifier_type = actions.user.textflow_modifier_type_from_string(modifier_type)
     actions.user.textflow_execute_command_selection(tf.CommandType[command_type], effective_modifier_type, delimiter)
 
   def textflow_get_scope_modifier() -> tf.ModifierType:

@@ -146,6 +146,7 @@ class ExtensionActions:
     actions.key("cmd-shift-l")
 
   def multi_cursor_add_to_line_ends():
+    # Alternative action: editor.action.insertCursorAtEndOfEachLineSelected
     actions.key("alt-shift-i")
 
   def navigation_back():

@@ -106,7 +106,9 @@ _PUNCTUATION_WORDS = {
     # Commonly-used punctuation that can be used in prose.
     "punch": ".",
     "drip": ",",
+    "trip": ",",  # Common misrecognition for "drip".
     "bang": "!",
+    "bank": "!",  # Common misrecognition for "bang".
     "quest": "?",
     "dash": "-",
     "stack": ":",

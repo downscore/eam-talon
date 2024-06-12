@@ -4,6 +4,7 @@ tag(): user.file_manager
 
 hunt command: user.shell_search_commands()
 hunt tree: user.shell_search_files()
+screen clear: key("ctrl+l")
 
 folder go [<user.text>]:
   insert("cd ")
@@ -31,9 +32,6 @@ open file: insert("open ")
 
 # Get the return value of the last command
 return value: insert("echo $?")
-
-# Clear the whole console
-reset console: insert("reset")
 
 # Git commands.
 git branch: insert("git branch")

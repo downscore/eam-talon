@@ -56,6 +56,12 @@ class ExtensionActions:
   def split_close():
     actions.key("cmd-w")
 
+  def split_next():
+    actions.key("cmd-]")
+
+  def split_last():
+    actions.key("cmd-[")
+
   def tab_close():
     # Close all panes in the tab.
     actions.key("cmd-alt-w")

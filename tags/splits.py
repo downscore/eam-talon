@@ -58,3 +58,15 @@ class Actions:
 
   def split_switch_by_index(index: int):
     """Focuses the split with the given index."""
+
+  def split_move_file_up():
+    """Moves the current file to the split above."""
+
+  def split_move_file_down():
+    """Moves the current file to the split below."""
+
+  def split_move_file_left():
+    """Moves the current file to the split to the left."""
+
+  def split_move_file_right():
+    """Moves the current file to the split to the right."""

@@ -298,14 +298,14 @@ class ExpandMatchToTokenTestCase(unittest.TestCase):
     self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(32, 36)), make_text_match(28, 40))
 
   def test_kebab_case(self):
-    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(41, 41)), make_text_match(41, 54))
-    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(41, 42)), make_text_match(41, 54))
-    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(42, 42)), make_text_match(41, 54))
+    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(41, 41)), make_text_match(41, 46))
+    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(41, 42)), make_text_match(41, 46))
+    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(42, 42)), make_text_match(41, 46))
     self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(42, 53)), make_text_match(41, 54))
     self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(42, 54)), make_text_match(41, 54))
     self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(41, 54)), make_text_match(41, 54))
-    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(47, 50)), make_text_match(41, 54))
-    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(46, 49)), make_text_match(41, 54))
+    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(47, 50)), make_text_match(47, 50))
+    self.assertEqual(expand_match_to_token(_FORMATTED_TOKENS, make_text_match(46, 49)), make_text_match(46, 50))
 
   def test_dot_separated(self):
     # Note: Dots are not treated as separator characters. Each dot-separated component is its own token.
@@ -384,7 +384,7 @@ class MaybeAddDeletionRangeTestCase(unittest.TestCase):
     text = "apples, oranges bananas"
     match = make_text_match(8, 15)
     match = maybe_add_deletion_range(text, match)
-    assert (match.deletion_range is not None)
+    assert match.deletion_range is not None
     self.assertEqual(match.deletion_range.start, 8)
     self.assertEqual(match.deletion_range.end, 16)
 
@@ -398,7 +398,7 @@ class MaybeAddDeletionRangeTestCase(unittest.TestCase):
     text = "apples, oranges bananas."
     match = make_text_match(16, 23)
     match = maybe_add_deletion_range(text, match)
-    assert (match.deletion_range is not None)
+    assert match.deletion_range is not None
     self.assertEqual(match.deletion_range.start, 15)
     self.assertEqual(match.deletion_range.end, 23)
 
@@ -441,14 +441,14 @@ class MatchTokenTestCase(unittest.TestCase):
   def test_first_token_backward(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.TOKEN_COUNT, nth_match=1)
     result = match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock)
-    assert (result is not None)
+    assert result is not None
     self.assertEqual(result.text_range, make_text_match(191, 196).text_range)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), "match")
 
   def test_second_token_backward(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.TOKEN_COUNT, nth_match=2)
     result = match_token(_TEXT_BEFORE, options, SearchDirection.BACKWARD, _get_homophones_mock)
-    assert (result is not None)
+    assert result is not None
     self.assertEqual(result.text_range, make_text_match(184, 190).text_range)
     self.assertEqual(self._token(_TEXT_BEFORE, options, SearchDirection.BACKWARD), "entire")
 
@@ -480,7 +480,7 @@ class MatchTokenTestCase(unittest.TestCase):
     options = TokenMatchOptions(match_method=TokenMatchMethod.WORD_SUBSTRING, search="do", nth_match=1)
     self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "redo_snake")
     options.nth_match = 2
-    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "done-kebab")
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "done")
 
   def test_word_substring_no_match(self):
     options = TokenMatchOptions(match_method=TokenMatchMethod.WORD_SUBSTRING, search="xyz")
@@ -518,7 +518,7 @@ class MatchTokenTestCase(unittest.TestCase):
     options = TokenMatchOptions(match_method=TokenMatchMethod.LINE_START_THEN_WORD_START_THEN_SUBSTRING,
                                 search="do",
                                 nth_match=1)
-    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "done-kebab")
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "done")
 
   def test_line_start_substring(self):
     text = "hello redo_snake done-kebab"

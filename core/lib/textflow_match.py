@@ -5,10 +5,10 @@ from typing import Callable, Optional, Tuple
 from .textflow_types import SearchDirection, TextMatch, TextRange, TokenMatchMethod, TokenMatchOptions
 
 # Regex for matching a token.
-_REGEX_TOKEN: re.Pattern = re.compile(r"[\w\-_]+")
+_REGEX_TOKEN: re.Pattern = re.compile(r"[\w_]+")
 
 # Single character regex for matching alphanumeric characters and separators.
-_REGEX_TOKEN_CHAR: re.Pattern = re.compile(r"[\w\-_']", re.IGNORECASE)
+_REGEX_TOKEN_CHAR: re.Pattern = re.compile(r"[\w_']", re.IGNORECASE)
 
 
 def tuple_to_text_match(range_tuple: Tuple[int, int]) -> TextMatch:
@@ -100,8 +100,8 @@ def get_nth_line_start_match(text: str, search: str, n: int, direction: SearchDi
 
 def expand_match_to_token(text: str, match: TextMatch) -> TextMatch:
   """Expands the given match to cover a whole token. Extends to either side until a non-alphanumeric, non-separator
-  char or string end is encountered. Note: Does not treat dots as a separator. Each "word" in "word.word.word" is a
-  token."""
+  char or string end is encountered. Note: Does not treat dots or dashes as a separator. Each "word" in "word.word-word"
+  is a token."""
   if match.text_range.end > len(text):
     raise ValueError("Match out of bounds of given text.")
   start = match.text_range.start

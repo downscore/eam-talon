@@ -170,7 +170,7 @@ class ExtensionActions:
     actions.user.vscode("workbench.action.joinTwoGroups")
 
   def split_maximize():
-    actions.user.vscode("workbench.action.maximizeEditor")
+    actions.user.vscode("workbench.action.toggleMaximizeEditorGroup")
 
   def split_next():
     actions.user.vscode_and_wait("workbench.action.focusNextGroup")
@@ -189,6 +189,18 @@ class ExtensionActions:
 
   def split_switch_right():
     actions.user.vscode_and_wait("workbench.action.focusRightGroup")
+
+  def split_move_file_up():
+    actions.user.vscode_and_wait("workbench.action.moveEditorToAboveGroup")
+
+  def split_move_file_down():
+    actions.user.vscode_and_wait("workbench.action.moveEditorToBelowGroup")
+
+  def split_move_file_left():
+    actions.user.vscode_and_wait("workbench.action.moveEditorToLeftGroup")
+
+  def split_move_file_right():
+    actions.user.vscode_and_wait("workbench.action.moveEditorToRightGroup")
 
   def split_switch_by_index(index: int):
     if index > 9:

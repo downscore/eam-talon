@@ -74,6 +74,9 @@ class ExtensionActions:
   def split_switch_right():
     actions.key("cmd-alt-right")
 
+  def split_maximize():
+    actions.key("shift-cmd-enter")
+
   def tab_close():
     # Close all panes in the tab.
     actions.key("cmd-alt-w")

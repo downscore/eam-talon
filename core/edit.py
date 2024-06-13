@@ -431,6 +431,8 @@ class ExtensionActions:
   def insert_via_clipboard(text: str):
     """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII
     character."""
+    if not text:
+      return
     with clip.revert():
       clip.set_text(text)
       actions.user.paste()

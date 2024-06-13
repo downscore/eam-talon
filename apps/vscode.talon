@@ -20,11 +20,13 @@ yes: key(tab)
 
 # Command palette
 please [<user.text>]:
-  user.vscode("workbench.action.showCommands")
-  insert(user.text or "")
+  # Alternative: user.vscode("workbench.action.showCommands")
+  key(cmd-shift-p)
+  user.insert_via_clipboard(user.text or "")
 lucky <user.text>:
-  user.vscode("workbench.action.showCommands")
-  insert(user.text or "")
+  # Alternative: user.vscode("workbench.action.showCommands")
+  key(cmd-shift-p)
+  user.insert_via_clipboard(user.text or "")
   sleep(200ms)
   key(enter)
 
@@ -91,15 +93,28 @@ markdown preview: user.vscode("markdown.showPreviewToSide")
 # Minimap
 minimap dog: user.vscode("editor.action.toggleMinimap")
 
-# Find references and symbols
-hunt symbol file [<user.text>]:
-  user.vscode("workbench.action.gotoSymbol")
-  sleep(50ms)
-  insert(text or "")
-hunt symbol all [<user.text>]:
-  user.vscode("workbench.action.showAllSymbols")
-  sleep(50ms)
-  insert(text or "")
+# Find symbols
+sim list:
+  # Alternative: user.vscode("workbench.action.gotoSymbol")
+  key(cmd-shift-o)
+sim list of <user.prose>:
+  # Alternative: user.vscode("workbench.action.gotoSymbol")
+  key(cmd-shift-o)
+  user.insert_via_clipboard(prose)
+sim jump <user.prose>:
+  # Alternative: user.vscode("workbench.action.gotoSymbol")
+  key(cmd-shift-o)
+  user.insert_via_clipboard(prose)
+  key(enter)
+sim global:
+  # Alternative: user.vscode("workbench.action.showAllSymbols")
+  key(cmd-t)
+sim global of <user.prose>:
+  # Alternative: user.vscode("workbench.action.showAllSymbols")
+  key(cmd-t)
+  user.insert_via_clipboard(prose)
+
+# Find usages and definitions
 references: user.vscode("references-view.findReferences")
 declaration: user.vscode("editor.action.revealDeclaration")
 definition: user.vscode("editor.action.revealDefinition")
@@ -117,6 +132,8 @@ file new: user.vscode("explorer.newFile")
 
 # Debugging
 breakpoint toggle: user.vscode("editor.debug.action.toggleBreakpoint")
+breakpoint next: user.vscode("editor.debug.action.jumpToNextBreakpoint")
+breakpoint last: user.vscode("editor.debug.action.jumpToPreviousBreakpoint")
 
 # Selecting search results
 hunt results:

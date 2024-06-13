@@ -32,7 +32,6 @@ class Actions:
   def vscode_jump_to_file(path: str):
     """Jumps to the given file in VS Code."""
     actions.key("cmd-p")
-    actions.sleep("200ms")
     actions.user.insert_via_clipboard(path)
     actions.key("enter")
 
@@ -194,17 +193,17 @@ class ExtensionActions:
       actions.key(f"cmd-p down:{n} enter")
 
   def tab_list(name: str):
-    actions.user.vscode("workbench.action.quickOpen")
-    actions.sleep("250ms")
+    # Alternative: actions.user.vscode("workbench.action.quickOpen")
+    actions.key("cmd-p")
     if name:
-      actions.insert(name or "")
+      actions.user.insert_via_clipboard(name or "")
       actions.sleep("50ms")
 
   def tab_switch_by_name(name: str):
-    actions.user.vscode("workbench.action.quickOpen")
-    actions.sleep("250ms")
-    actions.insert(name)
-    actions.sleep("250ms")
+    # Alternative: actions.user.vscode("workbench.action.quickOpen")
+    actions.key("cmd-p")
+    actions.user.insert_via_clipboard(name)
+    actions.sleep("50ms")
     actions.key("enter")
 
   def textflow_get_selected_text_potato_mode() -> str:

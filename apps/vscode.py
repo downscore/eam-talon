@@ -154,16 +154,16 @@ class ExtensionActions:
   def navigation_forward():
     actions.user.vscode("workbench.action.navigateForward")
 
-  def split_up():
+  def split_open_up():
     actions.user.vscode("workbench.action.moveEditorToAboveGroup")
 
-  def split_down():
+  def split_open_down():
     actions.user.vscode("workbench.action.moveEditorToBelowGroup")
 
-  def split_left():
+  def split_open_left():
     actions.user.vscode("workbench.action.moveEditorToLeftGroup")
 
-  def split_right():
+  def split_open_right():
     actions.user.vscode("workbench.action.moveEditorToRightGroup")
 
   def split_close():
@@ -173,10 +173,22 @@ class ExtensionActions:
     actions.user.vscode("workbench.action.maximizeEditor")
 
   def split_next():
-    actions.user.vscode_and_wait("workbench.action.focusRightGroup")
+    actions.user.vscode_and_wait("workbench.action.focusNextGroup")
 
   def split_last():
+    actions.user.vscode_and_wait("workbench.action.focusPreviousGroup")
+
+  def split_switch_up():
+    actions.user.vscode_and_wait("workbench.action.focusAboveGroup")
+
+  def split_switch_down():
+    actions.user.vscode_and_wait("workbench.action.focusBelowGroup")
+
+  def split_switch_left():
     actions.user.vscode_and_wait("workbench.action.focusLeftGroup")
+
+  def split_switch_right():
+    actions.user.vscode_and_wait("workbench.action.focusRightGroup")
 
   def split_switch_by_index(index: int):
     if index > 9:

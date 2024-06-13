@@ -40,11 +40,11 @@ class ExtensionActions:
     actions.user.word_left()
     actions.user.delete_to_line_end()
 
-  def split_up():
+  def split_open_up():
     # Only split down action is available.
     actions.key("cmd-d")
 
-  def split_down():
+  def split_open_down():
     actions.key("cmd-d")
 
   def split_close():

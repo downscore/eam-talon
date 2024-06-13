@@ -56,6 +56,18 @@ class Actions:
       for _ in range(to_index - from_index + 1):
         actions.user.extend_down()
 
+  def select_line_range_for_editing(from_index: int, to_index: int = 0):
+    """Selects text from a range of lines in a way suitable for editing them. 1-based. Does not select the trailing line
+    break or leading indentation if a single line is selected. Does select trailing line breaks and leading indentation
+    if multiple lines are selected. If `to_index` is zero, selects the from line."""
+    actions.user.jump_line(from_index)
+    actions.user.line_start()
+    if to_index <= from_index:
+      actions.user.select_line_excluding_line_break()
+    else:
+      for _ in range(to_index - from_index + 1):
+        actions.user.extend_down()
+
   def bring_line_range(from_index: int, to_index: int = 0):
     """Copies a given line to the cursor location."""
     placeholder = _insert_placeholder()

@@ -39,17 +39,17 @@ class ExtensionActions:
     actions.user.word_left()
     actions.user.delete_to_line_end()
 
-  def split_up():
+  def split_open_up():
     app.notify("Only splitting down or right is supported")
 
-  def split_down():
+  def split_open_down():
     # Split horizontally.
     actions.key("cmd-shift-d")
 
-  def split_left():
+  def split_open_left():
     app.notify("Only splitting down or right is supported")
 
-  def split_right():
+  def split_open_right():
     # Split vertically.
     actions.key("cmd-d")
 
@@ -61,6 +61,18 @@ class ExtensionActions:
 
   def split_last():
     actions.key("cmd-[")
+
+  def split_switch_up():
+    actions.key("cmd-alt-up")
+
+  def split_switch_down():
+    actions.key("cmd-alt-down")
+
+  def split_switch_left():
+    actions.key("cmd-alt-left")
+
+  def split_switch_right():
+    actions.key("cmd-alt-right")
 
   def tab_close():
     # Close all panes in the tab.

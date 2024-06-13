@@ -1,9 +1,9 @@
 tag: user.splits
 -
-split up: user.split_up()
-split down: user.split_down()
-split left: user.split_left()
-split right: user.split_right()
+split new up: user.split_up()
+split new down: user.split_down()
+split new left: user.split_left()
+split new right: user.split_right()
 split close: user.split_close()
 split maximize: user.split_maximize()
 split next: user.split_next()

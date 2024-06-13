@@ -130,8 +130,10 @@ class Actions:
     """Focuses an application by name."""
     running_app = actions.user.switcher_get_running_app(name)
     running_app.focus()
-    # Pause to give the app time to focus. Chrome in particular can take a while to be ready for subsequent commands.
-    actions.sleep("500ms")
+    # Pause to give the app time to focus.
+    # Note: More time may be required if the window is in a different workspace. Chrome in particular can take a while
+    # to be ready for subsequent commands.
+    actions.sleep("100ms")
 
   def switcher_focus_window(window: ui.Window):
     """Focuses the given window. Does nothing if the window is already focused."""
@@ -140,8 +142,10 @@ class Actions:
     # Focus the window twice. In some cases (e.g. multiple fullscreen Chrome windows), this seems to be necessary.
     window.focus()
     window.focus()
-    # Pause to give the window time to focus. Chrome in particular can take a while to be ready for subsequent commands.
-    actions.sleep("500ms")
+    # Pause to give the app time to focus.
+    # Note: More time may be required if the window is in a different workspace. Chrome in particular can take a while
+    # to be ready for subsequent commands.
+    actions.sleep("100ms")
 
   def switcher_focus_window_by_id(window_id: int):
     """Focuses the window with the given ID. Does nothing if the window is already focused."""

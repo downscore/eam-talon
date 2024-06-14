@@ -118,6 +118,8 @@ swap <user.textflow_compound_target> with <user.prose> anchor: user.textflow_rep
 
 # Single word replacement.
 swap <user.textflow_word> with <user.word>: user.textflow_replace_word(textflow_word, word)
+# Common replacement (with "in") that performs poorly in dictation mode.
+swap <user.textflow_word> within: user.textflow_replace_word(textflow_word, "in")
 
 # Swap articles (a <-> the).
 swap <user.textflow_definite>: user.textflow_replace_word(textflow_definite, "a")

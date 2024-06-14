@@ -48,11 +48,26 @@ class ExtensionActions:
   def navigation_forward():
     actions.key("cmd-alt-right")
 
-  def split_down():
+  def split_close():
+    actions.user.obsidian("Close this tab group")
+
+  def split_open_down():
     actions.user.obsidian("Split down")
 
-  def split_right():
+  def split_open_right():
     actions.user.obsidian("Split right")
+
+  def split_switch_up():
+    actions.user.obsidian("Focus on tab group above")
+
+  def split_switch_down():
+    actions.user.obsidian("Focus on tab group below")
+
+  def split_switch_left():
+    actions.user.obsidian("Focus on tab group to the left")
+
+  def split_switch_right():
+    actions.user.obsidian("Focus on tab group to the right")
 
   def style_bullet_list():
     actions.user.obsidian("Toggle bullet list")

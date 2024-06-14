@@ -2,6 +2,7 @@ app: obsidian
 -
 tag(): user.multiple_cursors
 tag(): user.navigation
+tag(): user.splits
 tag(): user.tabs
 
 # Command palette

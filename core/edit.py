@@ -314,12 +314,16 @@ class ExtensionActions:
     actions.user.left()
 
   def expand_selection_to_adjacent_characters():
-    """Expands the current selection to include adjacent characters on the left and right."""
+    """Expands the current selection to include adjacent characters on the left and right. If nothing is selected,
+    selects a character on either side of the cursor."""
     selection_length = len(actions.user.selected_text())
     # Disallow for long strings, as they can take a long time to select.
     if selection_length > 500:
       return
-    actions.key(f"left:2 shift-right:{selection_length + 2}")
+    # Deselect text if necessary.
+    if selection_length > 0:
+      actions.key("left")
+    actions.key(f"left shift-right:{selection_length + 2}")
 
   def find_everywhere():
     """Finds text across project."""

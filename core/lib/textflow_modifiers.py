@@ -400,7 +400,7 @@ def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) 
   start_index = input_match.text_range.start
   nested_parentheses = 0
   while start_index > 0 and (text[start_index - 1].isalnum() or
-                             text[start_index - 1] in ("_", ".", "-", ">", "*", "(", ")", "[", "]")):
+                             text[start_index - 1] in ("_", ".", "-", ">", "*", "(", ")", "[", "]", ":")):
     if text[start_index - 1] == "(":
       if nested_parentheses == 0:
         break

@@ -756,19 +756,26 @@ class TestCallModifier(unittest.TestCase):
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "func(x, y)")
 
-  def test_single_cursor_at_func_name_start(self):
+  def test_single_call_cursor_at_func_name_start(self):
     text = "func(x, y);"
     input_match = TextMatch(TextRange(0, 0))
     modifier = Modifier(ModifierType.CALL)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "func(x, y)")
 
-  def test_single_cursor_at_open_parenthesis(self):
+  def test_single_call_cursor_at_open_parenthesis(self):
     text = "func(x, y);"
     input_match = TextMatch(TextRange(4, 4))
     modifier = Modifier(ModifierType.CALL)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+  def test_single_call_c_namespace(self):
+    text = "namespace::func(x, y);"
+    input_match = TextMatch(TextRange(12, 12))
+    modifier = Modifier(ModifierType.CALL)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "namespace::func(x, y)")
 
   def test_nested_call(self):
     text = "func(x, func2(y));"

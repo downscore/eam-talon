@@ -313,10 +313,10 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
 
   # Try to include leading comma in deletion range. There are cases where we may not want to delete a leading semicolon,
   # so we ignore semicolons for now.
-  found_leading_comma = False
-  if deletion_start_index > 0 and text[deletion_start_index - 1] == ",":
+  found_leading_delimiter = False
+  if deletion_start_index > 0 and text[deletion_start_index - 1] in (",", ";"):
     deletion_start_index -= 1
-    found_leading_comma = True
+    found_leading_delimiter = True
 
   # Find the next argument delimiter after the match. Track open parentheses to handle nested calls.
   end_index = input_match.text_range.end
@@ -337,10 +337,10 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   while end_index > start_index and text[end_index - 1] in [" ", "\t", "\n"]:
     end_index -= 1
 
-  # If we did not include a leading comma in the deletion range, try to find a trailing comma.
-  if not found_leading_comma and deletion_end_index < len(text) and text[deletion_end_index] == ",":
+  # If we did not include a leading delimiter in the deletion range, try to find a trailing delimiter.
+  if not found_leading_delimiter and deletion_end_index < len(text) and text[deletion_end_index] in (",", ";"):
     deletion_end_index += 1
-    # Include a whitespace character after the comma, if present.
+    # Include a whitespace character after the delimiter, if present.
     if deletion_end_index < len(text) and text[deletion_end_index] in [" ", "\t"]:
       deletion_end_index += 1
 

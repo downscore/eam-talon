@@ -127,6 +127,7 @@ class ModifierType(Enum):
   # Moving the cursor before the last line break can be useful for maintaining indentation or list types when adding a
   # new line below.
   END_OF_MARKDOWN_SECTION = 21
+  #
 
 
 @dataclass
@@ -137,6 +138,8 @@ class Modifier:
   modifier_range: Optional[TextRange] = None
   # Delimiter for modifiers where applicable. Empty string to use default.
   delimiter: str = ""
+  # Count for modifiers that can repeat actions.
+  n: Optional[str] = None
 
 
 @unique

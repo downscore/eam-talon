@@ -648,6 +648,24 @@ class TestArgumentModifier(unittest.TestCase):
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), ", arg2")
 
+  def test_for_loop(self):
+    text = "for (arg1; arg2; arg3);"
+    input_match = TextMatch(TextRange(12, 13))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg2")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "; arg2")
+
+  def test_for_loop_first_arg(self):
+    text = "for (arg1; arg2; arg3);"
+    input_match = TextMatch(TextRange(6, 7))
+    modifier = Modifier(ModifierType.ARG)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg1")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "arg1; ")
+
   def test_first_argument(self):
     text = "my_func(arg1, arg2, arg3);"
     input_match = TextMatch(TextRange(9, 10))

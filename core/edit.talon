@@ -74,11 +74,14 @@ pick head: user.extend_line_start()
 pick tail: user.extend_line_end()
 pick top: user.extend_file_start()
 pick bottom: user.extend_file_end()
-puffer: user.expand_selection_to_adjacent_characters()
 fragment <user.number> [past <user.number>]: user.fragment_select(number_1, number_2 or 0)
 fragment head <user.number>: user.fragment_select_head(number)
 fragment tail <user.number>: user.fragment_select_tail(number)
 car <user.number> [past <user.number>]: user.select_character_range(number_1, number_2 or 0)
+
+# Manipulating selections.
+puffer: user.expand_selection_to_adjacent_characters()
+sharpen: user.delete_first_and_last_characters_maintain_selection()
 
 # Deleting
 chuck line: user.delete_line()

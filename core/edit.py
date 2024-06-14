@@ -325,6 +325,24 @@ class ExtensionActions:
       actions.key("left")
     actions.key(f"left shift-right:{selection_length + 2}")
 
+  def delete_first_and_last_characters_maintain_selection():
+    """Deletes the first and last characters of the selected text. Maintains the selection."""
+    selected_text = actions.user.selected_text()
+    if not selected_text:
+      return
+
+    # Just delete the selection if it is small.
+    if len(selected_text) <= 2:
+      actions.key("backspace")
+      return
+
+    replace_text = selected_text[1:-1]
+    actions.user.insert_via_clipboard(replace_text)
+
+    # Reselect the text.
+    actions.key(f"left:{len(replace_text)}")
+    actions.key(f"shift-right:{len(replace_text)}")
+
   def find_everywhere():
     """Finds text across project."""
     actions.key("cmd-shift-f")

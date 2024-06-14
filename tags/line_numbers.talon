@@ -1,6 +1,6 @@
 tag: user.line_numbers
 -
-jump line <user.number>: user.jump_line(number)
+line <user.number>: user.jump_line(number)
 pour line <user.number>:
   user.jump_line(number)
   user.line_insert_down()

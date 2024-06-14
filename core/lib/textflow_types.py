@@ -99,12 +99,12 @@ class ModifierType(Enum):
   # Take the block/paragraph containing the token.
   BLOCK = 8
   # Take the function call argument or C-style for loop segment (; separated) containing the token.
-  ARG = 9
+  ARGUMENT = 9
   # Take the function call containing the token.
   CALL = 10
   # Take the comment containing the token.
   COMMENT = 11
-  # Take the string containing the token.
+  # Take the contents of a string containing the token with configurable delimiters (defaults to double quotes).
   STRING = 12
   # The current scope in python code. Includes all contiguous lines at the current or greater indentation level.
   PYTHON_SCOPE = 13
@@ -120,14 +120,57 @@ class ModifierType(Enum):
   END_OF_LINE = 18
   # Take all text between whitespace characters.
   BETWEEN_WHITESPACE = 19
-  # Select a link in markdown syntax.
+  # Take a link in markdown syntax.
   MARKDOWN_LINK = 20
   # Empty selection before the line break on the last non-whitespace line in a markdown section.
   # "Markdown sections" are delimited by any headings or EOF.
   # Moving the cursor before the last line break can be useful for maintaining indentation or list types when adding a
   # new line below.
-  END_OF_MARKDOWN_SECTION = 21
-  #
+  MARKDOWN_SECTION_END = 21
+  # Find the next function call and take the first argument from it. Assumes the initial match is outside the function
+  # call.
+  # It's the _first_ argument after the cursor, we need to call this then _next_ if we want the second.
+  ARGUMENT_FIRST = 22
+  # From a match inside an argument, take the next argument.
+  ARGUMENT_NEXT = 23
+  # From a match inside an argument, take the previous argument.
+  ARGUMENT_PREVIOUS = 24
+  # Find the next function call and take the nth argument from it. Assumes the initial match is outside the function
+  # call.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
+  # commands.
+  ARGUMENT_NTH = 25
+  # From outside a string, take the next string. Handles doc strings and markdown blocks when the delimiter is a double
+  # quote or grave.
+  # It's the _first_ string after the cursor, we need to call this then _next_ if we want the second.
+  STRING_FIRST = 26
+  # From inside a string, take the next string.
+  STRING_NEXT = 27
+  # From inside a string, take the previous string.
+  STRING_PREVIOUS = 28
+  # From outside a string, take the nth string.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
+  # commands.
+  STRING_NTH = 29
+  # From outside brackets, take the contents of the next set of brackets.
+  # It's the _first_ set of brackets after the cursor, we need to call this then _next_ if we want the second.
+  BRACKETS_FIRST = 30
+  # From inside a pair of brackets, take the contents of the next pair of brackets.
+  BRACKETS_NEXT = 31
+  # From inside a pair of brackets, take the contents of the previous pair of brackets.
+  BRACKETS_PREVIOUS = 32
+  # From outside brackets, take the contents of the nth pair of brackets.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
+  # commands.
+  BRACKETS_NTH = 33
+  # From outside the parentheses of a function call, take the next function call.
+  CALL_NEXT = 34
+  # From outside the parentheses of a function call, take the previous function call.
+  CALL_PREVIOUS = 35
+  # Take the next sentence in English prose.
+  SENTENCE_NEXT = 36
+  # Take the previous sentence in English prose.
+  SENTENCE_PREVIOUS = 37
 
 
 @dataclass
@@ -139,7 +182,7 @@ class Modifier:
   # Delimiter for modifiers where applicable. Empty string to use default.
   delimiter: str = ""
   # Count for modifiers that can repeat actions.
-  n: Optional[str] = None
+  n: Optional[int] = None
 
 
 @unique

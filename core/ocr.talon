@@ -5,7 +5,7 @@ screen line <user.textflow_word> <user.textflow_target_combo_type> <user.textflo
 
 # Select using textflow modifiers.
 screen sentence <user.textflow_word>: user.ocr_select_by_word(textflow_word, "SENTENCE")
-screen argument <user.textflow_word>: user.ocr_select_by_word(textflow_word, "ARG")
+screen argument <user.textflow_word>: user.ocr_select_by_word(textflow_word, "ARGUMENT")
 screen doubles <user.textflow_word>: user.ocr_select_by_word(textflow_word, "STRING", "\"")
 screen singles <user.textflow_word>: user.ocr_select_by_word(textflow_word, "STRING", "'")
 screen graves <user.textflow_word>: user.ocr_select_by_word(textflow_word, "STRING", "`")

@@ -443,16 +443,16 @@ class Actions:
 
   def textflow_move_argument_left():
     """Moves the current argument to the left."""
-    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARG)
+    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARGUMENT)
     argument = actions.user.selected_text()
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARG)
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARGUMENT)
 
     # Move before the argument that is now under the cursor.
     command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
-                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARGUMENT)))
     _run_command(command)
 
     # Re-insert the deleted argument.
@@ -460,12 +460,12 @@ class Actions:
 
   def textflow_move_argument_right():
     """Moves the current argument to the right."""
-    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARG)
+    actions.user.textflow_execute_command_selection(tf.CommandType.SELECT, tf.ModifierType.ARGUMENT)
     argument = actions.user.selected_text()
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARG)
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARGUMENT)
 
     # The modifier prefers to delete leading commas instead of trailing ones, so we need to move right to get to the
     # next argument. This causes odd behavior if the cursor is already in the rightmost argument, but it allows moving
@@ -473,7 +473,8 @@ class Actions:
     actions.key("right")
 
     # Move after the argument that is now under the cursor.
-    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARG)))
+    command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.ARGUMENT)))
     _run_command(command)
 
     # Re-insert the deleted argument.
@@ -509,7 +510,7 @@ class Actions:
     """Moves the cursor to the end of the given markdown section. Sections are separated by headings."""
     target_from = tf.CompoundTarget(tf.SimpleTarget(
         tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"# {section_name}\n")),
-                                    modifier=tf.Modifier(tf.ModifierType.END_OF_MARKDOWN_SECTION))
+                                    modifier=tf.Modifier(tf.ModifierType.MARKDOWN_SECTION_END))
     command = tf.Command(tf.CommandType.MOVE_CURSOR_AFTER, target_from)
     _run_command(command)
 

@@ -23,7 +23,7 @@
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
 pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
-pick argument: user.textflow_execute_command_enum_strings("SELECT", "ARG")
+pick argument: user.textflow_execute_command_enum_strings("SELECT", "ARGUMENT")
 pick doubles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
 pick singles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
 pick graves: user.textflow_execute_command_enum_strings("SELECT", "STRING", "`")
@@ -36,7 +36,7 @@ pick invoke: user.textflow_execute_command_enum_strings("SELECT", "CALL")
 # Deletion commands using TextFlow modifiers.
 chuck sentence: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE")
 chuck scope: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SCOPE")
-chuck argument: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "ARG")
+chuck argument: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "ARGUMENT")
 chuck doubles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "\"")
 chuck singles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "'")
 chuck graves: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "`")
@@ -84,7 +84,7 @@ copy invoke:
 # Cut commands using TextFlow modifiers.
 cut sentence: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SENTENCE")
 cut scope: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SCOPE")
-cut argument: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "ARG")
+cut argument: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "ARGUMENT")
 cut doubles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "\"")
 cut singles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "'")
 cut graves: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "`")

@@ -24,6 +24,20 @@ def _get_line_at_index(text: str, index: int, include_trailing_line_break: bool)
   return TextRange(start_index, end_index)
 
 
+def _index_of_next_character(text: str, index: int, characters: list[str]):
+  """Given an index in some text, get the index after the next instance of any of the given characters."""
+  while index < len(text) and text[index] not in characters:
+    index += 1
+  return index
+
+
+def _index_of_previous_character(text: str, index: int, characters: list[str]):
+  """Given an index in some text, get the index before the last instance of any of the given characters."""
+  while index > 0 and (index == len(text) or text[index] not in characters):
+    index -= 1
+  return index
+
+
 def _apply_chars_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes characters from the matched token."""
   del text  # Unused.
@@ -347,6 +361,45 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
 
 
+def _apply_argument_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Finds the next function call and takes the first argument from it. Assumes the initial match is outside the
+  function call."""
+  # Find the start of the next function call. Start looking from the end of the current match.
+  paren_index = _index_of_next_character(text, input_match.text_range.end, ["("])
+  # Skip over empty function calls: func()
+  while paren_index < len(text) - 1 and text[paren_index + 1] == ")":
+    paren_index = _index_of_next_character(text, paren_index + 1, ["("])
+  paren_index = min(paren_index + 1, len(text))
+
+  # Match the argument after the opening parenthesis.
+  return _apply_argument_modifier(text, _make_match(paren_index, paren_index), modifier)
+
+
+def _apply_argument_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From a match inside an argument, takes the next argument."""
+  divider_index = _index_of_next_character(text, input_match.text_range.end, [",", ";"])
+  divider_index = min(divider_index + 1, len(text))
+  return _apply_argument_modifier(text, _make_match(divider_index + 1, divider_index + 1), modifier)
+
+
+def _apply_argument_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From a match inside an argument, takes the previous argument."""
+  divider_index = _index_of_previous_character(text, input_match.text_range.start, [",", ";"])
+  divider_index = max(divider_index - 1, 0)
+  return _apply_argument_modifier(text, _make_match(divider_index, divider_index), modifier)
+
+
+def _apply_argument_nth_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Finds the next function call and takes the nth argument from it. Assumes the initial match is outside the function
+  call."""
+  if modifier.n is None or modifier.n < 1:
+    raise ValueError("n must be positive.")
+  result = _apply_argument_first_modifier(text, input_match, modifier)
+  for _ in range(modifier.n - 1):
+    result = _apply_argument_next_modifier(text, result, modifier)
+  return result
+
+
 def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the current sentence. Suitable for English prose."""
   del modifier  # Unused.
@@ -572,7 +625,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.LINE_HEAD: _apply_line_head_modifier,
     ModifierType.LINE_TAIL: _apply_line_tail_modifier,
     ModifierType.BLOCK: _apply_block_modifier,
-    ModifierType.ARG: _apply_argument_modifier,
+    ModifierType.ARGUMENT: _apply_argument_modifier,
     ModifierType.CALL: _apply_call_modifier,
     ModifierType.COMMENT: _apply_comment_modifier,
     ModifierType.STRING: _apply_string_modifier,
@@ -584,7 +637,11 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.START_OF_LINE: _apply_start_of_line_modifier,
     ModifierType.BETWEEN_WHITESPACE: _apply_between_whitespace_modifier,
     ModifierType.MARKDOWN_LINK: _apply_markdown_link_modifier,
-    ModifierType.END_OF_MARKDOWN_SECTION: _apply_end_of_markdown_section_modifier,
+    ModifierType.MARKDOWN_SECTION_END: _apply_end_of_markdown_section_modifier,
+    ModifierType.ARGUMENT_FIRST: _apply_argument_first_modifier,
+    ModifierType.ARGUMENT_NEXT: _apply_argument_next_modifier,
+    ModifierType.ARGUMENT_PREVIOUS: _apply_argument_previous_modifier,
+    ModifierType.ARGUMENT_NTH: _apply_argument_nth_modifier,
 }
 
 

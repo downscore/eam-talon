@@ -636,13 +636,13 @@ class TestArgumentModifier(unittest.TestCase):
   def test_empty_string(self):
     text = ""
     input_match = TextMatch(TextRange(0, 0))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
 
   def test_simple_call(self):
     text = "my_func(arg1, arg2, arg3);"
     input_match = TextMatch(TextRange(14, 15))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg2")
     assert result.deletion_range is not None
@@ -651,7 +651,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_for_loop(self):
     text = "for (arg1; arg2; arg3);"
     input_match = TextMatch(TextRange(12, 13))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg2")
     assert result.deletion_range is not None
@@ -660,7 +660,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_for_loop_first_arg(self):
     text = "for (arg1; arg2; arg3);"
     input_match = TextMatch(TextRange(6, 7))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg1")
     assert result.deletion_range is not None
@@ -669,7 +669,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_first_argument(self):
     text = "my_func(arg1, arg2, arg3);"
     input_match = TextMatch(TextRange(9, 10))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg1")
     assert result.deletion_range is not None
@@ -678,7 +678,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_last_argument(self):
     text = "my_func(arg1, arg2, arg3);"
     input_match = TextMatch(TextRange(21, 22))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg3")
     assert result.deletion_range is not None
@@ -687,7 +687,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_surrounding_whitespace(self):
     text = "my_func( arg );"
     input_match = TextMatch(TextRange(10, 11))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "arg")
     assert result.deletion_range is not None
@@ -696,7 +696,7 @@ class TestArgumentModifier(unittest.TestCase):
   def test_nested_call_before(self):
     text = "f1(arg1, f2(arg2), arg3);"
     input_match = TextMatch(TextRange(17, 17))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "f2(arg2)")
     assert result.deletion_range is not None
@@ -705,11 +705,103 @@ class TestArgumentModifier(unittest.TestCase):
   def test_nested_call_after(self):
     text = "f1(arg1, f2(arg2), arg3);"
     input_match = TextMatch(TextRange(10, 11))
-    modifier = Modifier(ModifierType.ARG)
+    modifier = Modifier(ModifierType.ARGUMENT)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "f2(arg2)")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), ", f2(arg2)")
+
+
+class TestArgumentFirstModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_FIRST)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_call(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_FIRST)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg1")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "arg1, ")
+
+  def test_skip_empty_call(self):
+    text = "first_call().my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_FIRST)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg1")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "arg1, ")
+
+
+class TestArgumentNextModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_NEXT)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_call(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(9, 10))
+    modifier = Modifier(ModifierType.ARGUMENT_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg2")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", arg2")
+
+
+class TestArgumentPreviousModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_PREVIOUS)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_call(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(15, 16))
+    modifier = Modifier(ModifierType.ARGUMENT_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg1")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "arg1, ")
+
+
+class TestArgumentNthModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_NTH, n=1)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_call(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_NTH, n=3)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "arg3")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), ", arg3")
+
+  def test_invalid_n(self):
+    text = "my_func(arg1, arg2, arg3);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.ARGUMENT_NTH, n=0)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier)
 
 
 class TestSentenceModifier(unittest.TestCase):
@@ -1024,41 +1116,41 @@ class TestEndOfMarkdownSectionModifier(unittest.TestCase):
   def test_no_headings(self):
     text = "[link](url)"
     input_match = TextMatch(TextRange(1, 1))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(11, 11)))
 
   def test_from_start_of_heading(self):
     text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
     input_match = TextMatch(TextRange(0, 0))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))
 
   def test_from_end_of_heading(self):
     text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
     input_match = TextMatch(TextRange(10, 10))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))
 
   def test_from_after_heading(self):
     text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
     input_match = TextMatch(TextRange(11, 11))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))
 
   def test_from_whitespace_before_next_heading(self):
     text = "## Heading\nTest line one\nTest line two\n\n## Next Heading"
     input_match = TextMatch(TextRange(39, 39))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))
 
   def test_search_until_eof(self):
     text = "## Heading\nTest line one\nTest line two\n\n"
     input_match = TextMatch(TextRange(13, 13))
-    modifier = Modifier(ModifierType.END_OF_MARKDOWN_SECTION, None)
+    modifier = Modifier(ModifierType.MARKDOWN_SECTION_END, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))

@@ -51,10 +51,10 @@ jump bottom: user.file_end()
 before fragment <user.number>: user.fragment_cursor_before(number)
 after fragment <user.number>: user.fragment_cursor_after(number)
 before car <user.number>:
-  user.select_character_range(number_1, 0)
+  user.character_select_range(number_1, 0)
   key(left)
 after car <user.number>:
-  user.select_character_range(number_1, 0)
+  user.character_select_range(number_1, 0)
   key(right)
 
 # Selection
@@ -77,9 +77,11 @@ pick bottom: user.extend_file_end()
 fragment <user.number> [past <user.number>]: user.fragment_select(number_1, number_2 or 0)
 fragment head <user.number>: user.fragment_select_head(number)
 fragment tail <user.number>: user.fragment_select_tail(number)
-car <user.number> [past <user.number>]: user.select_character_range(number_1, number_2 or 0)
 fragment next: user.fragment_select_next()
 fragment last: user.fragment_select_previous()
+car <user.number> [past <user.number>]: user.character_select_range(number_1, number_2 or 0)
+car next: user.character_select_next()
+car last: user.character_select_previous()
 line next:
   user.down()
   user.select_line_excluding_line_break()
@@ -117,7 +119,7 @@ chuck bottom:
   user.delete()
 chuck fragment [<user.number>] [past <user.number>]: user.fragment_delete(number_1 or -1, number_2 or 0)
 chuck car <user.number> [past <user.number>]:
-  user.select_character_range(number_1, number_2 or 0)
+  user.character_select_range(number_1, number_2 or 0)
   user.delete()
 
 # Copying to clipboard

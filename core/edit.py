@@ -551,7 +551,7 @@ class ExtensionActions:
     """Search and replaces for text in the entire project."""
     actions.key("cmd-shift-h")
 
-  def select_character_range(from_index: int, to_index: int = 0):
+  def character_select_range(from_index: int, to_index: int = 0):
     """Selects a range of characters in the selected text. 1-based. If `to_index` is zero, selects the from
     character."""
     if 0 < to_index < from_index:
@@ -564,6 +564,18 @@ class ExtensionActions:
     effective_to = min(len(selected), to_index) if to_index > 0 else from_index
     actions.key(f"left right:{from_index - 1}")
     actions.key(f"shift-right:{effective_to - from_index + 1}")
+
+  def character_select_next():
+    """Selects the next character in the selected text."""
+    if actions.user.selected_text():
+      actions.key("right")
+    actions.key("shift-right")
+
+  def character_select_previous():
+    """Selects the previous character in the selected text."""
+    if actions.user.selected_text():
+      actions.key("left")
+    actions.key("shift-left")
 
   def sort_lines_ascending():
     """Sorts the selected lines in ascending order."""

@@ -81,6 +81,7 @@ car <user.number> [past <user.number>]: user.select_character_range(number_1, nu
 
 # Manipulating selections.
 puffer: user.expand_selection_to_adjacent_characters()
+shrinker: user.shrink_selection_by_first_and_last_characters()
 sharpen: user.delete_first_and_last_characters_maintain_selection()
 
 # Deleting

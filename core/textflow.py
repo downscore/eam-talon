@@ -594,6 +594,32 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_singular)
     _run_command(command)
 
+  def textflow_select_nth_token(n: int):
+    """Selects the nth token from the current cursor position. n may be negative to search backwards."""
+    if n == 0:
+      return
+    if n > 0:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=n),
+                          tf.SearchDirection.FORWARD))
+    else:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(
+              # pylint: disable=invalid-unary-operand-type
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-n),
+              tf.SearchDirection.BACKWARD))
+    command = tf.Command(tf.CommandType.SELECT, target_from)
+    _run_command(command)
+
+  def textflow_select_nth_modifier(n: int, modifier_type_string: str, delimiter: str = ""):
+    """Selects the nth modifier from the current cursor position. n may be negative to search backwards."""
+    if n == 0:
+      return
+    modifier_type = actions.user.textflow_modifier_type_from_string(modifier_type_string)
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter, n=n)))
+    _run_command(command)
+
   def textflow_surround_text(target_from: tf.CompoundTarget, before: str, after: Optional[str] = None):
     """Adds strings around a matched target. If `after` is None, it will be set to `before`."""
     if after is None:

@@ -319,11 +319,24 @@ class ExtensionActions:
     selection_length = len(actions.user.selected_text())
     # Disallow for long strings, as they can take a long time to select.
     if selection_length > 500:
-      return
+      raise ValueError("Selection too long to expand.")
     # Deselect text if necessary.
     if selection_length > 0:
       actions.key("left")
     actions.key(f"left shift-right:{selection_length + 2}")
+
+  def shrink_selection_by_first_and_last_characters():
+    """Shrinks the selection by removing the first and last characters."""
+    selection_length = len(actions.user.selected_text())
+    # Disallow for long strings, as they can take a long time to select.
+    if selection_length > 500:
+      raise ValueError("Selection too long to expand.")
+    if selection_length == 0:
+      return
+    if selection_length < 2:
+      actions.key("right")
+      return
+    actions.key(f"left right shift-right:{selection_length - 2}")
 
   def delete_first_and_last_characters_maintain_selection():
     """Deletes the first and last characters of the selected text. Maintains the selection."""

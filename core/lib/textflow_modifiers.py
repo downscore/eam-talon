@@ -5,6 +5,10 @@ from .textflow_match import get_nth_regex_match
 from .textflow_types import Modifier, ModifierType, SearchDirection, TextMatch, TextRange
 from .format_util import get_fragment_ranges
 
+_OPEN_BRACKETS = ["(", "[", "{", "<"]
+_CLOSE_BRACKETS = [")", "]", "}", ">"]
+_BRACKET_PAIRS = {open_bracket: close_bracket for open_bracket, close_bracket in zip(_OPEN_BRACKETS, _CLOSE_BRACKETS)}
+
 
 def _make_match(start: int, end: int) -> TextMatch:
   """Match a text match using a single range."""
@@ -198,7 +202,7 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
 
 def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the content between symmetric delimiters containing the match. Defaults to C-style strings."""
-  delimiter = "\"" if modifier.delimiter == "" else modifier.delimiter
+  delimiter = "\"" if not modifier.delimiter else modifier.delimiter
   start_index = input_match.text_range.start
   while start_index > 0 and text[start_index - 1] != delimiter:
     start_index -= 1
@@ -207,6 +211,79 @@ def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier
     end_index += 1
 
   return _make_match(start_index, end_index)
+
+
+def _apply_string_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From outside a string, takes the next string."""
+  delimiter = "\"" if not modifier.delimiter else modifier.delimiter
+
+  # Find the start of the next string.
+  start_index = _index_of_next_character(text, input_match.text_range.end, [delimiter])
+  # Check if the delimiter is tripled, like a docstring or markdown block.
+  is_docstring = start_index < len(text) - 2 and text[start_index:start_index + 3] == delimiter * 3
+  if is_docstring:
+    start_index += 2
+
+  # Start from within the string.
+  start_index = min(start_index + 1, len(text))
+
+  return _apply_string_modifier(text, _make_match(start_index, start_index), modifier)
+
+
+def _apply_string_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a string, takes the next string."""
+  delimiter = "\"" if not modifier.delimiter else modifier.delimiter
+
+  # Find the end of the current string.
+  start_index = _index_of_next_character(text, input_match.text_range.end, [delimiter])
+  # Check if the delimiter is tripled, like a docstring or markdown block.
+  is_docstring = start_index < len(text) - 2 and text[start_index:start_index + 3] == delimiter * 3
+  if is_docstring:
+    start_index += 2
+
+  # Start from outside the string.
+  start_index = min(start_index + 1, len(text))
+
+  # Find the next string after leaving the current one.
+  return _apply_string_first_modifier(text, _make_match(start_index, start_index), modifier)
+
+
+def _apply_string_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a string, takes the previous string."""
+  delimiter = "\"" if not modifier.delimiter else modifier.delimiter
+
+  # Find the start of the current string.
+  index = _index_of_previous_character(text, input_match.text_range.start, [delimiter])
+  # Check if the delimiter is tripled, like a docstring or markdown block.
+  is_docstring = index > 2 and text[index - 2:index + 1] == delimiter * 3
+  if is_docstring:
+    index -= 2
+
+  # Move outside the current string.
+  index = max(index - 1, 0)
+
+  # Find the end of the previous string.
+  index = _index_of_previous_character(text, index, [delimiter])
+  # Check if the delimiter is tripled, like a docstring or markdown block.
+  is_docstring = index > 2 and text[index - 2:index + 1] == delimiter * 3
+  if is_docstring:
+    index -= 2
+
+  # Move into the previous string.
+  index = max(index - 1, 0)
+
+  # Find the previous string before entering the current one.
+  return _apply_string_modifier(text, _make_match(index, index), modifier)
+
+
+def _apply_string_nth_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From outside a string, takes the nth string."""
+  if modifier.n is None or modifier.n < 1:
+    raise ValueError("n must be positive.")
+  result = _apply_string_first_modifier(text, input_match, modifier)
+  for _ in range(modifier.n - 1):
+    result = _apply_string_next_modifier(text, result, modifier)
+  return result
 
 
 def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -484,25 +561,23 @@ def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifi
   """Takes the contents of surrounding brackets."""
   del modifier  # Unused.
 
-  bracket_pairs = {"(": ")", "[": "]", "{": "}", "<": ">"}
-
   # Find the first opening bracket before the match without a matching closing bracket.
   start_index = input_match.text_range.start
   nesting_level_by_bracket = {}
   # Initialize nesting level at zero for all bracket types.
-  for bracket in bracket_pairs:
+  for bracket in _BRACKET_PAIRS:
     nesting_level_by_bracket[bracket] = 0
   opening_bracket = None
   while start_index > 0:
     c = text[start_index - 1]
-    if c in bracket_pairs:
+    if c in _BRACKET_PAIRS:
       nesting_level_by_bracket[c] -= 1
       if nesting_level_by_bracket[c] < 0:
         opening_bracket = c
         break
-    elif c in bracket_pairs.values():
+    elif c in _BRACKET_PAIRS.values():
       # Get key for value c
-      for bracket, close_bracket in bracket_pairs.items():
+      for bracket, close_bracket in _BRACKET_PAIRS.items():
         if close_bracket == c:
           nesting_level_by_bracket[bracket] += 1
           break
@@ -519,13 +594,72 @@ def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifi
     c = text[end_index]
     if c == opening_bracket:
       nesting_level += 1
-    elif c == bracket_pairs[opening_bracket]:
+    elif c == _BRACKET_PAIRS[opening_bracket]:
       if nesting_level == 0:
         break
       nesting_level -= 1
     end_index += 1
 
   return _make_match(start_index, end_index)
+
+
+def _apply_brackets_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From outside a bracket, takes the next bracketed content."""
+  # Find the start of the next bracketed content.
+  start_index = _index_of_next_character(text, input_match.text_range.end, _OPEN_BRACKETS)
+  # Ignore < with a trailing space. It's most likely to be a comparison, not a bracket.
+  while 0 < start_index < len(text) - 1 and text[start_index:start_index + 2] == "< ":
+    start_index = _index_of_next_character(text, start_index + 1, _OPEN_BRACKETS)
+  # Start from within the bracket.
+  start_index = min(start_index + 1, len(text))
+
+  return _apply_brackets_modifier(text, _make_match(start_index, start_index), modifier)
+
+
+def _apply_brackets_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a bracket, takes the next bracketed content."""
+  # Find the end of the current bracketed content.
+  start_index = _index_of_next_character(text, input_match.text_range.end, _CLOSE_BRACKETS)
+  # Ignore > with a leading space. It's most likely to be a comparison, not a bracket.
+  while 0 < start_index < len(text) and text[start_index - 1:start_index + 1] == " >":
+    start_index = _index_of_next_character(text, start_index + 1, _CLOSE_BRACKETS)
+  # Start from outside the bracket.
+  start_index = min(start_index + 1, len(text))
+
+  # Find the next bracketed content after leaving the current one.
+  return _apply_brackets_first_modifier(text, _make_match(start_index, start_index), modifier)
+
+
+def _apply_brackets_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a bracket, takes the previous bracketed content."""
+  # Find the start of the current bracketed content.
+  index = _index_of_previous_character(text, input_match.text_range.start, _OPEN_BRACKETS)
+  # Ignore < with a trailing space. It's most likely to be a comparison, not a bracket.
+  while 0 < index < len(text) - 1 and text[index:index + 2] == "< ":
+    index = _index_of_previous_character(text, index - 1, _OPEN_BRACKETS)
+  # Move outside the current bracket.
+  index = max(index - 1, 0)
+
+  # Find the end of the previous bracketed content.
+  index = _index_of_previous_character(text, index, _CLOSE_BRACKETS)
+  # Ignore > with a leading space. It's most likely to be a comparison, not a bracket.
+  while 0 < index < len(text) and text[index - 1:index + 1] == " >":
+    index = _index_of_previous_character(text, index - 1, _CLOSE_BRACKETS)
+  # Move into the previous bracket.
+  index = max(index - 1, 0)
+
+  # Find the previous bracketed content before entering the current one.
+  return _apply_brackets_modifier(text, _make_match(index, index), modifier)
+
+
+def _apply_brackets_nth_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From outside a bracket, takes the nth bracketed content."""
+  if modifier.n is None or modifier.n < 1:
+    raise ValueError("n must be positive.")
+  result = _apply_brackets_first_modifier(text, input_match, modifier)
+  for _ in range(modifier.n - 1):
+    result = _apply_brackets_next_modifier(text, result, modifier)
+  return result
 
 
 def _apply_between_whitespace_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -642,6 +776,14 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.ARGUMENT_NEXT: _apply_argument_next_modifier,
     ModifierType.ARGUMENT_PREVIOUS: _apply_argument_previous_modifier,
     ModifierType.ARGUMENT_NTH: _apply_argument_nth_modifier,
+    ModifierType.STRING_FIRST: _apply_string_first_modifier,
+    ModifierType.STRING_NEXT: _apply_string_next_modifier,
+    ModifierType.STRING_PREVIOUS: _apply_string_previous_modifier,
+    ModifierType.STRING_NTH: _apply_string_nth_modifier,
+    ModifierType.BRACKETS_FIRST: _apply_brackets_first_modifier,
+    ModifierType.BRACKETS_NEXT: _apply_brackets_next_modifier,
+    ModifierType.BRACKETS_PREVIOUS: _apply_brackets_previous_modifier,
+    ModifierType.BRACKETS_NTH: _apply_brackets_nth_modifier,
 }
 
 

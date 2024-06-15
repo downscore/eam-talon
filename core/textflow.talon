@@ -20,12 +20,32 @@
 <user.textflow_command_type> <user.textflow_indefinite>:
   user.textflow_execute_command(textflow_command_type, textflow_indefinite)
 
+# Quick navigation commands.
+token <user.number>: user.textflow_select_nth_token(number)
+token next: user.textflow_select_nth_token(1)
+token last: user.textflow_select_nth_token(-1)
+argument <user.number>: user.textflow_select_nth_modifier(number, "ARGUMENT_NTH")
+argument next: user.textflow_select_nth_modifier(1, "ARGUMENT_NEXT")
+argument last: user.textflow_select_nth_modifier(1, "ARGUMENT_PREVIOUS")
+string <user.number>: user.textflow_select_nth_modifier(number, "STRING_NTH", "'")
+string next: user.textflow_select_nth_modifier(1, "STRING_NEXT", "'")
+string last: user.textflow_select_nth_modifier(1, "STRING_PREVIOUS", "'")
+dubstring <user.number>: user.textflow_select_nth_modifier(number, "STRING_NTH", "\"")
+dubstring next: user.textflow_select_nth_modifier(1, "STRING_NEXT", "\"")
+dubstring last: user.textflow_select_nth_modifier(1, "STRING_PREVIOUS", "\"")
+graves <user.number>: user.textflow_select_nth_modifier(number, "STRING_NTH", "`")
+graves next: user.textflow_select_nth_modifier(1, "STRING_NEXT", "`")
+graves last: user.textflow_select_nth_modifier(1, "STRING_PREVIOUS", "`")
+brackets <user.number>: user.textflow_select_nth_modifier(number, "BRACKETS_NTH")
+brackets next: user.textflow_select_nth_modifier(1, "BRACKETS_NEXT")
+brackets last: user.textflow_select_nth_modifier(1, "BRACKETS_PREVIOUS")
+
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
 pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
 pick argument: user.textflow_execute_command_enum_strings("SELECT", "ARGUMENT")
-pick doubles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
-pick singles: user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
+pick dubstring: user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
+pick string: user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
 pick graves: user.textflow_execute_command_enum_strings("SELECT", "STRING", "`")
 pick whitespace: user.textflow_execute_command_enum_strings("SELECT", "BETWEEN_WHITESPACE")
 pick link: user.textflow_execute_command_enum_strings("SELECT", "MARKDOWN_LINK")
@@ -37,8 +57,8 @@ pick invoke: user.textflow_execute_command_enum_strings("SELECT", "CALL")
 chuck sentence: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE")
 chuck scope: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SCOPE")
 chuck argument: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "ARGUMENT")
-chuck doubles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "\"")
-chuck singles: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "'")
+chuck dubstring: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "\"")
+chuck string: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "'")
 chuck graves: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "`")
 chuck whitespace: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "BETWEEN_WHITESPACE")
 chuck link: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "MARKDOWN_LINK")
@@ -56,10 +76,10 @@ copy scope:
 copy argument:
   user.textflow_execute_command_enum_strings("SELECT", "ARGUMENT")
   user.clipboard_history_copy()
-copy doubles:
+copy dubstring:
   user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
   user.clipboard_history_copy()
-copy singles:
+copy string:
   user.textflow_execute_command_enum_strings("SELECT", "STRING", "'")
   user.clipboard_history_copy()
 copy graves:
@@ -85,8 +105,8 @@ copy invoke:
 cut sentence: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SENTENCE")
 cut scope: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SCOPE")
 cut argument: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "ARGUMENT")
-cut doubles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "\"")
-cut singles: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "'")
+cut dubstring: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "\"")
+cut string: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "'")
 cut graves: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "`")
 cut whitespace: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "BETWEEN_WHITESPACE")
 cut link: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "MARKDOWN_LINK")

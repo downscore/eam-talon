@@ -255,42 +255,42 @@ class TestBlockModifier(unittest.TestCase):
 class TestStringModifier(unittest.TestCase):
   """Tests for applying string modifiers."""
 
-  def test_apply_string_modifier_single_string(self):
+  def test_single_string(self):
     text = "This is a \"test string\"."
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "test string")
 
-  def test_apply_string_modifier_different_delimiter(self):
+  def test_different_delimiter(self):
     text = "This is a 'test string'."
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None, "'")
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "test string")
 
-  def test_apply_string_modifier_nested_string(self):
+  def test_nested_string(self):
     text = "This is a \"nested \"test\" string\"."
     input_match = TextMatch(TextRange(19, 23))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "test")
 
-  def test_apply_string_modifier_nested_string_outside(self):
+  def test_nested_string_outside(self):
     text = "This is a \"nested \"test\" string\"."
     input_match = TextMatch(TextRange(11, 17))  # "nested"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "nested ")
 
-  def test_apply_string_modifier_multiple_strings(self):
+  def test_multiple_strings(self):
     text = "This is a \"test string\" and \"another string\"."
     input_match = TextMatch(TextRange(11, 15))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "test string")
 
-  def test_apply_string_modifier_no_string(self):
+  def test_no_string(self):
     text = "This is a test string."
     input_match = TextMatch(TextRange(10, 14))  # "test"
     modifier = Modifier(ModifierType.STRING, None)
@@ -298,10 +298,82 @@ class TestStringModifier(unittest.TestCase):
     # Modifier does not modify result.
     self.assertEqual(result.text_range.extract(text), "This is a test string.")
 
-  def test_apply_string_modifier_invalid_match(self):
+  def test_invalid_match(self):
     text = "This is a \"test string\"."
     input_match = TextMatch(TextRange(100, 104))
     modifier = Modifier(ModifierType.STRING, None)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier)
+
+
+class TestStringFirstModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_single_string(self):
+    text = "This is a \"test string\"."
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.STRING_FIRST, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test string")
+
+  def test_docstring(self):
+    text = "This is a \"\"\"test string\"\"\"."
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.STRING_FIRST, None)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test string")
+
+
+class TestStringNextModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_simple_strings(self):
+    text = "This is \"string1\" and \"string2\"."
+    input_match = TextMatch(TextRange(11, 12))
+    modifier = Modifier(ModifierType.STRING_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "string2")
+
+  def test_docstring(self):
+    text = "This is \"\"\"string1\"\"\" and \"\"\"string2\"\"\"."
+    input_match = TextMatch(TextRange(11, 12))
+    modifier = Modifier(ModifierType.STRING_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "string2")
+
+
+class TestStringPreviousModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_simple_strings(self):
+    text = "This is \"string1\" and \"string2\"."
+    input_match = TextMatch(TextRange(27, 27))
+    modifier = Modifier(ModifierType.STRING_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "string1")
+
+  def test_docstring(self):
+    text = "This is \"\"\"string1\"\"\" and \"\"\"string2\"\"\"."
+    input_match = TextMatch(TextRange(30, 30))
+    modifier = Modifier(ModifierType.STRING_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "string1")
+
+
+class TestStringNthModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_simple_strings(self):
+    text = "This is \"string1\" and \"string2\"."
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.STRING_NTH, n=2)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "string2")
+
+  def test_invalid_n(self):
+    text = "This is \"string1\" and \"string2\"."
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.STRING_NTH, n=-3)
     with self.assertRaises(ValueError):
       apply_modifier(text, input_match, modifier)
 
@@ -952,6 +1024,116 @@ class TestBracketModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.BRACKETS)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "before[nest]after")
+
+
+class TestBracketFirstModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_FIRST)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_brackets(self):
+    text = "outside [test]"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_FIRST)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+  def test_comparison(self):
+    text = "less < more [test]"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_FIRST)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test")
+
+
+class TestBracketNextModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_NEXT)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_brackets(self):
+    text = "(test1) [test2]"
+    input_match = TextMatch(TextRange(1, 1))
+    modifier = Modifier(ModifierType.BRACKETS_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test2")
+
+  def test_comparison(self):
+    text = "(test1) less < more [test2]"
+    input_match = TextMatch(TextRange(3, 3))
+    modifier = Modifier(ModifierType.BRACKETS_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test2")
+
+  def test_comparison_inside_bracket(self):
+    text = "(test1 a > b) less < more [test2]"
+    input_match = TextMatch(TextRange(3, 3))
+    modifier = Modifier(ModifierType.BRACKETS_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test2")
+
+
+class TestBracketPreviousModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_PREVIOUS)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_brackets(self):
+    text = "(test1) [test2]"
+    input_match = TextMatch(TextRange(10, 10))
+    modifier = Modifier(ModifierType.BRACKETS_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test1")
+
+  def test_comparison(self):
+    text = "(test1) most > less < more [test2]"
+    input_match = TextMatch(TextRange(30, 30))
+    modifier = Modifier(ModifierType.BRACKETS_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test1")
+
+  def test_comparison_inside_brackets(self):
+    text = "(test1) most > less < more [a < b test2]"
+    input_match = TextMatch(TextRange(35, 35))
+    modifier = Modifier(ModifierType.BRACKETS_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test1")
+
+
+class TestBracketNthModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_NTH, n=1)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_brackets(self):
+    text = "outside (test1) [test2]"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_NTH, n=2)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "test2")
+
+  def test_invalid_n(self):
+    text = "outside (test1) [test2]"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.BRACKETS_NTH, n=-3)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier)
 
 
 class TestStartOfLineModifier(unittest.TestCase):

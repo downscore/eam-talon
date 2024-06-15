@@ -4,7 +4,8 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions
+from talon import Context, Module, actions, clip
+from ..core import mode_dictation
 from ..core.lib import path_util
 
 mod = Module()
@@ -67,6 +68,25 @@ class WinActions:
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overwrites."""
+
+  def dictation_get_preceding_text() -> str:
+    for _ in range(mode_dictation.NUM_PRECEDING_CHARS):
+      actions.user.extend_left()
+
+    # Bypass extension for getting selected text. This allows dictation to work in, for example, the Search and
+    # Source Control panels.
+    with clip.capture() as s:
+      actions.user.copy()
+    try:
+      preceding_text = s.text()
+    except clip.NoChange:
+      preceding_text = ""
+
+    # Deselect preceding text only if it was not empty.
+    if preceding_text:
+      actions.user.right()
+
+    return preceding_text
 
   def tab_open():
     actions.user.vscode("workbench.action.files.newUntitledFile")

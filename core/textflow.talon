@@ -39,6 +39,10 @@ graves last: user.textflow_select_nth_modifier(1, "STRING_PREVIOUS", "`")
 brackets <user.number>: user.textflow_select_nth_modifier(number, "BRACKETS_NTH")
 brackets next: user.textflow_select_nth_modifier(1, "BRACKETS_NEXT")
 brackets last: user.textflow_select_nth_modifier(1, "BRACKETS_PREVIOUS")
+call next: user.textflow_select_nth_modifier(1, "CALL_NEXT")
+call last: user.textflow_select_nth_modifier(1, "CALL_PREVIOUS")
+sentence next: user.textflow_select_nth_modifier(1, "SENTENCE_NEXT")
+sentence last: user.textflow_select_nth_modifier(1, "SENTENCE_PREVIOUS")
 
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")

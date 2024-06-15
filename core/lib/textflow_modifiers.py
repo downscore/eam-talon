@@ -7,7 +7,8 @@ from .format_util import get_fragment_ranges
 
 _OPEN_BRACKETS = ["(", "[", "{", "<"]
 _CLOSE_BRACKETS = [")", "]", "}", ">"]
-_BRACKET_PAIRS = {open_bracket: close_bracket for open_bracket, close_bracket in zip(_OPEN_BRACKETS, _CLOSE_BRACKETS)}
+_BRACKET_PAIRS = dict(zip(_OPEN_BRACKETS, _CLOSE_BRACKETS))
+_SENTENCE_DELIMITERS = [".", "!", "?", "\n"]
 
 
 def _make_match(start: int, end: int) -> TextMatch:
@@ -481,12 +482,10 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
   """Takes the current sentence. Suitable for English prose."""
   del modifier  # Unused.
 
-  sentence_delimiters = [".", "!", "?", "\n"]
-
   # Find the end of the previous sentence.
   start_index = input_match.text_range.start
   while start_index > 0:
-    if text[start_index - 1] in sentence_delimiters:
+    if text[start_index - 1] in _SENTENCE_DELIMITERS:
       break
     start_index -= 1
 
@@ -497,7 +496,7 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
   # Find the end of the current sentence.
   end_index = input_match.text_range.end
   while end_index < len(text):
-    if text[end_index] in sentence_delimiters:
+    if text[end_index] in _SENTENCE_DELIMITERS:
       end_index += 1  # Include the delimiter.
       break
     end_index += 1
@@ -518,6 +517,26 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
       deletion_start_index -= 1
 
   return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+
+
+def _apply_sentence_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the next sentence."""
+  end_index = input_match.text_range.end
+  # Special case: End of the current sentence is selected.
+  if input_match.text_range.length() > 0 and end_index > 0 and text[end_index - 1] in _SENTENCE_DELIMITERS:
+    return _apply_sentence_modifier(text, _make_match(end_index, end_index), modifier)
+  # Find the end of the sentence.
+  end_index = _index_of_next_character(text, input_match.text_range.end, _SENTENCE_DELIMITERS)
+  end_index = min(end_index + 1, len(text))
+  return _apply_sentence_modifier(text, _make_match(end_index, end_index), modifier)
+
+
+def _apply_sentence_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """Takes the previous sentence."""
+  # Find the start of the previous sentence.
+  start_index = _index_of_previous_character(text, input_match.text_range.start, _SENTENCE_DELIMITERS)
+  start_index = max(start_index - 1, 0)
+  return _apply_sentence_modifier(text, _make_match(start_index, start_index), modifier)
 
 
 def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -555,6 +574,32 @@ def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) 
     end_index += 1
 
   return _make_match(start_index, end_index)
+
+
+def _apply_call_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a function call, takes the next function call."""
+  # Find the start of the next function call.
+  start_index = _index_of_next_character(text, input_match.text_range.end, ["("])
+  # Skip over parens without a function name before them.
+  while start_index > 0 and not text[start_index - 1].isalnum():
+    start_index = _index_of_next_character(text, start_index + 1, ["("])
+  start_index = max(start_index - 1, 0)
+
+  # Match the function call before the opening parenthesis.
+  return _apply_call_modifier(text, _make_match(start_index, start_index), modifier)
+
+
+def _apply_call_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+  """From inside a function call, takes the previous function call."""
+  # Find the start of the previous function call.
+  start_index = _index_of_previous_character(text, input_match.text_range.start, ["("])
+  # Skip over parens without a function name before them.
+  while start_index > 0 and not text[start_index - 1].isalnum():
+    start_index = _index_of_previous_character(text, start_index - 1, ["("])
+  start_index = max(start_index - 1, 0)
+
+  # Match the function call before the opening parenthesis.
+  return _apply_call_modifier(text, _make_match(start_index, start_index), modifier)
 
 
 def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
@@ -784,6 +829,10 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.BRACKETS_NEXT: _apply_brackets_next_modifier,
     ModifierType.BRACKETS_PREVIOUS: _apply_brackets_previous_modifier,
     ModifierType.BRACKETS_NTH: _apply_brackets_nth_modifier,
+    ModifierType.CALL_NEXT: _apply_call_next_modifier,
+    ModifierType.CALL_PREVIOUS: _apply_call_previous_modifier,
+    ModifierType.SENTENCE_NEXT: _apply_sentence_next_modifier,
+    ModifierType.SENTENCE_PREVIOUS: _apply_sentence_previous_modifier,
 }
 
 

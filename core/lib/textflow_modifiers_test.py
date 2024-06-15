@@ -922,6 +922,53 @@ class TestSentenceModifier(unittest.TestCase):
     self.assertEqual(result.deletion_range.extract(text), "This is my sentence.")
 
 
+class TestSentenceNextModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.SENTENCE_NEXT)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_sentence(self):
+    text = "Sentence one. Sentence two."
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.SENTENCE_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Sentence two.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " Sentence two.")
+
+  def test_end_of_sentence_selected(self):
+    text = "Sentence one. Sentence two."
+    input_match = TextMatch(TextRange(0, 13))
+    modifier = Modifier(ModifierType.SENTENCE_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Sentence two.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " Sentence two.")
+
+
+class TestSentencePreviousModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.SENTENCE_PREVIOUS)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_simple_sentence(self):
+    text = "Sentence one. Sentence two."
+    input_match = TextMatch(TextRange(20, 20))
+    modifier = Modifier(ModifierType.SENTENCE_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "Sentence one.")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "Sentence one. ")
+
+
 class TestCallModifier(unittest.TestCase):
   """Tests for applying function call modifiers."""
 
@@ -979,6 +1026,54 @@ class TestCallModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.CALL)
     result = apply_modifier(text, input_match, modifier)
     self.assertEqual(result.text_range.extract(text), "func(x, func2(y))")
+
+
+class TestCallNextModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL_NEXT)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_single_call(self):
+    text = "test func(x, y);"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+  def test_extra_parens(self):
+    text = "test (func(x, y));"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL_NEXT)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func(x, y)")
+
+
+class TestCallPreviousModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.CALL_PREVIOUS)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_single_call(self):
+    text = "test func1(x, y); func2(a, b);"
+    input_match = TextMatch(TextRange(20, 20))
+    modifier = Modifier(ModifierType.CALL_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func1(x, y)")
+
+  def test_extra_parens(self):
+    text = "test (func1(x, y)); (func2(a, b));"
+    input_match = TextMatch(TextRange(22, 22))
+    modifier = Modifier(ModifierType.CALL_PREVIOUS)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "func1(x, y)")
 
 
 class TestBracketModifier(unittest.TestCase):

@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import imgui, Module, actions
+from talon import imgui, Module, actions, clip
 
 mod = Module()
 
@@ -74,13 +74,15 @@ class Actions:
 
   def clipboard_history_cut():
     """Cut and record text to history."""
-    _add_to_history(actions.user.selected_text())
     actions.user.cut()
+    actions.sleep("50ms")
+    _add_to_history(clip.text())
 
   def clipboard_history_copy():
     """Copy and record text to history."""
-    _add_to_history(actions.user.selected_text())
     actions.user.copy()
+    actions.sleep("50ms")
+    _add_to_history(clip.text())
 
   def clipboard_history_paste(index: int):
     """Copy and record text to history."""

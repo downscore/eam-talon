@@ -56,13 +56,6 @@ before car <user.number>:
 after car <user.number>:
   user.select_character_range(number_1, 0)
   key(right)
-line next:
-  user.down()
-  user.select_line_excluding_line_break()
-line last:
-  user.up()
-  user.line_end()
-  user.select_line_excluding_line_break()
 
 # Selection
 # Poor recognition for "pick line", so added "icline" to help.
@@ -85,6 +78,16 @@ fragment <user.number> [past <user.number>]: user.fragment_select(number_1, numb
 fragment head <user.number>: user.fragment_select_head(number)
 fragment tail <user.number>: user.fragment_select_tail(number)
 car <user.number> [past <user.number>]: user.select_character_range(number_1, number_2 or 0)
+fragment next: user.fragment_select_next()
+fragment last: user.fragment_select_previous()
+line next:
+  user.down()
+  user.select_line_excluding_line_break()
+line last:
+  user.up()
+  user.line_end()
+  user.select_line_excluding_line_break()
+
 
 # Manipulating selections.
 puffer: user.expand_selection_to_adjacent_characters()

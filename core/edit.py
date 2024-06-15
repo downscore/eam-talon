@@ -408,8 +408,11 @@ class ExtensionActions:
     actions.key("backspace")
 
   def fragment_select(from_index: int, to_index: int = 0):
-    """Selects a fragment or range of fragments of the selected text. Index is 1-based."""
+    """Selects a fragment or range of fragments of the selected text. Index is 1-based. Selects the last fragment if
+    `from_index` is negative."""
     _, fragments = _get_selected_text_fragments()
+    if from_index < 0:
+      from_index = len(fragments)
     if from_index <= 0 or from_index > len(fragments):
       return
     from_fragment = fragments[from_index - 1]
@@ -437,6 +440,20 @@ class ExtensionActions:
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[0]}")
     actions.key(f"shift-right:{len(text) - fragment[0]}")
+
+  def fragment_select_next():
+    """Selects the next fragment of the selected text."""
+    if actions.user.selected_text():
+      actions.key("right")
+    actions.user.extend_word_right()
+    actions.user.fragment_select(1)
+
+  def fragment_select_previous():
+    """Selects the previous fragment of the selected text."""
+    if actions.user.selected_text():
+      actions.key("left")
+    actions.user.extend_word_left()
+    actions.user.fragment_select(-1)
 
   def insert_link():
     """Insert a link or make the selected text into a link."""

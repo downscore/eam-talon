@@ -208,20 +208,24 @@ class ExtensionActions:
 
   def line_swap_up():
     """Swaps the current line with the line above it."""
-    actions.user.select_line_including_line_break()
+    # Note: Selecting including line break can cause problems at the last line.
+    actions.user.select_line_excluding_line_break()
     actions.user.cut()
     actions.sleep("50ms")
-    actions.key("up")
+    actions.key("backspace")
+    actions.user.line_insert_up()
     actions.user.paste()
-    actions.key("left")
 
   def line_swap_down():
     """Swaps the current line with the line below it."""
-    actions.user.select_line_including_line_break()
+    # Note: Selecting including line break can cause problems at the last line.
+    actions.user.select_line_excluding_line_break()
     actions.user.cut()
-    actions.key("down")
+    actions.sleep("50ms")
+    actions.key("backspace down")
+    actions.user.line_insert_down()
     actions.user.paste()
-    actions.key("left")
+    actions.sleep("50ms")
 
   def undo():
     """Undoes the last action."""

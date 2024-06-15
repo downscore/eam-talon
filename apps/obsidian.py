@@ -42,6 +42,12 @@ class ExtensionActions:
     # Use textflow so we can properly handle wrapped lines.
     actions.user.textflow_execute_command_enum_strings("SELECT", "LINE_INCLUDING_LINE_BREAK")
 
+  def line_swap_up():
+    actions.user.obsidian("Move line up")
+
+  def line_swap_down():
+    actions.user.obsidian("Move line down")
+
   def navigation_back():
     actions.key("cmd-alt-left")
 

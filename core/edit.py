@@ -364,7 +364,7 @@ class ExtensionActions:
     """Moves the cursor after the nth fragment of the selected text. Index is 1-based."""
     _, fragments = _get_selected_text_fragments()
     if n <= 0 or n > len(fragments):
-      return
+      raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[1]}")
 
@@ -380,17 +380,17 @@ class ExtensionActions:
     """Deletes the given fragment or range of fragments of the selected text. Deletes the last fragment if `from_index`
     is negative. Index is 1-based."""
     if from_index == 0:
-      return
+      raise ValueError(f"Invalid fragment index: {from_index}")
     _, fragments = _get_selected_text_fragments()
     if from_index > len(fragments):
-      return
+      raise ValueError(f"Invalid fragment index: {from_index}")
 
     # Negative index deletes the last fragment.
     if from_index < 0:
       from_index = len(fragments)  # pylint: disable=self-cls-assignment
 
     from_fragment = fragments[from_index - 1]
-    if to_index > 0 and to_index <= len(fragments):
+    if 0 < to_index <= len(fragments):
       to_fragment = fragments[to_index - 1]
     else:
       to_fragment = from_fragment
@@ -411,11 +411,12 @@ class ExtensionActions:
     """Selects a fragment or range of fragments of the selected text. Index is 1-based. Selects the last fragment if
     `from_index` is negative."""
     _, fragments = _get_selected_text_fragments()
-    if from_index < 0:
-      from_index = len(fragments)
-    if from_index <= 0 or from_index > len(fragments):
-      return
-    from_fragment = fragments[from_index - 1]
+    from_index_effective = int(from_index)
+    if from_index_effective < 0:
+      from_index_effective = len(fragments)
+    if from_index_effective <= 0 or from_index_effective > len(fragments):
+      raise ValueError(f"Invalid fragment index: {from_index}")
+    from_fragment = fragments[from_index_effective - 1]
     if to_index > 0 and to_index <= len(fragments):
       to_fragment = fragments[to_index - 1]
     else:
@@ -427,7 +428,7 @@ class ExtensionActions:
     """Selects from the nth fragment of the selected text to the start. Index is 1-based."""
     _, fragments = _get_selected_text_fragments()
     if n <= 0 or n > len(fragments):
-      return
+      raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[1]}")
     actions.key(f"shift-left:{fragment[1]}")
@@ -436,7 +437,7 @@ class ExtensionActions:
     """Selects from the nth fragment of the selected text to the end. Index is 1-based."""
     text, fragments = _get_selected_text_fragments()
     if n <= 0 or n > len(fragments):
-      return
+      raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
     actions.key(f"left right:{fragment[0]}")
     actions.key(f"shift-right:{len(text) - fragment[0]}")
@@ -553,12 +554,12 @@ class ExtensionActions:
   def select_character_range(from_index: int, to_index: int = 0):
     """Selects a range of characters in the selected text. 1-based. If `to_index` is zero, selects the from
     character."""
-    if to_index > 0 and to_index < from_index:
-      return
+    if 0 < to_index < from_index:
+      raise ValueError(f"Invalid character range: {from_index} to {to_index}")
 
     selected = actions.user.selected_text_or_word()
     if len(selected) == 0 or from_index <= 0 or from_index > len(selected):
-      return
+      raise ValueError(f"Character range outside of selection: {from_index} to {to_index}")
 
     effective_to = min(len(selected), to_index) if to_index > 0 else from_index
     actions.key(f"left right:{from_index - 1}")

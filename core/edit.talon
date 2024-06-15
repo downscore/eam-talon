@@ -56,6 +56,13 @@ before car <user.number>:
 after car <user.number>:
   user.select_character_range(number_1, 0)
   key(right)
+line next:
+  user.down()
+  user.select_line_excluding_line_break()
+line last:
+  user.up()
+  user.line_end()
+  user.select_line_excluding_line_break()
 
 # Selection
 # Poor recognition for "pick line", so added "icline" to help.

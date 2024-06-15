@@ -1,5 +1,6 @@
 # Move the mouse.
 slide <user.mouse_directions>: user.mouse_move_delta(mouse_directions)
+mouse focus: user.mouse_move_to_current_window()
 
 # Click at current position.
 mouse touch: mouse_click()

@@ -205,6 +205,16 @@ class Actions:
     x, y = _COORDS_BY_LABEL[label]
     actions.mouse_move(x, y)
 
+  def mouse_move_to_current_window():
+    """Moves the mouse to the current window. By default, moves to the center of the current window, but may be
+    overridden by specific applications."""
+    active_window = ui.active_window()
+    if active_window.id == -1:
+      rect = ui.main_screen().rect
+    else:
+      rect = active_window.rect
+    actions.mouse_move(rect.x + rect.width // 2, rect.y + rect.height // 2)
+
   def mouse_ocr_click(s: str, button: int = 0):
     """Searches for the given string. If there is one match, clicks it, otherwise displays matches."""
     global _button_from_last_search

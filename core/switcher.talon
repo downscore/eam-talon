@@ -18,6 +18,7 @@ app save terminal: user.switcher_save_current_window_by_name("terminal")
 
 # Shortcuts to apps.
 obsidian: user.switcher_focus_app_by_name("Obsidian")
+chit chat: user.switcher_focus_app_by_name("ChatGPT")
 coder: user.switcher_focus_window_by_type("coder", "Code", "Code - Insiders")
 browser: user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
 terminal: user.switcher_focus_window_by_type("terminal", "iTerm2", "Terminal")

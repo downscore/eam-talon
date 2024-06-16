@@ -15,9 +15,6 @@ def get_query_string_value(url: str, key: str) -> str:
 
 
 def extract_url(text):
-  # Regular expression to match URLs.
-  url_pattern = r'(https?://[^\s]+)'
-
   # Regular expression to match markdown URLs (surrounded by parentheses).
   markdown_url_pattern = r'\((https?://[^\s]+)\)'
 
@@ -26,9 +23,21 @@ def extract_url(text):
   if markdown_url_match:
     return markdown_url_match.group(1)
 
+  # Regular expression to match URLs.
+  url_pattern = r'(https?://[^\s]+)'
+
   # Search for plain URL
   url_match = re.search(url_pattern, text)
   if url_match:
     return url_match.group(1)
+
+  # Regular expression to match short URLs like go/example or x/12345
+  short_url_pattern = r'(\b[a-zA-Z]{1,2}/[^\s]+)'
+  url_match = re.search(short_url_pattern, text)
+  if url_match:
+    short_url = url_match.group(1)
+    # Remove trailing punctuation.
+    short_url = re.sub(r'[.,!?]+$', '', short_url)
+    return f"http://{short_url}"
 
   return None

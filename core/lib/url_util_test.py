@@ -47,3 +47,23 @@ class ExtractUrlTestCase(unittest.TestCase):
     text = "See the [example]( https://www.example.com ) for details."
     expected = "https://www.example.com"
     self.assertEqual(extract_url(text), expected)
+
+  def test_short_url(self):
+    text = "Go to go/example for more details."
+    expected = "http://go/example"
+    self.assertEqual(extract_url(text), expected)
+
+  def test_single_char_short_url(self):
+    text = "Visit x/12345 for the information."
+    expected = "http://x/12345"
+    self.assertEqual(extract_url(text), expected)
+
+  def test_double_char_short_url(self):
+    text = "Access it via ab/xyz for details."
+    expected = "http://ab/xyz"
+    self.assertEqual(extract_url(text), expected)
+
+  def test_normal_and_short_url(self):
+    text = "Check out https://www.google.com and go/example for more info."
+    expected = "https://www.google.com"
+    self.assertEqual(extract_url(text), expected)

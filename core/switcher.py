@@ -224,6 +224,10 @@ class Actions:
     """Focuses the IDE application."""
     actions.user.switcher_focus_window_by_type("coder", "Code", "Code - Insiders")
 
+  def switcher_focus_browser():
+    """Focuses the browser window."""
+    actions.user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
+
   def switcher_new_terminal_tab(directory: str = ""):
     """Opens a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
     the current user's home."""

@@ -200,7 +200,22 @@ def get_closest_ocr_result_index(ocr_results: list[Any], x: float, y: float) -> 
   closest_index = None
   closest_distance_squared = None
   for i, result in enumerate(ocr_results):
-    distance_squared = (result.rect.x + result.rect.width / 2 - x)**2 + (result.rect.y + result.rect.height / 2 - y)**2
+    # Get rectangle bounds.
+    left = result.rect.x
+    right = result.rect.x + result.rect.width
+    top = result.rect.y
+    bottom = result.rect.y + result.rect.height
+
+    # Check if the point is inside the rectangle.
+    if left <= x <= right and top <= y <= bottom:
+      distance_squared = 0
+    else:
+      # Calculate the distances to the rectangle edges.
+      dx = max(left - x, 0, x - right)
+      dy = max(top - y, 0, y - bottom)
+      distance_squared = dx**2 + dy**2
+
+    # Update closest result if necessary.
     if closest_distance_squared is None or distance_squared < closest_distance_squared:
       closest_index = i
       closest_distance_squared = distance_squared

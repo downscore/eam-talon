@@ -13,6 +13,7 @@ from talon.types import Rect
 from talon.skia.typeface import Typeface
 from .lib.ocr_util import get_closest_ocr_result_index
 from .lib.textflow_match import get_phrase_regex
+from .lib.url_util import extract_url
 from .user_settings import append_to_csv, load_coords_from_csv
 
 mod = Module()
@@ -283,8 +284,8 @@ class Actions:
     _ocr_ui.show()
     ctx.tags = ["user.mouse_ocr_ui_open"]
 
-  def mouse_ocr_copy_nearby_line():
-    """Copies the line of text nearest to the mouse."""
+  def mouse_ocr_get_nearby_line() -> str:
+    """Use OCR to get the line of text nearest to the mouse."""
     ocr_results = _ocr_active_context()
     x: float = actions.mouse_x()
     y: float = actions.mouse_y()
@@ -293,12 +294,33 @@ class Actions:
     closest_result_index = get_closest_ocr_result_index(ocr_results, x, y)
     closest_result = ocr_results[closest_result_index] if closest_result_index is not None else None
     if closest_result is None:
-      actions.app.notify("No nearby text found")
-      return
+      raise ValueError("No nearby OCR result found.")
+
+    return closest_result.text
+
+  def mouse_ocr_copy_nearby_line():
+    """Copies the line of text nearest to the mouse."""
+    # OCR the screen and get the nearest line of text.
+    closest_text = actions.user.mouse_ocr_get_nearby_line()
 
     # Copy the line of text.
-    actions.user.clipboard_history_set_text(closest_result.text)
-    actions.app.notify(f"Copied: {closest_result.text}")
+    actions.user.clipboard_history_set_text(closest_text)
+    actions.app.notify(f"Copied: {closest_text}")
+
+  def mouse_ocr_open_nearby_link():
+    """Opens the link nearest to the mouse."""
+    # OCR the screen and get the nearest line of text.
+    closest_text = actions.user.mouse_ocr_get_nearby_line()
+
+    # Try to extract a link from the text.
+    url = extract_url(closest_text)
+    if url is None:
+      actions.app.notify(f"No link found in the text: {closest_text}")
+      return
+
+    # Open the link using the default or saved browser window.
+    actions.user.switcher_focus_browser()
+    actions.user.website_open_url(url)
 
   def mouse_save_coords(label: str):
     """Saves the current mouse coordinates to file."""

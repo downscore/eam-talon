@@ -20,7 +20,7 @@ app save terminal: user.switcher_save_current_window_by_name("terminal")
 obsidian: user.switcher_focus_app_by_name("Obsidian")
 chit chat: user.switcher_focus_app_by_name("ChatGPT")
 coder: user.switcher_focus_coder()
-browser: user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
+browser: user.switcher_focus_browser()
 terminal: user.switcher_focus_terminal()
 
 # Global shortcuts for opening a new terminal tab.

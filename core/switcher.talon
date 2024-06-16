@@ -19,7 +19,7 @@ app save terminal: user.switcher_save_current_window_by_name("terminal")
 # Shortcuts to apps.
 obsidian: user.switcher_focus_app_by_name("Obsidian")
 chit chat: user.switcher_focus_app_by_name("ChatGPT")
-coder: user.switcher_focus_window_by_type("coder", "Code", "Code - Insiders")
+coder: user.switcher_focus_coder()
 browser: user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
 terminal: user.switcher_focus_terminal()
 
@@ -27,3 +27,8 @@ terminal: user.switcher_focus_terminal()
 terminal new: user.switcher_new_terminal_tab()
 terminal here: user.switcher_new_terminal_tab(user.app_get_current_directory())
 terminal paste: user.switcher_new_terminal_tab(clip.text())
+
+# Global shortcuts for IDE bookmarks.
+jump <user.number>:
+  user.switcher_focus_coder()
+  key("ctrl-{number}")

@@ -1,4 +1,8 @@
 """Custom subtitles for Talon."""
+# Disable linter warnings caused by Talon conventions.
+# pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
+# pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
+# mypy: ignore-errors
 
 from typing import Optional
 from talon import Module, actions, cron, speech_system, ui

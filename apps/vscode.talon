@@ -39,6 +39,10 @@ jump talon: user.vscode_jump_to_related_file_with_extension(".talon")
 blinker next: user.vscode("editor.action.moveSelectionToNextFindMatch")
 blinker last: user.vscode("editor.action.moveSelectionToPreviousFindMatch")
 
+# Bookmarks.
+mark <user.number>: key("ctrl-shift-{number}")
+jump <user.number>: key("ctrl-{number}")
+
 # Jump to a matching bracket.
 jump bracket: user.vscode("editor.action.jumpToBracket")
 

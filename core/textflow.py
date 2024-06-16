@@ -620,6 +620,32 @@ class Actions:
                          tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter, n=n)))
     _run_command(command)
 
+  def textflow_select_nested_call():
+    """Selects a function call nested in the current selected function call."""
+    # Deselect the current selection to the left (start of the function call).
+    if actions.user.selected_text():
+      actions.key("left")
+
+    # Move the cursor inside the next paren.
+    command = tf.Command(
+        tf.CommandType.MOVE_CURSOR_AFTER,
+        tf.CompoundTarget(tf.SimpleTarget(tf.TokenMatchOptions(search="("), direction=tf.SearchDirection.FORWARD)))
+    _run_command(command)
+
+    # Select the next nested function call.
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL_NEXT)))
+    _run_command(command)
+
+  def textflow_select_nested_brackets():
+    """Selects the contents of brackets nested in the current selection."""
+    # Deselect the current selection to the left.
+    if actions.user.selected_text():
+      actions.key("left")
+
+    # Select the next nested brackets.
+    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS_FIRST)))
+    _run_command(command)
+
   def textflow_surround_text(target_from: tf.CompoundTarget, before: str, after: Optional[str] = None):
     """Adds strings around a matched target. If `after` is None, it will be set to `before`."""
     if after is None:

@@ -44,6 +44,10 @@ invoke last: user.textflow_select_nth_modifier(1, "CALL_PREVIOUS")
 sentence next: user.textflow_select_nth_modifier(1, "SENTENCE_NEXT")
 sentence last: user.textflow_select_nth_modifier(1, "SENTENCE_PREVIOUS")
 
+# Navigation to nested targets.
+invoke nested: user.textflow_select_nested_call()
+brackets nested: user.textflow_select_nested_brackets()
+
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
 pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")

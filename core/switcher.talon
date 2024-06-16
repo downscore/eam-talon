@@ -21,7 +21,7 @@ obsidian: user.switcher_focus_app_by_name("Obsidian")
 chit chat: user.switcher_focus_app_by_name("ChatGPT")
 coder: user.switcher_focus_window_by_type("coder", "Code", "Code - Insiders")
 browser: user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
-terminal: user.switcher_focus_window_by_type("terminal", "iTerm2", "Terminal")
+terminal: user.switcher_focus_terminal()
 
 # Global shortcuts for opening a new terminal tab.
 terminal new: user.switcher_new_terminal_tab()

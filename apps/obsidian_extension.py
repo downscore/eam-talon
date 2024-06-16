@@ -6,7 +6,7 @@
 
 import os
 from talon import Context, Module, actions
-from ..core.lib import textflow_types as tf
+from ..core.lib import number_util, textflow_types as tf
 from ..core import textflow as tft
 
 ctx = Context()
@@ -53,9 +53,18 @@ class UserActions:
     actions.user.obsidian_command("insertNewLineBelow", n)
 
   def select_line_range_including_line_break(from_index: int, to_index: int = 0):
-    actions.user.obsidian_command("selectLineRange", from_index, to_index if to_index > 0 else None)
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
+    actions.user.obsidian_command("selectLineRangeIncludingLineBreak", from_index, to_index if to_index > 0 else None)
+
+  def select_line_range_for_editing(from_index: int, to_index: int = 0):
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
+    actions.user.obsidian_command("selectLineRangeForEditing", from_index, to_index if to_index > 0 else None)
 
   def bring_line_range(from_index: int, to_index: int = 0):
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.obsidian_command("copyLinesToCursor", from_index, to_index if to_index > 0 else None)
 
   def textflow_get_context() -> tft.TextFlowContext:

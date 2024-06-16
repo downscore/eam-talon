@@ -1,11 +1,11 @@
 """Tests for number utils."""
 
 import unittest
-from .number_util import parse_number
+from .number_util import parse_number, copy_leading_decimal_digits
 
 
 class ParseNumberTestCase(unittest.TestCase):
-  """Test for parsing a string of words into an int value."""
+  """Tests for util function."""
 
   def test_parse_number(self):
     self.assertEqual(parse_number(["one"]), "1")
@@ -82,3 +82,19 @@ class ParseNumberTestCase(unittest.TestCase):
     self.assertEqual(parse_number([]), "")
     self.assertEqual(parse_number(["and"]), "")
     self.assertEqual(parse_number(["and", "and"]), "")
+
+
+class CopyLeadingDecimalDigitsTestCase(unittest.TestCase):
+  """Tests for util function."""
+
+  def test_zeros(self):
+    self.assertEqual(copy_leading_decimal_digits(0, 0), 0)
+
+  def test_same_length(self):
+    self.assertEqual(copy_leading_decimal_digits(12, 34), 34)
+
+  def test_first_longer(self):
+    self.assertEqual(copy_leading_decimal_digits(123, 34), 134)
+
+  def test_second_longer(self):
+    self.assertEqual(copy_leading_decimal_digits(12, 534), 534)

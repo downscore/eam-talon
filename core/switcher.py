@@ -216,6 +216,10 @@ class Actions:
     global _launch_page
     _launch_page = (_launch_page - 1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
 
+  def switcher_focus_terminal():
+    """Focuses the terminal application."""
+    actions.user.switcher_focus_window_by_type("terminal", "iTerm2", "Terminal")
+
   def switcher_new_terminal_tab(directory: str = ""):
     """Opens a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
     the current user's home."""

@@ -163,3 +163,14 @@ def parse_number(l: List[str]) -> str:
   for scale in SCALES_BY_WORD:
     processed = _parse_scale(scale, processed)
   return "".join(str(n) for n in processed)
+
+
+def copy_leading_decimal_digits(from_number: int, to_number: int) -> int:
+  """Copies the leading decimal digits from one number to another until they are the same length.
+  For example: (12345, 67) -> 12367, (34, 56) -> 56"""
+  from_str = str(from_number)
+  to_str = str(to_number)
+  result = to_str
+  for i in range(len(from_str) - len(to_str)):
+    result = from_str[i] + result
+  return int(result)

@@ -6,6 +6,7 @@
 
 import uuid
 from talon import Context, Module, actions
+from ..core.lib import number_util
 
 mod = Module()
 ctx = Context()
@@ -49,6 +50,8 @@ class Actions:
   def select_line_range_including_line_break(from_index: int, to_index: int = 0):
     """Selects a range of lines. 1-based. Selects trailing line break if present. If `to_index` is zero, selects the
     from line."""
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.jump_line(from_index)
     if to_index <= from_index:
       actions.user.select_line_including_line_break()
@@ -60,6 +63,8 @@ class Actions:
     """Selects text from a range of lines in a way suitable for editing them. 1-based. Does not select the trailing line
     break or leading indentation if a single line is selected. Does select trailing line breaks and leading indentation
     if multiple lines are selected. If `to_index` is zero, selects the from line."""
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.jump_line(from_index)
     actions.user.line_start()
     if to_index <= from_index:
@@ -70,6 +75,8 @@ class Actions:
 
   def bring_line_range(from_index: int, to_index: int = 0):
     """Copies a given line to the cursor location."""
+    if to_index > 0:
+      to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     placeholder = _insert_placeholder()
 
     # Jump to the beginning of the first line, before indentation.

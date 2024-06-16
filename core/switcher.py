@@ -270,6 +270,11 @@ class Actions:
     if _saved_focused_window.tab_index:
       actions.user.cross_browser_focus_tab(_saved_focused_window.tab_index)
 
+  def switcher_jump_to_bookmark(bookmark_num: int):
+    """Jumps to the bookmark with the given number."""
+    actions.user.switcher_focus_coder()
+    actions.key(f"ctrl-{bookmark_num}")
+
 
 def _on_app_change(event: str):
   del event

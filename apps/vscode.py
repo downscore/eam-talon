@@ -227,6 +227,10 @@ class ExtensionActions:
       return
     actions.key(f"cmd-{index}")
 
+  def switcher_jump_to_bookmark(bookmark_num: int):
+    # IDE is already focused so just jump to the bookmark.
+    actions.key(f"ctrl-{bookmark_num}")
+
   def tab_nth_previous(n: int):
     # Make sure number of tab switches is reasonable.
     if n < 1 or n > 9:

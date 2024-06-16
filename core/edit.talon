@@ -190,7 +190,7 @@ jump last <user.word>: user.jump_to_last_occurrence(user.word)
 jump next <user.word>: user.jump_to_next_occurrence(user.word)
 
 # Line manipulation
-dupe line: user.duplicate_line()
+clone line: user.duplicate_line()
 drag up: user.line_swap_up()
 drag down: user.line_swap_down()
 join lines:

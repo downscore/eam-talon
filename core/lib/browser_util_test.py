@@ -96,9 +96,10 @@ class GetTabsMatchingHostnameTestCase(unittest.TestCase):
   def setUp(self):
     self.tabs = [
         Tab(1, 1, True, "title1", "http://host.example.com"),
-        Tab(1, 2, False, "title2", "url2"),
-        Tab(2, 1, False, "title3", "url3"),
-        Tab(2, 2, True, "title4", "http://host.example.com/url4")
+        Tab(1, 2, False, "title2", "http://url2"),
+        Tab(2, 1, False, "title3", "http://url3"),
+        Tab(2, 2, True, "title4", "http://host.example.com/url4"),
+        Tab(2, 3, False, "title5", "http://host.url.example.net/url5")
     ]
 
   def test_empty_string(self):
@@ -116,7 +117,7 @@ class GetTabsMatchingHostnameTestCase(unittest.TestCase):
 
   def test_single_word(self):
     # Not a valid hostname.
-    self.assertEqual(get_tabs_matching_hostname(self.tabs, "url3"), [])
+    self.assertEqual(get_tabs_matching_hostname(self.tabs, "http://url3"), [])
 
   def test_partial_match(self):
     result = get_tabs_matching_hostname(self.tabs, "example.com")
@@ -127,6 +128,24 @@ class GetTabsMatchingHostnameTestCase(unittest.TestCase):
     self.assertEqual(result[1].index, 2)
     self.assertEqual(result[1].title, "title4")
     self.assertEqual(result[1].url, "http://host.example.com/url4")
+
+  def test_prefix_first(self):
+    result = get_tabs_matching_hostname(self.tabs, "url")
+    # Results use prefix first and don't match http://host.url.example.net/url5
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0].index, 2)
+    self.assertEqual(result[0].title, "title2")
+    self.assertEqual(result[0].url, "http://url2")
+    self.assertEqual(result[1].index, 1)
+    self.assertEqual(result[1].title, "title3")
+    self.assertEqual(result[1].url, "http://url3")
+
+    result = get_tabs_matching_hostname(self.tabs, "url.example")
+    # Results use substring and match http://host.url.example.net/url5
+    self.assertEqual(len(result), 1)
+    self.assertEqual(result[0].index, 3)
+    self.assertEqual(result[0].title, "title5")
+    self.assertEqual(result[0].url, "http://host.url.example.net/url5")
 
 
 class GetFocusedTabListIndexTestCase(unittest.TestCase):

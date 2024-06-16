@@ -101,6 +101,19 @@ def get_tabs_matching_hostname(tabs: list[Tab], hostname: str) -> list[Tab]:
     return []
 
   result: list[Tab] = []
+
+  # First try looking for prefix matches.
+  for tab in tabs:
+    url = urlparse(tab.url)
+
+    # Check if the tab's URL starts with the hostname (case insensitive).
+    if url.hostname and url.hostname.lower().startswith(hostname.lower()):
+      result.append(tab)
+
+  if len(result) > 0:
+    return result
+
+  # If no prefix matches are found, try looking for substring matches.
   for tab in tabs:
     url = urlparse(tab.url)
 

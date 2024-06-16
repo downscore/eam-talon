@@ -4,9 +4,10 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Module, Context
+from talon import Module, Context, actions
 from urllib.parse import quote_plus
 import webbrowser
+from .lib.url_util import extract_url
 from .user_settings import load_dict_from_csv
 
 mod = Module()
@@ -27,12 +28,32 @@ ctx.lists["self.search_engine"] = load_dict_from_csv("search_engines.csv")
 
 @mod.action_class
 class Actions:
+  """Website actions."""
 
   def website_open_url(url: str):
-    """Visit the given URL."""
+    """Visit the given URL using the saved or default browser app."""
+    actions.user.switcher_focus_browser()
     webbrowser.open(url)
 
   def website_search_with_search_engine(search_template: str, search_text: str):
     """Search a search engine for given text"""
     url = search_template.replace("%s", quote_plus(search_text))
-    webbrowser.open(url)
+    actions.user.website_open_url(url)
+
+  def website_open_link_under_cursor():
+    """Open the link under the cursor in the default browser."""
+    # Select text delimited by whitespace and get url from it.
+    actions.user.textflow_execute_command_enum_strings("SELECT", "BETWEEN_WHITESPACE")
+    selected_text = actions.user.selected_text()
+    url = extract_url(selected_text)
+
+    # Deselect the text.
+    actions.key("right")
+
+    # Make sure there is a URL.
+    if not url:
+      actions.app.notify(f"No URL found: {selected_text}")
+      return
+
+    # Open the URL in the saved or default browser.
+    actions.user.website_open_url(url)

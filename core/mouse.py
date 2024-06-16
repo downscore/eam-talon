@@ -317,9 +317,6 @@ class Actions:
     if url is None:
       actions.app.notify(f"No link found in the text: {closest_text}")
       return
-
-    # Open the link using the default or saved browser window.
-    actions.user.switcher_focus_browser()
     actions.user.website_open_url(url)
 
   def mouse_save_coords(label: str):

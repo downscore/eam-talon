@@ -46,7 +46,7 @@ class Actions:
       on remove_delimiters_from_text(input_text, my_tab_delimiter, my_window_delimiter)
         set AppleScript's text item delimiters to my_tab_delimiter
         set temp_list to text items of input_text
-        set AppleScript's text item delimiters to "^^^"
+        set AppleScript's text item delimiters to my_window_delimiter
         set temp_list to text items of temp_list as text
         set AppleScript's text item delimiters to "" -- Reset delimiters to default
         return temp_list as text

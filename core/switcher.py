@@ -218,7 +218,7 @@ class Actions:
 
   def switcher_focus_terminal():
     """Focuses the terminal application."""
-    actions.user.switcher_focus_window_by_type("terminal", "iTerm2", "Terminal")
+    actions.user.switcher_focus_window_by_type("terminal", "Alacritty", "iTerm2", "Terminal")
 
   def switcher_focus_coder():
     """Focuses the IDE application."""

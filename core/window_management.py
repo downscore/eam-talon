@@ -169,6 +169,10 @@ class Actions:
     """Move the active window to a specific position on-screen."""
     _snap_window_helper(ui.active_window(), pos)
 
+  def snap_window_full():
+    """Move the active window to fullscreen."""
+    _snap_window_helper(ui.active_window(), _SNAP_POSITIONS["full"])
+
   def move_window_next_screen() -> None:
     """Move the active window to the next screen."""
     _move_window_to_next_screen(ui.active_window())

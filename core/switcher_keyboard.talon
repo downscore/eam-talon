@@ -1,6 +1,23 @@
 # Keyboard shortcuts to apps and websites.
 # Primarily using ctrl-cmd-<key> to switch to apps and websites, as it minimizes conflicts with other shortcuts.
-# Note: ctrl-cmd-f is a default shortcut for toggling fullscreen in vscode.
+#
+# Potential conflicts (keys defined in this file have precedence):
+# - macOS:
+#   - ctrl-cmd-q: Lock screen.
+# - VS Code:
+#   - ctrl-cmd-f: Toggling fullscreen.
+# - Google Meet:
+#   - ctrl-cmd-h: Raising hand.
+#   - ctrl-cmd-c: Chat.
+#   - ctrl-cmd-p: Participants.
+# - Safari:
+#   - ctrl-cmd-s: Shared with you.
+#   - ctrl-cmd-1: Bookmarks sidebar.
+#   - ctrl-cmd-2: Reading list sidebar.
+#   - ctrl-cmd-n: Empty new tab group.
+#   - ctrl-cmd-w: Delete tab group.
+#   - ctrl-cmd-r: Enter responsive design mode.
+
 key(ctrl-cmd-o): user.switcher_focus_app_by_name("Obsidian")
 key(ctrl-cmd-a): user.switcher_focus_app_by_name("ChatGPT")
 key(ctrl-cmd-c): user.switcher_focus_coder()

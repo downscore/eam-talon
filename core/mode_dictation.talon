@@ -42,7 +42,7 @@ title <user.prose> void:
   insert(" ")
 
 # Help determine when command words for letters are being used in prose.
-<user.letter_spoken> <user.prose>: user.dictation_insert_prose("{letter_spoken} {prose}")
+{user.letter_spoken} <user.prose>: user.dictation_insert_prose("{letter_spoken} {prose}")
 # Still allow spelling with multiple letters.
 <user.letters> <user.letters>+:
   insert(letters_1)

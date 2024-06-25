@@ -41,8 +41,16 @@ title <user.prose> void:
   insert(user.format_title_with_history(prose))
   insert(" ")
 
-# Escaping to type things that would otherwise be commands.
-^escape <user.prose>$: user.dictation_insert_prose(prose)
+# Help determine when command words for letters are being used in prose.
+<user.letter_spoken> <user.prose>: user.dictation_insert_prose("{letter_spoken} {prose}")
+# Still allow spelling with multiple letters.
+<user.letters> <user.letters>+:
+  insert(letters_1)
+  insert(letters_2)
+
+  # Help determine when command words for navigation are being used in prose.
+before <user.word> <user.prose>: user.dictation_insert_prose("before {word} {prose}")
+after <user.word> <user.prose>: user.dictation_insert_prose("after {word} {prose}")
 
 # Editing commands that can be chained with prose.
 scratcher [<user.ordinals_small>]:

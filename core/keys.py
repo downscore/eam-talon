@@ -40,6 +40,10 @@ _LETTERS = {
 mod.list("letter", desc="The spoken phonetic alphabet")
 ctx.lists["self.letter"] = _LETTERS
 
+# Spoken letter words.
+mod.list("letter_spoken", desc="Words used in spoken phonetic alphabet. No mapping to letters.")
+ctx.lists["self.letter_spoken"] = _LETTERS.keys()
+
 # Create a list including all letters and capital letters with spoken forms preceded by "ship".
 # TODO: Clean this up. We should be able to allow dictating capital letters without including them in a new list.
 _LETTER_WITH_CAPITALS = _LETTERS.copy()

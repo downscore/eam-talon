@@ -48,7 +48,7 @@ title <user.prose> void:
   insert(letters_1)
   insert(letters_2)
 
-  # Help determine when command words for navigation are being used in prose.
+# Help determine when command words for navigation are being used in prose.
 before <user.word> <user.prose>: user.dictation_insert_prose("before {word} {prose}")
 after <user.word> <user.prose>: user.dictation_insert_prose("after {word} {prose}")
 

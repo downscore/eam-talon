@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions, app
+from talon import Context, Module, actions
 
 mod = Module()
 ctx = Context()

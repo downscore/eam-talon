@@ -2,21 +2,19 @@ tag: user.shell
 -
 tag(): user.file_manager
 
+# Search using fuzzy finder.
 hunt command: user.shell_search_commands()
 hunt tree: user.shell_search_files()
-screen clear: key("ctrl+l")
 
-folder go [<user.text>]:
-  insert("cd ")
-  insert(user.text or "")
+# Sent SIGINT to the current process.
+signal interrupt: key("ctrl-c")
 
+# Common commands.
 seedy: insert("cd ")
 l s: insert("ls ")
 s s h: insert("ssh ")
-dot net: insert("dotnet ")
 code here: insert("code .")
 where am i: insert("pwd")
-
 grep [<user.text>]:
   insert("grep \"")
   insert(text or "")

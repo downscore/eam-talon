@@ -53,6 +53,12 @@ class ExtensionActions:
     actions.key("cmd-shift-v")
     actions.sleep("50ms")
 
+  def paste_via_insert():
+    """Pastes the clipboard contents with "insert" to bypass restrictions on pasting. May not work with unicode
+    characters."""
+    text = clip.text()
+    actions.insert(text)
+
   def delete():
     """Deletes the currently-selected text or the previous character."""
     actions.key("backspace")

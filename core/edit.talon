@@ -174,6 +174,8 @@ paste line:
   user.line_start()
   user.line_start()
   user.paste()
+# Paste clipboard contents with "insert" to bypass restrictions on pasting.
+dont fuck with paste: user.paste_via_insert()
 
 # Undo and redo
 nope: user.undo()

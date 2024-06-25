@@ -93,6 +93,8 @@ pol: user.left()
 ^cooking up$: user.mode_disable_speech()
 # "slap"
 ^flap [<user.ordinals_small>]$: user.dictation_repeat_line_insert_down(ordinals_small or 1)
+# "phones that"
+^fons vet$: user.homophones_selected_word()
 
 # Ignore anchors that get split up from their original command.
 # Note: The word "anchor" must be escaped to be written in dictation mode.

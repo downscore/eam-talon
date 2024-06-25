@@ -22,6 +22,7 @@ chit chat: user.switcher_focus_app_by_name("ChatGPT")
 coder: user.switcher_focus_coder()
 browser: user.switcher_focus_browser()
 terminal: user.switcher_focus_terminal()
+hangouts: user.switcher_focus_app_by_name("Google Chat")
 
 # Global shortcuts for opening a new terminal tab.
 terminal new: user.switcher_new_terminal_tab()

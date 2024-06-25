@@ -194,6 +194,12 @@ tip vector amper:
 tip vector star:
   insert("std::vector<>* ")
   key(left:3)
+tip unique pointer:
+  insert("std::unique_ptr<> ")
+  key(left:2)
+tip shared pointer:
+  insert("std::shared_ptr<> ")
+  key(left:2)
 
 comment inline:
   user.line_end()

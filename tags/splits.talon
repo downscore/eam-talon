@@ -12,6 +12,7 @@ split new right: user.split_open_right()
 # Navigating between splits.
 split next: user.split_next()
 split last: user.split_last()
+cross: user.split_last()
 split up: user.split_switch_up()
 split down: user.split_switch_down()
 split left: user.split_switch_left()

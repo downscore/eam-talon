@@ -63,6 +63,11 @@ class ExtensionActions:
     """Deletes the currently-selected text or the previous character."""
     actions.key("backspace")
 
+  def delete_all():
+    """Deletes all text in the active editor."""
+    actions.user.select_all()
+    actions.user.delete()
+
   def delete_line():
     """Deletes the entire line."""
     actions.user.select_line_including_line_break()

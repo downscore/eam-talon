@@ -3,6 +3,7 @@ app: vscode
 tag(): user.line_numbers
 tag(): user.multiple_cursors
 tag(): user.navigation
+tag(): user.source_control
 tag(): user.splits
 tag(): user.tabs
 
@@ -79,10 +80,6 @@ panel terminal: user.vscode("workbench.action.terminal.focus")
 # Formatting
 format dock: user.vscode("editor.action.formatDocument")
 format selection: user.vscode("editor.action.formatSelection")
-
-# Changes
-change next: user.vscode("workbench.action.editor.nextChange")
-change last: user.vscode("workbench.action.editor.previousChange")
 
 # File errors
 problem next: user.vscode("editor.action.marker.nextInFiles")

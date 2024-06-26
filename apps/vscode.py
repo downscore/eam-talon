@@ -174,6 +174,12 @@ class ExtensionActions:
   def navigation_forward():
     actions.user.vscode("workbench.action.navigateForward")
 
+  def source_control_change_previous():
+    actions.user.vscode("workbench.action.editor.previousChange")
+
+  def source_control_change_next():
+    actions.user.vscode("workbench.action.editor.nextChange")
+
   def split_open_up():
     actions.user.vscode("workbench.action.moveEditorToAboveGroup")
 

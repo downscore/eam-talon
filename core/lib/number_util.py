@@ -12,7 +12,14 @@ DIGITS_BY_WORD = {
     "six": 6,
     "seven": 7,
     "eight": 8,
-    "nine": 9
+    "nine": 9,
+
+    # Problematic ordinals.
+    "fourth": 4,
+    "sixth": 6,
+    "seventh": 7,
+    "eighth": 8,
+    "ninth": 9
 }
 TEENS_BY_WORD = {
     "ten": 10,
@@ -24,7 +31,19 @@ TEENS_BY_WORD = {
     "sixteen": 16,
     "seventeen": 17,
     "eighteen": 18,
-    "nineteen": 19
+    "nineteen": 19,
+
+    # Problematic ordinals.
+    "tenth": 10,
+    "eleventh": 11,
+    "twelfth": 12,
+    "thirteenth": 13,
+    "fourteenth": 14,
+    "fifteenth": 15,
+    "sixteenth": 16,
+    "seventeenth": 17,
+    "eighteenth": 18,
+    "nineteenth": 19
 }
 TENS_BY_WORD = {
     "twenty": 20,

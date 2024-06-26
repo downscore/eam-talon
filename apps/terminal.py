@@ -23,23 +23,6 @@ app: terminal
 class ExtensionActions:
   """Action overwrites."""
 
-  def delete_line():
-    actions.key("ctrl-u")
-
-  def line_end():
-    actions.key("ctrl-e")
-
-  def line_start():
-    actions.key("ctrl-a")
-
-  def delete_to_line_end():
-    actions.key("ctrl-k")
-
-  def delete_word_left(n: int = 1):
-    # Deletes to the end of the line. Makes this command useful for the last word on the line.
-    actions.user.word_left()
-    actions.user.delete_to_line_end()
-
   def split_open_up():
     # Only split down action is available.
     actions.key("cmd-d")

@@ -25,9 +25,9 @@ terminal: user.switcher_focus_terminal()
 hangouts: user.switcher_focus_app_by_name("Google Chat")
 
 # Global shortcuts for opening a new terminal tab.
-terminal new: user.switcher_new_terminal_tab()
-terminal here: user.switcher_new_terminal_tab(user.app_get_current_directory())
-terminal paste: user.switcher_new_terminal_tab(clip.text())
+terminal new: user.switcher_new_tmux_window()
+terminal here: user.switcher_new_tmux_window(user.app_get_current_directory())
+terminal paste: user.switcher_new_tmux_window(clip.text())
 
 # Global shortcuts for IDE bookmarks.
 jump <user.number>: user.switcher_jump_to_bookmark(user.number)

@@ -54,7 +54,7 @@ class ExtensionActions:
     actions.sleep("50ms")
 
   def paste_via_insert():
-    """Pastes the clipboard contents with "insert" to bypass restrictions on pasting. May not work with unicode
+    """Pastes the clipboard contents with `insert` to bypass restrictions on pasting. May not work with unicode
     characters."""
     text = clip.text()
     actions.insert(text)
@@ -77,6 +77,28 @@ class ExtensionActions:
     """Deletes the current word."""
     actions.user.select_word()
     actions.user.delete()
+
+  def delete_to_line_end():
+    """Delete from the cursor to the end of the line."""
+    actions.user.extend_line_end()
+    actions.user.delete()
+
+  def delete_to_line_start():
+    """Delete from the cursor to the start of the line."""
+    actions.user.extend_line_start()
+    actions.user.delete()
+
+  def delete_word_left(n: int = 1):
+    """Delete one or more words to the left of the cursor."""
+    for _ in range(n):
+      actions.user.extend_word_left()
+      actions.user.delete()
+
+  def delete_word_right(n: int = 1):
+    """Delete one or more words to the right of the cursor."""
+    for _ in range(n):
+      actions.user.extend_word_right()
+      actions.user.delete()
 
   def up():
     """Moves the cursor up."""
@@ -297,28 +319,6 @@ class ExtensionActions:
     """Pops up a notification with the number of characters in the currently selected text."""
     characters = len(actions.user.selected_text())
     app.notify(f"Characters: {characters}")
-
-  def delete_to_line_end():
-    """Delete from the cursor to the end of the line."""
-    actions.user.extend_line_end()
-    actions.user.delete()
-
-  def delete_to_line_start():
-    """Delete from the cursor to the start of the line."""
-    actions.user.extend_line_start()
-    actions.user.delete()
-
-  def delete_word_left(n: int = 1):
-    """Delete one or more words to the left of the cursor."""
-    for _ in range(n):
-      actions.user.extend_word_left()
-      actions.user.delete()
-
-  def delete_word_right(n: int = 1):
-    """Delete one or more words to the right of the cursor."""
-    for _ in range(n):
-      actions.user.extend_word_right()
-      actions.user.delete()
 
   def duplicate_line():
     """Duplicate the current line."""

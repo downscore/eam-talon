@@ -22,18 +22,6 @@ app: iterm
 class ExtensionActions:
   """Action overwrites."""
 
-  def delete_line():
-    actions.key("ctrl-u")
-
-  def line_end():
-    actions.key("ctrl-e")
-
-  def line_start():
-    actions.key("ctrl-a")
-
-  def delete_to_line_end():
-    actions.key("ctrl-k")
-
   def delete_word_left(n: int = 1):
     # Deletes to the end of the line. Makes this command useful for the last word on the line.
     actions.user.word_left()

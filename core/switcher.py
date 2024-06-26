@@ -228,11 +228,11 @@ class Actions:
     """Focuses the browser window."""
     actions.user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
 
-  def switcher_new_terminal_tab(directory: str = ""):
-    """Opens a new terminal tab in the given directory. If directory is empty, open in the default directory, usually
+  def switcher_new_tmux_window(directory: str = ""):
+    """Opens a new tmux window in the given directory. If directory is empty, open in the default directory, usually
     the current user's home."""
     actions.user.switcher_focus_terminal()
-    actions.user.tab_open()
+    actions.user.shell_tmux_new_window()
     if directory:
       actions.user.insert_via_clipboard(f"cd \"{directory.strip()}\"")
       actions.key("enter")

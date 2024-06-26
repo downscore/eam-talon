@@ -47,8 +47,11 @@ class Actions:
     selected_text = actions.user.selected_text()
     url = extract_url(selected_text)
 
-    # Deselect the text.
-    actions.key("right")
+    # Fall back to selecting the entire line if we did not find a URL.
+    if not url:
+      actions.user.select_line_excluding_line_break()
+      selected_text = actions.user.selected_text()
+      url = extract_url(selected_text)
 
     # Make sure there is a URL.
     if not url:

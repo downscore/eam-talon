@@ -69,6 +69,24 @@ class ExtensionActions:
     # Close all panes in the tab.
     actions.key("cmd-alt-w")
 
+  def tab_next():
+    actions.key("cmd-shift-]")
+
+  def tab_open():
+    actions.key("cmd-t")
+
+  def tab_previous():
+    actions.key("ctrl-tab")
+
+  def tab_left():
+    actions.key("cmd-shift-[")
+
+  def tab_right():
+    actions.key("cmd-shift-]")
+
+  def tab_switch_by_index(num: int):
+    actions.key(f"cmd-{num}")
+
   def tab_list(name: str):
     # Use "open quickly" command.
     actions.key("cmd-shift-o")

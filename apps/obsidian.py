@@ -81,14 +81,34 @@ class ExtensionActions:
   def style_numbered_list():
     actions.user.obsidian("Toggle numbered list")
 
-  def tab_nth_previous(n: int):
-    # Make sure number of tab switches is reasonable.
-    if n < 1 or n > 9:
-      return
-    if n == 1:
-      actions.key("ctrl-tab")
-    else:
-      actions.key(f"cmd-o down:{n} enter")
+  def tab_close():
+    actions.key("cmd-w")
+
+  def tab_next():
+    actions.key("cmd-shift-]")
+
+  def tab_open():
+    actions.key("cmd-t")
+
+  def tab_previous():
+    actions.key("ctrl-tab")
+
+  def tab_reopen():
+    actions.key("cmd-shift-t")
+
+  def tab_left():
+    actions.key("cmd-shift-[")
+
+  def tab_right():
+    actions.key("cmd-shift-]")
+
+  def tab_switch_by_index(num: int):
+    actions.key(f"cmd-{num}")
+
+  def tab_switch_by_name(name: str):
+    actions.key("cmd-o")
+    actions.insert(name)
+    actions.key("enter")
 
   def tab_list(name: str):
     # Use quick open dialog.
@@ -98,10 +118,14 @@ class ExtensionActions:
       actions.insert(name)
       actions.sleep("50ms")
 
-  def tab_switch_by_name(name: str):
-    actions.key("cmd-o")
-    actions.insert(name)
-    actions.key("enter")
+  def tab_nth_previous(n: int):
+    # Make sure number of tab switches is reasonable.
+    if n < 1 or n > 9:
+      return
+    if n == 1:
+      actions.key("ctrl-tab")
+    else:
+      actions.key(f"cmd-o down:{n} enter")
 
   def textflow_get_selected_text_potato_mode() -> str:
     # Obsidian copies the entire line if nothing is selected, which breaks a bunch of TextFlow stuff.

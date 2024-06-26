@@ -33,8 +33,23 @@ class ExtensionActions:
   def split_close():
     actions.key("cmd-shift-d")
 
+  def tab_close():
+    actions.key("cmd-w")
+
+  def tab_next():
+    actions.key("cmd-shift-]")
+
+  def tab_open():
+    actions.key("cmd-t")
+
+  def tab_previous():
+    actions.key("ctrl-tab")
+
   def tab_left():
-    actions.key("ctrl-shift-tab")
+    actions.key("cmd-shift-[")
 
   def tab_right():
-    actions.key("ctrl-tab")
+    actions.key("cmd-shift-]")
+
+  def tab_switch_by_index(num: int):
+    actions.key(f"cmd-{num}")

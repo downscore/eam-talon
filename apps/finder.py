@@ -24,6 +24,19 @@ app: finder
 class ExtensionActions:
   """Action overwrites."""
 
+  def app_get_current_directory() -> str:
+    return applescript.run(r"""
+      tell application "Finder"
+          set currentPath to POSIX path of (target of front window as alias)
+      end tell
+      return currentPath""")
+
+  def app_get_current_location() -> str:
+    return actions.user.app_get_current_directory()
+
+  def app_copy_current_location():
+    actions.key("alt-cmd-c")
+
   def file_manager_open_parent():
     actions.key("cmd-up")
 
@@ -39,6 +52,24 @@ class ExtensionActions:
     if name:
       actions.insert(name)
 
+  def tab_close():
+    actions.key("cmd-w")
+
+  def tab_next():
+    actions.key("cmd-shift-]")
+
+  def tab_open():
+    actions.key("cmd-t")
+
+  def tab_previous():
+    actions.key("ctrl-tab")
+
+  def tab_left():
+    actions.key("cmd-shift-[")
+
+  def tab_right():
+    actions.key("cmd-shift-]")
+
   def tab_list(name: str):
     actions.key("cmd-shift-\\")
     actions.sleep("250ms")
@@ -46,16 +77,3 @@ class ExtensionActions:
       actions.key("cmd-f")
       actions.insert(name)
       actions.sleep("50ms")
-
-  def app_get_current_directory() -> str:
-    return applescript.run(r"""
-      tell application "Finder"
-          set currentPath to POSIX path of (target of front window as alias)
-      end tell
-      return currentPath""")
-
-  def app_get_current_location() -> str:
-    return actions.user.app_get_current_directory()
-
-  def app_copy_current_location():
-    actions.key("alt-cmd-c")

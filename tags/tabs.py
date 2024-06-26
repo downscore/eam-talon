@@ -5,6 +5,7 @@
 # mypy: ignore-errors
 
 from talon import Context, Module, actions
+from ..core.system import unsupported_command
 
 mod = Module()
 ctx = Context()
@@ -22,41 +23,43 @@ class Actions:
 
   def tab_close():
     """Closes the current tab."""
-    actions.key("cmd-w")
+    unsupported_command("Closing tabs not supported.")
 
   def tab_next():
     """Jumps to the next tab."""
-    actions.key("cmd-shift-]")
+    unsupported_command("Going to next tab not supported.")
 
   def tab_open():
     """Opens a new tab."""
-    actions.key("cmd-t")
+    unsupported_command("Opening tabs not supported.")
 
   def tab_previous():
     """Jumps to the previous tab."""
-    actions.key("ctrl-tab")
+    unsupported_command("Going to previous tab not supported.")
 
   def tab_reopen():
     """Reopens the last closed tab."""
-    actions.key("cmd-shift-t")
+    unsupported_command("Reopening tabs not supported.")
 
   def tab_left():
     """Jumps to the tab to the left."""
-    actions.key("cmd-shift-[")
+    unsupported_command("Going to tab to the left not supported.")
 
   def tab_right():
     """Jumps to the tab to the right."""
-    actions.key("cmd-shift-]")
+    unsupported_command("Going to tab to the right not supported.")
 
   def tab_switch_by_index(num: int):
     """Switches to a tab given its index."""
-    actions.key(f"cmd-{num}")
+    unsupported_command("Switching tabs by index not supported.")
 
   def tab_switch_by_name(name: str):
     """Switches to a tab by name."""
+    unsupported_command("Switching tabs by name not supported.")
 
   def tab_list(name: str):
     """Lists open tabs and applies an optional search string."""
+    unsupported_command("Listing tabs not supported.")
 
   def tab_nth_previous(n: int):
     """Switches to the nth previous tab."""

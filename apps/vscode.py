@@ -88,18 +88,6 @@ class ExtensionActions:
 
     return preceding_text
 
-  def tab_open():
-    actions.user.vscode("workbench.action.files.newUntitledFile")
-
-  def tab_close():
-    actions.user.vscode("workbench.action.closeActiveEditor")
-
-  def tab_next():
-    actions.user.vscode("workbench.action.nextEditorInGroup")
-
-  def tab_reopen():
-    actions.user.vscode("workbench.action.reopenClosedEditor")
-
   def window_close():
     actions.user.vscode("workbench.action.closeWindow")
 
@@ -237,14 +225,34 @@ class ExtensionActions:
     # IDE is already focused so just jump to the bookmark.
     actions.key(f"ctrl-{bookmark_num}")
 
-  def tab_nth_previous(n: int):
-    # Make sure number of tab switches is reasonable.
-    if n < 1 or n > 9:
-      return
-    if n == 1:
-      actions.key("ctrl-tab")
-    else:
-      actions.key(f"cmd-p down:{n} enter")
+  def tab_close():
+    actions.user.vscode("workbench.action.closeActiveEditor")
+
+  def tab_next():
+    actions.user.vscode("workbench.action.nextEditorInGroup")
+
+  def tab_open():
+    actions.user.vscode("workbench.action.files.newUntitledFile")
+
+  def tab_previous():
+    """Jumps to the previous tab."""
+    actions.key("ctrl-tab")
+
+  def tab_reopen():
+    actions.user.vscode("workbench.action.reopenClosedEditor")
+
+  def tab_left():
+    actions.key("cmd-shift-[")
+
+  def tab_right():
+    actions.key("cmd-shift-]")
+
+  def tab_switch_by_name(name: str):
+    # Alternative: actions.user.vscode("workbench.action.quickOpen")
+    actions.key("cmd-p")
+    actions.user.insert_via_clipboard(name)
+    actions.sleep("50ms")
+    actions.key("enter")
 
   def tab_list(name: str):
     # Alternative: actions.user.vscode("workbench.action.quickOpen")
@@ -253,12 +261,14 @@ class ExtensionActions:
       actions.user.insert_via_clipboard(name or "")
       actions.sleep("50ms")
 
-  def tab_switch_by_name(name: str):
-    # Alternative: actions.user.vscode("workbench.action.quickOpen")
-    actions.key("cmd-p")
-    actions.user.insert_via_clipboard(name)
-    actions.sleep("50ms")
-    actions.key("enter")
+  def tab_nth_previous(n: int):
+    # Make sure number of tab switches is reasonable.
+    if n < 1 or n > 9:
+      return
+    if n == 1:
+      actions.key("ctrl-tab")
+    else:
+      actions.key(f"cmd-p down:{n} enter")
 
   def textflow_get_selected_text_potato_mode() -> str:
     # By default, VS Code copies the entire line if nothing is selected, which breaks a bunch of TextFlow stuff.

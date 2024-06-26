@@ -9,6 +9,15 @@ from talon import Module, actions, app, imgui, registry, scope, ui
 mod = Module()
 
 
+def unsupported_command(message: str = ""):
+  """When a command is not supported, this function notifies the user and raises an exception to interrupt chained
+  commands. This prevents subsequent commands that may have relied on the current command completing successfully from
+  having unintended effects."""
+  message = message if message else "Unsupported command"
+  actions.app.notify(message)
+  raise ValueError(message)
+
+
 @imgui.open(y=0)
 def context_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   """Creates a gui displaying active context."""

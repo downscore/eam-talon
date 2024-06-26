@@ -32,18 +32,25 @@ class Actions:
     """Sends the tmux prefix key."""
     actions.key("ctrl-a")
 
+  def shell_tmux_command(command: str):
+    """Runs a command at the : prompt in the tmux session. `command` should not include the : character."""
+    actions.user.shell_tmux_prefix()
+    actions.insert(":")
+    actions.sleep("50ms")
+    actions.insert(command)
+    actions.key("enter")
+    actions.sleep("50ms")
+
   def shell_tmux_new_window(title: str = ""):
     """Creates a new tmux window. Optionally sets the window title."""
-    actions.user.shell_tmux_prefix()
-    actions.key("c")
-    actions.sleep("100ms")
+    actions.user.tab_open()
     if title:
       actions.user.shell_tmux_prefix()
       actions.key(",")
       actions.user.delete_line()
       actions.insert(title)
       actions.key("enter")
-      actions.sleep("100ms")
+      actions.sleep("50ms")
 
 
 @ctx.action_class("user")
@@ -88,3 +95,32 @@ class ExtensionActions:
 
   def line_end():
     actions.key("end")
+
+  def tab_close():
+    actions.user.shell_tmux_command("kill-window")
+
+  def tab_next():
+    actions.user.shell_tmux_command("next-window")
+
+  def tab_open():
+    actions.user.shell_tmux_command("new-window")
+
+  def tab_previous():
+    actions.user.shell_tmux_command("last-window")
+
+  def tab_left():
+    actions.user.shell_tmux_command("select-window -t :-")
+
+  def tab_right():
+    actions.user.shell_tmux_command("select-window -t :+")
+
+  def tab_switch_by_index(num: int):
+    actions.user.shell_tmux_command(f"select-window -t {num}")
+
+  def tab_list(name: str):
+    actions.user.shell_tmux_command("list-windows")
+    if name:
+      actions.key("/")
+      actions.sleep("50ms")
+      actions.insert(name)
+      actions.key("enter")

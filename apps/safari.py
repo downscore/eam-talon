@@ -73,13 +73,29 @@ class ExtensionActions:
     actions.key("cmd-shift-alt-v")
     actions.sleep("50ms")
 
-  def tab_list(name: str):
-    actions.key("cmd-shift-\\")
-    actions.sleep("250ms")
-    if name:
-      actions.key("cmd-f")
-      actions.insert(name)
-      actions.sleep("50ms")
+  def tab_close():
+    actions.key("cmd-w")
+
+  def tab_next():
+    actions.key("cmd-shift-]")
+
+  def tab_open():
+    actions.key("cmd-t")
+
+  def tab_previous():
+    actions.key("ctrl-tab")
+
+  def tab_reopen():
+    actions.key("cmd-shift-t")
+
+  def tab_left():
+    actions.key("cmd-shift-[")
+
+  def tab_right():
+    actions.key("cmd-shift-]")
+
+  def tab_switch_by_index(num: int):
+    actions.key(f"cmd-{num}")
 
   def tab_switch_by_name(name: str):
     # TODO: Implement in browser tag using browser_get_all_tabs and other actions.
@@ -144,6 +160,14 @@ class ExtensionActions:
       end tell
       """
     applescript.run(set_tab_script)
+
+  def tab_list(name: str):
+    actions.key("cmd-shift-\\")
+    actions.sleep("250ms")
+    if name:
+      actions.key("cmd-f")
+      actions.insert(name)
+      actions.sleep("50ms")
 
   def browser_get_all_tabs() -> list[browser_util.Tab]:
     return actions.user.safari_get_all_tabs()

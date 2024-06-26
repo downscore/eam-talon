@@ -1,6 +1,6 @@
 os: mac
 -
-notes close: user.macos_close_all_notifications()
+notes close: user.notifications_close()
 hidden files dog: key(cmd-shift-.)
 spotlight:
   key(cmd-space)

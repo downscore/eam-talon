@@ -5,7 +5,7 @@
 # mypy: ignore-errors
 
 import subprocess
-from talon import Context, Module
+from talon import Context, Module, actions
 from talon.mac import applescript
 
 mod = Module()
@@ -19,6 +19,10 @@ os: mac
 @mod.action_class
 class Actions:
   """MacOS system actions."""
+
+  def notifications_close():
+    """Action that can be overridden to close app-specific notifications in addition to system ones."""
+    actions.user.macos_close_all_notifications()
 
   def macos_close_all_notifications():
     """Closes all open notifications."""

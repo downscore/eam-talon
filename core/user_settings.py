@@ -70,10 +70,14 @@ def load_dict_from_csv(filename: str) -> Dict[str, str]:
   path = _SETTINGS_DIR / filename
   private_path = _PRIVATE_SETTINGS_DIR / filename
 
-  # Read via resource to take advantage of talon's ability to reload this script for us when the resource changes.
-  with resource.open(str(path), "r") as f:
-    rows = list(csv.reader(f))
-  result = _load_dict_internal(str(path), rows)
+  result = {}
+
+  # Read public file if it exists. Read via resource to take advantage of talon's ability to reload this script for us
+  # when the resource changes.
+  if path.exists():
+    with resource.open(str(path), "r") as f:
+      rows = list(csv.reader(f))
+    result.update(_load_dict_internal(str(path), rows))
 
   # Read private file if it exists. Note: Specified file must exist. Private version does not have to.
   # Returned dictionary will be updated with the contents of the private file.

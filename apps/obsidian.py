@@ -54,14 +54,18 @@ class ExtensionActions:
   def navigation_forward():
     actions.key("cmd-alt-right")
 
-  def split_close():
-    actions.user.obsidian("Close this tab group")
-
   def split_open_down():
     actions.user.obsidian("Split down")
 
   def split_open_right():
     actions.user.obsidian("Split right")
+
+  def split_close():
+    actions.user.obsidian("Close this tab group")
+
+  def split_last():
+    # Use a partial command to focus on another split regardless of position. Works when there are two splits.
+    actions.user.obsidian("Focus on tab group ")
 
   def split_switch_up():
     actions.user.obsidian("Focus on tab group above")

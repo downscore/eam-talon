@@ -96,6 +96,57 @@ class ExtensionActions:
   def line_end():
     actions.key("end")
 
+  def split_open_up():
+    actions.user.shell_tmux_command("split-window -v -b")
+
+  def split_open_down():
+    actions.user.shell_tmux_command("split-window -v")
+
+  def split_open_left():
+    actions.user.shell_tmux_command("split-window -h -b")
+
+  def split_open_right():
+    actions.user.shell_tmux_command("split-window -h")
+
+  def split_close():
+    actions.user.shell_tmux_command("kill-pane")
+
+  def split_maximize():
+    actions.user.shell_tmux_command("resize-pane -Z")
+
+  def split_next():
+    actions.user.shell_tmux_command("next-window")
+
+  def split_last():
+    actions.user.shell_tmux_command("last-window")
+
+  def split_switch_up():
+    actions.user.shell_tmux_command("select-pane -U")
+
+  def split_switch_down():
+    actions.user.shell_tmux_command("select-pane -D")
+
+  def split_switch_left():
+    actions.user.shell_tmux_command("select-pane -L")
+
+  def split_switch_right():
+    actions.user.shell_tmux_command("select-pane -R")
+
+  def split_switch_by_index(index: int):
+    actions.user.shell_tmux_command(f"select-pane -t {index}")
+
+  def split_move_file_up():
+    actions.user.shell_tmux_command("rotate-window")
+
+  def split_move_file_down():
+    actions.user.shell_tmux_command("rotate-window -U")
+
+  def split_move_file_left():
+    actions.user.shell_tmux_command("rotate-window")
+
+  def split_move_file_right():
+    actions.user.shell_tmux_command("rotate-window -U")
+
   def tab_close():
     actions.user.shell_tmux_command("kill-window")
 

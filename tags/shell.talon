@@ -1,7 +1,8 @@
 tag: user.shell
 -
 tag(): user.file_manager
-# tmux provides tab-line window management in the shell.
+# tmux provides splits and tabs in the shell.
+tag(): user.splits
 tag(): user.tabs
 
 # Search using fuzzy finder.

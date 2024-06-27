@@ -17,7 +17,7 @@ split up: user.split_switch_up()
 split down: user.split_switch_down()
 split left: user.split_switch_left()
 split right: user.split_switch_right()
-split go <user.number>: user.split_switch_by_index(number)
+split numb <user.number>: user.split_switch_by_index(number)
 
 # Moving files between splits.
 split drag up: user.split_move_file_up()

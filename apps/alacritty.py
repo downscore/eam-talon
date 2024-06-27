@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions
+from talon import Context, Module
 
 mod = Module()
 ctx = Context()
@@ -16,14 +16,3 @@ app.bundle: org.alacritty
 ctx.matches = r"""
 app: alacritty
 """
-
-
-@ctx.action_class("user")
-class ExtensionActions:
-  """Action overwrites."""
-
-  def delete_line():
-    actions.key("ctrl-u")
-
-  def line_end():
-    actions.key("ctrl-e")

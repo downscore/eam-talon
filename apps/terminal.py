@@ -23,16 +23,6 @@ app: terminal
 class ExtensionActions:
   """Action overwrites."""
 
-  def split_open_up():
-    # Only split down action is available.
-    actions.key("cmd-d")
-
-  def split_open_down():
-    actions.key("cmd-d")
-
-  def split_close():
-    actions.key("cmd-shift-d")
-
   def tab_close():
     actions.key("cmd-w")
 

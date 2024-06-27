@@ -46,3 +46,26 @@ class Actions:
   def macos_beep():
     """Plays a system beep sound."""
     subprocess.Popen(["afplay", "/System/Library/Sounds/Ping.aiff"])
+
+  def macos_spotlight(query: str = ""):
+    """Opens Spotlight and optionally opens the first result for the given query."""
+    actions.key("cmd-space")
+    actions.sleep("100ms")
+    if query:
+      actions.insert(query)
+      actions.sleep("100ms")
+      actions.key("enter")
+      actions.sleep("100ms")
+
+  def macos_change_sound_output_device(device_name: str):
+    """Change the selected audio output device to the given device name."""
+    if not device_name:
+      raise ValueError("Device name must be provided.")
+    actions.user.macos_spotlight("Sound output")
+
+    # Wait for the sound output window to open and populate. This can take a while, especially if there are airplay
+    # devices.
+    actions.sleep("1500ms")
+
+    # Click on the given device name.
+    actions.user.mouse_ocr_click(device_name, button=0, use_active_window=True, interactive_disambiguation=False)

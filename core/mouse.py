@@ -146,15 +146,29 @@ def _ocr_active_context() -> list[Any]:
   return ocr.ocr(screencap)
 
 
-def _ocr_search(s: str):
-  """Perform an OCR search for the given string."""
+def _ocr_active_window() -> list[Any]:
+  """Runs OCR over the active window."""
+  active_window = ui.active_window()
+  if active_window.id == -1:
+    raise ValueError("No active window.")
+  rect = active_window.rect
+  screencap = screen.capture(rect.x, rect.y, rect.width, rect.height, retina=False)
+  return ocr.ocr(screencap)
+
+
+def _ocr_search(s: str, use_active_window: bool = False):
+  """Perform an OCR search for the given string.
+  `use_active_window`:
+    - True: Uses the active window for OCR.
+    - False: Uses the active screen for OCR.
+  """
   global _regex_from_last_search
   global _target_rects_from_last_search
 
   regex_str = get_phrase_regex(s.split(), actions.user.get_all_homophones)
   _regex_from_last_search = re.compile(regex_str, re.IGNORECASE)
 
-  results = _ocr_active_context()
+  results = _ocr_active_window() if use_active_window else _ocr_active_context()
   _target_rects_from_last_search = []
   for result in results:
     regex_match = _regex_from_last_search.search(result.text)
@@ -216,16 +230,26 @@ class Actions:
       rect = active_window.rect
     actions.mouse_move(rect.x + rect.width // 2, rect.y + rect.height // 2)
 
-  def mouse_ocr_click(s: str, button: int = 0):
-    """Searches for the given string. If there is one match, clicks it, otherwise displays matches."""
+  def mouse_ocr_click(query: str,
+                      button: int = 0,
+                      use_active_window: bool = False,
+                      interactive_disambiguation: bool = True):
+    """Searches for the given string.
+    `use_active_window`:
+      - True: Uses the active window for OCR.
+      - False: Uses the active screen for OCR.
+    `interactive_disambiguation`:
+      - True: If there is one match, clicks it, otherwise displays matches.
+      - False: Always clicks the first match.
+      """
     global _button_from_last_search
 
-    _ocr_search(s)
+    _ocr_search(query, use_active_window)
     _button_from_last_search = button
 
     if len(_target_rects_from_last_search) == 0:
-      return
-    if len(_target_rects_from_last_search) == 1:
+      raise ValueError(f"No OCR matches found for: {query}")
+    if len(_target_rects_from_last_search) == 1 or not interactive_disambiguation:
       _ocr_move_mouse_to_rect(_target_rects_from_last_search[0])
       actions.mouse_click(button)
       return
@@ -233,15 +257,15 @@ class Actions:
     # Display matches for clicking.
     actions.user.mouse_ocr_ui_show()
 
-  def mouse_ocr_move(s: str):
+  def mouse_ocr_move(query: str):
     """Searches for the given string. If there is one match, moves the mouse to it, otherwise displays matches."""
     global _button_from_last_search
 
-    _ocr_search(s)
+    _ocr_search(query)
     _button_from_last_search = None
 
     if len(_target_rects_from_last_search) == 0:
-      return
+      raise ValueError(f"No OCR matches found for: {query}")
     if len(_target_rects_from_last_search) == 1:
       _ocr_move_mouse_to_rect(_target_rects_from_last_search[0])
       return

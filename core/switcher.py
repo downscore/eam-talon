@@ -119,6 +119,10 @@ def launch_applications(m) -> str:
 class Actions:
   """Actions related to launching and switching between apps."""
 
+  def switcher_close_running_app():
+    """Closes the current running application."""
+    actions.key("cmd-q")
+
   def switcher_get_running_app(name: str) -> ui.App:
     """Gets the first available running app with `name`."""
     for running_app in ui.apps():

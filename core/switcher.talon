@@ -10,6 +10,11 @@ app list launch last: user.switcher_launch_previous_page()
 
 # Launching applications.
 app launch <user.launch_applications>: user.switcher_launch(launch_applications)
+# Shortcut for launching activity monitor.
+activity monitor: user.switcher_launch("/System/Applications/Utilities/Activity Monitor.app")
+
+# Close the current application (not just the window).
+app terminate: user.switcher_close_running_app()
 
 # Saving windows for shortcuts.
 app save coder: user.switcher_save_current_window_by_name("coder")

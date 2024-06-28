@@ -106,7 +106,7 @@ chuck up:
 chuck down:
   user.extend_down()
   user.delete()
-check everything: user.delete_all()
+chuck everything: user.delete_all()
 chuck word: user.delete_word()
 scratcher: user.delete_word_left()
 swallow: user.delete_word_right()

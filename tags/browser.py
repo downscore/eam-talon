@@ -25,13 +25,6 @@ def _get_tab_title() -> str:
   return title
 
 
-def _add_new_context_line():
-  """Focuses Obsidian and adds a new line to the context section of the current document."""
-  actions.user.switcher_focus_app_by_name("Obsidian")
-  actions.user.textflow_move_cursor_after_markdown_section("Context")
-  actions.user.line_insert_down()
-
-
 @mod.action_class
 class BrowserActions:
   """Browser actions.
@@ -74,19 +67,19 @@ class BrowserActions:
     # Implementation most likely requires AppleScript, an extension, or similar.
     raise NotImplementedError()
 
-  def browser_add_tab_to_context_and_close():
+  def browser_add_tab_to_obsidian_and_close(document_name: str = "", section_name: str = ""):
     """Adds the current tab to the context section of the current Obisidan doc and closes it."""
     url = actions.user.app_get_current_location()
     title = _get_tab_title()
     actions.user.tab_close()
-    _add_new_context_line()
+    actions.user.obsidian_append_to_document(document_name, section_name)
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
-  def browser_add_tab_to_context_keep_open():
+  def browser_add_tab_to_obsidian_keep_open(document_name: str = "", section_name: str = ""):
     """Adds the current tab to the context section of the current Obisidan doc but does not close it."""
     url = actions.user.app_get_current_location()
     title = _get_tab_title()
-    _add_new_context_line()
+    actions.user.obsidian_append_to_document(document_name, section_name)
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
 

@@ -20,6 +20,7 @@ coconut [<phrase>]$:
 now do coconut [<phrase>]$:
   user.mode_command()
   user.mode_disable_speech()
+  user.macos_beep()
 
 # Allow media control without enabling speech.
 media (play | pause): key(play)

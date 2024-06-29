@@ -18,12 +18,12 @@ class Actions:
     """Focuses Obsidian and opens the given document. Remains on the currently-open document if no document name is
     provided."""
     actions.user.switcher_focus_app_by_name("Obsidian")
-    actions.sleep("50ms")
+    actions.sleep("200ms")
     if document_name:
       actions.key("cmd-o")
       actions.user.insert_via_clipboard(document_name)
       actions.key("enter")
-      actions.sleep("50ms")
+      actions.sleep("200ms")
 
   def obsidian_append_to_document(document_name: str = "", section_name: str = ""):
     """Focuses Obsidian and adds a new entry to the given section of the given document.
@@ -35,3 +35,7 @@ class Actions:
     else:
       actions.user.file_end()
     actions.user.line_insert_down()
+
+    # Add a list item. This should work even if there is already a list item marker on the line.
+    actions.user.select_line_excluding_line_break()
+    actions.insert("- ")

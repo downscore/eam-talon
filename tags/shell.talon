@@ -12,6 +12,11 @@ hunt tree: user.shell_search_files()
 # Sent SIGINT to the current process.
 signal interrupt: key("ctrl-c")
 
+# tmux commands.
+tmux: insert("tmux ")
+tmux attach: insert("tmux attach")
+tmux kill server: insert("tmux kill-server")
+
 # Common commands.
 seedy: insert("cd ")
 l s: insert("ls ")

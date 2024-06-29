@@ -21,7 +21,8 @@
   user.textflow_execute_command(textflow_command_type, textflow_indefinite)
 
 # Quick navigation commands.
-token <user.number_small>: user.textflow_select_nth_token(number_small)
+token <user.number_small> [past <user.number_small>]:
+  user.textflow_select_nth_token(number_small_1, number_small_2 or 0)
 token next: user.textflow_select_nth_token(1)
 token last: user.textflow_select_nth_token(-1)
 argument <user.number_small>: user.textflow_select_nth_modifier(number_small, "ARGUMENT_NTH")

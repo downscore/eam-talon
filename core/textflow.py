@@ -594,19 +594,30 @@ class Actions:
     command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_singular)
     _run_command(command)
 
-  def textflow_select_nth_token(n: int):
-    """Selects the nth token from the current cursor position. n may be negative to search backwards."""
-    if n == 0:
+  def textflow_select_nth_token(from_n: int, to_n: int = 0):
+    """Selects the nth token from the current cursor position. from_n may be negative to search backwards.
+    If to_n is 0, the selection will be a single token. If to_n is positive, the selection will be a range of tokens,
+    and from_n may not be negative."""
+    if from_n == 0:
       return
-    if n > 0:
+    if to_n > 0 and from_n < 0:
+      raise ValueError("Negative from_n not allowed when to_n is positive.")
+    if to_n > 0 and from_n >= to_n:
+      raise ValueError("from_n must be less than to_n if to_n is provided.")
+    if from_n > 0 and to_n > 0:
       target_from = tf.CompoundTarget(
-          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=n),
+          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
+                          tf.SearchDirection.FORWARD),
+          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=to_n - from_n)))
+    elif from_n > 0:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
                           tf.SearchDirection.FORWARD))
     else:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(
               # pylint: disable=invalid-unary-operand-type
-              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-n),
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-from_n),
               tf.SearchDirection.BACKWARD))
     command = tf.Command(tf.CommandType.SELECT, target_from)
     _run_command(command)

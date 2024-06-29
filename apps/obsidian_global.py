@@ -32,9 +32,14 @@ class Actions:
     actions.user.obsidian_open_document(document_name)
     if section_name:
       actions.user.textflow_move_cursor_after_markdown_section(section_name)
+      actions.user.line_insert_down()
     else:
       actions.user.file_end()
-    actions.user.line_insert_down()
+      # Check if the last line is empty.
+      actions.user.select_line_excluding_line_break()
+      if actions.user.selected_text():
+        # The line is not empty, so add a blank line before appending.
+        actions.user.line_insert_down()
 
     # Add a list item. This should work even if there is already a list item marker on the line.
     actions.user.select_line_excluding_line_break()

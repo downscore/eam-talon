@@ -10,3 +10,6 @@ bookmark add: user.browser_add_bookmark()
 tab context: user.browser_add_tab_to_obsidian_and_close("", "Context")
 # Same as above, but keeps tab open.
 tab keep context: user.browser_add_tab_to_obsidian_keep_open("", "Context")
+
+# Add the current tab URL to the "Docs Read" list in Obsidian.
+tab docs read: user.browser_add_tab_to_obsidian_docs_read_and_close()

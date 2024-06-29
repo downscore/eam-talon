@@ -68,7 +68,7 @@ class BrowserActions:
     raise NotImplementedError()
 
   def browser_add_tab_to_obsidian_and_close(document_name: str = "", section_name: str = ""):
-    """Adds the current tab to the context section of the current Obisidan doc and closes it."""
+    """Adds the current tab to the context section of the current Obsidian doc and closes it."""
     url = actions.user.app_get_current_location()
     title = _get_tab_title()
     actions.user.tab_close()
@@ -76,10 +76,20 @@ class BrowserActions:
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
   def browser_add_tab_to_obsidian_keep_open(document_name: str = "", section_name: str = ""):
-    """Adds the current tab to the context section of the current Obisidan doc but does not close it."""
+    """Adds the current tab to the context section of the current Obsidian doc but does not close it."""
     url = actions.user.app_get_current_location()
     title = _get_tab_title()
     actions.user.obsidian_append_to_document(document_name, section_name)
+    actions.user.insert_via_clipboard(f"[{title}]({url})")
+
+  def browser_add_tab_to_obsidian_docs_read_and_close():
+    """Adds the current tab to the "Docs Read" list in Obsidian and closes it."""
+    url = actions.user.app_get_current_location()
+    title = _get_tab_title()
+    actions.user.tab_close()
+    actions.user.obsidian_append_to_document("Docs Read", "")
+    actions.insert(actions.user.time_format("%Y-%m-%d"))
+    actions.insert(" ")
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
 

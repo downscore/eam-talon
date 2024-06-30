@@ -1,0 +1,10 @@
+// Snippet map key is spoken form. Prefixes can be used as keyboard triggers if this file is imported into vscode.
+// C-style line comments are allowed as long as the line contains only the comment.
+{
+  "list comp": {
+    "prefix": "listcomp",
+    "body": [
+      "[${1:expression} for ${2:item} in ${3:iterable} if ${4:condition}]"
+    ]
+  }
+}

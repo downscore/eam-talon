@@ -67,6 +67,9 @@ class UserActions:
   def app_get_current_location() -> str:
     return actions.user.vscode_return_value("eam-talon.getFilename")
 
+  def snippet_insert(body: str):
+    actions.user.vscode_and_wait("eam-talon.insertSnippet", body)
+
   def textflow_get_context() -> tft.TextFlowContext:
     context = actions.user.vscode_return_value("eam-talon.getTextFlowContext")
     # Disable potato mode because we implement the set selection action.

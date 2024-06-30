@@ -21,9 +21,9 @@ def _load_snippets_internal(filename: str, json_content: str) -> dict[str, str]:
   """Loads snippets from a string containing JSON data."""
   result = {}
 
-  # Strip comments from the JSON data then read it.
-  json_content = re.sub(r"//.*?\n", "", json_content)
-  json_content = re.sub(r"/\*.*?\*/", "", json_content, flags=re.DOTALL)
+  # Strip line comments from the JSON data then read it. Only strips lines that start with a comment, so snippets may
+  # include comments.
+  json_content = re.sub(r"^\w*//.*?\n", "", json_content, flags=re.MULTILINE)
   snippets = json.loads(json_content)
 
   # Get usable snippets from the loaded data.

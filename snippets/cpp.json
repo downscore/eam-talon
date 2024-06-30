@@ -1,0 +1,20 @@
+// Snippet map key is spoken form. Prefixes can be used as keyboard triggers if this file is imported into vscode.
+// C-style line comments are allowed as long as the line contains only the comment.
+{
+  "for loop": {
+    "prefix": "for",
+    "body": [
+      "for (int ${1:i} = 0; $1 < ${2:count}; ++$1) {",
+      "    $3",
+      "}"
+    ]
+  },
+  "namespace": {
+    "prefix": "namespace",
+    "body": [
+      "namespace $1 {",
+      "    $2",
+      "} // namespace $1"
+    ]
+  }
+}

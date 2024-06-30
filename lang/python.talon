@@ -142,6 +142,33 @@ tip string: insert("str")
 tip int: insert("int")
 tip float: insert("float")
 tip (bool|boolean|boo): insert("bool")
+tip dictionary:
+  insert("dict[]")
+  key(left)
+tip optional:
+  insert("Optional[]")
+  key(left)
+tip tuple:
+  insert("Tuple[]")
+  key(left)
+tip iterator:
+  insert("Iterator[]")
+  key(left)
+tip generator:
+  insert("Generator[]")
+  key(left)
+tip set:
+  insert("Set[]")
+  key(left)
+tip frozen set:
+  insert("FrozenSet[]")
+  key(left)
+tip callable:
+  insert("Callable[]")
+  key(left)
+tip union:
+  insert("Union[]")
+  key(left)
 
 hint any: insert(": Any")
 hint string: insert(": str")

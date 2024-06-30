@@ -55,7 +55,7 @@ class Actions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def file_manager_open_parent():
     actions.insert("cd ..")

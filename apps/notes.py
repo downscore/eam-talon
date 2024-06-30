@@ -21,7 +21,7 @@ app: notes
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def line_swap_down():
     actions.key("cmd-ctrl-down")

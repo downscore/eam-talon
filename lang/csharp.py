@@ -17,7 +17,7 @@ tag: user.lang_csharp
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def textflow_get_scope_modifier() -> tf.ModifierType:
     return tf.ModifierType.C_SCOPE

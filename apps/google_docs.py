@@ -37,7 +37,7 @@ class Actions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def textflow_potato_get_text_before_cursor():
     # Google Docs has some unusual text selection behavior. It randomly inserts trailing new lines, and behavior inside

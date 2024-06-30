@@ -25,7 +25,7 @@ app: gmail
 # left side of a selection that includes the end of the text.
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def line_end():
     # Move to the start of the line first to work around unusual UI behavior in Gmail.

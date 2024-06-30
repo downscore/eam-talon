@@ -20,7 +20,7 @@ app: google_sheets
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def line_insert_down():
     actions.user.line_end()

@@ -40,7 +40,7 @@ class BrowserActions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def browser_go(url: str):
     toolbar = ui.active_window().children.find_one(AXRole="AXToolbar", max_depth=1)

@@ -22,7 +22,7 @@ app: finder
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def app_get_current_directory() -> str:
     return applescript.run(r"""

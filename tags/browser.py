@@ -95,7 +95,7 @@ class BrowserActions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def app_get_current_location() -> str:
     return actions.browser.address()

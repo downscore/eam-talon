@@ -31,7 +31,7 @@ class Actions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   # The implementation below doesn't work well on wrapped lines (includes the first character after the wrap).
   # def select_line_including_line_break():

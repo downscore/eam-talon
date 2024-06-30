@@ -20,7 +20,7 @@ app: anki
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def app_get_current_directory() -> str:
     # Use the Anki user data directory as current.

@@ -54,7 +54,7 @@ class Actions:
 
 @ctx.action_class("win")
 class WinActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def filename():
     """Gets the open filename. Required for files opened over SSH."""
@@ -67,7 +67,7 @@ class WinActions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def dictation_get_preceding_text() -> str:
     for _ in range(mode_dictation.NUM_PRECEDING_CHARS):

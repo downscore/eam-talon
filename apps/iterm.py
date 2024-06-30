@@ -20,7 +20,7 @@ app: iterm
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def delete_word_left(n: int = 1):
     # Deletes to the end of the line. Makes this command useful for the last word on the line.

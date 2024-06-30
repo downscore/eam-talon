@@ -44,7 +44,7 @@ class BrowserActions:
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def browser_go(url: str):
     applescript.run("""

@@ -21,7 +21,7 @@ app: terminal
 
 @ctx.action_class("user")
 class ExtensionActions:
-  """Action overwrites."""
+  """Action overrides."""
 
   def tab_close():
     actions.key("cmd-w")

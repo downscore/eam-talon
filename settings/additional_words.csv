@@ -78,6 +78,7 @@ substring
 T-intersection,tea intersection
 tech
 TextFlow
+tokenizer
 tmux
 TODO
 # Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
@@ -154,6 +155,7 @@ fills,fils
 fine tune,fin tune
 gemini,geminate
 graph,graf
+green lights,greenlights
 in manual,Immanuel
 it,et
 lane,lang

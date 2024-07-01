@@ -79,6 +79,7 @@ T-intersection,tea intersection
 tech
 TextFlow
 tokenizer
+tokenizers
 tmux
 TODO
 # Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
@@ -103,6 +104,7 @@ brake harder,break harder
 brake lights,break lights
 braking distance,breaking distance
 braking hard,breaking hard
+cached,cashed
 dominance,dominants
 foul,fowl
 fouls,fowls

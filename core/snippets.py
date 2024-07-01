@@ -16,9 +16,6 @@ ctx = Context()
 _SNIPPETS_DIR = Path(__file__).parents[1] / "snippets"
 _PRIVATE_SNIPPETS_DIR = Path(__file__).parents[2] / "private/snippets"
 
-# Tag for editors with custom snippet implementations. Used to disable some snippet-related features.
-mod.tag("custom_snippets", desc="The current editor has custom snippet support")
-
 
 def _load_snippets_internal(filename: str, json_content: str) -> dict[str, str]:
   """Loads snippets from a string containing JSON data."""

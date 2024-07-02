@@ -46,6 +46,11 @@ def _capitalization_required(preceding_text: str) -> bool:
   """Determines if capitalization is required for the next word."""
   if len(preceding_text) < 2:
     return True
+
+  # Special case: Capitalize after "/ " to support dictating code comments.
+  if preceding_text[-2:] == "/ ":
+    return True
+
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
   if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", "_", "/", "'", "\"", "`",
                                           "$", "=", "@"):

@@ -23,10 +23,14 @@ class Actions:
   def shell_search_commands():
     """Searches through commands."""
     actions.key("ctrl-r")
+    # Give some time for the finder interface to appear. It can take a while in tmux.
+    actions.sleep("200ms")
 
   def shell_search_files():
     """Searches through files."""
     actions.key("ctrl-t")
+    # Give some time for the finder interface to appear. It can take a while in tmux.
+    actions.sleep("200ms")
 
   def shell_tmux_prefix():
     """Sends the tmux prefix key."""

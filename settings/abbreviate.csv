@@ -165,7 +165,9 @@ pub,public
 py,python
 qc,quebec
 qs,query string
-rnd,random
+rad,radian
+rad,radians
+rb,ruby
 rcpt,receipt
 ref,reference
 refs,references
@@ -181,7 +183,7 @@ repr,representation
 req,request
 ret,return
 rev,revision
-rb,ruby
+rnd,random
 sk,saskatchewan
 sp,service pack
 sid,session id

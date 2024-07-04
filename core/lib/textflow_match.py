@@ -119,6 +119,11 @@ def expand_match_to_token(text: str, match: TextMatch) -> TextMatch:
       if _REGEX_TOKEN_CHAR.match(text[end]) is None:
         break
       end += 1
+
+  # Remove leading single quotes from the match.
+  while start < end and text[start] == "'":
+    start += 1
+
   return make_text_match(start, end)
 
 

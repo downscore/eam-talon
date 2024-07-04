@@ -588,3 +588,8 @@ class MatchTokenTestCase(unittest.TestCase):
     text = "combo type to [m.textflow_target_combo_type]"
     options = TokenMatchOptions(match_method=TokenMatchMethod.WORD_START_THEN_SUBSTRING, search="ty")
     self.assertEqual(self._token(text, options, SearchDirection.BACKWARD), "type")
+
+  def test_do_not_match_leading_apostrophes(self):
+    text = "apple '''docstring contents''' banana"
+    options = TokenMatchOptions(match_method=TokenMatchMethod.WORD_START_THEN_SUBSTRING, search="doc")
+    self.assertEqual(self._token(text, options, SearchDirection.FORWARD), "docstring")

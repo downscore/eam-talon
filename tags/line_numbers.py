@@ -18,25 +18,6 @@ tag: user.line_numbers
 """
 
 
-def _insert_placeholder() -> str:
-  """Inserts a unique placeholder at the cursor position and returns it."""
-  # Insert some unique placeholder text so we can find the current position again later.
-  # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
-  # Reusing the same placeholder can result in the cursor not jumping to it, so we always create a unique one.
-  placeholder_uuid = uuid.uuid4()
-  placeholder = f"!!!LineNumbers{str(placeholder_uuid)[:5]}!!!"
-  actions.user.insert_via_clipboard(placeholder)
-  return placeholder
-
-
-def _restore_position_from_placeholder(placeholder: str):
-  """Finds the given placeholder text, moves the cursor to it, and deletes it."""
-  actions.user.find()
-  actions.user.insert_via_clipboard(placeholder)
-  actions.key("escape")
-  actions.key("backspace")
-
-
 @mod.action_class
 class Actions:
   """Line-number related actions."""
@@ -81,7 +62,7 @@ class Actions:
     """Copies a given line to the cursor location."""
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the beginning of the first line, before indentation.
     actions.user.jump_line(from_index)
@@ -101,12 +82,12 @@ class Actions:
     lines = actions.user.selected_text()
 
     # Go back to original position and insert the line.
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
     actions.user.insert_via_clipboard(lines)
 
   def line_numbers_insert_line_above_no_move(n: int):
     """Inserts a line above the given line number without moving the cursor."""
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the beginning of the line, before indentation.
     actions.user.jump_line(n)
@@ -115,22 +96,22 @@ class Actions:
     actions.user.line_start()
 
     actions.insert("\n")
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
 
   def line_numbers_insert_line_below_no_move(n: int):
     """Inserts a line below the given line number without moving the cursor."""
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the end of the line.
     actions.user.jump_line(n)
     actions.user.line_end()
 
     actions.insert("\n")
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
 
   def line_numbers_bring_line_argument(line_number: int, argument_index: int):
     """Brings the argument at the given index, from the given line number to the cursor position."""
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
@@ -140,12 +121,12 @@ class Actions:
     insert_text = actions.user.selected_text()
 
     # Go back to original position and insert the text.
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
     actions.user.insert_via_clipboard(insert_text)
 
   def line_numbers_bring_line_string(line_number: int, argument_index: int, delimiter: str):
     """Brings the string at the given index, from the given line number to the cursor position."""
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
@@ -155,12 +136,12 @@ class Actions:
     insert_text = actions.user.selected_text()
 
     # Go back to original position and insert the text.
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
     actions.user.insert_via_clipboard(insert_text)
 
   def line_numbers_bring_line_brackets(line_number: int, brackets_index: int):
     """Brings the brackets at the given index, from the given line number to the cursor position."""
-    placeholder = _insert_placeholder()
+    actions.user.position_mark()
 
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
@@ -170,5 +151,5 @@ class Actions:
     insert_text = actions.user.selected_text()
 
     # Go back to original position and insert the text.
-    _restore_position_from_placeholder(placeholder)
+    actions.user.position_restore()
     actions.user.insert_via_clipboard(insert_text)

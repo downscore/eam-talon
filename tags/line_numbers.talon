@@ -31,3 +31,15 @@ dedent line <user.number> [past <user.number>]:
   user.indent_less()
   user.right()
 bring line <user.number> [past <user.number>]: user.bring_line_range(number_1, number_2 or 0)
+
+# Using TextFlow to bring substrings from another line.
+bring line <user.number> argument <user.number_small>:
+  user.line_numbers_bring_line_argument(number, number_small)
+bring line <user.number> string <user.number_small>:
+  user.line_numbers_bring_line_string(number, number_small, "'")
+bring line <user.number> dubstring <user.number_small>:
+  user.line_numbers_bring_line_string(number, number_small, "\"")
+bring line <user.number> graves <user.number_small>:
+  user.line_numbers_bring_line_string(number, number_small, "`")
+bring line <user.number> brackets <user.number_small>:
+  user.line_numbers_bring_line_brackets(number, number_small)

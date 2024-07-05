@@ -127,3 +127,48 @@ class Actions:
 
     actions.insert("\n")
     _restore_position_from_placeholder(placeholder)
+
+  def line_numbers_bring_line_argument(line_number: int, argument_index: int):
+    """Brings the argument at the given index, from the given line number to the cursor position."""
+    placeholder = _insert_placeholder()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.textflow_select_nth_modifier(argument_index, "ARGUMENT_NTH")
+    actions.sleep("100ms")
+
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    _restore_position_from_placeholder(placeholder)
+    actions.user.insert_via_clipboard(insert_text)
+
+  def line_numbers_bring_line_string(line_number: int, argument_index: int, delimiter: str):
+    """Brings the string at the given index, from the given line number to the cursor position."""
+    placeholder = _insert_placeholder()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.textflow_select_nth_modifier(argument_index, "STRING_NTH", delimiter)
+    actions.sleep("100ms")
+
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    _restore_position_from_placeholder(placeholder)
+    actions.user.insert_via_clipboard(insert_text)
+
+  def line_numbers_bring_line_brackets(line_number: int, brackets_index: int):
+    """Brings the brackets at the given index, from the given line number to the cursor position."""
+    placeholder = _insert_placeholder()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.textflow_select_nth_modifier(brackets_index, "BRACKETS_NTH")
+    actions.sleep("100ms")
+
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    _restore_position_from_placeholder(placeholder)
+    actions.user.insert_via_clipboard(insert_text)

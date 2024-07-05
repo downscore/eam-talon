@@ -191,5 +191,5 @@ def copy_leading_decimal_digits(from_number: int, to_number: int) -> int:
   to_str = str(to_number)
   result = to_str
   for i in range(len(from_str) - len(to_str)):
-    result = from_str[i] + result
+    result = from_str[len(from_str) - len(to_str) - i - 1] + result
   return int(result)

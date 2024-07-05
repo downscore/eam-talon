@@ -98,13 +98,15 @@ sim list:
   # Alternative: user.vscode("workbench.action.gotoSymbol")
   key(cmd-shift-o)
 sim list of <user.prose>:
-  # Alternative: user.vscode("workbench.action.gotoSymbol")
   key(cmd-shift-o)
   user.insert_via_clipboard(prose)
 sim jump <user.prose>:
-  # Alternative: user.vscode("workbench.action.gotoSymbol")
   key(cmd-shift-o)
   user.insert_via_clipboard(prose)
+  key(enter)
+sim jump <user.formatters> <user.formatter_text>:
+  key(cmd-shift-o)
+  user.insert_via_clipboard(user.format_multiple(formatter_text, formatters))
   key(enter)
 sim global:
   # Alternative: user.vscode("workbench.action.showAllSymbols")

@@ -98,3 +98,9 @@ class CopyLeadingDecimalDigitsTestCase(unittest.TestCase):
 
   def test_second_longer(self):
     self.assertEqual(copy_leading_decimal_digits(12, 534), 534)
+
+  def test_two_digits_longer(self):
+    self.assertEqual(copy_leading_decimal_digits(1234, 56), 1256)
+
+  def test_with_zeros(self):
+    self.assertEqual(copy_leading_decimal_digits(103, 6), 106)

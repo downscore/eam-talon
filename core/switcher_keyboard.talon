@@ -29,4 +29,4 @@ key(ctrl-cmd-y): user.cross_browser_focus_tab_by_hostname("youtube.com")
 key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
 
 # Make the active window fullscreen.
-key(ctrl-cmd-f): user.snap_window_full()
+key(ctrl-cmd-z): user.snap_window_full()

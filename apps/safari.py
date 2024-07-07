@@ -26,7 +26,7 @@ app: safari
 
 @ctx.action_class("browser")
 class BrowserActions:
-  """Browser action overwrites."""
+  """Browser action overrides."""
 
   def address():
     script = """

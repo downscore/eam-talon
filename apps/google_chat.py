@@ -26,3 +26,18 @@ class Actions:
     """Focuses the search field in Google Chat."""
     actions.key("escape /")
     actions.sleep("100ms")
+
+
+@ctx.action_class("user")
+class ExtensionActions:
+  """Action overrides."""
+
+  def line_insert_down():
+    actions.user.line_end()
+    actions.key("shift-enter")
+
+  def line_insert_up():
+    # Going to line end first can help consistently preserve indentation in code.
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.key("shift-enter up")

@@ -146,6 +146,10 @@ copy head:
 copy tail:
   user.extend_line_end()
   user.clipboard_history_copy()
+# Copy multiple lines.
+copy <user.number_small> lines:
+  user.select_multiple_lines_including_line_break(number_small)
+  user.clipboard_history_copy()
 
 # Cutting to clipboard
 cut that: user.clipboard_history_cut()

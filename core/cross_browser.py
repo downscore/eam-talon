@@ -108,6 +108,16 @@ class Actions:
     # Note: Windows need to be matched to all tabs, as the process relies on matching the title of the active tab in
     # each window.
     context = browser_util.match_windows(all_tabs, interface.app.windows())
+
+    # Focus the appropriate matching tab.
+    actions.user.cross_browser_focus_matching_tab(context, matching_tabs)
+
+  def cross_browser_focus_matching_tab(context: browser_util.BrowserContext, matching_tabs: list[browser_util.Tab]):
+    """Focuses a tab from a list of tabs matching some query."""
+    if len(matching_tabs) == 0:
+      raise ValueError("No matching tabs found.")
+
+    interface = _get_active_browser_interface()
     is_browser_focused = interface.is_focused()
 
     # Check if we are already focused on a matching tab.

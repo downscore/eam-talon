@@ -4,8 +4,9 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+import re
 from talon import Context, Module, actions
-from ..core.lib import browser_util
+from ..core.lib import browser_util, textflow_match
 
 mod = Module()
 ctx = Context()
@@ -99,3 +100,17 @@ class ExtensionActions:
 
   def app_get_current_location() -> str:
     return actions.browser.address()
+
+  def tab_switch_by_name(name: str):
+    # Prepare query regex with homophones, if any.
+    regex_str = textflow_match.get_phrase_regex(name.split(), actions.user.get_all_homophones)
+    regex = re.compile(regex_str, re.IGNORECASE)
+
+    # Get all tabs matching the name.
+    context: browser_util.BrowserContext = actions.user.cross_browser_get_context()
+    matching_tabs = browser_util.get_tabs_matching_query(context.tabs, regex)
+    if len(matching_tabs) == 0:
+      raise ValueError(f"No tabs found for query: {regex}")
+
+    # Focus the appropriate matching tab.
+    actions.user.cross_browser_focus_matching_tab(context, matching_tabs)

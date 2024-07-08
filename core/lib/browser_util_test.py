@@ -148,6 +148,32 @@ class GetTabsMatchingHostnameTestCase(unittest.TestCase):
     self.assertEqual(result[0].url, "http://host.url.example.net/url5")
 
 
+class GetTabsMatchingQueryTestCase(unittest.TestCase):
+  """Test for getting all tabs that match a given query."""
+
+  def setUp(self):
+    self.tabs = [
+        Tab(1, 1, True, "title1", "http://host.example.com"),
+        Tab(1, 2, False, "title2", "http://url2"),
+        Tab(2, 1, False, "title3", "http://url3"),
+        Tab(2, 2, True, "title4", "http://host.example.com/url4"),
+        Tab(2, 3, False, "title5", "http://host.url.example.net/url5")
+    ]
+
+  def test_no_match_regex(self):
+    self.assertEqual(get_tabs_matching_query(self.tabs, re.compile("xyz")), [])
+
+  def test_hostname(self):
+    result = get_tabs_matching_query(self.tabs, re.compile(r"host\.example\.com"))
+    self.assertEqual(len(result), 2)
+    self.assertEqual(result[0].index, 1)
+    self.assertEqual(result[0].title, "title1")
+    self.assertEqual(result[0].url, "http://host.example.com")
+    self.assertEqual(result[1].index, 2)
+    self.assertEqual(result[1].title, "title4")
+    self.assertEqual(result[1].url, "http://host.example.com/url4")
+
+
 class GetFocusedTabListIndexTestCase(unittest.TestCase):
   """Test for getting the list index of the focused tab."""
 

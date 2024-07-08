@@ -1,6 +1,7 @@
 """Library for helping with browser-related tasks."""
 
 from dataclasses import dataclass, field
+import re
 from typing import Any, Optional
 from urllib.parse import urlparse
 
@@ -119,6 +120,16 @@ def get_tabs_matching_hostname(tabs: list[Tab], hostname: str) -> list[Tab]:
 
     # Check if the tab's URL contains the hostname (case insensitive).
     if url.hostname and hostname.lower() in url.hostname.lower():
+      result.append(tab)
+  return result
+
+
+def get_tabs_matching_query(tabs: list[Tab], query: re.Pattern) -> list[Tab]:
+  """Returns a list of tabs with URLs or titles matching the given query regex."""
+  result: list[Tab] = []
+  for tab in tabs:
+    # Check if the tab's title or URL matches the query.
+    if query.search(tab.url) or query.search(tab.title):
       result.append(tab)
   return result
 

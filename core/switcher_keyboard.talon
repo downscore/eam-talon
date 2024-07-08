@@ -18,6 +18,7 @@
 #   - ctrl-cmd-w: Delete tab group.
 #   - ctrl-cmd-r: Enter responsive design mode.
 
+# Focus an application or browser tab.
 key(ctrl-cmd-o): user.switcher_focus_app_by_name("Obsidian")
 key(ctrl-cmd-a): user.switcher_focus_app_by_name("ChatGPT")
 key(ctrl-cmd-q): user.switcher_focus_app_by_name("Google Chat")
@@ -30,3 +31,8 @@ key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
 
 # Make the active window fullscreen.
 key(ctrl-cmd-z): user.snap_window_full()
+
+# Move the active window to another screen.
+key(ctrl-cmd-1): user.move_window_to_screen(1)
+key(ctrl-cmd-2): user.move_window_to_screen(2)
+key(ctrl-cmd-3): user.move_window_to_screen(3)

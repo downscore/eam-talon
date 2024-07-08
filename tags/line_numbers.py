@@ -108,45 +108,13 @@ class Actions:
     actions.insert("\n")
     actions.user.position_restore()
 
-  def line_numbers_bring_line_argument(line_number: int, argument_index: int):
-    """Brings the argument at the given index, from the given line number to the cursor position."""
+  def line_numbers_bring_line_modifier(line_number: int, modifier_index: int, modifier_name: str, delimiter: str = ""):
+    """Brings the given modifier at the given index from the given line number to the cursor position."""
     actions.user.position_mark()
 
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_modifier(argument_index, "ARGUMENT_NTH")
-    actions.sleep("100ms")
-
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def line_numbers_bring_line_string(line_number: int, argument_index: int, delimiter: str):
-    """Brings the string at the given index, from the given line number to the cursor position."""
-    actions.user.position_mark()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_modifier(argument_index, "STRING_NTH", delimiter)
-    actions.sleep("100ms")
-
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def line_numbers_bring_line_brackets(line_number: int, brackets_index: int):
-    """Brings the brackets at the given index, from the given line number to the cursor position."""
-    actions.user.position_mark()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_modifier(brackets_index, "BRACKETS_NTH")
-    actions.sleep("100ms")
-
+    actions.user.textflow_select_nth_modifier(modifier_index, modifier_name, delimiter)
     insert_text = actions.user.selected_text()
 
     # Go back to original position and insert the text.
@@ -161,8 +129,36 @@ class Actions:
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
     actions.user.textflow_select_nth_token(from_index, to_index)
-    actions.sleep("100ms")
+    insert_text = actions.user.selected_text()
 
+    # Go back to original position and insert the text.
+    actions.user.position_restore()
+    actions.user.insert_via_clipboard(insert_text)
+
+  def line_numbers_bring_line_call(line_number: int, call_index: int):
+    """Brings the given function call at the given index from the given line number to the cursor position."""
+    actions.user.position_mark()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    for _ in range(call_index):
+      actions.user.textflow_select_nth_modifier(1, "CALL_NEXT")
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    actions.user.position_restore()
+    actions.user.insert_via_clipboard(insert_text)
+
+  def line_numbers_bring_line_scope(line_number: int):
+    """Brings the scope from the given line number to the cursor position."""
+    # Go to the beginning of the line to try to preserve indentation (especially important in python).
+    actions.user.line_start()
+
+    actions.user.position_mark()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.textflow_select_nth_modifier(1, "SCOPE")
     insert_text = actions.user.selected_text()
 
     # Go back to original position and insert the text.

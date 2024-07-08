@@ -121,6 +121,9 @@ references: user.vscode("references-view.findReferences")
 declaration: user.vscode("editor.action.revealDeclaration")
 definition: user.vscode("editor.action.revealDefinition")
 
+# Reverting changes.
+revert that: user.vscode("git.revertSelectedRanges")
+
 # Refactoring
 refactor that: user.vscode("editor.action.refactor")
 rename that: user.vscode("editor.action.rename")

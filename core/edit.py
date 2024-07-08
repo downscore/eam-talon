@@ -200,6 +200,15 @@ class ExtensionActions:
     """Selects the current line, including the trailing line break if present."""
     actions.key("cmd-left cmd-shift-right shift-right")
 
+  def select_multiple_lines_including_line_break(n: int):
+    """Selects the given number of lines, including the trailing line break if present."""
+    actions.user.select_line_including_line_break()
+    for _ in range(n - 1):
+      actions.user.extend_down()
+    # Go to line start before indentation.
+    actions.user.extend_line_start()
+    actions.user.extend_line_start()
+
   def select_word():
     """Selects the current word."""
     actions.user.left()

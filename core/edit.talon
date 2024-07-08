@@ -48,13 +48,13 @@ head: user.line_start()
 tail: user.line_end()
 jump top: user.file_start()
 jump bottom: user.file_end()
-before fragment <user.number>: user.fragment_cursor_before(number)
-after fragment <user.number>: user.fragment_cursor_after(number)
-before car <user.number>:
-  user.character_select_range(number_1, 0)
+before fragment <user.number_small>: user.fragment_cursor_before(number_small)
+after fragment <user.number_small>: user.fragment_cursor_after(number_small)
+before car <user.number_small>:
+  user.character_select_range(number_small_1, 0)
   key(left)
-after car <user.number>:
-  user.character_select_range(number_1, 0)
+after car <user.number_small>:
+  user.character_select_range(number_small_1, 0)
   key(right)
 
 # Selection
@@ -74,12 +74,12 @@ pick head: user.extend_line_start()
 pick tail: user.extend_line_end()
 pick top: user.extend_file_start()
 pick bottom: user.extend_file_end()
-fragment <user.number> [past <user.number>]: user.fragment_select(number_1, number_2 or 0)
-fragment head <user.number>: user.fragment_select_head(number)
-fragment tail <user.number>: user.fragment_select_tail(number)
+fragment <user.number_small> [past <user.number_small>]: user.fragment_select(number_small_1, number_small_2 or 0)
+fragment head <user.number_small>: user.fragment_select_head(number_small)
+fragment tail <user.number_small>: user.fragment_select_tail(number_small)
 fragment next: user.fragment_select_next()
 fragment last: user.fragment_select_previous()
-car <user.number> [past <user.number>]: user.character_select_range(number_1, number_2 or 0)
+car <user.number_small> [past <user.number_small>]: user.character_select_range(number_small_1, number_small_2 or 0)
 car next: user.character_select_next()
 car last: user.character_select_previous()
 line next:
@@ -89,7 +89,8 @@ line last:
   user.up()
   user.line_end()
   user.select_line_excluding_line_break()
-
+# Select multiple lines.
+pick <user.number_small> lines: user.select_multiple_lines_including_line_break(number_small)
 
 # Manipulating selections.
 puffer: user.expand_selection_to_adjacent_characters()
@@ -118,9 +119,10 @@ chuck top:
 chuck bottom:
   user.extend_file_end()
   user.delete()
-chuck fragment [<user.number>] [past <user.number>]: user.fragment_delete(number_1 or -1, number_2 or 0)
-chuck car <user.number> [past <user.number>]:
-  user.character_select_range(number_1, number_2 or 0)
+chuck fragment [<user.number_small>] [past <user.number_small>]:
+  user.fragment_delete(number_small_1 or -1, number_small_2 or 0)
+chuck car <user.number_small> [past <user.number_small>]:
+  user.character_select_range(number_small_1, number_small_2 or 0)
   user.delete()
 
 # Copying to clipboard

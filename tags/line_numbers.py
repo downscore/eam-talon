@@ -4,7 +4,6 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-import uuid
 from talon import Context, Module, actions
 from ..core.lib import number_util
 
@@ -146,6 +145,22 @@ class Actions:
     # Jump to the line, then select the target.
     actions.user.jump_line(line_number)
     actions.user.textflow_select_nth_modifier(brackets_index, "BRACKETS_NTH")
+    actions.sleep("100ms")
+
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    actions.user.position_restore()
+    actions.user.insert_via_clipboard(insert_text)
+
+  def line_numbers_bring_line_token(line_number: int, from_index: int, to_index: int = 0):
+    """Brings the token at the given index, or tokens from the given range, from the given line number to the cursor
+    position."""
+    actions.user.position_mark()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.textflow_select_nth_token(from_index, to_index)
     actions.sleep("100ms")
 
     insert_text = actions.user.selected_text()

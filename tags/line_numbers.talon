@@ -43,3 +43,5 @@ bring line <user.number> graves <user.number_small>:
   user.line_numbers_bring_line_string(number, number_small, "`")
 bring line <user.number> brackets <user.number_small>:
   user.line_numbers_bring_line_brackets(number, number_small)
+bring line <user.number> token <user.number_small> [past <user.number_small>]:
+  user.line_numbers_bring_line_token(number, number_small_1, number_small_2 or 0)

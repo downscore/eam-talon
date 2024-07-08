@@ -61,6 +61,8 @@ pick link: user.textflow_execute_command_enum_strings("SELECT", "MARKDOWN_LINK")
 pick comment: user.textflow_execute_command_enum_strings("SELECT", "COMMENT")
 pick brackets: user.textflow_execute_command_enum_strings("SELECT", "BRACKETS")
 pick invoke: user.textflow_execute_command_enum_strings("SELECT", "CALL")
+pick one token: user.textflow_select_nth_token(1)
+pick <user.number_small> tokens: user.textflow_select_nth_token(1, number_small)
 
 # Deletion commands using TextFlow modifiers.
 chuck sentence: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE")

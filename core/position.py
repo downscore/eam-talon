@@ -33,6 +33,10 @@ class ExtensionActions:
     """Restores the cursor to the last marked position."""
     # Find the placeholder text, move the cursor to it, and delete it.
     global _last_placeholder
+    if not _last_placeholder:
+      actions.app.notify("No cursor position has been marked.")
+      # Raise exception to stop chained commands from executing.
+      raise ValueError("No cursor position has been marked.")
     actions.user.find()
     actions.user.insert_via_clipboard(_last_placeholder)
     actions.key("escape")

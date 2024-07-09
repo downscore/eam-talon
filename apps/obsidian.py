@@ -24,7 +24,7 @@ class Actions:
 
   def obsidian(command: str):
     """Executes a command using the Obsidian command palette."""
-    actions.key("cmd-p")
+    actions.key("cmd-shift-p")
     actions.insert(command)
     actions.key("enter")
 

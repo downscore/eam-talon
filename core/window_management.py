@@ -169,6 +169,11 @@ class Actions:
     """Move the active window to a specific position on-screen."""
     _snap_window_helper(ui.active_window(), pos)
 
+  def snap_window_by_string(pos_str: str) -> None:
+    """Move the active window to a specific position given as a string."""
+    pos = _SNAP_POSITIONS[pos_str]
+    _snap_window_helper(ui.active_window(), pos)
+
   def snap_window_full():
     """Move the active window to fullscreen."""
     _snap_window_helper(ui.active_window(), _SNAP_POSITIONS["full"])

@@ -29,8 +29,12 @@ key(ctrl-cmd-g): user.cross_browser_focus_tab_by_hostname("mail.google.com")
 key(ctrl-cmd-y): user.cross_browser_focus_tab_by_hostname("youtube.com")
 key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
 
-# Make the active window fullscreen.
+# Resizing the active window.
 key(ctrl-cmd-z): user.snap_window_full()
+key(ctrl-alt-up): user.snap_window_full()
+key(ctrl-alt-down): user.snap_window_by_string("center")
+key(ctrl-alt-left): user.snap_window_by_string("left")
+key(ctrl-alt-right): user.snap_window_by_string("right")
 
 # Move the active window to another screen.
 key(ctrl-cmd-1): user.move_window_to_screen(1)

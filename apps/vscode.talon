@@ -36,6 +36,9 @@ jump test: user.vscode_jump_to_test()
 jump python: user.vscode_jump_to_related_file_with_extension(".py")
 jump talon: user.vscode_jump_to_related_file_with_extension(".talon")
 
+# Expand selection.
+expand: user.vscode("editor.action.smartSelect.expand")
+
 # Moving cursor between matches
 blinker next: user.vscode("editor.action.moveSelectionToNextFindMatch")
 blinker last: user.vscode("editor.action.moveSelectionToPreviousFindMatch")

@@ -68,8 +68,8 @@ regex
 ReLU,ray loo
 ReLU,rayle
 ReLU,rulo
-ROI
-ROIs
+roi
+rois
 sensor data,censor data
 softmax
 sublayer
@@ -84,9 +84,9 @@ tmux
 TODO
 # Seems like "tokenized" is already in the vocabulary, but "tokenize" is not.
 tokenize
-UI
+ui
 under-documented,under documented
-URL
+url
 util,utile
 util,you till
 utils
@@ -146,6 +146,7 @@ capslock,cap slock
 cider,sider
 collinear,colinear
 comma,kama
+command line,commandline
 comms,coms
 constraint,en strain
 coordinates,ordinates

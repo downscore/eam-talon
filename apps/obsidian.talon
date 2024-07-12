@@ -7,7 +7,7 @@ tag(): user.tabs
 
 # Command palette
 please [<user.text>]:
-  key(cmd-p)
+  key(cmd-shift-p)
   insert(user.text or "")
 
 # Focus the editor.

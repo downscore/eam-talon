@@ -15,8 +15,8 @@ class Actions:
   """Obsidian global actions."""
 
   def obsidian_open_document(document_name: str = ""):
-    """Focuses Obsidian and opens the given document. Remains on the currently-open document if no document name is
-    provided."""
+    """Focuses Obsidian and opens the given document. Remains on the currently-open document if no
+    document name is provided."""
     actions.user.switcher_focus_app_by_name("Obsidian")
     actions.sleep("200ms")
     if document_name:

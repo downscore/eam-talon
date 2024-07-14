@@ -7,7 +7,8 @@ from typing import Tuple
 
 # Words that remain lowercase in title case.
 _WORDS_TO_KEEP_LOWERCASE = [
-    "a", "an", "the", "at", "by", "for", "in", "is", "of", "on", "to", "up", "and", "as", "but", "or", "nor"
+    "a", "an", "the", "at", "by", "for", "in", "is", "of", "on", "to", "up", "and", "as", "but",
+    "or", "nor"
 ]
 
 # Regexes for deciding if two strings require a space between them.
@@ -24,7 +25,8 @@ _NO_SPACE_BEFORE_REGEX = re.compile(
   ^(?:
     [\s\-_.,!?;:/%)\]}’”]   # Characters that never need space before them.
   | [$£€¥₩₽₹](?!\w)         # Currency symbols not followed by a word character.
-  # Quotes followed by end of string, space, closing braces, dash, other quotes, or some punctuation.
+  # Quotes followed by end of string, space, closing braces, dash, other quotes, or some
+  # punctuation.
   | ['"] (?: $ | [\s)\]}\-'".,!?;:/] )
   )""", re.VERBOSE)
 
@@ -35,10 +37,14 @@ class WordCapitalization(Enum):
   NO_CHANGE = 1
   LOWERCASE = 2
   UPPERCASE = 3
-  CAPITALIZE_FIRST = 4  # Always capitalize the first letter.
-  TITLE_CASE = 5  # Capitalize first letter unless it is a word to keep lowercase.
-  CAPITALIZE_FIRST_PRESERVE_FOLLOWING = 6  # Always capitalize the first letter, preserve case of following letters.
-  TITLE_CASE_PRESERVE_FOLLOWING = 7  # Title case, but only potentially modifies the first letter of a word.
+  # Always capitalize the first letter.
+  CAPITALIZE_FIRST = 4
+  # Capitalize first letter unless it is a word to keep lowercase.
+  TITLE_CASE = 5
+  # Always capitalize the first letter, preserve case of following letters.
+  CAPITALIZE_FIRST_PRESERVE_FOLLOWING = 6
+  # Title case, but only potentially modifies the first letter of a word.
+  TITLE_CASE_PRESERVE_FOLLOWING = 7
 
 
 @unique
@@ -49,7 +55,8 @@ class Formatters(Enum):
   UPPERCASE = 3
   SENTENCE = 4
   TITLE_CASE = 5
-  TITLE_CASE_ALL = 6  # All words (including "a", "in", etc.) will have their first letter capitalized.
+  # All words (including "a", "in", etc.) will have their first letter capitalized.
+  TITLE_CASE_ALL = 6
   NO_SPACES = 7
   DOT_SEPARATED = 8
   SLASH_SEPARATED = 9
@@ -85,7 +92,8 @@ class FormatOptions:
 
 
 def get_format_options(formatters: list[Formatters]) -> FormatOptions:
-  """Get combined options for a list of formatters. Order is important for formatters that set the same options."""
+  """Get combined options for a list of formatters. Order is important for formatters that set the
+  same options."""
   result = FormatOptions()
   for formatter in formatters:
     # Replace this with "match" when Python 3.10+ supported by Talon.
@@ -202,8 +210,9 @@ def unformat_phrase(phrase: str) -> str:
   # Replace symbols with spaces. Don't include hyphens - this will not work for kebab-case.
   unformatted = re.sub(r"[^a-zA-Z0-9\-]+", " ", phrase)
   # Split on camel/pascal casing. Include numbers.
-  unformatted = re.sub(r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])|(?<=[0-9])(?=[a-zA-Z])",
-                       " ", unformatted)
+  unformatted = re.sub(
+      r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])|(?<=[0-9])(?=[a-zA-Z])",
+      " ", unformatted)
   unformatted = unformatted.lower()
   return unformatted
 
@@ -231,12 +240,13 @@ def auto_capitalize(text: str) -> str:
   for i, c in enumerate(text):
     # Sentence endings and double newlines cause the next alphanumeric character to be capitalized.
     if c in ".!?" or (last_was_newline and c == "\n"):
-      if i < len(text) - 1 and c == "." and text[i + 1:].isalpha():  # Check if this looks like a file extension.
+      if i < len(text) - 1 and c == "." and text[i + 1:].isalpha(
+      ):  # Check if this looks like a file extension.
         capitalize_next = False  # Don't capitalize file extensions.
       else:
         capitalize_next = True
-    # Alphanumeric characters and commas/colons absorb capitalize_next and try to capitalize. For numbers and
-    # punctuation this does nothing, which is what we want.
+    # Alphanumeric characters and commas/colons absorb capitalize_next and try to capitalize. For
+    # numbers and punctuation this does nothing, which is what we want.
     elif capitalize_next and (c.isalnum() or c in ",:"):
       capitalize_next = False
       c = c.capitalize()
@@ -262,12 +272,13 @@ def guess_capitalization(word: str) -> WordCapitalization:
     if c.isupper():
       multiple_uppercase = True
       break
-  # If the word has only one capitalized letter (includes case where word is a single uppercase letter), guess title
-  # case.
+  # If the word has only one capitalized letter (includes case where word is a single uppercase
+  # letter), guess title case.
   if not multiple_uppercase:
     return WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
   if all(c.isupper() or not c.isalpha() for c in stripped):
-    # There are at least two uppercase letters and no lowercase letters. There may be numbers and symbols.
+    # There are at least two uppercase letters and no lowercase letters. There may be numbers and
+    # symbols.
     return WordCapitalization.UPPERCASE
   return WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING
 

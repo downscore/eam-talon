@@ -105,11 +105,17 @@ class IndexToScreenCoordinatesTestCase(unittest.TestCase):
   """Util function tests."""
 
   def setUp(self):
-    self.ocr_results = [OcrResult("Hello", Rect(0, 0, 50, 10)), OcrResult("World", Rect(60, 0, 50, 10))]
+    self.ocr_results = [
+        OcrResult("Hello", Rect(0, 0, 50, 10)),
+        OcrResult("World", Rect(60, 0, 50, 10))
+    ]
     self.context = create_ocr_textflow_context(self.ocr_results, mouse_x=0, mouse_y=0)
 
   def test_no_width_string(self):
-    bad_ocr_results = [OcrResult("Hello", Rect(0, 0, 50, 10)), OcrResult("\n\n\n\n", Rect(60, 0, 50, 10))]
+    bad_ocr_results = [
+        OcrResult("Hello", Rect(0, 0, 50, 10)),
+        OcrResult("\n\n\n\n", Rect(60, 0, 50, 10))
+    ]
     bad_context = create_ocr_textflow_context(bad_ocr_results, mouse_x=0, mouse_y=0)
     with self.assertRaises(ValueError):
       bad_context.index_to_screen_coordinates(8)

@@ -18,8 +18,8 @@ def _backspace_required(preceding_text: str, next_text: str) -> bool:
   # Backspace if we are inserting a period after a space.
   if len(preceding_text) < 2:
     return False
-  return preceding_text[-1] == " " and preceding_text[-2] != " " and next_text[0] in (".", ",", ";", ")", "]", "}", ">",
-                                                                                      ":", "?", "!")
+  return preceding_text[-1] == " " and preceding_text[-2] != " " and next_text[0] in (
+      ".", ",", ";", ")", "]", "}", ">", ":", "?", "!")
 
 
 def _space_required(preceding_text: str, next_text: str) -> bool:
@@ -32,7 +32,8 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
   next_char = next_text[0]
 
   # Special case: No space after quotes if there is whitespace before it.
-  if len(preceding_text) >= 2 and preceding_text[-2] in (" ", "\n", "\t") and preceding_char in ("'", "\""):
+  if len(preceding_text) >= 2 and preceding_text[-2] in (" ", "\n",
+                                                         "\t") and preceding_char in ("'", "\""):
     return False
 
   if next_char in (".", ",", ";", ")", "]", "}", ">", ":", "?", "!", "%", "'", "\"", "/"):
@@ -52,8 +53,8 @@ def _capitalization_required(preceding_text: str) -> bool:
     return True
 
   last_char = preceding_text[-1] if preceding_text[-1] != " " else preceding_text[-2]
-  if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", "_", "/", "'", "\"", "`",
-                                          "$", "=", "@"):
+  if last_char.isalnum() or last_char in ("%", ";", ",", "(", ")", "[", "]", "{", "}", "<", "_",
+                                          "/", "'", "\"", "`", "$", "=", "@"):
     return False
   return True
 
@@ -63,8 +64,8 @@ class Actions:
   """Dictation mode actions."""
 
   def dictation_insert_prose(prose: Optional[str]):
-    """Inserts prose using maintained state (e.g. for spacing and capitalization) from dictation mode. Updates
-    maintained state based on what is inserted."""
+    """Inserts prose using the surrounding context to determine appropriate spacing and
+    capitalization."""
     if prose is None or prose == "":
       return
     preceding_text = actions.user.dictation_get_preceding_text()

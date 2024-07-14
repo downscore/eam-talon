@@ -19,7 +19,7 @@ ctx = Context()
 
 def save_image_template(image):
   """
-    Saves the given image to the image templates folder and returns the generated name.58
+    Saves the given image to the image templates folder and returns the generated name.
     """
 
   unique_filename = \
@@ -127,26 +127,29 @@ def handle_blob_detect_builder(result):
   actions.app.notify("Copied new command to clipboard")
 
 
-command_wizards = [("Click a single image on the screen", ImageSelectorOverlay, handle_image_click_builder,
-                    ("Select a region of the screen as an image to find in your voice command "
-                     "then press enter to confirm your selection. Press escape to cancel.\n\n"
-                     "After selecting and before enter, optionally right click to define an "
-                     "offset from the selected region. This will be clicked instead of the "
-                     "center of the region.")),
-                   ("Show markers on all image matches on screen", ImageSelectorOverlay, handle_multi_image_builder,
-                    ("Select a region of the screen as an image to find in your voice command "
-                     "then press enter to confirm your selection. Press escape to cancel.\n\n"
-                     "After selecting and before enter, optionally right click to define an "
-                     "offset from the selected region. This will be clicked instead of the "
-                     "center of the region.")),
-                   ("Find items in a box to click", BlobBoxOverlay, handle_blob_detect_builder,
-                    ("Select a region of the active window to use in your voice command then press "
-                     "enter to confirm your selection. Press escape to cancel.\n\n"
-                     "When drawing a box wider than tall, the first row of pixels will be "
-                     "considered background color. When the box is taller than wide the first "
-                     "column of pixels will be considered background color.\n\n"
-                     "The background color will be used to detect clickable regions in the area "
-                     "you selected. "))]
+command_wizards = [
+    ("Click a single image on the screen", ImageSelectorOverlay, handle_image_click_builder,
+     ("Select a region of the screen as an image to find in your voice command "
+      "then press enter to confirm your selection. Press escape to cancel.\n\n"
+      "After selecting and before enter, optionally right click to define an "
+      "offset from the selected region. This will be clicked instead of the "
+      "center of the region.")),
+    ("Show markers on all image matches on screen", ImageSelectorOverlay,
+     handle_multi_image_builder,
+     ("Select a region of the screen as an image to find in your voice command "
+      "then press enter to confirm your selection. Press escape to cancel.\n\n"
+      "After selecting and before enter, optionally right click to define an "
+      "offset from the selected region. This will be clicked instead of the "
+      "center of the region.")),
+    ("Find items in a box to click", BlobBoxOverlay, handle_blob_detect_builder,
+     ("Select a region of the active window to use in your voice command then press "
+      "enter to confirm your selection. Press escape to cancel.\n\n"
+      "When drawing a box wider than tall, the first row of pixels will be "
+      "considered background color. When the box is taller than wide the first "
+      "column of pixels will be considered background color.\n\n"
+      "The background color will be used to detect clickable regions in the area "
+      "you selected. "))
+]
 
 existing_overlay = None
 # On OSX the overlay window itself shows up as the ui.active_window() after the overlay is nominally

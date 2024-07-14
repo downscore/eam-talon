@@ -15,7 +15,8 @@ ctx = Context()
 _HOMOPHONE_SETS = homophone_util.get_homophone_sets(load_lists_from_csv("homophones.csv"))
 _HOMOGRAPH_HOMOPHONE_SETS = homophone_util.get_homograph_homophone_sets(
     load_lists_from_csv("homophones_homographs.csv"))
-_WORD_TO_HOMOPHONE_SET = homophone_util.get_word_to_homophone_set_dict(_HOMOPHONE_SETS, _HOMOGRAPH_HOMOPHONE_SETS)
+_WORD_TO_HOMOPHONE_SET = homophone_util.get_word_to_homophone_set_dict(
+    _HOMOPHONE_SETS, _HOMOGRAPH_HOMOPHONE_SETS)
 
 
 @mod.action_class
@@ -41,7 +42,8 @@ class Actions:
 
     # Get homophone, trying to match original case and whitespace padding.
     homophone_set = _WORD_TO_HOMOPHONE_SET[word_key]
-    result = format_util.format_word_capitalization(homophone_set.get_next_word(word_key), guessed_capitalization)
+    result = format_util.format_word_capitalization(homophone_set.get_next_word(word_key),
+                                                    guessed_capitalization)
     result = selected_stripped.apply_padding(result)
 
     # Insert homophone.

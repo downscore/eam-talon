@@ -10,7 +10,8 @@ class ConvertActionsTestCase(unittest.TestCase):
   def test_invalid_input(self):
     # Selection action has no range.
     with self.assertRaises(ValueError):
-      convert_actions_to_potato_mode([EditorAction(EditorActionType.SET_SELECTION_RANGE)], "", TextRange(0, 0))
+      convert_actions_to_potato_mode([EditorAction(EditorActionType.SET_SELECTION_RANGE)], "",
+                                     TextRange(0, 0))
 
   def test_passthrough_actions(self):
     actions = [

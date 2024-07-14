@@ -86,7 +86,8 @@ def _on_pre_phrase(phrase):
     return
   text = " ".join(words)
 
-  # Show subtitle if speech is enabled or the command is a wake command (speech is about to be enabled).
+  # Show subtitle if speech is enabled or the command is a wake command (speech is about to be
+  # enabled).
   if words and (actions.speech.enabled() or text in _WAKE_COMMANDS):
     text = " ".join(words)
     _display_subtitle(text)

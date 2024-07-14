@@ -21,8 +21,9 @@ class ExtensionActions:
   def position_mark():
     """Sets a mark at or remembers the current cursor position so it can be restored later."""
     # Insert some unique placeholder text so we can find the current position again later.
-    # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the insertion position.
-    # Reusing the same placeholder can result in the cursor not jumping to it, so we always create a unique one.
+    # Note: In VS Code, the workbench.action.navigateBack action is unreliable for finding the
+    # insertion position. Reusing the same placeholder can result in the cursor not jumping to it,
+    # so we always create a unique one.
     global _last_placeholder
     placeholder_uuid = uuid.uuid4()
     placeholder = f"!!!Marker{str(placeholder_uuid)[:5]}!!!"

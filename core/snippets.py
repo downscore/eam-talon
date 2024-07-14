@@ -21,13 +21,14 @@ def _load_snippets_internal(filename: str, json_content: str) -> dict[str, str]:
   """Loads snippets from a string containing JSON data."""
   result = {}
 
-  # Strip line comments from the JSON data then read it. Only strips lines that start with a comment, so snippets may
-  # include comments.
+  # Strip line comments from the JSON data then read it. Only strips lines that start with a
+  # comment, so snippets may include comments.
   json_content = re.sub(r"^\w*//.*?\n", "", json_content, flags=re.MULTILINE)
   snippets = json.loads(json_content)
 
   # Get usable snippets from the loaded data.
-  # Uses the snippet name as the spoken form. This way we can keep short, unpronounceable prefixes for typing.
+  # Uses the snippet name as the spoken form. This way we can keep short, unpronounceable prefixes
+  # for typing.
   for spoken, snippet in snippets.items():
     # Warn if `prefix` is missing. It's required to use the snippet with the keyboard in vscode.
     if "prefix" not in snippet:
@@ -48,14 +49,15 @@ def _load_snippets_internal(filename: str, json_content: str) -> dict[str, str]:
 
 
 def load_snippets_json(filename: str) -> dict[str, str]:
-  """Loads adjacent file containing snippets, and returns a dictionary snippet contents keyed by spoken form."""
+  """Loads adjacent file containing snippets, and returns a dictionary snippet contents keyed by
+  spoken form."""
   path = _SNIPPETS_DIR / filename
   private_path = _PRIVATE_SNIPPETS_DIR / filename
 
   result: dict[str, str] = {}
 
-  # Read public file if it exists. Read via resource to take advantage of talon's ability to reload this script for us
-  # when the resource changes.
+  # Read public file if it exists. Read via resource to take advantage of talon's ability to reload
+  # this script for us when the resource changes.
   if path.exists():
     with resource.open(str(path), "r") as f:
       result.update(_load_snippets_internal(filename, f.read()))
@@ -74,8 +76,9 @@ class Actions:
 
   def snippet_insert(body: str):
     """Inserts a snippet with the given body."""
-    # The default implementation inserts the body with all placeholders removed and moves the cursor to the location
-    # of the first placeholder (by character index, not necessarily the placeholder with the lowest number).
+    # The default implementation inserts the body with all placeholders removed and moves the cursor
+    # to the location of the first placeholder (by character index, not necessarily the placeholder
+    # with the lowest number).
     placeholder_regex = r"\$\{[0-9]+:[^}]*\}|\$[0-9]+"
 
     # Find the first placeholder.

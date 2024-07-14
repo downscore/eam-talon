@@ -154,7 +154,8 @@ class TestCommentModifier(unittest.TestCase):
     input_match = TextMatch(TextRange(12, 16))  # "test"
     modifier = Modifier(ModifierType.COMMENT, None)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "/*test comment\nnested multiline string.\nend of comment*/")
+    self.assertEqual(result.text_range.extract(text),
+                     "/*test comment\nnested multiline string.\nend of comment*/")
 
   def test_apply_comment_modifier_no_comment(self):
     text = "This is a test string with no comment."
@@ -1018,7 +1019,8 @@ class TestCallModifier(unittest.TestCase):
     input_match = TextMatch(TextRange(20, 21))
     modifier = Modifier(ModifierType.CALL)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "(*obj)->get_thing().field[0].method(arg1, &arg2, arg3)")
+    self.assertEqual(result.text_range.extract(text),
+                     "(*obj)->get_thing().field[0].method(arg1, &arg2, arg3)")
 
   def test_parenthesis_before_call(self):
     text = "(func(x, func2(y));"

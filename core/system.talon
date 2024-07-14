@@ -2,8 +2,8 @@
 # repeat_ordinal subtracts 1 because we are repeating: The initial command counts as one.
 <user.repeat_ordinal>: core.repeat_command(repeat_ordinal)
 
-# "anchor" is used to terminate some commands that take phrases of arbitrary length. Here we handle the case where such
-# a command gets fragmented and "anchor" leads the next command.
+# "anchor" is used to terminate some commands that take phrases of arbitrary length. Here we handle
+# the case where such a command gets fragmented and "anchor" leads the next command.
 anchor: skip()
 
 # Short pause. Can be used to insert pauses into chained commands or a macro.

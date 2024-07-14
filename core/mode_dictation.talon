@@ -25,9 +25,12 @@ mode: dictation
   insert(" $$")
   key("left")
 
-# Include formatters here so they can be chained with anchored prose. Chaining does not appear to work across modes.
-{user.formatter}+ <user.formatter_text>$: insert(user.format_multiple(formatter_text, formatter_list))
-{user.formatter}+ <user.formatter_text> anchor: insert(user.format_multiple(formatter_text, formatter_list))
+# Include formatters here so they can be chained with anchored prose. Chaining does not appear to
+# work across modes.
+{user.formatter}+ <user.formatter_text>$:
+  insert(user.format_multiple(formatter_text, formatter_list))
+{user.formatter}+ <user.formatter_text> anchor:
+  insert(user.format_multiple(formatter_text, formatter_list))
 {user.formatter}+ <user.formatter_text> void:
   insert(user.format_multiple(formatter_text, formatter_list))
   insert(" ")

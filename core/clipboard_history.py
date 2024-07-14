@@ -11,7 +11,8 @@ mod = Module()
 # Characters to display per line in the history GUI.
 _GUI_CHARS_PER_LINE = 60
 
-# We keep clipboard_history_size lines of history, but by default display only clipboard_history_display of them.
+# We keep clipboard_history_size lines of history, but by default display only
+# clipboard_history_display of them.
 _CLIPBOARD_HISTORY_SIZE = 50
 _CLIPBOARD_HISTORY_DISPLAY = 10
 
@@ -36,7 +37,8 @@ def gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   """Creates a gui displaying clipboard history."""
   gui.text("Clipboard History")
   gui.line()
-  text = (_clipboard_history[:] if _show_more_history else _clipboard_history[-_CLIPBOARD_HISTORY_DISPLAY:])
+  text = (_clipboard_history[:]
+          if _show_more_history else _clipboard_history[-_CLIPBOARD_HISTORY_DISPLAY:])
   for i, line in enumerate(text):
     # History entries are indexed by added time descending. Indexes are 1-based.
     entry_index = len(text) - i

@@ -27,8 +27,9 @@ class UserActions:
   """Action overrides available only when the Obsidian extension is installed."""
 
   def selected_text() -> str:
-    # Copying in Obsidian with an empty selection copies the entire line, making it impossible to reliably detect when
-    # no text is selected. This command will return the empty string when nothing is selected.
+    # Copying in Obsidian with an empty selection copies the entire line, making it impossible to
+    # reliably detect when no text is selected. This command will return the empty string when
+    # nothing is selected.
     return actions.user.obsidian_command_return_value("getSelectedText")
 
   def select_word():
@@ -55,33 +56,38 @@ class UserActions:
   def select_line_range_including_line_break(from_index: int, to_index: int = 0):
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
-    actions.user.obsidian_command("selectLineRangeIncludingLineBreak", from_index, to_index if to_index > 0 else None)
+    actions.user.obsidian_command("selectLineRangeIncludingLineBreak", from_index,
+                                  to_index if to_index > 0 else None)
 
   def select_line_range_for_editing(from_index: int, to_index: int = 0):
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
-    actions.user.obsidian_command("selectLineRangeForEditing", from_index, to_index if to_index > 0 else None)
+    actions.user.obsidian_command("selectLineRangeForEditing", from_index,
+                                  to_index if to_index > 0 else None)
 
   def bring_line_range(from_index: int, to_index: int = 0):
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
-    actions.user.obsidian_command("copyLinesToCursor", from_index, to_index if to_index > 0 else None)
+    actions.user.obsidian_command("copyLinesToCursor", from_index,
+                                  to_index if to_index > 0 else None)
 
   def textflow_get_context() -> tft.TextFlowContext:
     context = actions.user.obsidian_command_return_value("getTextFlowContext")
     # Disable potato mode because we implement the set selection action.
     text_offset = context["textStartOffset"]
     result = tft.TextFlowContext(text=context["text"],
-                                 selection_range=tf.TextRange(context["selectionFromOffset"] - text_offset,
-                                                              context["selectionToOffset"] - text_offset),
+                                 selection_range=tf.TextRange(
+                                     context["selectionFromOffset"] - text_offset,
+                                     context["selectionToOffset"] - text_offset),
                                  text_offset=text_offset,
                                  potato_mode=False)
     return result
 
   def textflow_set_selection_action(editor_action: tf.EditorAction, context: tft.TextFlowContext):
-    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with accessibility
-    extensions."""
+    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with
+    accessibility extensions."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range.")
-    actions.user.obsidian_command_and_wait("setSelection", editor_action.text_range.start + context.text_offset,
+    actions.user.obsidian_command_and_wait("setSelection",
+                                           editor_action.text_range.start + context.text_offset,
                                            editor_action.text_range.end + context.text_offset)

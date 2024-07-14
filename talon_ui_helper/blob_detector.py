@@ -12,11 +12,13 @@ from talon.skia import Image
 
 
 def calculate_blob_rects(image: Image, region: TalonRect, min_gap_size=5) -> List[TalonRect]:
-  """Finds screen relative rectangles corresponding to clickable blobs in the given image. Region is the position on
-  the screen the image corresponds to."""
+  """Finds screen relative rectangles corresponding to clickable blobs in the given image. Region is
+  the position on the screen the image corresponds to."""
   image_array = np.array(image)
   rects = calculate_blob_rects_from_numpy(image_array, min_gap_size=min_gap_size)
-  return [TalonRect(rect.x + region.x, rect.y + region.y, rect.width, rect.height) for rect in rects]
+  return [
+      TalonRect(rect.x + region.x, rect.y + region.y, rect.width, rect.height) for rect in rects
+  ]
 
 
 def save_mask(mask, output_filename):

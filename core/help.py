@@ -64,10 +64,12 @@ def _add_context_to_help(context):
 
 @imgui.open(y=0)
 def help_gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
-  gui.text(f"Help ({_help_page + 1}/{len(_help_contents) // _MAX_LINES_PER_PAGE + 1})  << Help Last, Help Next >>")
+  gui.text(f"Help ({_help_page + 1}/{len(_help_contents) // _MAX_LINES_PER_PAGE + 1}) "
+           " << Help Last, Help Next >>")
   gui.line()
 
-  page_content = _help_contents[_help_page * _MAX_LINES_PER_PAGE:(_help_page + 1) * _MAX_LINES_PER_PAGE]
+  page_content = _help_contents[_help_page * _MAX_LINES_PER_PAGE:(_help_page + 1) *
+                                _MAX_LINES_PER_PAGE]
   for line in page_content:
     gui.text(line)
 

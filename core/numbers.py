@@ -49,7 +49,8 @@ def number(m) -> int:
   return int(m.number_string_of_digits)
 
 
-@mod.capture(rule="(numb|num) <user.number_string_of_digits> [(punch|point) <user.number_string_of_digits>]")
+@mod.capture(
+    rule="(numb|num) <user.number_string_of_digits> [(punch|point) <user.number_string_of_digits>]")
 def dictate_number(m) -> str:
   """A number prefixed with a dictation command. Includes an optional decimal point"""
   if len(m.number_string_of_digits_list) > 1:
@@ -76,7 +77,8 @@ def ordinals_small(m) -> int:
 
 @mod.capture(rule="{self.ordinals_small}")
 def repeat_ordinal(m) -> int:
-  """Subtracts one from a single ordinal and returns it as an integer. Captures a small subset of `ordinals`."""
+  """Subtracts one from a single ordinal and returns it as an integer. Captures a small subset of
+  `ordinals`."""
   return int(_ORDINALS_DICT[m[0]]) - 1
 
 

@@ -14,7 +14,8 @@
   user.textflow_execute_command(textflow_single_word_command_type, textflow_word)
 
 # Core commands - Articles (a/the) as target. e.g. "pick indefinite".
-# This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in it.
+# This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in
+# it.
 <user.textflow_command_type> <user.textflow_definite>:
   user.textflow_execute_command(textflow_command_type, textflow_definite)
 <user.textflow_command_type> <user.textflow_indefinite>:
@@ -130,9 +131,9 @@ cut comment: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "COM
 cut brackets: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "BRACKETS")
 cut invoke: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "CALL")
 
-# Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make it harder to
-# navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in front of the word "sentence".
-# The escaped version, "before hatch sentence", must be used instead.
+# Navigating using TextFlow modifiers. These commands should be kept to a minimum, as they may make
+# it harder to navigate in prose. E.g. "before sentence" can no longer be used to put the cursor in
+# front of the word "sentence". The escaped version, "before hatch sentence", must be used instead.
 before sentence: user.textflow_execute_command_enum_strings("MOVE_CURSOR_BEFORE", "SENTENCE")
 after sentence: user.textflow_execute_command_enum_strings("MOVE_CURSOR_AFTER", "SENTENCE")
 
@@ -149,8 +150,10 @@ spike line: user.textflow_insert_line_above_current()
 float line: user.textflow_insert_line_below_current()
 
 # Replace a target with prose (includes punctuation).
-swap <user.textflow_compound_target> with <user.prose>$: user.textflow_replace(textflow_compound_target, prose)
-swap <user.textflow_compound_target> with <user.prose> anchor: user.textflow_replace(textflow_compound_target, prose)
+swap <user.textflow_compound_target> with <user.prose>$:
+  user.textflow_replace(textflow_compound_target, prose)
+swap <user.textflow_compound_target> with <user.prose> anchor:
+  user.textflow_replace(textflow_compound_target, prose)
 
 # Single word replacement.
 swap <user.textflow_word> with <user.word>: user.textflow_replace_word(textflow_word, word)
@@ -172,7 +175,8 @@ numberize <user.number_list_of_words>: user.textflow_words_to_digits(number_list
 
 # Make a word possessive ("dog" -> "dog's", "its" -> "it's").
 possessivize <user.textflow_word>: user.textflow_make_possessive(textflow_word)
-possessivize <user.textflow_compound_target>: user.textflow_make_possessive(textflow_compound_target)
+possessivize <user.textflow_compound_target>:
+  user.textflow_make_possessive(textflow_compound_target)
 
 # Make a word plural ("dog" -> "dogs", "it" -> "its").
 pluralize <user.textflow_word>: user.textflow_make_plural(textflow_word)
@@ -184,21 +188,26 @@ singularize <user.textflow_compound_target>: user.textflow_make_singular(textflo
 
 # Surround a word or target in quotes.
 doubleize <user.textflow_word>: user.textflow_surround_text(textflow_word, "\"")
-doubleize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "\"")
+doubleize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "\"")
 singleize <user.textflow_word>: user.textflow_surround_text(textflow_word, "'")
-singleize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "'")
+singleize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "'")
 
 # Add a comma after a word or target.
 add drip to <user.textflow_word>:user.textflow_surround_text(textflow_word, "", ",")
-add drip to <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "", ",")
+add drip to <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "", ",")
 
 # Add markdown formatting.
 boldize <user.textflow_word>: user.textflow_surround_text(textflow_word, "**")
 boldize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "**")
 italicize <user.textflow_word>: user.textflow_surround_text(textflow_word, "*")
-italicize <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "*")
+italicize <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "*")
 strike through <user.textflow_word>: user.textflow_surround_text(textflow_word, "~~")
-strike through <user.textflow_compound_target>: user.textflow_surround_text(textflow_compound_target, "~~")
+strike through <user.textflow_compound_target>:
+  user.textflow_surround_text(textflow_compound_target, "~~")
 
 # Special homophones.
 phony they are: user.textflow_swap_homophone_to_word("they're")

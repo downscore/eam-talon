@@ -51,8 +51,8 @@ class StrippedString:
 
 def count_lines(s: str):
   """Returns the number of lines in the passed string. Excludes trailing empty lines."""
-  # TODO: Might be faster to count line breaks and check if last character(s) is/are a line break. Avoids creating the
-  # collection of split lines in memory.
+  # TODO: Might be faster to count line breaks and check if last character(s) is/are a line break.
+  # Avoids creating the collection of split lines in memory.
   return len(s.splitlines())
 
 
@@ -62,8 +62,8 @@ def count_words(s: str):
 
 
 def sort_lines(s: str, reverse: bool = False) -> str:
-  """Returns a new string consisting of the input string with all lines sorted. Preserves padding around input.
-  Case insensitive."""
+  """Returns a new string consisting of the input string with all lines sorted. Preserves padding
+  around input. Case insensitive."""
   stripped_input = StrippedString(s)
   lines = stripped_input.stripped.splitlines()
   return stripped_input.apply_padding("\n".join(sorted(lines, key=str.casefold, reverse=reverse)))

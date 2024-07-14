@@ -12,12 +12,14 @@ cubeb_ctx = cubeb.Context()
 
 _microphone_device_list = []
 
+
 # By convention, None and System Default are listed first to match the Talon context menu.
 def _update_microphone_list():
   global _microphone_device_list
   _microphone_device_list = ["None", "System Default"]
 
-  # On Windows, it's necessary to check the state, or we will get every microphone that was ever connected.
+  # On Windows, it's necessary to check the state, or we will get every microphone that was ever
+  # connected.
   devices = [dev.name for dev in cubeb_ctx.inputs() if dev.state == cubeb.DeviceState.ENABLED]
 
   devices.sort()

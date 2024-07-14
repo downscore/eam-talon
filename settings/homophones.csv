@@ -1,5 +1,6 @@
-# Each line is a variable-length (2+) set of comma-separated homophones. Uncommon words have an asterisk prepended.
-# Homographs with homophones (e.g. "read" -> "red" or "reed") are included in homophones_homographs.csv
+# Each line is a variable-length (2+) set of comma-separated homophones. Uncommon words have an
+# asterisk prepended. Homographs with homophones (e.g. "read" -> "red" or "reed") are included in
+# homophones_homographs.csv
 able,Abel
 acclamation,acclimation
 acts,ax

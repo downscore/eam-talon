@@ -32,7 +32,9 @@ _ORDINAL_SEED_WORDS_BY_NUMBER = {
     90: "ninetieth",
 }
 
-_TENS_WORDS = ["zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+_TENS_WORDS = [
+    "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
+]
 
 
 def get_ints_by_ordinal_words(up_to: int = 99) -> dict[str, int]:
@@ -41,7 +43,7 @@ def get_ints_by_ordinal_words(up_to: int = 99) -> dict[str, int]:
     raise ValueError("Can only generate ordinals up to 99")
   if up_to <= 0:
     raise ValueError("Max ordinal value must be positive")
-  result : dict[str, int] = {}
+  result: dict[str, int] = {}
   words: str = ""
   for i in range(1, up_to + 1):
     if i in _ORDINAL_SEED_WORDS_BY_NUMBER:

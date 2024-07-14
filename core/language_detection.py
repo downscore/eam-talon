@@ -19,7 +19,8 @@ _FILE_EXTENSIONS_BY_LANGUAGE = {
     "protobuf": {"proto"},
 }
 _LANGUAGE_BY_EXTENSION = {
-    "." + ext: language for language, extensions in _FILE_EXTENSIONS_BY_LANGUAGE.items() for ext in extensions
+    "." + ext: language for language, extensions in _FILE_EXTENSIONS_BY_LANGUAGE.items()
+    for ext in extensions
 }
 
 # Create a context for each defined language

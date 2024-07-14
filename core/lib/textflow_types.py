@@ -14,8 +14,8 @@ class SearchDirection(Enum):
 
 @dataclass(frozen=True)
 class TextRange:
-  """A range of characters in some text. May have zero length (start == end), in which case it represents a cursor
-  position (empty selection). This class is intended to be immutable."""
+  """A range of characters in some text. May have zero length (start == end), in which case it
+  represents a cursor position (empty selection). This class is intended to be immutable."""
   start: int = 0
   end: int = 0
 
@@ -28,7 +28,8 @@ class TextRange:
     object.__setattr__(self, "end", end)
 
   def length(self):
-    """Returns the length of this range. Non negative, zero if start and end positions are the same."""
+    """Returns the length of this range. Non negative, zero if start and end positions are the
+    same."""
     return self.end - self.start
 
   def extract(self, text: str) -> str:
@@ -40,7 +41,8 @@ class TextRange:
 
 @dataclass
 class TextMatch:
-  """A text range matched by a target or modifier. Includes extra metadata to help with text manipulation."""
+  """A text range matched by a target or modifier. Includes extra metadata to help with text
+  manipulation."""
   # The range that was matched.
   text_range: TextRange
   # Optional text range to use when deleting the match. May include comma and space separators, etc.
@@ -56,7 +58,8 @@ class TokenMatchMethod(Enum):
   WORD_SUBSTRING = 2
   # Try to match the start of a word. If that fails, match a substring.
   WORD_START_THEN_SUBSTRING = 3
-  # Match the start of a line (like `WORD_START` for the first word in each line). Ignores indentation.
+  # Match the start of a line (like `WORD_START` for the first word in each line). Ignores
+  # indentation.
   LINE_START = 4
   # Match by counting tokens (e.g. 3rd last token before the cursor).
   TOKEN_COUNT = 5
@@ -104,11 +107,14 @@ class ModifierType(Enum):
   CALL = 10
   # Take the comment containing the token.
   COMMENT = 11
-  # Take the contents of a string containing the token with configurable delimiters (defaults to double quotes).
+  # Take the contents of a string containing the token with configurable delimiters (defaults to
+  # double quotes).
   STRING = 12
-  # The current scope in python code. Includes all contiguous lines at the current or greater indentation level.
+  # The current scope in python code. Includes all contiguous lines at the current or greater
+  # indentation level.
   PYTHON_SCOPE = 13
-  # The current scope in C-like code. Includes all content between the previous opening brace and its closing brace.
+  # The current scope in C-like code. Includes all content between the previous opening brace and
+  # its closing brace.
   C_SCOPE = 14
   # Take a sentence in English prose.
   SENTENCE = 15
@@ -124,44 +130,47 @@ class ModifierType(Enum):
   MARKDOWN_LINK = 20
   # Empty selection before the line break on the last non-whitespace line in a markdown section.
   # "Markdown sections" are delimited by any headings or EOF.
-  # Moving the cursor before the last line break can be useful for maintaining indentation or list types when adding a
-  # new line below.
+  # Moving the cursor before the last line break can be useful for maintaining indentation or list
+  # types when adding a new line below.
   MARKDOWN_SECTION_END = 21
-  # Find the next function call and take the first argument from it. Assumes the initial match is outside the function
-  # call.
-  # It's the _first_ argument after the cursor, we need to call this then _next_ if we want the second.
+  # Find the next function call and take the first argument from it. Assumes the initial match is
+  # outside the function call.
+  # It's the _first_ argument after the cursor, we need to call this then _next_ if we want the
+  # second.
   ARGUMENT_FIRST = 22
   # From a match inside an argument, take the next argument.
   ARGUMENT_NEXT = 23
   # From a match inside an argument, take the previous argument.
   ARGUMENT_PREVIOUS = 24
-  # Find the next function call and take the nth argument from it. Assumes the initial match is outside the function
-  # call.
-  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
-  # commands.
+  # Find the next function call and take the nth argument from it. Assumes the initial match is
+  # outside the function call.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of
+  # required textflow commands.
   ARGUMENT_NTH = 25
-  # From outside a string, take the next string. Handles doc strings and markdown blocks when the delimiter is a double
-  # quote or grave.
-  # It's the _first_ string after the cursor, we need to call this then _next_ if we want the second.
+  # From outside a string, take the next string. Handles doc strings and markdown blocks when the
+  # delimiter is a double quote or grave.
+  # It's the _first_ string after the cursor, we need to call this then _next_ if we want the
+  # second.
   STRING_FIRST = 26
   # From inside a string, take the next string.
   STRING_NEXT = 27
   # From inside a string, take the previous string.
   STRING_PREVIOUS = 28
   # From outside a string, take the nth string.
-  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
-  # commands.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of
+  # required textflow commands.
   STRING_NTH = 29
   # From outside brackets, take the contents of the next set of brackets.
-  # It's the _first_ set of brackets after the cursor, we need to call this then _next_ if we want the second.
+  # It's the _first_ set of brackets after the cursor, we need to call this then _next_ if we want
+  # the second.
   BRACKETS_FIRST = 30
   # From inside a pair of brackets, take the contents of the next pair of brackets.
   BRACKETS_NEXT = 31
   # From inside a pair of brackets, take the contents of the previous pair of brackets.
   BRACKETS_PREVIOUS = 32
   # From outside brackets, take the contents of the nth pair of brackets.
-  # This uses the first/next modifiers and is provided as an optimization to reduce the number of required textflow
-  # commands.
+  # This uses the first/next modifiers and is provided as an optimization to reduce the number of
+  # required textflow commands.
   BRACKETS_NTH = 33
   # From outside the parentheses of a function call, take the next function call.
   CALL_NEXT = 34
@@ -204,9 +213,9 @@ class SimpleTarget:
 
 @dataclass
 class CompoundTarget:
-  """A compound target that may have a modifier applied. Represents a single range in the text. If a 'from' target is
-  not supplied, the current selection range is used. If both a 'from' and 'to' target are supplied, the unmodified
-  range for this target is:
+  """A compound target that may have a modifier applied. Represents a single range in the text. If a
+  'from' target is not supplied, the current selection range is used. If both a 'from' and 'to'
+  target are supplied, the unmodified range for this target is:
   PAST_TO: [from_range.start, to_range.end]
   UNTIL_TO: [from_range.start, to_range.start]"""
   target_from: Optional[SimpleTarget] = None

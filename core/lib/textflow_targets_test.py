@@ -30,69 +30,84 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
     self.assertEqual(match.text_range, TextRange(10, 20))
 
   def test_match_word_before_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_match_word_after_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ull")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ull")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ullamco")
 
   def test_match_word_before_and_after_selection_before_wins(self):
-    # Use a substring that matches a word before and after the selection. Tie should be broken by distance to
-    # selection.
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "di")))
+    # Use a substring that matches a word before and after the selection. Tie should be broken by
+    # distance to selection.
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "di")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "adipiscing")
 
   def test_match_word_before_and_after_selection_after_wins(self):
-    # Use a substring that matches a word before and after the selection. Tie should be broken by distance to
-    # selection.
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "do")))
+    # Use a substring that matches a word before and after the selection. Tie should be broken by
+    # distance to selection.
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "do")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "do")
 
   def test_match_word_substring(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "psum")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "psum")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_match_multiple_words_before_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ip")))
-    target.target_to = SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "am"))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ip")))
+    target.target_to = SimpleTarget(
+        TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "am"))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum dolor sit amet")
 
   def test_match_multiple_words_after_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "en")))
-    target.target_to = SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ve"))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "en")))
+    target.target_to = SimpleTarget(
+        TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ve"))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "enim ad minim veniam")
 
   def test_match_multiple_words_across_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "adi")))
-    target.target_to = SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "eiu"))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "adi")))
+    target.target_to = SimpleTarget(
+        TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "eiu"))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "adipiscing elit, sed do eiusmod")
 
   def test_match_nonexistent_from_target(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "xyz")))
-    target.target_to = SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "am"))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "xyz")))
+    target.target_to = SimpleTarget(
+        TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "am"))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     self.assertIsNone(match)
 
   def test_match_nonexistent_to_target(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ip")))
-    target.target_to = SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "xyz"))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ip")))
+    target.target_to = SimpleTarget(
+        TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "xyz"))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     self.assertIsNone(match)
 
@@ -109,7 +124,8 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_match_phrase(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, 1, "ipsum dolor sit")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, 1, "ipsum dolor sit")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum dolor sit")
@@ -123,50 +139,59 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
     self.assertEqual(match.text_range, TextRange(8, 12))
 
   def test_match_phrase_homophone(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, 1, "ipsum there sit")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, 1, "ipsum there sit")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum dolor sit")
 
   def test_selection_at_start(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(0, 4), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_selection_at_end(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
-    match = match_compound_target(target, _SAMPLE_TEXT, TextRange(len(_SAMPLE_TEXT), len(_SAMPLE_TEXT)),
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
+    match = match_compound_target(target, _SAMPLE_TEXT,
+                                  TextRange(len(_SAMPLE_TEXT), len(_SAMPLE_TEXT)),
                                   UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_selection_in_token(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(9, 10), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ips")
 
   def test_empty_selection(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ips")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(200, 200), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "ipsum")
 
   def test_match_first_word(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "lor")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "lor")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "Lorem")
 
   def test_match_last_word(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "conseq")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "conseq")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "consequat")
 
   def test_match_last_dot(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, ".")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, ".")))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(210, 220), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range, TextRange(230, 231))
@@ -188,25 +213,29 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
     self.assertEqual(match.text_range.end, 27)
 
   def test_match_last_token(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 1), SearchDirection.BACKWARD))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 1), SearchDirection.BACKWARD))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "adipiscing")
 
   def test_match_next_token(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 1), SearchDirection.FORWARD))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 1), SearchDirection.FORWARD))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "do")
 
   def test_match_second_last_token(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 2), SearchDirection.BACKWARD))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 2), SearchDirection.BACKWARD))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "consectetur")
 
   def test_match_second_next_token(self):
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 2), SearchDirection.FORWARD))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.TOKEN_COUNT, 2), SearchDirection.FORWARD))
     match = match_compound_target(target, _SAMPLE_TEXT, TextRange(50, 60), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range.extract(_SAMPLE_TEXT), "eiusmod")
@@ -220,7 +249,8 @@ class MatchCompoundTargetTestCase(unittest.TestCase):
   def test_word_start_takes_precedence_over_fragment_start(self):
     # "type" occurs after "textflow_target_combo_type" while searching backwards.
     text = "combo type to [m.textflow_target_combo_type]"
-    target = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ty")))
+    target = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.WORD_START_THEN_SUBSTRING, 1, "ty")))
     match = match_compound_target(target, text, TextRange(44, 44), UTILITY_FUNCTIONS)
     assert match is not None
     self.assertEqual(match.text_range, TextRange(6, 10))

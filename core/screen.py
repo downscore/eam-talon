@@ -11,8 +11,8 @@ mod = Module()
 
 
 def _get_sorted_screens():
-  """Return screens sorted by their topmost then leftmost edges. Screens will be sorted left-to-right, with ties broken
-  by top-to-bottom ordering."""
+  """Return screens sorted by their topmost then leftmost edges. Screens will be sorted
+  left-to-right, with ties broken by top-to-bottom ordering."""
   return sorted(
       sorted(ui.screens(), key=lambda screen: screen.visible_rect.top),
       key=lambda screen: screen.visible_rect.left,

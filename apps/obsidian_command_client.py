@@ -37,7 +37,8 @@ def _write_json_exclusive(path: Path, body: Any):
 
 
 def _handle_existing_request_file(path):
-  """If there is an existing request file, raises an exception if it was made recently or deletes it otherwise."""
+  """If there is an existing request file, raises an exception if it was made recently or deletes it
+  otherwise."""
   # How old a request file needs to be before we declare it stale and are willing to remove it
   stale_timeout_ms = 60_000
 
@@ -55,8 +56,8 @@ def _handle_existing_request_file(path):
 
 
 def _write_request(request: Dict[str, Any], path: Path):
-  """Write the Command Server request file. Raises Exception if another process has recently written a file or we
-  cannot exclusively open the file."""
+  """Write the Command Server request file. Raises Exception if another process has recently written
+  a file or we cannot exclusively open the file."""
   try:
     _write_json_exclusive(path, request)
     request_file_exists = False
@@ -69,8 +70,9 @@ def _write_request(request: Dict[str, Any], path: Path):
 
 
 def _read_json_with_timeout(path: Path) -> Dict[str, Any]:
-  """Repeatedly tries to read JSON from the given file path. Looks for a trailing new line to indicate that the write is
-  complete. Returns the decoded file contents. Raises an exception if we timeout waiting for a result."""
+  """Repeatedly tries to read JSON from the given file path. Looks for a trailing new line to
+  indicate that the write is complete. Returns the decoded file contents. Raises an exception if we
+  timeout waiting for a result."""
   # The amount of time to wait for the response file to be available.
   command_timeout_seconds = 3.0
 
@@ -109,7 +111,8 @@ def run_command(
     return_command_output: bool = False,
 ):
   """Runs a command using the Obsidian Command Server.
-    Function args correspond to fields in the Command Server Request JSON. Returns the command output if requested.
+    Function args correspond to fields in the Command Server Request JSON. Returns the command
+    output if requested.
     """
   # Convert variable args tuple to a list for use in the dict that will be serialized to JSON.
   args_list = [arg for arg in args if arg is not None]
@@ -142,13 +145,15 @@ def run_command(
   # Write the request, requiring exclusive access to the file.
   _write_request(request_dict, request_path)
 
-  # Send keystroke triggering command execution. Keystrokes will only be sent to active Obsidian window.
+  # Send keystroke triggering command execution. Keystrokes will only be sent to active Obsidian
+  # window.
   actions.user.obsidian_command_trigger_command_server()
 
   try:
     decoded_contents = _read_json_with_timeout(response_path)
   finally:
-    # Remove response file first. Once the request file is removed, another process can get exclusive access to it.
+    # Remove response file first. Once the request file is removed, another process can get
+    # exclusive access to it.
     response_path.unlink(missing_ok=True)
     request_path.unlink(missing_ok=True)
 
@@ -171,13 +176,19 @@ class Actions:
   """Obsidian Command Server action declarations and default implementations."""
 
   def obsidian_command_trigger_command_server():
-    """Sends keystrokes that trigger the Obsidian Command Server extension to check for a request file."""
+    """Sends keystrokes that trigger the Obsidian Command Server extension to check for a request
+    file."""
     actions.key("cmd-shift-f18")
 
-  def obsidian_command(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
+  def obsidian_command(command_id: str,
+                       arg1: Any = None,
+                       arg2: Any = None,
+                       arg3: Any = None,
+                       arg4: Any = None):
     """Executes a command via Obsidian Command Server."""
     # Default implementation (Obsidian not active) throws an exception.
-    raise RuntimeError(f"Tried running Obsidian command when Obsidian not active. Command: {command_id}")
+    raise RuntimeError(
+        f"Tried running Obsidian command when Obsidian not active. Command: {command_id}")
 
   def obsidian_command_and_wait(command_id: str,
                                 arg1: Any = None,
@@ -186,7 +197,8 @@ class Actions:
                                 arg4: Any = None):
     """Executes a command via Obsidian Command Server and waits for it to finish."""
     # Default implementation (Obsidian not active) throws an exception.
-    raise RuntimeError(f"Tried running (wait) Obsidian command when Obsidian not active. Command: {command_id}")
+    raise RuntimeError(
+        f"Tried running (wait) Obsidian command when Obsidian not active. Command: {command_id}")
 
   def obsidian_command_return_value(command_id: str,
                                     arg1: Any = None,
@@ -195,14 +207,19 @@ class Actions:
                                     arg4: Any = None) -> Any:
     """Executes a command via Obsidian Command Server and returns its return value."""
     # Default implementation (Obsidian not active) throws an exception.
-    raise RuntimeError(f"Tried running (return) Obsidian command when Obsidian not active. Command: {command_id}")
+    raise RuntimeError(
+        f"Tried running (return) Obsidian command when Obsidian not active. Command: {command_id}")
 
 
 @ctx.action_class("user")
 class UserActions:
   """Action implementations when Obsidian is active."""
 
-  def obsidian_command(command_id: str, arg1: Any = None, arg2: Any = None, arg3: Any = None, arg4: Any = None):
+  def obsidian_command(command_id: str,
+                       arg1: Any = None,
+                       arg2: Any = None,
+                       arg3: Any = None,
+                       arg4: Any = None):
     run_command(command_id, arg1, arg2, arg3, arg4)
 
   def obsidian_command_and_wait(command_id: str,

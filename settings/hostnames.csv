@@ -1,6 +1,6 @@
 Hostname,Spoken
-# Note: This file should be restricted to commonly-used hosts with unique spoken forms only, as the spoken forms become
-# commands on their own.
+# Note: This file should be restricted to commonly-used hosts with unique spoken forms only, as the
+# spoken forms become commands on their own.
 
 mail.google.com,gmail
 calendar.google.com,calendar

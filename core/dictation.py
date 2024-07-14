@@ -15,12 +15,13 @@ mod.list("vocabulary", desc="Additional vocabulary words")
 mod.list("person_name", desc="Names of people")
 mod.list("unicode", desc="Named Unicode strings, such as emoji")
 
-# "dictate.word_map" is used by `actions.dictate.replace_words` to rewrite words Talon recognized. Entries in word_map
-# don't change the priority with which Talon recognizes some words over others.
+# "dictate.word_map" is used by `actions.dictate.replace_words` to rewrite words Talon recognized.
+# Entries in word_map don't change the priority with which Talon recognizes some words over others.
 ctx.settings["dictate.word_map"] = load_dict_from_csv("words_to_replace.csv")
 
-# "user.vocabulary" is used to explicitly add words/phrases that Talon doesn't recognize. Words in user.vocabulary (or
-# other lists and captures) are "command-like" and their recognition is prioritized over ordinary words.
+# "user.vocabulary" is used to explicitly add words/phrases that Talon doesn't recognize. Words in
+# user.vocabulary (or other lists and captures) are "command-like" and their recognition is
+# prioritized over ordinary words.
 ctx.lists["user.vocabulary"] = load_dict_from_csv("additional_words.csv")
 
 # Names of people.
@@ -72,17 +73,18 @@ def text(m) -> str:
 
 
 @mod.capture(rule="({user.punctuation} | <user.dictate_letters> | <user.dictate_number> | " +
-             "<user.dictate_abbreviation> | <user.file_extension> | <user.person_name> | {user.vocabulary} | <phrase>)+"
-            )
+             "<user.dictate_abbreviation> | <user.file_extension> | <user.person_name> | " +
+             "{user.vocabulary} | <phrase>)+")
 def prose(m) -> str:
-  """Prose that is auto-spaced and capitalized. Allows abbreviations, letters, numbers, file extensions, and
-  punctuation."""
+  """Prose that is auto-spaced and capitalized. Allows abbreviations, letters, numbers, file
+  extensions, and punctuation."""
   capitalized = format_util.auto_capitalize(_format_captured_text(m))
   return capitalized
 
 
-@mod.capture(rule="(<user.dictate_letters> | <user.dictate_number> | <user.dictate_abbreviation> | " +
-             "{user.vocabulary} | <phrase>)+")
+@mod.capture(
+    rule="(<user.dictate_letters> | <user.dictate_number> | <user.dictate_abbreviation> | " +
+    "{user.vocabulary} | <phrase>)+")
 def formatter_text(m) -> str:
   """Text for formatters. Allows abbreviations, letters, and numbers."""
   return _format_captured_text(m)

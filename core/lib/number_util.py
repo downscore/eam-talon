@@ -73,12 +73,14 @@ SCALES_BY_WORD = {
 
 
 def _get_numbers_by_word(first_words_only: bool) -> Dict[str, int]:
-  """Get a combined map of int values by word for all numbers, or just for numbers that can come first."""
+  """Get a combined map of int values by word for all numbers, or just for numbers that can come
+  first."""
   result: Dict[str, int] = DIGITS_BY_WORD.copy()
   result.update(TEENS_BY_WORD)
   result.update(TENS_BY_WORD)
 
-  # To disallow numbers starting with, or consisting only of, "oh", only add the following if not first_words_only.
+  # To disallow numbers starting with, or consisting only of, "oh", only add the following if not
+  # first_words_only.
   result["oh"] = 0
 
   if not first_words_only:
@@ -111,13 +113,13 @@ def _split_list(value: str, l: List[Union[str, int]]) -> Iterator:
 def _parse_scale(scale: str, l: List[Union[str, int]]) -> List[Union[str, int]]:
   """Parses a list of mixed numbers and strings for occurrences of the following pattern:
         <multiplier> <scale> <remainder>
-    where <scale> is a scale word like "hundred", "thousand", "million", etc. and multiplier and remainder are numbers
-    or strings of numbers of the appropriate size. For example:
+    where <scale> is a scale word like "hundred", "thousand", "million", etc. and multiplier and
+    remainder are numbers or strings of numbers of the appropriate size. For example:
         parse_scale("hundred", [1, "hundred", 2]) -> [102]
         parse_scale("thousand", [12, "thousand", 3, 45]) -> [12345]
 
-    We assume that all scales of lower magnitude have already been parsed. Don't call parse_scale("thousand") until
-    you've called parse_scale("hundred").
+    We assume that all scales of lower magnitude have already been parsed. Don't call
+    parse_scale("thousand") until you've called parse_scale("hundred").
     """
   scale_value = SCALES_BY_WORD[scale]
   scale_digits = len(str(scale_value))
@@ -125,15 +127,17 @@ def _parse_scale(scale: str, l: List[Union[str, int]]) -> List[Union[str, int]]:
   # Split the list on the desired scale word, then parse from left to right.
   left, *splits = _split_list(scale, l)
   for right in splits:
-    # (1) Figure out the multiplier by looking to the left of the scale word. We ignore non-integers because they are
-    # scale words that we haven't processed yet; this strategy means that "thousand hundred" gets parsed as 1,100
-    # instead of 100,000, but "hundred thousand" is parsed correctly as 100,000.
+    # (1) Figure out the multiplier by looking to the left of the scale word. We ignore non-integers
+    # because they are scale words that we haven't processed yet; this strategy means that "thousand
+    # hundred" gets parsed as 1,100 instead of 100,000, but "hundred thousand" is parsed correctly
+    # as 100,000.
     before = 1  # default multiplier
     if left and isinstance(left[-1], int) and left[-1] != 0:
       before = left.pop()
 
-    # (2) Absorb numbers to the right, eg. in [1, "thousand", 1, 26], "1 thousand" absorbs ["1", "26"] to make 1,126.
-    # We pull numbers off `right` until we fill up the desired number of digits.
+    # (2) Absorb numbers to the right, eg. in [1, "thousand", 1, 26], "1 thousand" absorbs
+    # ["1", "26"] to make 1,126. We pull numbers off `right` until we fill up the desired number of
+    # digits.
     after = ""
     while right and isinstance(right[0], int):
       next_str = after + str(right[0])

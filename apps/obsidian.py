@@ -33,7 +33,8 @@ class Actions:
 class ExtensionActions:
   """Action overrides."""
 
-  # The implementation below doesn't work well on wrapped lines (includes the first character after the wrap).
+  # The implementation below doesn't work well on wrapped lines (includes the first character after
+  # the wrap).
   # def select_line_including_line_break():
   #   # cmd-left stops before checkboxes in Obsidian.
   #   actions.key("cmd-left:2 cmd-shift-right shift-right")

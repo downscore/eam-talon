@@ -6,8 +6,8 @@ from .textflow_types import EditorAction, EditorActionType, TextRange
 
 def simulate_actions(initial_text: str, initial_selection: TextRange,
                      actions: list[EditorAction]) -> Tuple[str, TextRange, str]:
-  """Simulate a set of input commands given the starting text and selection range. Returns resulting (text, selection
-  range, clipboard contents)."""
+  """Simulate a set of input commands given the starting text and selection range. Returns resulting
+  (text, selection range, clipboard contents)."""
   text = initial_text
   selection = initial_selection
   clipboard = ""
@@ -28,7 +28,8 @@ def simulate_actions(initial_text: str, initial_selection: TextRange,
     elif action.action_type == EditorActionType.INSERT_TEXT:
       text = text[0:selection.start] + action.text + text[selection.end:]
       selection = TextRange(selection.start + len(action.text), selection.start + len(action.text))
-    elif action.action_type in (EditorActionType.SET_CLIPBOARD_WITH_HISTORY, EditorActionType.SET_CLIPBOARD_NO_HISTORY):
+    elif action.action_type in (EditorActionType.SET_CLIPBOARD_WITH_HISTORY,
+                                EditorActionType.SET_CLIPBOARD_NO_HISTORY):
       clipboard = action.text
 
     # Verify selection is still inside text after action.

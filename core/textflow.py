@@ -41,7 +41,8 @@ _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
     "biggest": tf.CommandType.UPPERCASE,
     "smaller": tf.CommandType.LOWERCASE,
 }
-mod.list("textflow_single_word_command_type", desc="Text navigation command types that act on a single word")
+mod.list("textflow_single_word_command_type",
+         desc="Text navigation command types that act on a single word")
 ctx.lists["self.textflow_single_word_command_type"] = _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN.keys()
 
 _SEARCH_DIRECTION_BY_SPOKEN = {
@@ -72,31 +73,52 @@ _POTATO_LINES_AFTER = 10
 
 # Input action functions keyed by potato action type.
 _POTATO_INPUT_ACTIONS_BY_TYPE = {
-    textflow_potato.PotatoEditorActionType.GO_UP: actions.user.up,
-    textflow_potato.PotatoEditorActionType.GO_DOWN: actions.user.down,
-    textflow_potato.PotatoEditorActionType.GO_LEFT: actions.user.left,
-    textflow_potato.PotatoEditorActionType.GO_RIGHT: actions.user.right,
-    textflow_potato.PotatoEditorActionType.GO_WORD_LEFT: actions.user.word_left,
-    textflow_potato.PotatoEditorActionType.GO_WORD_RIGHT: actions.user.word_right,
-    textflow_potato.PotatoEditorActionType.GO_LINE_START: actions.user.line_start,
-    textflow_potato.PotatoEditorActionType.GO_LINE_END: actions.user.line_end,
-    textflow_potato.PotatoEditorActionType.EXTEND_UP: actions.user.extend_up,
-    textflow_potato.PotatoEditorActionType.EXTEND_DOWN: actions.user.extend_down,
-    textflow_potato.PotatoEditorActionType.EXTEND_LEFT: actions.user.extend_left,
-    textflow_potato.PotatoEditorActionType.EXTEND_RIGHT: actions.user.extend_right,
-    textflow_potato.PotatoEditorActionType.EXTEND_WORD_LEFT: actions.user.extend_word_left,
-    textflow_potato.PotatoEditorActionType.EXTEND_WORD_RIGHT: actions.user.extend_word_right,
-    textflow_potato.PotatoEditorActionType.EXTEND_LINE_START: actions.user.extend_line_start,
-    textflow_potato.PotatoEditorActionType.EXTEND_LINE_END: actions.user.extend_line_end,
-    textflow_potato.PotatoEditorActionType.CLEAR: actions.user.delete,
-    textflow_potato.PotatoEditorActionType.INSERT_TEXT: actions.user.insert_via_clipboard,
-    textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_WITH_HISTORY: actions.user.clipboard_history_set_text,
-    textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_NO_HISTORY: actions.clip.set_text,
+    textflow_potato.PotatoEditorActionType.GO_UP:
+        actions.user.up,
+    textflow_potato.PotatoEditorActionType.GO_DOWN:
+        actions.user.down,
+    textflow_potato.PotatoEditorActionType.GO_LEFT:
+        actions.user.left,
+    textflow_potato.PotatoEditorActionType.GO_RIGHT:
+        actions.user.right,
+    textflow_potato.PotatoEditorActionType.GO_WORD_LEFT:
+        actions.user.word_left,
+    textflow_potato.PotatoEditorActionType.GO_WORD_RIGHT:
+        actions.user.word_right,
+    textflow_potato.PotatoEditorActionType.GO_LINE_START:
+        actions.user.line_start,
+    textflow_potato.PotatoEditorActionType.GO_LINE_END:
+        actions.user.line_end,
+    textflow_potato.PotatoEditorActionType.EXTEND_UP:
+        actions.user.extend_up,
+    textflow_potato.PotatoEditorActionType.EXTEND_DOWN:
+        actions.user.extend_down,
+    textflow_potato.PotatoEditorActionType.EXTEND_LEFT:
+        actions.user.extend_left,
+    textflow_potato.PotatoEditorActionType.EXTEND_RIGHT:
+        actions.user.extend_right,
+    textflow_potato.PotatoEditorActionType.EXTEND_WORD_LEFT:
+        actions.user.extend_word_left,
+    textflow_potato.PotatoEditorActionType.EXTEND_WORD_RIGHT:
+        actions.user.extend_word_right,
+    textflow_potato.PotatoEditorActionType.EXTEND_LINE_START:
+        actions.user.extend_line_start,
+    textflow_potato.PotatoEditorActionType.EXTEND_LINE_END:
+        actions.user.extend_line_end,
+    textflow_potato.PotatoEditorActionType.CLEAR:
+        actions.user.delete,
+    textflow_potato.PotatoEditorActionType.INSERT_TEXT:
+        actions.user.insert_via_clipboard,
+    textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_WITH_HISTORY:
+        actions.user.clipboard_history_set_text,
+    textflow_potato.PotatoEditorActionType.SET_CLIPBOARD_NO_HISTORY:
+        actions.clip.set_text,
 }
 
 # App bundles we enable AXEnhancedUserInterface for.
 _ENHANCED_UI_BUNDLES = [
-    "com.microsoft.VSCode", "com.microsoft.VSCodeInsiders", "com.visualstudio.code.oss", "md.obsidian"
+    "com.microsoft.VSCode", "com.microsoft.VSCodeInsiders", "com.visualstudio.code.oss",
+    "md.obsidian"
 ]
 
 
@@ -105,12 +127,13 @@ class TextFlowContext:
   """Context, including text and selection range, that TextFlow will act in."""
   text: str
   selection_range: tf.TextRange
-  # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe by default.
-  # If `textflow_get_context` is overridden but `textflow_set_selection_action` is not, the non-potato default
-  # implementation is likely to fail (e.g. the overridden context action may not populate `editor_element`).
+  # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe
+  # by default. If `textflow_get_context` is overridden but `textflow_set_selection_action` is not,
+  # the non-potato default implementation is likely to fail (e.g. the overridden context action may
+  # not populate `editor_element`).
   potato_mode: bool = True
-  # The starting offset of `text` in the active editor. Used when we are not operating on the entire contents of the
-  # editor. Not used in potato mode.
+  # The starting offset of `text` in the active editor. Used when we are not operating on the entire
+  # contents of the editor. Not used in potato mode.
   text_offset: int = 0
   # The element that contains the text we are editing. Not used in potato mode.
   editor_element: Optional[ui.Element] = None
@@ -119,16 +142,17 @@ class TextFlowContext:
 def _get_context_potato_mode() -> TextFlowContext:
   """Gets TextFlow context in potato mode."""
   # Check if we already have a selection.
-  # Note: Editors that copy the entire line when nothing is selected should override this action to return an empty
-  # string. Otherwise, many actions in TextFlow will break, especially for targets after the cursor.
+  # Note: Editors that copy the entire line when nothing is selected should override this action to
+  # return an empty string. Otherwise, many actions in TextFlow will break, especially for targets
+  # after the cursor.
   selected_text = actions.user.textflow_get_selected_text_potato_mode()
 
   # Collapse selection if necessary.
   if len(selected_text) > 0:
     actions.user.left()
 
-  # Do not preserve the selection if it is long. Long selections are usually not useful in TextFlow and they can make
-  # a potato-mode command execute very slowly.
+  # Do not preserve the selection if it is long. Long selections are usually not useful in TextFlow
+  # and they can make a potato-mode command execute very slowly.
   if len(selected_text) > 150:  # Around the length of a very long line.
     selected_text = ""
 
@@ -154,8 +178,8 @@ def _get_context() -> TextFlowContext:
   if actions.user.textflow_force_potato_mode():
     return _get_context_potato_mode()
 
-  # Check if we need to enable enhanced UI for the active app. Allows us to access some Electron apps (such as VS Code)
-  # through the accessibility API.
+  # Check if we need to enable enhanced UI for the active app. Allows us to access some Electron
+  # apps (such as VS Code) through the accessibility API.
   curr_app = ui.active_window().app
   if curr_app.bundle in _ENHANCED_UI_BUNDLES:
     if not curr_app.element.AXEnhancedUserInterface:
@@ -171,7 +195,8 @@ def _get_context() -> TextFlowContext:
       # Pause for UI to update before we try to access the focused element.
       actions.sleep("500ms")
 
-  # Short pause to make textflow commands more chainable. Allows UI to update from previous commands.
+  # Short pause to make textflow commands more chainable. Allows UI to update from previous
+  # commands.
   actions.sleep("20ms")
 
   # Try to get the focused element. If we can't, we'll fallback to potato mode.
@@ -194,16 +219,18 @@ def _get_context() -> TextFlowContext:
     selection_span: types.span.Span = focused_element.AXSelectedTextRange
     selected_text: str = focused_element.AXSelectedText
   except AttributeError:
-    print("TextFlow: Unable to get attribute values from focused element. Falling back to potato mode.")
+    print("TextFlow: Unable to get attribute values from focused element. "
+          "Falling back to potato mode.")
     return _get_context_potato_mode()
 
-  # Special case encountered in Google Docs: AX attributes are present, but text is just a single special character.
+  # Special case encountered in Google Docs: AX attributes are present, but text is just a single
+  # special character.
   if text == "\xa0":
     print("TextFlow: Encountered Google Docs special case. Falling back to potato mode.")
     return _get_context_potato_mode()
 
-  # Accessibility APIs appear to have a character limit. If we are approaching or beyond that limit, switch to potato
-  # mode.
+  # Accessibility APIs appear to have a character limit. If we are approaching or beyond that limit,
+  # switch to potato mode.
   if (len(text) == _MAX_ACCESSIBLITY_API_CHARS and
       selection_span.right > _MAX_ACCESSIBLITY_API_CHARS - _MIN_CHARS_AFTER_ACCESSIBLITY_API_LIMIT):
     print("TextFlow: Hit accessibility API character limit. Falling back to potato mode.")
@@ -214,16 +241,18 @@ def _get_context() -> TextFlowContext:
 
   # Sanity check: Make sure selected text matches text + selection range.
   if len(selected_text) != selection_range.length():
-    raise ValueError(
-        f"Unexpected selected text length. Expected: {selection_range.length()}, Actual: {len(selected_text)}")
+    raise ValueError("Unexpected selected text length. "
+                     f"Expected: {selection_range.length()}, Actual: {len(selected_text)}")
 
   return TextFlowContext(text, selection_range, potato_mode=False, editor_element=focused_element)
 
 
-def _execute_editor_actions_potato_mode(editor_actions: list[tf.EditorAction], context: TextFlowContext):
+def _execute_editor_actions_potato_mode(editor_actions: list[tf.EditorAction],
+                                        context: TextFlowContext):
   """Executes a set of editor actions in potato mode, given a textflow context."""
   # Convert the actions to potato mode.
-  potato_actions = textflow_potato.convert_actions_to_potato_mode(editor_actions, context.text, context.selection_range)
+  potato_actions = textflow_potato.convert_actions_to_potato_mode(editor_actions, context.text,
+                                                                  context.selection_range)
 
   for action in potato_actions:
     for _ in range(0, action.repeat):
@@ -267,10 +296,12 @@ def _run_command(command: tf.Command):
   context = actions.user.textflow_get_context()
 
   # Collect required utility functions.
-  utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones, actions.user.get_next_homophone)
+  utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones,
+                                          actions.user.get_next_homophone)
 
   # Run the command.
-  editor_actions = textflow.run_command(command, context.text, context.selection_range, utility_functions)
+  editor_actions = textflow.run_command(command, context.text, context.selection_range,
+                                        utility_functions)
 
   # Execute the editor actions.
   _execute_editor_actions(editor_actions, context)
@@ -345,17 +376,20 @@ def textflow_simple_target(m) -> tf.SimpleTarget:
   nth, direction = _get_ordinal_and_search_direction(m)
 
   try:
-    return tf.SimpleTarget(tf.TokenMatchOptions(nth_match=nth, search=m.textflow_substring), direction)
-  except AttributeError:
-    pass
-
-  try:
-    return tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.textflow_phrase),
+    return tf.SimpleTarget(tf.TokenMatchOptions(nth_match=nth, search=m.textflow_substring),
                            direction)
   except AttributeError:
     pass
 
-  return tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.TOKEN_COUNT, nth_match=nth), direction)
+  try:
+    return tf.SimpleTarget(
+        tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.textflow_phrase),
+        direction)
+  except AttributeError:
+    pass
+
+  return tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.TOKEN_COUNT, nth_match=nth),
+                         direction)
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] <user.word>")
@@ -363,7 +397,9 @@ def textflow_word(m) -> tf.CompoundTarget:
   """A textflow target matching a single word with homophones."""
   nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
-      tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.word), direction))
+      tf.SimpleTarget(
+          tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, nth_match=nth, search=m.word),
+          direction))
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] definite")
@@ -371,7 +407,9 @@ def textflow_definite(m) -> tf.CompoundTarget:
   """A textflow target matching the word "the"."""
   nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
-      tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="the"), direction))
+      tf.SimpleTarget(
+          tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="the"),
+          direction))
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.textflow_search_direction>] indefinite")
@@ -379,10 +417,13 @@ def textflow_indefinite(m) -> tf.CompoundTarget:
   """A textflow target matching the word "a"."""
   nth, direction = _get_ordinal_and_search_direction(m)
   return tf.CompoundTarget(
-      tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="a"), direction))
+      tf.SimpleTarget(
+          tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, nth_match=nth, search="a"),
+          direction))
 
 
-@mod.capture(rule="<user.textflow_simple_target> [<user.textflow_target_combo_type> <user.textflow_simple_target>]")
+@mod.capture(rule="<user.textflow_simple_target> [<user.textflow_target_combo_type> " +
+             "<user.textflow_simple_target>]")
 def textflow_compound_target(m) -> tf.CompoundTarget:
   """A textflow compound target."""
   from_target = m.textflow_simple_target_list[0]
@@ -401,14 +442,14 @@ class Actions:
   """Textflow actions."""
 
   def textflow_get_selected_text_potato_mode() -> str:
-    """Gets the selected text. For editors that copy/cut the current line when nothing is selected, this should be
-    overridden to return an empty string. Otherwise, most textflow commands will not work for targets after the
-    cursor."""
+    """Gets the selected text. For editors that copy/cut the current line when nothing is selected,
+    this should be overridden to return an empty string. Otherwise, most textflow commands will not
+    work for targets after the cursor."""
     return actions.user.selected_text()
 
   def textflow_force_potato_mode() -> bool:
-    """Returns whether to require potato mode even if the accessibility API is available. Required in some apps
-    that do not properly implement the accessibility API."""
+    """Returns whether to require potato mode even if the accessibility API is available. Required
+    in some apps that do not properly implement the accessibility API."""
     return False
 
   def textflow_execute_command(command_type: tf.CommandType,
@@ -418,7 +459,8 @@ class Actions:
     command = tf.Command(command_type, target_from, target_to)
     _run_command(command)
 
-  def textflow_execute_command_from_cursor(command_type: tf.CommandType, combo_type: tf.TargetCombinationType,
+  def textflow_execute_command_from_cursor(command_type: tf.CommandType,
+                                           combo_type: tf.TargetCombinationType,
                                            simple_target: tf.SimpleTarget):
     """"Executes a textflow command using the cursor as the first simple target."""
     compound_target = tf.CompoundTarget(target_to=simple_target, target_combo=combo_type)
@@ -439,12 +481,13 @@ class Actions:
                                          modifier_type: tf.ModifierType = tf.ModifierType.NONE,
                                          delimiter: str = ""):
     """"Executes a textflow command on the current selection with an optional modifier."""
-    command = tf.Command(command_type, tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter)))
+    command = tf.Command(
+        command_type, tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter)))
     _run_command(command)
 
   def textflow_modifier_type_from_string(modifier_type: str) -> tf.ModifierType:
-    """Converts a string to a modifier type. "SCOPE" is a special modifier that gets the appropriate modifier for the
-    current context."""
+    """Converts a string to a modifier type. "SCOPE" is a special modifier that gets the appropriate
+    modifier for the current context."""
     result = tf.ModifierType.NONE
     if modifier_type:
       if modifier_type == "SCOPE":
@@ -453,10 +496,14 @@ class Actions:
         result = tf.ModifierType[modifier_type]
     return result
 
-  def textflow_execute_command_enum_strings(command_type: str, modifier_type: str = "", delimiter: str = ""):
-    """"Executes a textflow command on the current selection with an optional modifier. Uses string enum values."""
+  def textflow_execute_command_enum_strings(command_type: str,
+                                            modifier_type: str = "",
+                                            delimiter: str = ""):
+    """"Executes a textflow command on the current selection with an optional modifier. Uses string
+    enum values."""
     effective_modifier_type = actions.user.textflow_modifier_type_from_string(modifier_type)
-    actions.user.textflow_execute_command_selection(tf.CommandType[command_type], effective_modifier_type, delimiter)
+    actions.user.textflow_execute_command_selection(tf.CommandType[command_type],
+                                                    effective_modifier_type, delimiter)
 
   def textflow_get_scope_modifier() -> tf.ModifierType:
     """Gets the current scope modifier type."""
@@ -470,7 +517,8 @@ class Actions:
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARGUMENT)
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE,
+                                                    tf.ModifierType.ARGUMENT)
 
     # Move before the argument that is now under the cursor.
     command = tf.Command(tf.CommandType.MOVE_CURSOR_BEFORE,
@@ -487,11 +535,12 @@ class Actions:
     if not argument:
       return
     actions.key("left")
-    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE, tf.ModifierType.ARGUMENT)
+    actions.user.textflow_execute_command_selection(tf.CommandType.CLEAR_NO_MOVE,
+                                                    tf.ModifierType.ARGUMENT)
 
-    # The modifier prefers to delete leading commas instead of trailing ones, so we need to move right to get to the
-    # next argument. This causes odd behavior if the cursor is already in the rightmost argument, but it allows moving
-    # arguments that aren't the leftmost.
+    # The modifier prefers to delete leading commas instead of trailing ones, so we need to move
+    # right to get to the next argument. This causes odd behavior if the cursor is already in the
+    # rightmost argument, but it allows moving arguments that aren't the leftmost.
     actions.key("right")
 
     # Move after the argument that is now under the cursor.
@@ -529,7 +578,8 @@ class Actions:
     _run_command(command)
 
   def textflow_move_cursor_after_markdown_section(section_name: str):
-    """Moves the cursor to the end of the given markdown section. Sections are separated by headings."""
+    """Moves the cursor to the end of the given markdown section. Sections are separated by
+    headings."""
     target_from = tf.CompoundTarget(tf.SimpleTarget(
         tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"# {section_name}\n")),
                                     modifier=tf.Modifier(tf.ModifierType.MARKDOWN_SECTION_END))
@@ -538,8 +588,10 @@ class Actions:
 
   def textflow_swap_homophone_to_word(word: str):
     """Finds the nearest homophone for the given word and swaps it to the word."""
-    # TODO: This will match the word itself and word substrings. Also add ordinal and search direction.
-    target_from = tf.CompoundTarget(tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=word)))
+    # TODO: This will match the word itself and word substrings. Also add ordinal and search
+    # direction.
+    target_from = tf.CompoundTarget(
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=word)))
     command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text=word)
     _run_command(command)
 
@@ -553,34 +605,45 @@ class Actions:
   def textflow_join_words(word1: str, word2: str):
     """Joins two words into one. e.g. base ball->baseball."""
     target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: s.replace(" ", ""))
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE,
+                                             search=f"{word1} {word2}")))
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA,
+                         target_from,
+                         lambda_func=lambda s: s.replace(" ", ""))
     _run_command(command)
 
   def textflow_hyphenate_words(word1: str, word2: str):
     """Hyphenates two words. e.g. base ball->base-ball."""
     target_from = tf.CompoundTarget(
-        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=f"{word1} {word2}")))
-    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: s.replace(" ", "-"))
+        tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE,
+                                             search=f"{word1} {word2}")))
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA,
+                         target_from,
+                         lambda_func=lambda s: s.replace(" ", "-"))
     _run_command(command)
 
   def textflow_words_to_digits(number_words: list[str]):
-    """Find and convert a number written as words into digits. e.g. "one thousand and twenty five" -> "1025"."""
+    """Find and convert a number written as words into digits. e.g. "one thousand and twenty five"
+    -> "1025"."""
     if len(number_words) == 0:
       return
     number_string = number_util.parse_number(number_words)
-    # If there is only one word, use an exact match. e.g. for "ten", we don't want to convert "tent" to "10".
+    # If there is only one word, use an exact match. e.g. for "ten", we don't want to convert
+    # "tent" to "10".
     if len(number_words) == 1:
       target_from = tf.CompoundTarget(
-          tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=number_words[0])))
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(tf.TokenMatchMethod.EXACT_WORD, search=number_words[0])))
     else:
       target_from = tf.CompoundTarget(
-          tf.SimpleTarget(tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=" ".join(number_words))))
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(tf.TokenMatchMethod.PHRASE, search=" ".join(number_words))))
     command = tf.Command(tf.CommandType.REPLACE, target_from, insert_text=number_string)
     _run_command(command)
 
   def textflow_make_possessive(target_from: tf.CompoundTarget):
-    """Converts a word to end in "'s". Uses existing trailing 's' if present. e.g. "dog" -> "dog's", "its" -> "it's"."""
+    """Converts a word to end in "'s". Uses existing trailing 's' if present. e.g. "dog" -> "dog's",
+    "its" -> "it's"."""
 
     def _make_possessive(s: str) -> str:
       if s.endswith("'s"):
@@ -589,11 +652,14 @@ class Actions:
         return s[:-1] + "'" + s[-1:]
       return s + "'s"
 
-    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_possessive)
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA,
+                         target_from,
+                         lambda_func=_make_possessive)
     _run_command(command)
 
   def textflow_make_plural(target_from: tf.CompoundTarget):
-    """Converts a word to end in "s". Uses existing trailing 's' if present. e.g. "dog" -> "dogs", "it" -> "it's"."""
+    """Converts a word to end in "s". Uses existing trailing 's' if present. e.g. "dog" -> "dogs",
+    "it" -> "it's"."""
 
     def _make_plural(s: str) -> str:
       if s.endswith("s"):
@@ -613,13 +679,15 @@ class Actions:
         return s[:-1]
       return s
 
-    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=_make_singular)
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA,
+                         target_from,
+                         lambda_func=_make_singular)
     _run_command(command)
 
   def textflow_select_nth_token(from_n: int, to_n: int = 0):
-    """Selects the nth token from the current cursor position. from_n may be negative to search backwards.
-    If to_n is 0, the selection will be a single token. If to_n is positive, the selection will be a range of tokens,
-    and from_n may not be negative."""
+    """Selects the nth token from the current cursor position. from_n may be negative to search
+    backwards. If to_n is 0, the selection will be a single token. If to_n is positive, the
+    selection will be a range of tokens, and from_n may not be negative."""
     if from_n == 0:
       return
     if to_n > 0 and from_n < 0:
@@ -627,17 +695,22 @@ class Actions:
     if to_n > 0 and from_n >= to_n:
       raise ValueError("from_n must be less than to_n if to_n is provided.")
     if from_n < 0 and to_n < 0 and from_n <= to_n:
-      raise ValueError("from_n must be greater than to_n if to_n is provided and both are negative.")
+      raise ValueError(
+          "from_n must be greater than to_n if to_n is provided and both are negative.")
 
     if from_n > 0 and to_n > 0:
       target_from = tf.CompoundTarget(
-          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
-                          tf.SearchDirection.FORWARD),
-          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=to_n - from_n)))
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
+              tf.SearchDirection.FORWARD),
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT,
+                                   nth_match=to_n - from_n)))
     elif from_n > 0:
       target_from = tf.CompoundTarget(
-          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
-                          tf.SearchDirection.FORWARD))
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
+              tf.SearchDirection.FORWARD))
     elif from_n < 0 and to_n < 0:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(
@@ -645,7 +718,9 @@ class Actions:
               # -2 to -3
               tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-to_n),
               tf.SearchDirection.BACKWARD),
-          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n - to_n)))
+          tf.SimpleTarget(
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT,
+                                   nth_match=from_n - to_n)))
     else:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(
@@ -657,8 +732,9 @@ class Actions:
     _run_command(command)
 
   def textflow_select_nth_token_backwards(from_n: int, to_n: int = 0):
-    """Selects the nth token backwards from the end of the line. If to_n is 0, the selection will be a single
-    token. If to_n is positive, the selection will be a range of tokens. Indices may not be negative."""
+    """Selects the nth token backwards from the end of the line. If to_n is 0, the selection will be
+    a single token. If to_n is positive, the selection will be a range of tokens. Indices may not be
+    negative."""
     if from_n < 0 or to_n < 0:
       raise ValueError("Negative indices not allowed.")
     if to_n > 0 and from_n >= to_n:
@@ -667,12 +743,14 @@ class Actions:
     actions.user.textflow_select_nth_token(-from_n, -to_n)
 
   def textflow_select_nth_modifier(n: int, modifier_type_string: str, delimiter: str = ""):
-    """Selects the nth modifier from the current cursor position. n may be negative to search backwards."""
+    """Selects the nth modifier from the current cursor position. n may be negative to search
+    backwards."""
     if n == 0:
       return
     modifier_type = actions.user.textflow_modifier_type_from_string(modifier_type_string)
-    command = tf.Command(tf.CommandType.SELECT,
-                         tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter, n=n)))
+    command = tf.Command(
+        tf.CommandType.SELECT,
+        tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter, n=n)))
     _run_command(command)
 
   def textflow_select_nested_call():
@@ -684,11 +762,14 @@ class Actions:
     # Move the cursor inside the next paren.
     command = tf.Command(
         tf.CommandType.MOVE_CURSOR_AFTER,
-        tf.CompoundTarget(tf.SimpleTarget(tf.TokenMatchOptions(search="("), direction=tf.SearchDirection.FORWARD)))
+        tf.CompoundTarget(
+            tf.SimpleTarget(tf.TokenMatchOptions(search="("),
+                            direction=tf.SearchDirection.FORWARD)))
     _run_command(command)
 
     # Select the next nested function call.
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL_NEXT)))
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.CALL_NEXT)))
     _run_command(command)
 
   def textflow_select_nested_brackets():
@@ -698,19 +779,24 @@ class Actions:
       actions.key("left")
 
     # Select the next nested brackets.
-    command = tf.Command(tf.CommandType.SELECT, tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS_FIRST)))
+    command = tf.Command(tf.CommandType.SELECT,
+                         tf.CompoundTarget(modifier=tf.Modifier(tf.ModifierType.BRACKETS_FIRST)))
     _run_command(command)
 
-  def textflow_surround_text(target_from: tf.CompoundTarget, before: str, after: Optional[str] = None):
+  def textflow_surround_text(target_from: tf.CompoundTarget,
+                             before: str,
+                             after: Optional[str] = None):
     """Adds strings around a matched target. If `after` is None, it will be set to `before`."""
     if after is None:
       after = before
-    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA, target_from, lambda_func=lambda s: f"{before}{s}{after}")
+    command = tf.Command(tf.CommandType.REPLACE_WITH_LAMBDA,
+                         target_from,
+                         lambda_func=lambda s: f"{before}{s}{after}")
     _run_command(command)
 
   def textflow_potato_get_text_before_cursor():
-    """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text
-    selection behavior."""
+    """"Get text before the cursor for use in textflow potato mode. Can be overridden in apps that
+    have unusual text selection behavior."""
     # Select a few lines above the cursor.
     for _ in range(0, _POTATO_LINES_BEFORE):
       actions.user.extend_up()
@@ -722,8 +808,8 @@ class Actions:
     return result
 
   def textflow_potato_get_text_after_cursor():
-    """"Get text after the cursor for use in textflow potato mode. Can be overridden in apps that have unusual text
-    selection behavior."""
+    """"Get text after the cursor for use in textflow potato mode. Can be overridden in apps that
+    have unusual text selection behavior."""
     # Select a few lines below the cursor.
     for _ in range(0, _POTATO_LINES_AFTER):
       actions.user.extend_down()
@@ -735,13 +821,14 @@ class Actions:
     return result
 
   def textflow_get_context() -> TextFlowContext:
-    """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility extensions.
-    If this is overwritten, `potato_mode` in the result supercedes the `textflow_force_potato_mode` action."""
+    """Gets the context for TextFlow to act in. Can be overwritten in apps with accessibility
+    extensions. If this is overwritten, `potato_mode` in the result supercedes the
+    `textflow_force_potato_mode` action."""
     return _get_context()
 
   def textflow_set_selection_action(editor_action: tf.EditorAction, context: TextFlowContext):
-    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with accessibility
-    extensions."""
+    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with
+    accessibility extensions."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range.")
     if context.editor_element is None:

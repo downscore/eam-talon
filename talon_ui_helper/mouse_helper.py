@@ -96,13 +96,14 @@ class MouseActions:
     new_ypos = actions.mouse_y() + ydelta
     actions.mouse_move(new_xpos, new_ypos)
 
-  def mouse_helper_calculate_relative_rect(relative_rect_offsets: str, region: str = "active_screen") -> TalonRect:
-    """Calculates a talon rectangle relative to the entire screen based on the given region of interest and a set of
-    offsets. Examples:
+  def mouse_helper_calculate_relative_rect(relative_rect_offsets: str,
+                                           region: str = "active_screen") -> TalonRect:
+    """Calculates a talon rectangle relative to the entire screen based on the given region of
+    interest and a set of offsets. Examples:
 
             "0 0 -0 -0", "active_screen": Would indicate the entire active screen.
-            "10 20 30 40", "active_window": Would indicate the region between pixels (10, 20) and (30, 40)
-              on the currently focussed window.
+            "10 20 30 40", "active_window": Would indicate the region between pixels (10, 20) and
+              (30, 40) on the currently focussed window.
             "10 20 -30 40", "active_window": Would indicate the region between pixels (10, 20) and
               the pixel 30 units from the right hand side of the window and 40 units from the top.
     """
@@ -203,19 +204,21 @@ class MouseActions:
     else:
       rect = region
 
-    sorted_matches = actions.user.mouse_helper_find_template_relative(template_path, xoffset, yoffset, rect)
+    sorted_matches = actions.user.mouse_helper_find_template_relative(template_path, xoffset,
+                                                                      yoffset, rect)
 
     if len(sorted_matches) == 0:
       # Throw an exception to cancel any following commands in the .talon file
       raise RuntimeError("No matches")
 
     if disambiguator in ("mouse", "mouse_cycle"):
-      # math.ceil is needed here to ensure we only look at pixels after the current template match if we're
-      # cycling between matches. math.floor would pick up the current one again.
+      # math.ceil is needed here to ensure we only look at pixels after the current template match
+      # if we're cycling between matches. math.floor would pick up the current one again.
       xnorm = math.ceil(actions.mouse_x() - sorted_matches[0].width / 2)
       ynorm = math.ceil(actions.mouse_y() - sorted_matches[0].height / 2)
       filtered_matches = [
-          match for match in sorted_matches if (match.y == ynorm and match.x > xnorm) or match.y > ynorm
+          match for match in sorted_matches
+          if (match.y == ynorm and match.x > xnorm) or match.y > ynorm
       ]
 
       if len(filtered_matches) > 0:

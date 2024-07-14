@@ -1,4 +1,5 @@
 """Talon code for optical character recognition commands."""
+
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
@@ -39,14 +40,20 @@ def _run_command(command: tf.Command, expand_to_ocr_results: bool = False):
   # Run OCR and turn the result into a context we can use.
   ocr_results = _ocr_active_screen()
   context = ocr_util.create_ocr_textflow_context(ocr_results, actions.mouse_x(), actions.mouse_y())
-  utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones, actions.user.get_next_homophone)
+  utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones,
+                                          actions.user.get_next_homophone)
 
-  # Comment the following line to try to infer a cursor position from the mouse coords.
+  # Uncomment the following line to disable trying to infer a cursor position from the current mouse
+  # coords.
   # context.mouse_index = 0
 
   # Run the command.
-  editor_actions = textflow.run_command(command, context.text, tf.TextRange(context.mouse_index, context.mouse_index),
-                                        utility_functions)
+  editor_actions = textflow.run_command(
+      command,
+      context.text,
+      tf.TextRange(context.mouse_index, context.mouse_index),
+      utility_functions,
+  )
 
   # Only execute selection range actions.
   for action in editor_actions:
@@ -72,22 +79,26 @@ def _run_command(command: tf.Command, expand_to_ocr_results: bool = False):
 class Actions:
   """OCR actions."""
 
-  def ocr_select_by_word(target_from: tf.CompoundTarget, modifier_string: str = "", delimiter: str = ""):
-    """"Selects a modified range on screen with the given word."""
+  def ocr_select_by_word(target_from: tf.CompoundTarget,
+                         modifier_string: str = "",
+                         delimiter: str = ""):
+    """Selects a modified range on screen with the given word."""
     modifier_type = actions.user.textflow_modifier_type_from_string(modifier_string)
     if modifier_type != tf.ModifierType.NONE:
       target_from.modifier = tf.Modifier(modifier_type, delimiter=delimiter)
     command = tf.Command(tf.CommandType.SELECT, target_from)
     _run_command(command)
 
-  def ocr_select_by_word_range(target_from: tf.CompoundTarget,
-                               target_to: tf.CompoundTarget,
-                               combo_type: tf.TargetCombinationType,
-                               modifier_string: str = "",
-                               delimiter: str = ""):
-    """"Selects a modified range on screen with the given words."""
-    # Combine the two "compound" targets into an actual compound target. Requires taking `target_to.target_from`, as
-    # the second word was passed as a compound target.
+  def ocr_select_by_word_range(
+      target_from: tf.CompoundTarget,
+      target_to: tf.CompoundTarget,
+      combo_type: tf.TargetCombinationType,
+      modifier_string: str = "",
+      delimiter: str = "",
+  ):
+    """Selects a modified range on screen with the given words."""
+    # Combine the two "compound" targets into an actual compound target. Requires taking
+    # `target_to.target_from`, as the second word was passed as a compound target.
     compound_target = tf.CompoundTarget(target_from.target_from, target_to.target_from, combo_type)
     modifier_type = actions.user.textflow_modifier_type_from_string(modifier_string)
     if modifier_type != tf.ModifierType.NONE:
@@ -96,7 +107,7 @@ class Actions:
     _run_command(command)
 
   def ocr_select_full_result_by_word(target_from: tf.CompoundTarget):
-    """"Selects an OCRed line on screen with the given word."""
+    """Selects an OCRed line on screen with the given word."""
     command = tf.Command(tf.CommandType.SELECT, target_from)
     _run_command(command, expand_to_ocr_results=True)
 
@@ -105,9 +116,9 @@ class Actions:
       target_to: tf.CompoundTarget,
       combo_type: tf.TargetCombinationType,
   ):
-    """"Selects OCRed lines on screen with the given words."""
-    # Combine the two "compound" targets into an actual compound target. Requires taking `target_to.target_from`, as
-    # the second word was passed as a compound target.
+    """Selects OCRed lines on screen with the given words."""
+    # Combine the two "compound" targets into an actual compound target. Requires taking
+    # `target_to.target_from`, as the second word was passed as a compound target.
     compound_target = tf.CompoundTarget(target_from.target_from, target_to.target_from, combo_type)
     command = tf.Command(tf.CommandType.SELECT, compound_target)
     _run_command(command, expand_to_ocr_results=True)

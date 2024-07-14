@@ -16,8 +16,8 @@ def _perform_command(
     lambda_func: Optional[Callable[[str], str]] = None,
 ) -> list[EditorAction]:
   """Helper methods for performing a command."""
-  return perform_command(command_type, text, selection_range, match_from, match_to, insert_text, lambda_func,
-                         UTILITY_FUNCTIONS)
+  return perform_command(command_type, text, selection_range, match_from, match_to, insert_text,
+                         lambda_func, UTILITY_FUNCTIONS)
 
 
 class PerformCommandTestCase(unittest.TestCase):
@@ -25,14 +25,18 @@ class PerformCommandTestCase(unittest.TestCase):
 
   def test_invalid_command(self):
     with self.assertRaises(ValueError):
-      _perform_command(CommandType.SELECT, "", TextRange(0, 1), TextMatch(TextRange(0, 0)), TextMatch(TextRange(0, 0)))
+      _perform_command(CommandType.SELECT, "", TextRange(0, 1), TextMatch(TextRange(0, 0)),
+                       TextMatch(TextRange(0, 0)))
     with self.assertRaises(ValueError):
-      _perform_command(CommandType.SELECT, "", TextRange(0, 0), TextMatch(TextRange(0, 1)), TextMatch(TextRange(0, 0)))
+      _perform_command(CommandType.SELECT, "", TextRange(0, 0), TextMatch(TextRange(0, 1)),
+                       TextMatch(TextRange(0, 0)))
     with self.assertRaises(ValueError):
-      _perform_command(CommandType.SELECT, "", TextRange(0, 0), TextMatch(TextRange(0, 0)), TextMatch(TextRange(0, 1)))
+      _perform_command(CommandType.SELECT, "", TextRange(0, 0), TextMatch(TextRange(0, 0)),
+                       TextMatch(TextRange(0, 1)))
 
   def test_empty_string(self):
-    actions = _perform_command(CommandType.MOVE_CURSOR_BEFORE, "", TextRange(0, 0), TextMatch(TextRange(0, 0)), None)
+    actions = _perform_command(CommandType.MOVE_CURSOR_BEFORE, "", TextRange(0, 0),
+                               TextMatch(TextRange(0, 0)), None)
     text, selection, clipboard = simulate_actions("", TextRange(0, 0), actions)
     self.assertEqual(text, "")
     self.assertEqual(selection, TextRange(0, 0))
@@ -41,7 +45,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_select(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SELECT, test_string, initial_selection, TextMatch(TextRange(8, 9)), None)
+    actions = _perform_command(CommandType.SELECT, test_string, initial_selection,
+                               TextMatch(TextRange(8, 9)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, test_string)
     self.assertEqual(selection.extract(text), "a")
@@ -50,7 +55,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_select_beginning(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SELECT, test_string, initial_selection, TextMatch(TextRange(0, 4)), None)
+    actions = _perform_command(CommandType.SELECT, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, test_string)
     self.assertEqual(selection.extract(text), "This")
@@ -59,7 +65,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_select_end(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SELECT, test_string, initial_selection, TextMatch(TextRange(10, 15)), None)
+    actions = _perform_command(CommandType.SELECT, test_string, initial_selection,
+                               TextMatch(TextRange(10, 15)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, test_string)
     self.assertEqual(selection.extract(text), "test.")
@@ -98,8 +105,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(8, 9)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 9)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is  test.")
     self.assertEqual(selection, initial_selection)
@@ -108,8 +115,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move_beginning(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(0, 4)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, " is a test.")
     self.assertEqual(selection, TextRange(1, 3))
@@ -118,8 +125,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move_end(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(10, 15)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(10, 15)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is a ")
     self.assertEqual(selection, initial_selection)
@@ -128,8 +135,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move_intersection(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 9)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(4, 7)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(4, 7)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This a test.")
     self.assertEqual(selection, TextRange(4, 4))
@@ -138,8 +145,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move_intersection_beginning(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 9)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(0, 7)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 7)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, " a test.")
     self.assertEqual(selection, TextRange(0, 0))
@@ -148,8 +155,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_clear_no_move_intersection_end(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 9)
-    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection, TextMatch(TextRange(7, 15)),
-                               None)
+    actions = _perform_command(CommandType.CLEAR_NO_MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(7, 15)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is")
     self.assertEqual(selection, TextRange(7, 7))
@@ -198,7 +205,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_bring(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.BRING, test_string, initial_selection, TextMatch(TextRange(0, 4)), None)
+    actions = _perform_command(CommandType.BRING, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This This a test.")
     self.assertEqual(selection, TextRange(9, 9))
@@ -207,8 +215,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_bring_match_to(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.BRING, test_string, initial_selection, TextMatch(TextRange(0, 4)),
-                               TextMatch(TextRange(8, 9)))
+    actions = _perform_command(CommandType.BRING, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), TextMatch(TextRange(8, 9)))
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is This test.")
     self.assertEqual(selection, TextRange(12, 12))
@@ -217,7 +225,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_move(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.MOVE, test_string, initial_selection, TextMatch(TextRange(0, 4)), None)
+    actions = _perform_command(CommandType.MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, " This a test.")
     self.assertEqual(selection, TextRange(5, 5))
@@ -226,8 +235,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_move_match_to(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.MOVE, test_string, initial_selection, TextMatch(TextRange(0, 4)),
-                               TextMatch(TextRange(8, 9)))
+    actions = _perform_command(CommandType.MOVE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), TextMatch(TextRange(8, 9)))
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, " is This test.")
     self.assertEqual(selection, TextRange(8, 8))
@@ -236,7 +245,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_swap(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SWAP, test_string, initial_selection, TextMatch(TextRange(0, 4)), None)
+    actions = _perform_command(CommandType.SWAP, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "is This a test.")
     self.assertEqual(selection, TextRange(2, 2))
@@ -245,8 +255,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_swap_match_to(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SWAP, test_string, initial_selection, TextMatch(TextRange(0, 4)),
-                               TextMatch(TextRange(8, 9)))
+    actions = _perform_command(CommandType.SWAP, test_string, initial_selection,
+                               TextMatch(TextRange(0, 4)), TextMatch(TextRange(8, 9)))
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "a is This test.")
     self.assertEqual(selection, TextRange(1, 1))
@@ -255,8 +265,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_swap_matches_reversed(self):
     test_string = "This is a test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.SWAP, test_string, initial_selection, TextMatch(TextRange(8, 9)),
-                               TextMatch(TextRange(0, 4)))
+    actions = _perform_command(CommandType.SWAP, test_string, initial_selection,
+                               TextMatch(TextRange(8, 9)), TextMatch(TextRange(0, 4)))
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "a is This test.")
     self.assertEqual(selection, TextRange(1, 1))
@@ -265,8 +275,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone(self):
     test_string = "This is there test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 13)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, initial_selection)
@@ -275,8 +285,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_match_title_case(self):
     test_string = "This is There test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 13)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is Their test.")
     self.assertEqual(selection, initial_selection)
@@ -285,8 +295,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_match_all_caps(self):
     test_string = "This is THERE test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 13)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is THEIR test.")
     self.assertEqual(selection, initial_selection)
@@ -295,8 +305,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_before_selection(self):
     test_string = "This is there test."
     initial_selection = TextRange(14, 18)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 13)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, initial_selection)
@@ -305,8 +315,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_intersection(self):
     test_string = "This is there test."
     initial_selection = TextRange(9, 15)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 13)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, initial_selection)
@@ -315,8 +325,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_different_length(self):
     test_string = "This is they're test."
     initial_selection = TextRange(16, 20)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 15)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 15)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is there test.")
     self.assertEqual(selection, TextRange(14, 18))
@@ -326,15 +336,15 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_next_homophone_no_homophone(self):
     test_string = "This is our test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection, TextMatch(TextRange(8, 11)),
-                               None)
+    actions = _perform_command(CommandType.NEXT_HOMOPHONE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 11)), None)
     self.assertEqual(len(actions), 0)
 
   def test_replace(self):
     test_string = "This is there test."
     initial_selection = TextRange(5, 7)
-    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection, TextMatch(TextRange(8, 13)), None,
-                               "their")
+    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None, "their")
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, initial_selection)
@@ -343,8 +353,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_replace_before_selection(self):
     test_string = "This is there test."
     initial_selection = TextRange(14, 18)
-    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection, TextMatch(TextRange(8, 13)), None,
-                               "their")
+    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None, "their")
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, initial_selection)
@@ -353,8 +363,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_replace_intersection(self):
     test_string = "This is there test."
     initial_selection = TextRange(9, 15)
-    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection, TextMatch(TextRange(8, 13)), None,
-                               "our")
+    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 13)), None, "our")
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is our test.")
     self.assertEqual(selection, TextRange(11, 11))
@@ -363,8 +373,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_replace_different_length(self):
     test_string = "This is they're test."
     initial_selection = TextRange(16, 20)
-    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection, TextMatch(TextRange(8, 15)), None,
-                               "their")
+    actions = _perform_command(CommandType.REPLACE, test_string, initial_selection,
+                               TextMatch(TextRange(8, 15)), None, "their")
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "This is their test.")
     self.assertEqual(selection, TextRange(14, 18))
@@ -375,8 +385,8 @@ class PerformCommandTestCase(unittest.TestCase):
     # Ensure first word "a" is capitalized.
     test_string = "a test and a string."
     initial_selection = TextRange(11, 12)
-    actions = _perform_command(CommandType.TITLE_CASE, test_string, initial_selection, TextMatch(TextRange(0, 10)),
-                               None)
+    actions = _perform_command(CommandType.TITLE_CASE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 10)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "A Test and a string.")
     self.assertEqual(selection, initial_selection)
@@ -386,8 +396,8 @@ class PerformCommandTestCase(unittest.TestCase):
     # Ensure first word "a" is capitalized.
     test_string = "a test and a string."
     initial_selection = TextRange(11, 12)
-    actions = _perform_command(CommandType.TITLE_CASE, test_string, initial_selection, TextMatch(TextRange(0, 20)),
-                               None)
+    actions = _perform_command(CommandType.TITLE_CASE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 20)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "A Test and a String.")
     self.assertEqual(selection, initial_selection)
@@ -396,7 +406,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_lowercase(self):
     test_string = "A Test And a String."
     initial_selection = TextRange(11, 12)
-    actions = _perform_command(CommandType.LOWERCASE, test_string, initial_selection, TextMatch(TextRange(0, 10)), None)
+    actions = _perform_command(CommandType.LOWERCASE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 10)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "a test and a String.")
     self.assertEqual(selection, initial_selection)
@@ -405,7 +416,8 @@ class PerformCommandTestCase(unittest.TestCase):
   def test_uppercase(self):
     test_string = "A Test And a String."
     initial_selection = TextRange(11, 12)
-    actions = _perform_command(CommandType.UPPERCASE, test_string, initial_selection, TextMatch(TextRange(0, 10)), None)
+    actions = _perform_command(CommandType.UPPERCASE, test_string, initial_selection,
+                               TextMatch(TextRange(0, 10)), None)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)
     self.assertEqual(text, "A TEST AND a String.")
     self.assertEqual(selection, initial_selection)
@@ -455,5 +467,5 @@ class PerformCommandTestCase(unittest.TestCase):
     test_string = "Let's play base ball now."
     initial_selection = TextRange(5, 5)
     with self.assertRaises(ValueError):
-      actions = _perform_command(CommandType.REPLACE_WITH_LAMBDA, test_string, initial_selection,
-                                 TextMatch(TextRange(11, 20)), None, "", None)
+      _perform_command(CommandType.REPLACE_WITH_LAMBDA, test_string, initial_selection,
+                       TextMatch(TextRange(11, 20)), None, "", None)

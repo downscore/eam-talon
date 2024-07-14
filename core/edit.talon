@@ -74,12 +74,14 @@ pick head: user.extend_line_start()
 pick tail: user.extend_line_end()
 pick top: user.extend_file_start()
 pick bottom: user.extend_file_end()
-fragment <user.number_small> [past <user.number_small>]: user.fragment_select(number_small_1, number_small_2 or 0)
+fragment <user.number_small> [past <user.number_small>]:
+  user.fragment_select(number_small_1, number_small_2 or 0)
 fragment head <user.number_small>: user.fragment_select_head(number_small)
 fragment tail <user.number_small>: user.fragment_select_tail(number_small)
 fragment next: user.fragment_select_next()
 fragment last: user.fragment_select_previous()
-car <user.number_small> [past <user.number_small>]: user.character_select_range(number_small_1, number_small_2 or 0)
+car <user.number_small> [past <user.number_small>]:
+  user.character_select_range(number_small_1, number_small_2 or 0)
 car next: user.character_select_next()
 car last: user.character_select_previous()
 line next:
@@ -274,7 +276,8 @@ spam: insert(", ")
 # Double tap escape
 hatch: key(escape:2)
 
-# Choose an item from a menu where the first item is highlighted by default (e.g. Intellisense menu in VS Code).
+# Choose an item from a menu where the first item is highlighted by default (e.g. Intellisense menu
+# in VS Code).
 choose <user.number_small>: key("down:{number_small-1} enter")
 # "choose six" has really bad recognition, so we have a special command for it.
 choosix: key("down:5 enter")

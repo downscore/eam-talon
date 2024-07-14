@@ -13,7 +13,8 @@ def _get_substring_target(s: str) -> CompoundTarget:
 
 
 def _get_phrase_target(s: str) -> CompoundTarget:
-  """Convenience method for getting a compound target that matches a given phrase with homophones."""
+  """Convenience method for getting a compound target that matches a given phrase with
+  homophones."""
   return CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, search=s)))
 
 
@@ -25,7 +26,8 @@ class TextFlowTestCase(unittest.TestCase):
       command = Command(CommandType.MOVE_CURSOR_BEFORE, _get_substring_target("xyz"))
       run_command(command, "", TextRange(0, 0), UTILITY_FUNCTIONS)
     with self.assertRaises(ValueError):
-      command = Command(CommandType.MOVE_CURSOR_BEFORE, _get_substring_target("ips"), _get_substring_target("xyz"))
+      command = Command(CommandType.MOVE_CURSOR_BEFORE, _get_substring_target("ips"),
+                        _get_substring_target("xyz"))
       run_command(command, "Lorem ipsum", TextRange(0, 0), UTILITY_FUNCTIONS)
 
   def test_empty_string(self):
@@ -85,7 +87,8 @@ class TextFlowTestCase(unittest.TestCase):
     # Second "this" should be replaced. Cursor is at end of string.
     test_string = "this is this test."
     initial_selection = TextRange(18, 18)
-    target_from = CompoundTarget(SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, search="this")))
+    target_from = CompoundTarget(
+        SimpleTarget(TokenMatchOptions(TokenMatchMethod.PHRASE, search="this")))
     command = Command(CommandType.REPLACE_WORD_MATCH_CASE, target_from, insert_text="that")
     actions = run_command(command, test_string, initial_selection, UTILITY_FUNCTIONS)
     text, selection, clipboard = simulate_actions(test_string, initial_selection, actions)

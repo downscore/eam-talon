@@ -21,7 +21,8 @@ class Actions:
   """MacOS system actions."""
 
   def notifications_close():
-    """Action that can be overridden to close app-specific notifications in addition to system ones."""
+    """Action that can be overridden to close app-specific notifications in addition to system
+    ones."""
     actions.user.macos_close_all_notifications()
 
   def macos_close_all_notifications():
@@ -63,9 +64,12 @@ class Actions:
       raise ValueError("Device name must be provided.")
     actions.user.macos_spotlight("Sound output")
 
-    # Wait for the sound output window to open and populate. This can take a while, especially if there are airplay
-    # devices.
+    # Wait for the sound output window to open and populate. This can take a while, especially if
+    # there are airplay devices.
     actions.sleep("1500ms")
 
     # Click on the given device name.
-    actions.user.mouse_ocr_click(device_name, button=0, use_active_window=True, interactive_disambiguation=False)
+    actions.user.mouse_ocr_click(device_name,
+                                 button=0,
+                                 use_active_window=True,
+                                 interactive_disambiguation=False)

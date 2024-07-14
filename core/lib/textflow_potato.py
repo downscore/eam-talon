@@ -1,5 +1,5 @@
-"""Support for TextFlow's potato mode, where only simple input commands are available for accessing and modifying
-text. Potato mode is used in editors where accessibility APIs do not work."""
+"""Support for TextFlow's potato mode, where only simple input commands are available for accessing
+and modifying text. Potato mode is used in editors where accessibility APIs do not work."""
 
 from dataclasses import dataclass
 from enum import Enum, unique
@@ -51,22 +51,25 @@ class PotatoEditorAction:
 
 def _move_before_text(text: str) -> list[PotatoEditorAction]:
   """Generate actions to move before the given text."""
-  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is difficult because
-  # it works differently in different editors (e.g. handling of line ends and punctuation characters).
+  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is
+  # difficult because it works differently in different editors (e.g. handling of line ends and
+  # punctuation characters).
   return [PotatoEditorAction(PotatoEditorActionType.GO_LEFT, repeat=len(text))]
 
 
 def _move_after_text(text: str) -> list[PotatoEditorAction]:
   """Generate actions to move before the given text."""
-  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is difficult because
-  # it works differently in different editors (e.g. handling of line ends and punctuation characters).
+  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is
+  # difficult because it works differently in different editors (e.g. handling of line ends and
+  # punctuation characters).
   return [PotatoEditorAction(PotatoEditorActionType.GO_RIGHT, repeat=len(text))]
 
 
 def _select_text(text: str) -> list[PotatoEditorAction]:
   """Generate actions to select the given text."""
-  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is difficult because
-  # it works differently in different editors (e.g. handling of line ends and punctuation characters).
+  # TODO: Smarter navigation (by word, by line if word wrap disabled, etc.). Navigation by word is
+  # difficult because it works differently in different editors (e.g. handling of line ends and
+  # punctuation characters).
   return [PotatoEditorAction(PotatoEditorActionType.EXTEND_RIGHT, repeat=len(text))]
 
 
@@ -75,8 +78,9 @@ def _convert_set_selection_range(set_selection: TextRange, curr_text: str,
   """Converts selection range command to potato mode."""
   result: list[PotatoEditorAction] = []
 
-  # No action necessary if we have already selected the desired range. Note: We must match the exact selection. We can't
-  # extend an existing selection because we don't know whether the cursor is at the beginning or end of the selection.
+  # No action necessary if we have already selected the desired range. Note: We must match the exact
+  # selection. We can't extend an existing selection because we don't know whether the cursor is at
+  # the beginning or end of the selection.
   if set_selection == curr_selection:
     return result
 
@@ -114,9 +118,11 @@ def convert_actions_to_potato_mode(actions: list[EditorAction], text: str,
     elif action.action_type == EditorActionType.INSERT_TEXT:
       result.append(PotatoEditorAction(PotatoEditorActionType.INSERT_TEXT, action.text))
     elif action.action_type == EditorActionType.SET_CLIPBOARD_NO_HISTORY:
-      result.append(PotatoEditorAction(PotatoEditorActionType.SET_CLIPBOARD_NO_HISTORY, action.text))
+      result.append(PotatoEditorAction(PotatoEditorActionType.SET_CLIPBOARD_NO_HISTORY,
+                                       action.text))
     elif action.action_type == EditorActionType.SET_CLIPBOARD_WITH_HISTORY:
-      result.append(PotatoEditorAction(PotatoEditorActionType.SET_CLIPBOARD_WITH_HISTORY, action.text))
+      result.append(
+          PotatoEditorAction(PotatoEditorActionType.SET_CLIPBOARD_WITH_HISTORY, action.text))
     elif action.action_type == EditorActionType.SET_SELECTION_RANGE:
       if action.text_range is None:
         raise ValueError("Set selection range action has no range")

@@ -19,7 +19,8 @@ def render_text(canvas, formatted_text, x, y):
     canvas.draw_text(line, x, calc_y, formatted_text["paint"])
 
 
-def layout_text(text: str, paint: Paint, max_width: int) -> Tuple[Tuple[float, float], Dict[str, Any]]:
+def layout_text(text: str, paint: Paint,
+                max_width: int) -> Tuple[Tuple[float, float], Dict[str, Any]]:
   """
     Works out the layout of the given plain text (maybe with newlines)
     rendered with the style described by paint constrained to fit within the given width.

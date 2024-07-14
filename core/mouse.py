@@ -1,4 +1,5 @@
 """Talon code for handling the mouse."""
+
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
@@ -127,8 +128,11 @@ class OcrUi:
       # Draw the label.
       paint.color = "black"
       paint.style = paint.Style.FILL
-      canvas_instance.draw_text(label, bg_rect.x - trect.x + (bg_rect.width - trect.width) / 2,
-                                bg_rect.y - trect.y + (bg_rect.height - trect.height) / 2)
+      canvas_instance.draw_text(
+          label,
+          bg_rect.x - trect.x + (bg_rect.width - trect.width) / 2,
+          bg_rect.y - trect.y + (bg_rect.height - trect.height) / 2,
+      )
 
 
 # UI instance for selecting OCR matches. Populated when the UI is visible.
@@ -175,11 +179,17 @@ def _ocr_search(s: str, use_active_window: bool = False):
     if regex_match is None:
       continue
 
-    # Try to get a rectangle centered on the matched text (assume one line monospace font and no padding).
+    # Try to get a rectangle centered on the matched text (assume one line monospace font and no
+    # padding).
     fraction_start = regex_match.start() / len(result.text)
     fraction_end = regex_match.end() / len(result.text)
     width = result.rect.width * (fraction_end - fraction_start)
-    rect = Rect(result.rect.x + result.rect.width * fraction_start, result.rect.y, max(width, 10), result.rect.height)
+    rect = Rect(
+        result.rect.x + result.rect.width * fraction_start,
+        result.rect.y,
+        max(width, 10),
+        result.rect.height,
+    )
 
     _target_rects_from_last_search.append(rect)
 
@@ -221,8 +231,8 @@ class Actions:
     actions.mouse_move(x, y)
 
   def mouse_move_to_current_window():
-    """Moves the mouse to the current window. By default, moves to the center of the current window, but may be
-    overridden by specific applications."""
+    """Moves the mouse to the current window. By default, moves to the center of the current window,
+    but may be overridden by specific applications."""
     active_window = ui.active_window()
     if active_window.id == -1:
       rect = ui.main_screen().rect
@@ -230,10 +240,12 @@ class Actions:
       rect = active_window.rect
     actions.mouse_move(rect.x + rect.width // 2, rect.y + rect.height // 2)
 
-  def mouse_ocr_click(query: str,
-                      button: int = 0,
-                      use_active_window: bool = False,
-                      interactive_disambiguation: bool = True):
+  def mouse_ocr_click(
+      query: str,
+      button: int = 0,
+      use_active_window: bool = False,
+      interactive_disambiguation: bool = True,
+  ):
     """Searches for the given string.
     `use_active_window`:
       - True: Uses the active window for OCR.
@@ -241,7 +253,7 @@ class Actions:
     `interactive_disambiguation`:
       - True: If there is one match, clicks it, otherwise displays matches.
       - False: Always clicks the first match.
-      """
+    """
     global _button_from_last_search
 
     _ocr_search(query, use_active_window)
@@ -258,7 +270,8 @@ class Actions:
     actions.user.mouse_ocr_ui_show()
 
   def mouse_ocr_move(query: str):
-    """Searches for the given string. If there is one match, moves the mouse to it, otherwise displays matches."""
+    """Searches for the given string. If there is one match, moves the mouse to it, otherwise
+    displays matches."""
     global _button_from_last_search
 
     _ocr_search(query)
@@ -316,7 +329,8 @@ class Actions:
 
     # Find the closest OCR result to the mouse coordinates.
     closest_result_index = get_closest_ocr_result_index(ocr_results, x, y)
-    closest_result = ocr_results[closest_result_index] if closest_result_index is not None else None
+    closest_result = (ocr_results[closest_result_index]
+                      if closest_result_index is not None else None)
     if closest_result is None:
       raise ValueError("No nearby OCR result found.")
 

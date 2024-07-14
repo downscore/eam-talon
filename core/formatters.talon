@@ -1,5 +1,7 @@
-<user.formatters> <user.formatter_text>$: insert(user.format_multiple(formatter_text, formatters))
-<user.formatters> <user.formatter_text> anchor: insert(user.format_multiple(formatter_text, formatters))
+<user.formatters> <user.formatter_text>$:
+  insert(user.format_multiple(formatter_text, formatters))
+<user.formatters> <user.formatter_text> anchor:
+  insert(user.format_multiple(formatter_text, formatters))
 <user.formatters> <user.formatter_text> void:
   insert(user.format_multiple(formatter_text, formatters))
   insert(" ")

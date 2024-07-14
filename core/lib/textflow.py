@@ -17,7 +17,8 @@ def run_command(command: Command, text: str, selection_range: TextRange,
   match_to: Optional[TextMatch] = None
   if command.target_to is not None:
     match_to = match_compound_target(command.target_to, text, selection_range, utility_functions)
-    # If a 'to' target is provided it must be matched, otherwise the command may do unexpected things.
+    # If a 'to' target is provided it must be matched, otherwise the command may do unexpected
+    # things.
     if match_to is None:
       raise ValueError(f"Could not match 'to' target: {command.target_to}")
 
@@ -27,5 +28,5 @@ def run_command(command: Command, text: str, selection_range: TextRange,
     match_to = apply_modifier(text, match_to, command.target_to.modifier)
 
   # Get command actions.
-  return perform_command(command.command_type, text, selection_range, match_from, match_to, command.insert_text,
-                         command.lambda_func, utility_functions)
+  return perform_command(command.command_type, text, selection_range, match_from, match_to,
+                         command.insert_text, command.lambda_func, utility_functions)

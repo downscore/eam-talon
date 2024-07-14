@@ -51,7 +51,8 @@ class ParseTabListTestCase(unittest.TestCase):
 
   def test_multiple_windows_multiple_tabs(self):
     result = parse_tab_list_string(
-        f"{WD}1,2{WD}url1{TD}title1{TD}url2{TD}title2{TD}{WD}2,1{WD}url3{TD}title3{TD}url4{TD}title4{TD}")
+        f"{WD}1,2{WD}url1{TD}title1{TD}url2{TD}title2{TD}{WD}2,1{WD}url3{TD}title3{TD}url4{TD}title4{TD}"
+    )
     self.assertEqual(len(result), 4)
     self.assertEqual(result[0].window_index, 1)
     self.assertEqual(result[0].index, 1)

@@ -30,14 +30,16 @@ def _get_line_at_index(text: str, index: int, include_trailing_line_break: bool)
 
 
 def _index_of_next_character(text: str, index: int, characters: list[str]):
-  """Given an index in some text, get the index after the next instance of any of the given characters."""
+  """Given an index in some text, get the index after the next instance of any of the given
+  characters."""
   while index < len(text) and text[index] not in characters:
     index += 1
   return index
 
 
 def _index_of_previous_character(text: str, index: int, characters: list[str]):
-  """Given an index in some text, get the index before the last instance of any of the given characters."""
+  """Given an index in some text, get the index before the last instance of any of the given
+  characters."""
   while index > 0 and (index == len(text) or text[index] not in characters):
     index -= 1
   return index
@@ -49,8 +51,10 @@ def _apply_chars_modifier(text: str, input_match: TextMatch, modifier: Modifier)
   if modifier.modifier_range is None:
     raise ValueError("No modifier range provided")
   # Clamp the modifier range to the end of the input.
-  start_index = min(input_match.text_range.end, input_match.text_range.start + modifier.modifier_range.start)
-  end_index = min(input_match.text_range.end, input_match.text_range.start + modifier.modifier_range.end)
+  start_index = min(input_match.text_range.end,
+                    input_match.text_range.start + modifier.modifier_range.start)
+  end_index = min(input_match.text_range.end,
+                  input_match.text_range.start + modifier.modifier_range.end)
   return _make_match(start_index, end_index)
 
 
@@ -74,31 +78,42 @@ def _apply_fragments_modifier(text: str, input_match: TextMatch, modifier: Modif
   return _make_match(fragment_ranges[start_fragment][0], fragment_ranges[end_fragment - 1][1])
 
 
-def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch,
+                                              modifier: Modifier) -> TextMatch:
   """Takes the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=True)
   return TextMatch(line_range)
 
 
-def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch,
+                                              modifier: Modifier) -> TextMatch:
   """Takes the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=False)
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=False)
   return TextMatch(line_range)
 
 
 def _apply_end_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes an empty match at the end of the line containing the input match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=True)
   return _make_match(line_range.end, line_range.end)
 
 
-def _apply_start_of_line_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_start_of_line_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
   """Takes an empty match at the start of the line containing the match."""
   del modifier  # Unused.
-  line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=True)
   return _make_match(line_range.start, line_range.start)
 
 
@@ -124,7 +139,8 @@ def _apply_block_modifier(text: str, input_match: TextMatch, modifier: Modifier)
   """Takes the block containing the match. The input match may be at the end of the block."""
   del modifier  # Unused.
 
-  # Blocks are separated by two or more line breaks (or document beginning) with optional whitespace in between.
+  # Blocks are separated by two or more line breaks (or document beginning) with optional whitespace
+  # in between.
   first_separator_regex = re.compile(r"\n([ \t\r]*\n)+", re.IGNORECASE)
   second_separator_regex = re.compile(r"($|(\n[ \t\r]*)+\n)", re.IGNORECASE)
 
@@ -136,7 +152,8 @@ def _apply_block_modifier(text: str, input_match: TextMatch, modifier: Modifier)
     block_start_index = first_match.end()
 
   # Get block separator after the first.
-  second_match = get_nth_regex_match(text[block_start_index:], second_separator_regex, 1, SearchDirection.FORWARD)
+  second_match = get_nth_regex_match(text[block_start_index:], second_separator_regex, 1,
+                                     SearchDirection.FORWARD)
   if second_match is None:
     raise ValueError("Could not match end of block")
   block_end_index = block_start_index + second_match.start()
@@ -154,7 +171,8 @@ def _apply_block_modifier(text: str, input_match: TextMatch, modifier: Modifier)
         break
       brace_stack.pop()
 
-  # Check if there are any unbalanced opening braces. If there are any, start the block after the last one.
+  # Check if there are any unbalanced opening braces. If there are any, start the block after the
+  # last one.
   if len(brace_stack) > 0:
     block_start_index = block_start_index + brace_stack[-1] + 1
     # If the brace is followed by a line break, do not include it in the block.
@@ -202,7 +220,8 @@ def _apply_comment_modifier(text: str, input_match: TextMatch, modifier: Modifie
 
 
 def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the content between symmetric delimiters containing the match. Defaults to C-style strings."""
+  """Takes the content between symmetric delimiters containing the match. Defaults to C-style
+  strings."""
   delimiter = "\"" if not modifier.delimiter else modifier.delimiter
   start_index = input_match.text_range.start
   while start_index > 0 and text[start_index - 1] != delimiter:
@@ -214,7 +233,8 @@ def _apply_string_modifier(text: str, input_match: TextMatch, modifier: Modifier
   return _make_match(start_index, end_index)
 
 
-def _apply_string_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_string_first_modifier(text: str, input_match: TextMatch,
+                                 modifier: Modifier) -> TextMatch:
   """From outside a string, takes the next string."""
   delimiter = "\"" if not modifier.delimiter else modifier.delimiter
 
@@ -249,7 +269,8 @@ def _apply_string_next_modifier(text: str, input_match: TextMatch, modifier: Mod
   return _apply_string_first_modifier(text, _make_match(start_index, start_index), modifier)
 
 
-def _apply_string_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_string_previous_modifier(text: str, input_match: TextMatch,
+                                    modifier: Modifier) -> TextMatch:
   """From inside a string, takes the previous string."""
   delimiter = "\"" if not modifier.delimiter else modifier.delimiter
 
@@ -287,7 +308,8 @@ def _apply_string_nth_modifier(text: str, input_match: TextMatch, modifier: Modi
   return result
 
 
-def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_python_scope_modifier(text: str, input_match: TextMatch,
+                                 modifier: Modifier) -> TextMatch:
   """Takes the current scope in Python code."""
   del modifier  # Unused.
 
@@ -295,7 +317,9 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
   indentation_search_index = input_match.text_range.start
   min_indentation_level = None
   while indentation_search_index >= 0 and min_indentation_level is None:
-    line_range = _get_line_at_index(text, indentation_search_index, include_trailing_line_break=True)
+    line_range = _get_line_at_index(text,
+                                    indentation_search_index,
+                                    include_trailing_line_break=True)
     line_text = line_range.extract(text)
     # Make sure the line isn't just whitespace.
     if line_text.strip() != "":
@@ -310,14 +334,19 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
     raise ValueError("Could not find indentation level for Python scope")
 
   # Find the start of the current scope.
-  start_line_range = _get_line_at_index(text, input_match.text_range.start, include_trailing_line_break=True)
+  start_line_range = _get_line_at_index(text,
+                                        input_match.text_range.start,
+                                        include_trailing_line_break=True)
   first_non_whitespace_line_range = start_line_range
   while start_line_range.start > 0:
-    previous_line_range = _get_line_at_index(text, start_line_range.start - 1, include_trailing_line_break=True)
+    previous_line_range = _get_line_at_index(text,
+                                             start_line_range.start - 1,
+                                             include_trailing_line_break=True)
     previous_line_text = previous_line_range.extract(text)
     is_whitespace = previous_line_text.strip() == ""
     # Stop if we find a non-whitespace line with less indentation.
-    if not is_whitespace and len(previous_line_text) - len(previous_line_text.lstrip()) < min_indentation_level:
+    if not is_whitespace and len(previous_line_text) - len(
+        previous_line_text.lstrip()) < min_indentation_level:
       break
     start_line_range = previous_line_range
     if not is_whitespace:
@@ -331,7 +360,8 @@ def _apply_python_scope_modifier(text: str, input_match: TextMatch, modifier: Mo
     next_line_text = next_line_range.extract(text)
     is_whitespace = next_line_text.strip() == ""
     # Stop if we find a line with less indentation.
-    if not is_whitespace and len(next_line_text) - len(next_line_text.lstrip()) < min_indentation_level:
+    if not is_whitespace and len(next_line_text) - len(
+        next_line_text.lstrip()) < min_indentation_level:
       break
     end_line_range = next_line_range
     if not is_whitespace:
@@ -384,7 +414,8 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   """Takes the current argument."""
   del modifier  # Unused.
 
-  # Find the first argument delimiter before the match. Track close parentheses to handle nested calls.
+  # Find the first argument delimiter before the match. Track close parentheses to handle nested
+  # calls.
   start_index = input_match.text_range.start
   close_parentheses = 0
   while start_index > 0:
@@ -403,8 +434,8 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   while start_index < len(text) and text[start_index] in [" ", "\t", "\n"]:
     start_index += 1
 
-  # Try to include leading comma in deletion range. There are cases where we may not want to delete a leading semicolon,
-  # so we ignore semicolons for now.
+  # Try to include leading comma in deletion range. There are cases where we may not want to delete
+  # a leading semicolon, so we ignore semicolons for now.
   found_leading_delimiter = False
   if deletion_start_index > 0 and text[deletion_start_index - 1] in (",", ";"):
     deletion_start_index -= 1
@@ -429,19 +460,23 @@ def _apply_argument_modifier(text: str, input_match: TextMatch, modifier: Modifi
   while end_index > start_index and text[end_index - 1] in [" ", "\t", "\n"]:
     end_index -= 1
 
-  # If we did not include a leading delimiter in the deletion range, try to find a trailing delimiter.
-  if not found_leading_delimiter and deletion_end_index < len(text) and text[deletion_end_index] in (",", ";"):
+  # If we did not include a leading delimiter in the deletion range, try to find a trailing
+  # delimiter.
+  if not found_leading_delimiter and deletion_end_index < len(
+      text) and text[deletion_end_index] in (",", ";"):
     deletion_end_index += 1
     # Include a whitespace character after the delimiter, if present.
     if deletion_end_index < len(text) and text[deletion_end_index] in [" ", "\t"]:
       deletion_end_index += 1
 
-  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+  return TextMatch(TextRange(start_index, end_index),
+                   TextRange(deletion_start_index, deletion_end_index))
 
 
-def _apply_argument_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Finds the next function call and takes the first argument from it. Assumes the initial match is outside the
-  function call."""
+def _apply_argument_first_modifier(text: str, input_match: TextMatch,
+                                   modifier: Modifier) -> TextMatch:
+  """Finds the next function call and takes the first argument from it. Assumes the initial match is
+  outside the function call."""
   # Find the start of the next function call. Start looking from the end of the current match.
   paren_index = _index_of_next_character(text, input_match.text_range.end, ["("])
   # Skip over empty function calls: func()
@@ -453,23 +488,26 @@ def _apply_argument_first_modifier(text: str, input_match: TextMatch, modifier: 
   return _apply_argument_modifier(text, _make_match(paren_index, paren_index), modifier)
 
 
-def _apply_argument_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_argument_next_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
   """From a match inside an argument, takes the next argument."""
   divider_index = _index_of_next_character(text, input_match.text_range.end, [",", ";"])
   divider_index = min(divider_index + 1, len(text))
   return _apply_argument_modifier(text, _make_match(divider_index + 1, divider_index + 1), modifier)
 
 
-def _apply_argument_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_argument_previous_modifier(text: str, input_match: TextMatch,
+                                      modifier: Modifier) -> TextMatch:
   """From a match inside an argument, takes the previous argument."""
   divider_index = _index_of_previous_character(text, input_match.text_range.start, [",", ";"])
   divider_index = max(divider_index - 1, 0)
   return _apply_argument_modifier(text, _make_match(divider_index, divider_index), modifier)
 
 
-def _apply_argument_nth_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Finds the next function call and takes the nth argument from it. Assumes the initial match is outside the function
-  call."""
+def _apply_argument_nth_modifier(text: str, input_match: TextMatch,
+                                 modifier: Modifier) -> TextMatch:
+  """Finds the next function call and takes the nth argument from it. Assumes the initial match is
+  outside the function call."""
   if modifier.n is None or modifier.n < 1:
     raise ValueError("n must be positive.")
   result = _apply_argument_first_modifier(text, input_match, modifier)
@@ -501,11 +539,13 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
       break
     end_index += 1
 
-  # Prefer to include trailing spaces in the deletion range, as leading spaces may be indentation or other formatting.
+  # Prefer to include trailing spaces in the deletion range, as leading spaces may be indentation or
+  # other formatting.
   included_trailing_spaces = False
   deletion_end_index = end_index
   # Limit to 2 trailing spaces.
-  while deletion_end_index < len(text) and text[deletion_end_index] == " " and deletion_end_index - end_index < 2:
+  while deletion_end_index < len(
+      text) and text[deletion_end_index] == " " and deletion_end_index - end_index < 2:
     deletion_end_index += 1
     included_trailing_spaces = True
 
@@ -513,17 +553,21 @@ def _apply_sentence_modifier(text: str, input_match: TextMatch, modifier: Modifi
   deletion_start_index = start_index
   if not included_trailing_spaces:
     # Limit to 2 leading spaces.
-    while deletion_start_index > 0 and text[deletion_start_index - 1] == " " and start_index - deletion_start_index < 2:
+    while deletion_start_index > 0 and text[deletion_start_index -
+                                            1] == " " and start_index - deletion_start_index < 2:
       deletion_start_index -= 1
 
-  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+  return TextMatch(TextRange(start_index, end_index),
+                   TextRange(deletion_start_index, deletion_end_index))
 
 
-def _apply_sentence_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_sentence_next_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
   """Takes the next sentence."""
   end_index = input_match.text_range.end
   # Special case: End of the current sentence is selected.
-  if input_match.text_range.length() > 0 and end_index > 0 and text[end_index - 1] in _SENTENCE_DELIMITERS:
+  if input_match.text_range.length() > 0 and end_index > 0 and text[end_index -
+                                                                    1] in _SENTENCE_DELIMITERS:
     return _apply_sentence_modifier(text, _make_match(end_index, end_index), modifier)
   # Find the end of the sentence.
   end_index = _index_of_next_character(text, input_match.text_range.end, _SENTENCE_DELIMITERS)
@@ -531,16 +575,19 @@ def _apply_sentence_next_modifier(text: str, input_match: TextMatch, modifier: M
   return _apply_sentence_modifier(text, _make_match(end_index, end_index), modifier)
 
 
-def _apply_sentence_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_sentence_previous_modifier(text: str, input_match: TextMatch,
+                                      modifier: Modifier) -> TextMatch:
   """Takes the previous sentence."""
   # Find the start of the previous sentence.
-  start_index = _index_of_previous_character(text, input_match.text_range.start, _SENTENCE_DELIMITERS)
+  start_index = _index_of_previous_character(text, input_match.text_range.start,
+                                             _SENTENCE_DELIMITERS)
   start_index = max(start_index - 1, 0)
   return _apply_sentence_modifier(text, _make_match(start_index, start_index), modifier)
 
 
 def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes the current function call. Assumes the input match is in the function name, not inside the parentheses."""
+  """Takes the current function call. Assumes the input match is in the function name, not inside
+  the parentheses."""
   del modifier  # Unused.
 
   # Find the start of the function call.
@@ -548,8 +595,8 @@ def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) 
   # (*obj)->get_thing().field[0].method(arg1, &arg2, arg3);
   start_index = input_match.text_range.start
   nested_parentheses = 0
-  while start_index > 0 and (text[start_index - 1].isalnum() or
-                             text[start_index - 1] in ("_", ".", "-", ">", "*", "(", ")", "[", "]", ":")):
+  while start_index > 0 and (text[start_index - 1].isalnum() or text[start_index - 1]
+                             in ("_", ".", "-", ">", "*", "(", ")", "[", "]", ":")):
     if text[start_index - 1] == "(":
       if nested_parentheses == 0:
         break
@@ -558,8 +605,9 @@ def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) 
       nested_parentheses += 1
     start_index -= 1
 
-  # Find the end of the function call. Look for an opening parenthesis after the input match, then its balanced close.
-  # Use the input match so we can get the entire call if the input match is in `method` in the example above.
+  # Find the end of the function call. Look for an opening parenthesis after the input match, then
+  # its balanced close. Use the input match so we can get the entire call if the input match is in
+  # `method` in the  example above.
   end_index = input_match.text_range.end
   nested_parentheses = -1  # Start with -1 to so we stop after closing the first open parenthesis.
   while end_index < len(text):
@@ -589,7 +637,8 @@ def _apply_call_next_modifier(text: str, input_match: TextMatch, modifier: Modif
   return _apply_call_modifier(text, _make_match(start_index, start_index), modifier)
 
 
-def _apply_call_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_call_previous_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
   """From inside a function call, takes the previous function call."""
   # Find the start of the previous function call.
   start_index = _index_of_previous_character(text, input_match.text_range.start, ["("])
@@ -648,7 +697,8 @@ def _apply_brackets_modifier(text: str, input_match: TextMatch, modifier: Modifi
   return _make_match(start_index, end_index)
 
 
-def _apply_brackets_first_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_brackets_first_modifier(text: str, input_match: TextMatch,
+                                   modifier: Modifier) -> TextMatch:
   """From outside a bracket, takes the next bracketed content."""
   # Find the start of the next bracketed content.
   start_index = _index_of_next_character(text, input_match.text_range.end, _OPEN_BRACKETS)
@@ -661,7 +711,8 @@ def _apply_brackets_first_modifier(text: str, input_match: TextMatch, modifier: 
   return _apply_brackets_modifier(text, _make_match(start_index, start_index), modifier)
 
 
-def _apply_brackets_next_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_brackets_next_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
   """From inside a bracket, takes the next bracketed content."""
   # Find the end of the current bracketed content.
   start_index = _index_of_next_character(text, input_match.text_range.end, _CLOSE_BRACKETS)
@@ -675,7 +726,8 @@ def _apply_brackets_next_modifier(text: str, input_match: TextMatch, modifier: M
   return _apply_brackets_first_modifier(text, _make_match(start_index, start_index), modifier)
 
 
-def _apply_brackets_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_brackets_previous_modifier(text: str, input_match: TextMatch,
+                                      modifier: Modifier) -> TextMatch:
   """From inside a bracket, takes the previous bracketed content."""
   # Find the start of the current bracketed content.
   index = _index_of_previous_character(text, input_match.text_range.start, _OPEN_BRACKETS)
@@ -697,7 +749,8 @@ def _apply_brackets_previous_modifier(text: str, input_match: TextMatch, modifie
   return _apply_brackets_modifier(text, _make_match(index, index), modifier)
 
 
-def _apply_brackets_nth_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_brackets_nth_modifier(text: str, input_match: TextMatch,
+                                 modifier: Modifier) -> TextMatch:
   """From outside a bracket, takes the nth bracketed content."""
   if modifier.n is None or modifier.n < 1:
     raise ValueError("n must be positive.")
@@ -707,7 +760,8 @@ def _apply_brackets_nth_modifier(text: str, input_match: TextMatch, modifier: Mo
   return result
 
 
-def _apply_between_whitespace_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
+def _apply_between_whitespace_modifier(text: str, input_match: TextMatch,
+                                       modifier: Modifier) -> TextMatch:
   """Takes the contents of surrounding whitespace (including line breaks)."""
   del modifier  # Unused.
 
@@ -732,14 +786,18 @@ def _apply_between_whitespace_modifier(text: str, input_match: TextMatch, modifi
 
   # If we couldn't include trailing whitespace, try to include leading whitespace.
   deletion_start_index = start_index
-  if not included_trailing_whitespace and deletion_start_index > 0 and text[deletion_start_index - 1] in delimiters:
+  if not included_trailing_whitespace and deletion_start_index > 0 and text[deletion_start_index -
+                                                                            1] in delimiters:
     deletion_start_index -= 1
 
-  return TextMatch(TextRange(start_index, end_index), TextRange(deletion_start_index, deletion_end_index))
+  return TextMatch(TextRange(start_index, end_index),
+                   TextRange(deletion_start_index, deletion_end_index))
 
 
-def _apply_markdown_link_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes a full link in markdown syntax, including brackets. Example: [link text](http://example.com)"""
+def _apply_markdown_link_modifier(text: str, input_match: TextMatch,
+                                  modifier: Modifier) -> TextMatch:
+  """Takes a full link in markdown syntax, including brackets. Example:
+  [link text](http://example.com)"""
   del modifier  # Unused.
 
   # Find the start of the link: "["
@@ -755,8 +813,10 @@ def _apply_markdown_link_modifier(text: str, input_match: TextMatch, modifier: M
   return _make_match(start_index, end_index + 1)
 
 
-def _apply_end_of_markdown_section_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
-  """Takes an empty selection before the line break on the last non-whitespace line in a markdown section."""
+def _apply_end_of_markdown_section_modifier(text: str, input_match: TextMatch,
+                                            modifier: Modifier) -> TextMatch:
+  """Takes an empty selection before the line break on the last non-whitespace line in a markdown
+  section."""
   del modifier  # Unused.
 
   # Regex that matches pound symbols followed by a space.
@@ -787,7 +847,8 @@ def _apply_end_of_markdown_section_modifier(text: str, input_match: TextMatch, m
 
     # If this line is not just whitespace, update the result index.
     if line_text.strip() != "":
-      result_index = max(line_range.start, line_range.end - 1 if line_text.endswith("\n") else line_range.end)
+      result_index = max(line_range.start,
+                         line_range.end - 1 if line_text.endswith("\n") else line_range.end)
 
     # Move to the next line.
     curr_index = line_range.end

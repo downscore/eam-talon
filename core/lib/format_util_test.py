@@ -38,7 +38,8 @@ class FormatOptionsTestCase(unittest.TestCase):
   def test_uppercase_title(self):
     # Combine two case formatters. Last one should take precendence.
     options = get_format_options([Formatters.UPPERCASE, Formatters.TITLE_CASE])
-    self.assertEqual(options.first_capitalization, WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(options.first_capitalization,
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(options.rest_capitalization, WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING)
     self.assertEqual(options.separator, " ")
     self.assertEqual(options.surround, "")
@@ -60,8 +61,10 @@ class FormatOptionsTestCase(unittest.TestCase):
     self.assertEqual(options.surround, "")
 
   def test_dotted_sentence_space_surrounded(self):
-    options = get_format_options([Formatters.DOT_SEPARATED, Formatters.SENTENCE, Formatters.SPACE_SURROUNDED])
-    self.assertEqual(options.first_capitalization, WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    options = get_format_options(
+        [Formatters.DOT_SEPARATED, Formatters.SENTENCE, Formatters.SPACE_SURROUNDED])
+    self.assertEqual(options.first_capitalization,
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(options.rest_capitalization, WordCapitalization.NO_CHANGE)
     self.assertEqual(options.separator, ".")
     self.assertEqual(options.surround, " ")
@@ -81,15 +84,24 @@ class CapitalizationTestCase(unittest.TestCase):
     self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.NO_CHANGE), "eXAmple")
     self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.LOWERCASE), "example")
     self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.UPPERCASE), "EXAMPLE")
-    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.CAPITALIZE_FIRST), "Example")
+    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.CAPITALIZE_FIRST),
+                     "Example")
     self.assertEqual(format_word_capitalization("aND", WordCapitalization.CAPITALIZE_FIRST), "And")
-    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.TITLE_CASE), "Example")
+    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.TITLE_CASE),
+                     "Example")
     self.assertEqual(format_word_capitalization("aND", WordCapitalization.TITLE_CASE), "and")
-    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING),
-                     "EXAmple")
-    self.assertEqual(format_word_capitalization("aNd", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING), "ANd")
-    self.assertEqual(format_word_capitalization("eXAmple", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "EXAmple")
-    self.assertEqual(format_word_capitalization("aND", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "and")
+    self.assertEqual(
+        format_word_capitalization("eXAmple",
+                                   WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING),
+        "EXAmple")
+    self.assertEqual(
+        format_word_capitalization("aNd", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING),
+        "ANd")
+    self.assertEqual(
+        format_word_capitalization("eXAmple", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING),
+        "EXAmple")
+    self.assertEqual(
+        format_word_capitalization("aND", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "and")
 
   def test_capitalization_empty(self):
     # Empty input should always return empty output.
@@ -98,8 +110,10 @@ class CapitalizationTestCase(unittest.TestCase):
     self.assertEqual(format_word_capitalization("", WordCapitalization.UPPERCASE), "")
     self.assertEqual(format_word_capitalization("", WordCapitalization.CAPITALIZE_FIRST), "")
     self.assertEqual(format_word_capitalization("", WordCapitalization.TITLE_CASE), "")
-    self.assertEqual(format_word_capitalization("", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING), "")
-    self.assertEqual(format_word_capitalization("", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "")
+    self.assertEqual(
+        format_word_capitalization("", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING), "")
+    self.assertEqual(
+        format_word_capitalization("", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "")
 
   def test_capitalization_single_char(self):
     # Single character input should behave as expected.
@@ -109,9 +123,13 @@ class CapitalizationTestCase(unittest.TestCase):
     self.assertEqual(format_word_capitalization("a", WordCapitalization.CAPITALIZE_FIRST), "A")
     self.assertEqual(format_word_capitalization("a", WordCapitalization.TITLE_CASE), "a")
     self.assertEqual(format_word_capitalization("b", WordCapitalization.TITLE_CASE), "B")
-    self.assertEqual(format_word_capitalization("a", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING), "A")
-    self.assertEqual(format_word_capitalization("a", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "a")
-    self.assertEqual(format_word_capitalization("b", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "B")
+    self.assertEqual(
+        format_word_capitalization("a", WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING),
+        "A")
+    self.assertEqual(
+        format_word_capitalization("a", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "a")
+    self.assertEqual(
+        format_word_capitalization("b", WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING), "B")
 
   def test_capitalization_invalid(self):
     # Two words should throw an exception.
@@ -140,10 +158,11 @@ class FormatPhraseTestCase(unittest.TestCase):
     self.assertEqual(format_phrase("this is a 3 test", options), "this is a 3 test")
 
   def test_format_phrase_sentence(self):
-    options = FormatOptions(first_capitalization=WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING,
-                            rest_capitalization=WordCapitalization.NO_CHANGE,
-                            separator=" ",
-                            surround="")
+    options = FormatOptions(
+        first_capitalization=WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING,
+        rest_capitalization=WordCapitalization.NO_CHANGE,
+        separator=" ",
+        surround="")
     self.assertEqual(format_phrase("", options), "")
     self.assertEqual(format_phrase(" ", options), "")
     self.assertEqual(format_phrase("  ", options), "")
@@ -159,10 +178,11 @@ class FormatPhraseTestCase(unittest.TestCase):
     self.assertEqual(format_phrase("this is a 3 test", options), "This is a 3 test")
 
   def test_format_phrase_title(self):
-    options = FormatOptions(first_capitalization=WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING,
-                            rest_capitalization=WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING,
-                            separator=" ",
-                            surround="")
+    options = FormatOptions(
+        first_capitalization=WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING,
+        rest_capitalization=WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING,
+        separator=" ",
+        surround="")
     self.assertEqual(format_phrase("", options), "")
     self.assertEqual(format_phrase(" ", options), "")
     self.assertEqual(format_phrase("  ", options), "")
@@ -331,9 +351,11 @@ class UnformatPhraseTestCase(unittest.TestCase):
     self.assertEqual(unformat_phrase("this is a 3 test"), "this is a 3 test")
     self.assertEqual(unformat_phrase("ThisIsPascalCase"), "this is pascal case")
     self.assertEqual(unformat_phrase("thisIsCamelCase"), "this is camel case")
-    self.assertEqual(unformat_phrase("this-is-kebab"), "this-is-kebab")  # Kebab case can't be unformatted.
+    self.assertEqual(unformat_phrase("this-is-kebab"),
+                     "this-is-kebab")  # Kebab case can't be unformatted.
     self.assertEqual(unformat_phrase("this_is_snake"), "this is snake")
-    self.assertEqual(unformat_phrase("this_is-mixed"), "this is-mixed")  # Kebab case can't be unformatted.
+    self.assertEqual(unformat_phrase("this_is-mixed"),
+                     "this is-mixed")  # Kebab case can't be unformatted.
     self.assertEqual(unformat_phrase("This::Is::Packed"), "this is packed")
 
     # Note: Unformatting introduces a space where letters and numbers are concatenated.
@@ -423,18 +445,23 @@ class GuessCapitalizationTestCase(unittest.TestCase):
 
   def test_guess_capitalization(self):
     self.assertEqual(guess_capitalization("test"), WordCapitalization.LOWERCASE)
-    self.assertEqual(guess_capitalization("Test"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("Test"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(guess_capitalization("TEST"), WordCapitalization.UPPERCASE)
     self.assertEqual(guess_capitalization(" test "), WordCapitalization.LOWERCASE)
-    self.assertEqual(guess_capitalization("\tTest\t"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("\tTest\t"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(guess_capitalization(" TEST "), WordCapitalization.UPPERCASE)
     self.assertEqual(guess_capitalization("a"), WordCapitalization.LOWERCASE)
-    self.assertEqual(guess_capitalization("A"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("A"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(guess_capitalization("an"), WordCapitalization.LOWERCASE)
-    self.assertEqual(guess_capitalization("An"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("An"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     self.assertEqual(guess_capitalization("AN"), WordCapitalization.UPPERCASE)
     # Mixed capitalization with first letter uppercase looks like "capitalize first".
-    self.assertEqual(guess_capitalization("TeST"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("TeST"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
     # Mixed capitalization with first letter lowercase looks like "lowercase".
     self.assertEqual(guess_capitalization("teST"), WordCapitalization.LOWERCASE)
 
@@ -442,10 +469,12 @@ class GuessCapitalizationTestCase(unittest.TestCase):
     self.assertEqual(guess_capitalization("1"), WordCapitalization.LOWERCASE)
     self.assertEqual(guess_capitalization("1test"), WordCapitalization.LOWERCASE)
     self.assertEqual(guess_capitalization("a1"), WordCapitalization.LOWERCASE)
-    # Numbers and symbols in the first position always result in "lowercase". We may want to change this in the future.
+    # Numbers and symbols in the first position always result in "lowercase". We may want to change
+    # this in the future.
     self.assertEqual(guess_capitalization("1TEST"), WordCapitalization.LOWERCASE)
     # Numbers or symbols look like lowercase letters.
-    self.assertEqual(guess_capitalization("A1"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("A1"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
 
   def test_guess_capitalization_symbols(self):
     # Symbols are treated the same as numbers.
@@ -453,7 +482,8 @@ class GuessCapitalizationTestCase(unittest.TestCase):
     self.assertEqual(guess_capitalization("@test"), WordCapitalization.LOWERCASE)
     self.assertEqual(guess_capitalization("a#"), WordCapitalization.LOWERCASE)
     self.assertEqual(guess_capitalization("$TEST"), WordCapitalization.LOWERCASE)
-    self.assertEqual(guess_capitalization("A%"), WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
+    self.assertEqual(guess_capitalization("A%"),
+                     WordCapitalization.CAPITALIZE_FIRST_PRESERVE_FOLLOWING)
 
   def test_guess_capitalization_empty_string(self):
     with self.assertRaises(ValueError):

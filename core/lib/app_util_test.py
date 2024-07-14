@@ -13,8 +13,10 @@ class FilenameToAppLaunchStringTestCase(unittest.TestCase):
     self.assertEqual(filename_to_app_launch_string("test", {}), "test")
     self.assertEqual(filename_to_app_launch_string("PascalCase.app", {}), "pascal case")
     # Apply override.
-    self.assertEqual(filename_to_app_launch_string("Calculator.app", {"Calculator": "calc"}), "calc")
+    self.assertEqual(filename_to_app_launch_string("Calculator.app", {"Calculator": "calc"}),
+                     "calc")
     # Overrides are case sensitive.
-    self.assertEqual(filename_to_app_launch_string("calculator.app", {"Calculator": "calc"}), "calculator")
+    self.assertEqual(filename_to_app_launch_string("calculator.app", {"Calculator": "calc"}),
+                     "calculator")
     self.assertEqual(filename_to_app_launch_string("test1", {}), "test")
     self.assertEqual(filename_to_app_launch_string("Test - Case", {}), "test case")

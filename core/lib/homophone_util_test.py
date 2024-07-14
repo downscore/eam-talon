@@ -61,7 +61,10 @@ class GetWordToHomophoneSetDictTestCase(unittest.TestCase):
     self.assertEqual(expected, actual)
 
   def test_uncommon_word(self):
-    homophone_sets = [HomophoneSet(["here", "hear"], []), HomophoneSet(["frees", "freeze"], ["frieze"])]
+    homophone_sets = [
+        HomophoneSet(["here", "hear"], []),
+        HomophoneSet(["frees", "freeze"], ["frieze"])
+    ]
     expected = {
         "here": homophone_sets[0],
         "hear": homophone_sets[0],
@@ -74,7 +77,10 @@ class GetWordToHomophoneSetDictTestCase(unittest.TestCase):
 
   def test_homographs(self):
     homophone_sets = [HomophoneSet(["here", "hear"], []), HomophoneSet(["thrown", "throne"], [])]
-    homophone_homograph_sets = {"read": [HomophoneSet(["read", "reed"], []), HomophoneSet(["read", "red"], [])]}
+    homophone_homograph_sets = {
+        "read": [HomophoneSet(["read", "reed"], []),
+                 HomophoneSet(["read", "red"], [])]
+    }
     expected = {
         "here": homophone_sets[0],
         "hear": homophone_sets[0],
@@ -90,7 +96,10 @@ class GetWordToHomophoneSetDictTestCase(unittest.TestCase):
 
   def test_homographs_uncommon(self):
     homophone_sets = [HomophoneSet(["here", "hear"], []), HomophoneSet(["thrown", "throne"], [])]
-    homophone_homograph_sets = {"read": [HomophoneSet(["read"], ["reed"]), HomophoneSet(["read", "red"], [])]}
+    homophone_homograph_sets = {
+        "read": [HomophoneSet(["read"], ["reed"]),
+                 HomophoneSet(["read", "red"], [])]
+    }
     expected = {
         "here": homophone_sets[0],
         "hear": homophone_sets[0],
@@ -106,7 +115,10 @@ class GetWordToHomophoneSetDictTestCase(unittest.TestCase):
 
   def test_homographs_duplicate_word(self):
     homophone_sets = [HomophoneSet(["read", "red"], []), HomophoneSet(["thrown", "throne"], [])]
-    homophone_homograph_sets = {"read": [HomophoneSet(["read"], ["reed"]), HomophoneSet(["read", "red"], [])]}
+    homophone_homograph_sets = {
+        "read": [HomophoneSet(["read"], ["reed"]),
+                 HomophoneSet(["read", "red"], [])]
+    }
     with self.assertRaises(ValueError):
       get_word_to_homophone_set_dict(homophone_sets, homophone_homograph_sets)
 

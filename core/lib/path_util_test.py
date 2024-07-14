@@ -21,7 +21,8 @@ class ReplaceFileExtensionTestCase(unittest.TestCase):
     self.assertEqual(replace_file_extension("file.txt", ""), "file")
 
   def test_path(self):
-    self.assertEqual(replace_file_extension("/test1/.test2/file.txt", ".py"), "/test1/.test2/file.py")
+    self.assertEqual(replace_file_extension("/test1/.test2/file.txt", ".py"),
+                     "/test1/.test2/file.py")
 
 
 class RemoveTestSuffixTestCase(unittest.TestCase):
@@ -62,5 +63,6 @@ class GetTestPathTestCase(unittest.TestCase):
     self.assertEqual(get_test_path("file_test.py", ".py"), "file_test.py")
 
   def test_path(self):
-    self.assertEqual(get_test_path("/test1/.test2/file_test.py", ".py"), "/test1/.test2/file_test.py")
+    self.assertEqual(get_test_path("/test1/.test2/file_test.py", ".py"),
+                     "/test1/.test2/file_test.py")
     self.assertEqual(get_test_path("/test1/.test2/file.talon", ".py"), "/test1/.test2/file_test.py")

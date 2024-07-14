@@ -61,6 +61,7 @@ dec,decrement
 dbg,debug
 def,define
 def,definition
+delim,delimiter
 desc,description
 dev,develop
 dev,development

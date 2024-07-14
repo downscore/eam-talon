@@ -135,7 +135,8 @@ def get_tabs_matching_query(tabs: list[Tab], query: re.Pattern) -> list[Tab]:
 
 
 def get_focused_tab_list_index(tabs: list[Tab]) -> Optional[int]:
-  """Returns the index in the list of the  active tab for window index 1. None if such a tab is not present."""
+  """Returns the index in the list of the  active tab for window index 1. None if such a tab is not
+  present."""
   for i, tab in enumerate(tabs):
     if tab.active and tab.window_index == 1:
       return i
@@ -159,11 +160,12 @@ def match_windows(tabs: list[Tab], windows: list[Any]) -> BrowserContext:
     if tab.active:
       active_tab_titles[tab.window_index - 1] = tab.title
 
-  # In Chrome, we sometimes see untitled ghost windows, or untitled windows for Chrome Apps. The Chrome App windows can
-  # show up with a single tab with a title and URL in the AppleScript output.
+  # In Chrome, we sometimes see untitled ghost windows, or untitled windows for Chrome Apps. The
+  # Chrome App windows can show up with a single tab with a title and URL in the AppleScript output.
   #
-  # We only match windows that have a title, so we will not match Chrome App windows. If two windows have the same
-  # title, we break ties by expecting the AppleScript output and window list to be in the same order for those windows.
+  # We only match windows that have a title, so we will not match Chrome App windows. If two windows
+  # have the same title, we break ties by expecting the AppleScript output and window list to be in
+  # the same order for those windows.
   titled_windows = [window for window in windows if window.title]
   for i, active_tab_title in enumerate(active_tab_titles):
     if not active_tab_title:

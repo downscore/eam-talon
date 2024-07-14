@@ -13,8 +13,9 @@ def _intersect_ranges(range1: TextRange, range2: TextRange) -> Optional[TextRang
   return TextRange(max(range1.start, range2.start), min(range1.end, range2.end))
 
 
-def _perform_command_select(text: str, selection_range: TextRange, match_from: TextMatch, match_to: Optional[TextMatch],
-                            insert_text: str, lambda_func: Optional[Callable[[str], str]],
+def _perform_command_select(text: str, selection_range: TextRange, match_from: TextMatch,
+                            match_to: Optional[TextMatch], insert_text: str,
+                            lambda_func: Optional[Callable[[str], str]],
                             utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Select the matched range."""
   del text, selection_range, match_to, insert_text, lambda_func, utility_functions
@@ -29,11 +30,11 @@ def _perform_command_clear_move_cursor(text: str,
                                        lambda_func: Optional[Callable[[str], str]],
                                        utility_functions: UtilityFunctions,
                                        use_deletion_range: bool = False) -> list[EditorAction]:
-  """Clear the matched text and move the cursor where it was. Note: Unlike the clear command that it does not move the
-  cursor, this function does not use the deletion range by default."""
+  """Clear the matched text and move the cursor where it was. Note: Unlike the clear command that it
+  does not move the cursor, this function does not use the deletion range by default."""
   del text, selection_range, match_to, insert_text, utility_functions, lambda_func
-  deletion_range = (match_from.deletion_range
-                    if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
+  deletion_range = (match_from.deletion_range if use_deletion_range and
+                    match_from.deletion_range is not None else match_from.text_range)
   return [
       EditorAction(EditorActionType.SET_SELECTION_RANGE, deletion_range),
       EditorAction(EditorActionType.CLEAR),
@@ -50,8 +51,8 @@ def _perform_command_clear_no_move(text: str,
                                    use_deletion_range: bool = True) -> list[EditorAction]:
   """Clear the matched text but preserve cursor position."""
   del text, match_to, insert_text, utility_functions, lambda_func
-  deletion_range = (match_from.deletion_range
-                    if use_deletion_range and match_from.deletion_range is not None else match_from.text_range)
+  deletion_range = (match_from.deletion_range if use_deletion_range and
+                    match_from.deletion_range is not None else match_from.text_range)
 
   # Compute selected range after deletion.
   range_after = selection_range
@@ -63,7 +64,8 @@ def _perform_command_clear_no_move(text: str,
 
   # Adjust range if we are deleting text before the selection range.
   if deletion_range.start <= range_after.start:
-    range_after = TextRange(range_after.start - deletion_range.length(), range_after.end - deletion_range.length())
+    range_after = TextRange(range_after.start - deletion_range.length(),
+                            range_after.end - deletion_range.length())
 
   return [
       EditorAction(EditorActionType.SET_SELECTION_RANGE, deletion_range),
@@ -72,9 +74,10 @@ def _perform_command_clear_no_move(text: str,
   ]
 
 
-def _perform_command_move_cursor_before(text: str, selection_range: TextRange, match_from: TextMatch,
-                                        match_to: Optional[TextMatch], insert_text: str,
-                                        lambda_func: Optional[Callable[[str], str]],
+def _perform_command_move_cursor_before(text: str, selection_range: TextRange,
+                                        match_from: TextMatch, match_to: Optional[TextMatch],
+                                        insert_text: str, lambda_func: Optional[Callable[[str],
+                                                                                         str]],
                                         utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Move cursor before the matched range."""
   del text, selection_range, match_to, insert_text, utility_functions, lambda_func
@@ -91,8 +94,8 @@ def _perform_command_move_cursor_after(text: str, selection_range: TextRange, ma
   """Move cursor after the matched range."""
   del text, selection_range, match_to, insert_text, utility_functions, lambda_func
   return [
-      EditorAction(EditorActionType.SET_SELECTION_RANGE, TextRange(match_from.text_range.end,
-                                                                   match_from.text_range.end))
+      EditorAction(EditorActionType.SET_SELECTION_RANGE,
+                   TextRange(match_from.text_range.end, match_from.text_range.end))
   ]
 
 
@@ -102,9 +105,11 @@ def _perform_command_cut_to_clipboard(text: str, selection_range: TextRange, mat
                                       utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Delete the matched text and copy it to the clipboard."""
   del insert_text
-  result = _perform_command_clear_no_move(text, selection_range, match_from, match_to, "", lambda_func,
-                                          utility_functions)
-  result.append(EditorAction(EditorActionType.SET_CLIPBOARD_WITH_HISTORY, text=match_from.text_range.extract(text)))
+  result = _perform_command_clear_no_move(text, selection_range, match_from, match_to, "",
+                                          lambda_func, utility_functions)
+  result.append(
+      EditorAction(EditorActionType.SET_CLIPBOARD_WITH_HISTORY,
+                   text=match_from.text_range.extract(text)))
   return result
 
 
@@ -114,25 +119,31 @@ def _perform_command_copy_to_clipboard(text: str, selection_range: TextRange, ma
                                        utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Copies the matched text to the clipboard without moving the cursor."""
   del selection_range, match_to, insert_text, utility_functions, lambda_func
-  return [EditorAction(EditorActionType.SET_CLIPBOARD_WITH_HISTORY, text=match_from.text_range.extract(text))]
+  return [
+      EditorAction(EditorActionType.SET_CLIPBOARD_WITH_HISTORY,
+                   text=match_from.text_range.extract(text))
+  ]
 
 
-def _perform_command_bring(text: str, selection_range: TextRange, match_from: TextMatch, match_to: Optional[TextMatch],
-                           insert_text: str, lambda_func: Optional[Callable[[str], str]],
+def _perform_command_bring(text: str, selection_range: TextRange, match_from: TextMatch,
+                           match_to: Optional[TextMatch], insert_text: str,
+                           lambda_func: Optional[Callable[[str], str]],
                            utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Copies the matched text to the cursor position or the "to" match."""
   del selection_range, insert_text, utility_functions, lambda_func
   result: list[EditorAction] = []
   if match_to is not None:
     result.append(
-        EditorAction(EditorActionType.SET_SELECTION_RANGE, TextRange(match_to.text_range.start,
-                                                                     match_to.text_range.end)))
-  result.append(EditorAction(EditorActionType.INSERT_TEXT, text=match_from.text_range.extract(text)))
+        EditorAction(EditorActionType.SET_SELECTION_RANGE,
+                     TextRange(match_to.text_range.start, match_to.text_range.end)))
+  result.append(EditorAction(EditorActionType.INSERT_TEXT,
+                             text=match_from.text_range.extract(text)))
   return result
 
 
-def _perform_command_move(text: str, selection_range: TextRange, match_from: TextMatch, match_to: Optional[TextMatch],
-                          insert_text: str, lambda_func: Optional[Callable[[str], str]],
+def _perform_command_move(text: str, selection_range: TextRange, match_from: TextMatch,
+                          match_to: Optional[TextMatch], insert_text: str,
+                          lambda_func: Optional[Callable[[str], str]],
                           utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Moves the matched text to the cursor position or the "to" match."""
   del insert_text
@@ -140,16 +151,18 @@ def _perform_command_move(text: str, selection_range: TextRange, match_from: Tex
   if match_to is not None:
     insertion_range = match_to.text_range
 
-  # Perform deletion without moving using our insertion range as the "current" selection. This should leave the correct
-  # insertion range selected.
-  result = _perform_command_clear_no_move(text, insertion_range, match_from, match_to, "", lambda_func,
-                                          utility_functions)
-  result.append(EditorAction(EditorActionType.INSERT_TEXT, text=match_from.text_range.extract(text)))
+  # Perform deletion without moving using our insertion range as the "current" selection. This
+  # should leave the correct insertion range selected.
+  result = _perform_command_clear_no_move(text, insertion_range, match_from, match_to, "",
+                                          lambda_func, utility_functions)
+  result.append(EditorAction(EditorActionType.INSERT_TEXT,
+                             text=match_from.text_range.extract(text)))
   return result
 
 
-def _perform_command_swap(text: str, selection_range: TextRange, match_from: TextMatch, match_to: Optional[TextMatch],
-                          insert_text: str, lambda_func: Optional[Callable[[str], str]],
+def _perform_command_swap(text: str, selection_range: TextRange, match_from: TextMatch,
+                          match_to: Optional[TextMatch], insert_text: str,
+                          lambda_func: Optional[Callable[[str], str]],
                           utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Swap the matched text with the selected text or the "to" match."""
   del insert_text
@@ -170,22 +183,22 @@ def _perform_command_swap(text: str, selection_range: TextRange, match_from: Tex
 
   # Delete the range that occurs later and insert the earlier string.
   # Note: Deletion does not use deletion ranges. We want to maintain spaces and punctuation.
-  result = _perform_command_clear_move_cursor(text, selection_range, match_second, None, "", lambda_func,
-                                              utility_functions, False)
+  result = _perform_command_clear_move_cursor(text, selection_range, match_second, None, "",
+                                              lambda_func, utility_functions, False)
   result.append(EditorAction(EditorActionType.INSERT_TEXT, text=text_from_first))
 
   # Delete the range that occurs earlier and insert the later string.
   # Note: Deletion does not use deletion ranges. We want to maintain spaces and punctuation.
   result.extend(
-      _perform_command_clear_move_cursor(text, selection_range, match_first, None, "", lambda_func, utility_functions,
-                                         False))
+      _perform_command_clear_move_cursor(text, selection_range, match_first, None, "", lambda_func,
+                                         utility_functions, False))
   result.append(EditorAction(EditorActionType.INSERT_TEXT, text=text_from_second))
   return result
 
 
 def _perform_command_replace(text: str, selection_range: TextRange, match_from: TextMatch,
-                             match_to: Optional[TextMatch], insert_text: str, lambda_func: Optional[Callable[[str],
-                                                                                                             str]],
+                             match_to: Optional[TextMatch], insert_text: str,
+                             lambda_func: Optional[Callable[[str], str]],
                              utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Replace the matched target with a given string."""
   del text, match_to, utility_functions, lambda_func
@@ -212,31 +225,32 @@ def _perform_command_replace(text: str, selection_range: TextRange, match_from: 
   ]
 
 
-def _perform_command_replace_with_lambda(text: str, selection_range: TextRange, match_from: TextMatch,
-                                         match_to: Optional[TextMatch], insert_text: str,
-                                         lambda_func: Optional[Callable[[str], str]],
+def _perform_command_replace_with_lambda(text: str, selection_range: TextRange,
+                                         match_from: TextMatch, match_to: Optional[TextMatch],
+                                         insert_text: str, lambda_func: Optional[Callable[[str],
+                                                                                          str]],
                                          utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Replace the matched string with lambda output."""
   del insert_text
   if lambda_func is None:
     raise ValueError("Lambda function required for replace with lambda command")
   processed = lambda_func(match_from.text_range.extract(text))
-  return _perform_command_replace(text, selection_range, match_from, match_to, processed, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, processed,
+                                  lambda_func, utility_functions)
 
 
-def _perform_command_replace_word_match_case(text: str, selection_range: TextRange, match_from: TextMatch,
-                                             match_to: Optional[TextMatch], insert_text: str,
-                                             lambda_func: Optional[Callable[[str], str]],
-                                             utility_functions: UtilityFunctions) -> list[EditorAction]:
+def _perform_command_replace_word_match_case(
+    text: str, selection_range: TextRange, match_from: TextMatch, match_to: Optional[TextMatch],
+    insert_text: str, lambda_func: Optional[Callable[[str], str]],
+    utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Replace a word and match its case."""
   # Guess casing of the word to replace and match it with the new word.
   stripped = StrippedString(match_from.text_range.extract(text))
   guessed_capitalization = guess_capitalization(stripped.stripped)
   replacement = format_word_capitalization(insert_text, guessed_capitalization)
 
-  return _perform_command_replace(text, selection_range, match_from, match_to, replacement, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, replacement,
+                                  lambda_func, utility_functions)
 
 
 def _perform_command_next_homophone(text: str, selection_range: TextRange, match_from: TextMatch,
@@ -262,13 +276,13 @@ def _perform_command_next_homophone(text: str, selection_range: TextRange, match
   homophone = format_word_capitalization(homophone_stripped, guessed_capitalization)
   homophone = stripped.apply_padding(homophone)
 
-  return _perform_command_replace(text, selection_range, match_from, match_to, homophone, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, homophone,
+                                  lambda_func, utility_functions)
 
 
 def _perform_command_title_case(text: str, selection_range: TextRange, match_from: TextMatch,
-                                match_to: Optional[TextMatch], insert_text: str, lambda_func: Optional[Callable[[str],
-                                                                                                                str]],
+                                match_to: Optional[TextMatch], insert_text: str,
+                                lambda_func: Optional[Callable[[str], str]],
                                 utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Title case the matched target."""
   del insert_text
@@ -277,13 +291,13 @@ def _perform_command_title_case(text: str, selection_range: TextRange, match_fro
                           WordCapitalization.TITLE_CASE_PRESERVE_FOLLOWING)
   original = match_from.text_range.extract(text)
   formatted = format_phrase(original, options)
-  return _perform_command_replace(text, selection_range, match_from, match_to, formatted, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, formatted,
+                                  lambda_func, utility_functions)
 
 
 def _perform_command_lowercase(text: str, selection_range: TextRange, match_from: TextMatch,
-                               match_to: Optional[TextMatch], insert_text: str, lambda_func: Optional[Callable[[str],
-                                                                                                               str]],
+                               match_to: Optional[TextMatch], insert_text: str,
+                               lambda_func: Optional[Callable[[str], str]],
                                utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Make the matched target lowercase."""
   del insert_text
@@ -291,21 +305,21 @@ def _perform_command_lowercase(text: str, selection_range: TextRange, match_from
   options = FormatOptions(WordCapitalization.LOWERCASE, WordCapitalization.LOWERCASE)
   original = match_from.text_range.extract(text)
   formatted = format_phrase(original, options)
-  return _perform_command_replace(text, selection_range, match_from, match_to, formatted, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, formatted,
+                                  lambda_func, utility_functions)
 
 
 def _perform_command_uppercase(text: str, selection_range: TextRange, match_from: TextMatch,
-                               match_to: Optional[TextMatch], insert_text: str, lambda_func: Optional[Callable[[str],
-                                                                                                               str]],
+                               match_to: Optional[TextMatch], insert_text: str,
+                               lambda_func: Optional[Callable[[str], str]],
                                utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Make the matched target all uppercase."""
   del insert_text
   options = FormatOptions(WordCapitalization.UPPERCASE, WordCapitalization.UPPERCASE)
   original = match_from.text_range.extract(text)
   formatted = format_phrase(original, options)
-  return _perform_command_replace(text, selection_range, match_from, match_to, formatted, lambda_func,
-                                  utility_functions)
+  return _perform_command_replace(text, selection_range, match_from, match_to, formatted,
+                                  lambda_func, utility_functions)
 
 
 _COMMAND_FUNCTIONS = {
@@ -329,8 +343,9 @@ _COMMAND_FUNCTIONS = {
 }
 
 
-def perform_command(command_type: CommandType, text: str, selection_range: TextRange, match_from: TextMatch,
-                    match_to: Optional[TextMatch], insert_text: str, lambda_func: Optional[Callable[[str], str]],
+def perform_command(command_type: CommandType, text: str, selection_range: TextRange,
+                    match_from: TextMatch, match_to: Optional[TextMatch], insert_text: str,
+                    lambda_func: Optional[Callable[[str], str]],
                     utility_functions: UtilityFunctions) -> list[EditorAction]:
   """Gets the editor actions required to perform a command."""
   if selection_range.end > len(text):
@@ -341,5 +356,5 @@ def perform_command(command_type: CommandType, text: str, selection_range: TextR
     raise ValueError(f"To match beyond end of text: {match_to}")
   if not command_type in _COMMAND_FUNCTIONS:
     raise ValueError(f"Unimplemented command type: {command_type}")
-  return _COMMAND_FUNCTIONS[command_type](text, selection_range, match_from, match_to, insert_text, lambda_func,
-                                          utility_functions)
+  return _COMMAND_FUNCTIONS[command_type](text, selection_range, match_from, match_to, insert_text,
+                                          lambda_func, utility_functions)

@@ -11,9 +11,11 @@ mod = Module()
 ctx = Context()
 
 # Formatters keyed by word.
-# Note: Sentence and Title formatters are separate as they do not need to be combined with other formatters.
+# Note: Sentence and Title formatters are separate as they do not need to be combined with other
+# formatters.
 _CASE_FORMATTERS_BY_WORD = {
-    # Case formatters do not modify separators or surround strings. They can be chained with other formatters.
+    # Case formatters do not modify separators or surround strings. They can be chained with other
+    # formatters.
     "allcaps": format_util.Formatters.UPPERCASE,
     "alldown": format_util.Formatters.LOWERCASE,
 }
@@ -48,7 +50,8 @@ _LAST_SENTENCE = ""
 
 @mod.capture(rule="[{self.case_formatter}] {self.formatter}")
 def formatters(m) -> list[str]:
-  """Matches valid formatter combinations. Matches case formatter, if any, first. E.g. "allcaps smash"."""
+  """Matches valid formatter combinations. Matches case formatter, if any, first. E.g.
+  "allcaps smash"."""
   result = [m.formatter]
   try:
     result.append(m.case_formatter)

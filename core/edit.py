@@ -13,7 +13,8 @@ ctx = Context()
 
 
 def _get_selected_text_fragments():
-  """Gets the selected text and its fragment ranges. If no text is selected, selects the current word."""
+  """Gets the selected text and its fragment ranges. If no text is selected, selects the current
+  word."""
   text = actions.user.selected_text_or_word()
 
   # Special case: Ignore list item markers (e.g. in Apple Notes).
@@ -27,9 +28,10 @@ def _get_selected_text_fragments():
 @mod.action_class
 class ExtensionActions:
   """User-defined edit actions.
-  Note that many of these actions are also built-in to Talon in the "edit" namespace. After a Talon update that
-  (probably unintentionally) overrode these implementations, and following some unexpected internal Talon usages of
-  built-in actions, they were moved to user-defined actions to avoid the potential for problems in the future."""
+  Note that many of these actions are also built-in to Talon in the "edit" namespace. After a Talon
+  update that (probably unintentionally) overrode these implementations, and following some
+  unexpected internal Talon usages of built-in actions, they were moved to user-defined actions to
+  avoid the potential for problems in the future."""
 
   def copy():
     """Copies the currently-selected text to the clipboard."""
@@ -54,8 +56,8 @@ class ExtensionActions:
     actions.sleep("50ms")
 
   def paste_via_insert():
-    """Pastes the clipboard contents with `insert` to bypass restrictions on pasting. May not work with unicode
-    characters."""
+    """Pastes the clipboard contents with `insert` to bypass restrictions on pasting. May not work
+    with unicode characters."""
     text = clip.text()
     actions.insert(text)
 
@@ -307,7 +309,8 @@ class ExtensionActions:
       return ""
 
   def selected_text_or_word() -> str:
-    """Returns the currently-selected text. If no text is selected, tries to select the current word and return that."""
+    """Returns the currently-selected text. If no text is selected, tries to select the current word
+    and return that."""
     selected = actions.user.selected_text()
     if selected:
       return selected
@@ -338,8 +341,8 @@ class ExtensionActions:
     actions.user.left()
 
   def expand_selection_to_adjacent_characters():
-    """Expands the current selection to include adjacent characters on the left and right. If nothing is selected,
-    selects a character on either side of the cursor."""
+    """Expands the current selection to include adjacent characters on the left and right. If
+    nothing is selected, selects a character on either side of the cursor."""
     selection_length = len(actions.user.selected_text())
     # Disallow for long strings, as they can take a long time to select.
     if selection_length > 500:
@@ -401,8 +404,8 @@ class ExtensionActions:
     actions.key(f"left right:{fragment[0]}")
 
   def fragment_delete(from_index: int, to_index: int = 0):
-    """Deletes the given fragment or range of fragments of the selected text. Deletes the last fragment if `from_index`
-    is negative. Index is 1-based."""
+    """Deletes the given fragment or range of fragments of the selected text. Deletes the last
+    fragment if `from_index` is negative. Index is 1-based."""
     if from_index == 0:
       raise ValueError(f"Invalid fragment index: {from_index}")
     _, fragments = _get_selected_text_fragments()
@@ -422,7 +425,8 @@ class ExtensionActions:
     # Check if we need to delete a separator character before or after the fragment.
     delete_before = from_index > 1 and fragments[from_index - 2][1] < from_fragment[0]
     # Using int(n) below to suppress pylint error.
-    delete_after = not delete_before and from_index < len(fragments) and to_fragment[1] < fragments[int(from_index)][0]
+    delete_after = not delete_before and from_index < len(fragments) and to_fragment[1] < fragments[
+        int(from_index)][0]
 
     start_index = from_fragment[0] - (1 if delete_before else 0)
     length = to_fragment[1] - from_fragment[0] + (1 if delete_before or delete_after else 0)
@@ -432,8 +436,8 @@ class ExtensionActions:
     actions.key("backspace")
 
   def fragment_select(from_index: int, to_index: int = 0):
-    """Selects a fragment or range of fragments of the selected text. Index is 1-based. Selects the last fragment if
-    `from_index` is negative."""
+    """Selects a fragment or range of fragments of the selected text. Index is 1-based. Selects the
+    last fragment if `from_index` is negative."""
     _, fragments = _get_selected_text_fragments()
     from_index_effective = int(from_index)
     if from_index_effective < 0:
@@ -496,7 +500,8 @@ class ExtensionActions:
     actions.user.surround_selected_text("[", f"]({clipboard_text})")
 
   def insert_link_from_browser_address():
-    """Insert a link or make the selected text into a link using the URL in the last viewed browser tab."""
+    """Insert a link or make the selected text into a link using the URL in the last viewed browser
+    tab."""
     address = actions.user.cross_browser_get_current_address()
     actions.user.surround_selected_text("[", f"]({address})")
 
@@ -506,8 +511,8 @@ class ExtensionActions:
     actions.user.surround_selected_text("[", f"](http://{selected})")
 
   def insert_via_clipboard(text: str):
-    """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert most non-ASCII
-    character."""
+    """Inserts a unicode string using the clipboard. The default insert(str) action cannot insert
+    most non-ASCII characters."""
     if not text:
       return
     with clip.revert():
@@ -576,8 +581,8 @@ class ExtensionActions:
     actions.key("cmd-shift-h")
 
   def character_select_range(from_index: int, to_index: int = 0):
-    """Selects a range of characters in the selected text. 1-based. If `to_index` is zero, selects the from
-    character."""
+    """Selects a range of characters in the selected text. 1-based. If `to_index` is zero, selects
+    the from character."""
     if 0 < to_index < from_index:
       raise ValueError(f"Invalid character range: {from_index} to {to_index}")
 
@@ -632,14 +637,15 @@ class ExtensionActions:
     if first_word.startswith("\n"):
       first_word = ""
 
-    found_heading = all(map(lambda c: c.isspace() or c == "#", first_word)) and any(map(lambda c: c == "#", first_word))
+    found_heading = all(map(lambda c: c.isspace() or c == "#", first_word)) and any(
+        map(lambda c: c == "#", first_word))
 
     prefix = ""
     for _ in range(number):
       prefix += "#"
 
-    # If the line already begins with a heading specifier, just replace it (keep it selected), otherwise add new
-    # specifier with trailing space.
+    # If the line already begins with a heading specifier, just replace it (keep it selected),
+    # otherwise add new specifier with trailing space.
     if not found_heading:
       prefix += " "
       actions.user.left()
@@ -694,7 +700,8 @@ class ExtensionActions:
       line_text = line_text.replace("[x]", "[ ]")
     actions.user.insert_via_clipboard(line_text)
 
-    # Go back to the original line (we just inserted a line break if it wasn't the last line in the file).
+    # Go back to the original line (we just inserted a line break if it wasn't the last line in the
+    # file).
     actions.user.left()
 
   def surround_selected_text(prefix: str, suffix: str):

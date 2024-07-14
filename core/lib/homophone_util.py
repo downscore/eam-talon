@@ -63,8 +63,9 @@ def get_homograph_homophone_sets(homophone_sets: list[list[str]]) -> dict[str, l
   return result
 
 
-def get_word_to_homophone_set_dict(homophone_sets: list[HomophoneSet],
-                                   homograph_homophone_sets: dict[str, list[HomophoneSet]]) -> Dict[str, HomophoneSet]:
+def get_word_to_homophone_set_dict(
+    homophone_sets: list[HomophoneSet],
+    homograph_homophone_sets: dict[str, list[HomophoneSet]]) -> Dict[str, HomophoneSet]:
   """Given a list of homophones, return a list of HomophoneSets."""
   result = {}
   for homophone_set in homophone_sets:

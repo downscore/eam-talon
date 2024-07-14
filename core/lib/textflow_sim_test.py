@@ -14,7 +14,8 @@ class SimulateActionsTestCase(unittest.TestCase):
 
     # Set selection range with no range.
     with self.assertRaises(ValueError):
-      simulate_actions("This is a test", TextRange(0, 0), [EditorAction(EditorActionType.SET_SELECTION_RANGE)])
+      simulate_actions("This is a test", TextRange(0, 0),
+                       [EditorAction(EditorActionType.SET_SELECTION_RANGE)])
 
     # Set selection range outside of text.
     with self.assertRaises(ValueError):

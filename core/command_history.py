@@ -11,7 +11,8 @@ mod = Module()
 # Characters to display per line in the history GUI.
 _GUI_CHARS_PER_LINE = 80
 
-# We keep command_history_size lines of history, but by default display only command_history_display of them.
+# We keep command_history_size lines of history, but by default display only command_history_display
+# of them.
 _COMMAND_HISTORY_SIZE = 50
 _COMMAND_HISTORY_DISPLAY = 10
 
@@ -45,7 +46,8 @@ def gui(gui: imgui.GUI):  # pylint: disable=redefined-outer-name
   """Creates a gui displaying command history."""
   gui.text("Command History")
   gui.line()
-  text = (_command_history[:] if _show_more_history else _command_history[-_COMMAND_HISTORY_DISPLAY:])
+  text = (_command_history[:]
+          if _show_more_history else _command_history[-_COMMAND_HISTORY_DISPLAY:])
   for line in text:
     display_line = line[:_GUI_CHARS_PER_LINE]
     if len(line) > _GUI_CHARS_PER_LINE:

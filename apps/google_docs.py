@@ -40,8 +40,9 @@ class ExtensionActions:
   """Action overrides."""
 
   def textflow_potato_get_text_before_cursor():
-    # Google Docs has some unusual text selection behavior. It randomly inserts trailing new lines, and behavior inside
-    # tables is unpredictable. To avoid problems, we only allow TextFlow to act on one line in Google Docs.
+    # Google Docs has some unusual text selection behavior. It randomly inserts trailing new lines,
+    # and behavior inside tables is unpredictable. To avoid problems, we only allow TextFlow to act
+    # on one line in Google Docs.
     actions.key("ctrl-shift-a")
     result = actions.user.selected_text()
     if len(result) > 0:

@@ -77,7 +77,8 @@ def _update_launch_list():
       path = os.path.join(base, name)
       if name.startswith(".") or not name.endswith(".app"):
         continue
-      app_launch_string = app_util.filename_to_app_launch_string(name, _OVERRIDES_SPOKEN_BY_APP_NAME)
+      app_launch_string = app_util.filename_to_app_launch_string(name,
+                                                                 _OVERRIDES_SPOKEN_BY_APP_NAME)
       launch[app_launch_string] = path
   ctx.lists["self.launch_app_name"] = launch
 
@@ -135,20 +136,21 @@ class Actions:
     running_app = actions.user.switcher_get_running_app(name)
     running_app.focus()
     # Pause to give the app time to focus.
-    # Note: More time may be required if the window is in a different workspace. Chrome in particular can take a while
-    # to be ready for subsequent commands.
+    # Note: More time may be required if the window is in a different workspace. Chrome in
+    # particular can take a while to be ready for subsequent commands.
     actions.sleep("100ms")
 
   def switcher_focus_window(window: ui.Window):
     """Focuses the given window. Does nothing if the window is already focused."""
     if ui.active_window().id == window.id:
       return
-    # Focus the window twice. In some cases (e.g. multiple fullscreen Chrome windows), this seems to be necessary.
+    # Focus the window twice. In some cases (e.g. multiple fullscreen Chrome windows), this seems to
+    # be necessary.
     window.focus()
     window.focus()
     # Pause to give the app time to focus.
-    # Note: More time may be required if the window is in a different workspace. Chrome in particular can take a while
-    # to be ready for subsequent commands.
+    # Note: More time may be required if the window is in a different workspace. Chrome in particular
+    # can take a while to be ready for subsequent commands.
     actions.sleep("100ms")
 
   def switcher_focus_window_by_id(window_id: int):
@@ -160,7 +162,10 @@ class Actions:
       return
     raise ValueError(f"Could not find window. ID: {window_id}")
 
-  def switcher_focus_window_by_type(type_name: str, app_name1: str = "", app_name2: str = "", app_name3: str = ""):
+  def switcher_focus_window_by_type(type_name: str,
+                                    app_name1: str = "",
+                                    app_name2: str = "",
+                                    app_name3: str = ""):
     """Tries to focus a window given its type name and possible app names."""
     # Talon doesn't support list arguments, so use optional arguments instead.
     app_names: list[str] = []
@@ -213,12 +218,14 @@ class Actions:
   def switcher_launch_next_page():
     """Shows the next page of launchable applications."""
     global _launch_page
-    _launch_page = (_launch_page + 1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
+    _launch_page = (_launch_page +
+                    1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
 
   def switcher_launch_previous_page():
     """Shows the previous page of launchable applications."""
     global _launch_page
-    _launch_page = (_launch_page - 1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
+    _launch_page = (_launch_page -
+                    1) % (len(ctx.lists["self.launch_app_name"]) // _MAX_LINES_PER_PAGE + 1)
 
   def switcher_focus_terminal():
     """Focuses the terminal application."""
@@ -233,8 +240,8 @@ class Actions:
     actions.user.switcher_focus_window_by_type("browser", "Google Chrome", "Safari")
 
   def switcher_new_tmux_window(directory: str = ""):
-    """Opens a new tmux window in the given directory. If directory is empty, open in the default directory, usually
-    the current user's home."""
+    """Opens a new tmux window in the given directory. If directory is empty, open in the default
+    directory, usually the current user's home."""
     actions.user.switcher_focus_terminal()
     actions.user.shell_tmux_new_window()
     if directory:

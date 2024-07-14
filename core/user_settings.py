@@ -53,7 +53,8 @@ def _load_dict_internal(filename: str, rows: list[list[str]]) -> Dict[str, str]:
 
 def _append_to_csv_internal(path: Path, row: List[str]):
   """Appends a row to a CSV file with the given path."""
-  # Do not use resource.open to avoid race condition. We want file to reload after we are finished writing to it.
+  # Do not use resource.open to avoid race condition. We want file to reload after we are finished
+  # writing to it.
   with open(str(path), "a", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(row)
@@ -72,15 +73,15 @@ def load_dict_from_csv(filename: str) -> Dict[str, str]:
 
   result = {}
 
-  # Read public file if it exists. Read via resource to take advantage of talon's ability to reload this script for us
-  # when the resource changes.
+  # Read public file if it exists. Read via resource to take advantage of talon's ability to reload
+  # this script for us when the resource changes.
   if path.exists():
     with resource.open(str(path), "r") as f:
       rows = list(csv.reader(f))
     result.update(_load_dict_internal(str(path), rows))
 
-  # Read private file if it exists. Note: Specified file must exist. Private version does not have to.
-  # Returned dictionary will be updated with the contents of the private file.
+  # Read private file if it exists. Note: Specified file must exist. Private version does not have
+  # to. Returned dictionary will be updated with the contents of the private file.
   if private_path.exists():
     with resource.open(str(private_path), "r") as f:
       rows = list(csv.reader(f))
@@ -91,12 +92,14 @@ def load_dict_from_csv(filename: str) -> Dict[str, str]:
 
 def load_lists_from_csv(filename: str) -> List[List[str]]:
   """Load a list of list of strings from a CSV file.
-  A list of strings is made for the values in each non-empty line, and those lists are returned in one big list.
-  This function loads the full file contents into memory, so may not be appropriate for very large lists."""
+  A list of strings is made for the values in each non-empty line, and those lists are returned in
+  one big list. This function loads the full file contents into memory, so may not be appropriate
+  for very large lists."""
   result: List[List[str]] = []
   path = _SETTINGS_DIR / filename
 
-  # Read via resource to take advantage of talon's ability to reload this script for us when the resource changes.
+  # Read via resource to take advantage of talon's ability to reload this script for us when the
+  # resource changes.
   with resource.open(str(path), "r") as f:
     rows = list(csv.reader(f))
 
@@ -111,10 +114,12 @@ def load_lists_from_csv(filename: str) -> List[List[str]]:
 
 
 def load_coords_from_csv(filename: str) -> Dict[str, Tuple[float, float]]:
-  """Loads a dictionary of labeled coordinates from a CSV file with Talon resource monitoring. Strips labels."""
+  """Loads a dictionary of labeled coordinates from a CSV file with Talon resource monitoring.
+  Strips labels."""
   path = _SETTINGS_DIR / filename
 
-  # Read via resource to take advantage of talon's ability to reload this script for us when the resource changes.
+  # Read via resource to take advantage of talon's ability to reload this script for us when the
+  # resource changes.
   with resource.open(str(path), "r") as f:
     rows = list(csv.reader(f))
 
@@ -136,11 +141,13 @@ def load_coords_from_csv(filename: str) -> Dict[str, Tuple[float, float]]:
 
 
 def load_macros_from_csv(filename: str) -> Dict[str, list[str]]:
-  """Loads a dictionary of labeled macros from a CSV file with Talon resource monitoring. Strips labels and macro
+  """Loads a dictionary of labeled macros from a CSV file with Talon resource monitoring. Strips
+  labels and macro
   entries."""
   path = _SETTINGS_DIR / filename
 
-  # Read via resource to take advantage of talon's ability to reload this script for us when the resource changes.
+  # Read via resource to take advantage of talon's ability to reload this script for us when the
+  # resource changes.
   with resource.open(str(path), "r") as f:
     rows = list(csv.reader(f))
 

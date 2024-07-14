@@ -20,9 +20,9 @@ app: gmail
 """
 
 
-# Pressing "right" at the end of the text when writing a reply (note: not composing a new email) can jump to
-# another UI element and interpret subsequent keystrokes as commands. This happens even when the cursor is on the
-# left side of a selection that includes the end of the text.
+# Pressing "right" at the end of the text when writing a reply (note: not composing a new email) can
+# jump to another UI element and interpret subsequent keystrokes as commands. This happens even when
+# the cursor is on the left side of a selection that includes the end of the text.
 @ctx.action_class("user")
 class ExtensionActions:
   """Action overrides."""
@@ -38,26 +38,29 @@ class ExtensionActions:
       actions.user.extend_left()
     preceding_text = actions.user.selected_text()
 
-    # Select to the right for the number of characters we actually selected. This works around unusual UI behavior.
-    # See above for more information.
+    # Select to the right for the number of characters we actually selected. This works around
+    # unusual UI behavior. See above for more information.
     for _ in range(len(preceding_text)):
       actions.user.extend_right()
 
     return preceding_text
 
   def textflow_potato_get_text_before_cursor():
-    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for more information.
+    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for
+    # more information.
     actions.key("ctrl-shift-a")
     result = actions.user.selected_text()
 
-    # Select to the right for the number of characters we actually selected. This works around unusual UI behavior.
+    # Select to the right for the number of characters we actually selected. This works around
+    # unusual UI behavior.
     for _ in range(len(result)):
       actions.user.extend_right()
 
     return result
 
   def textflow_potato_get_text_after_cursor():
-    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for more information.
+    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for
+    # more information.
     actions.key("ctrl-shift-e")
     result = actions.user.selected_text()
     if len(result) > 0:

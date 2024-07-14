@@ -73,8 +73,8 @@ class ExtensionActions:
     for _ in range(mode_dictation.NUM_PRECEDING_CHARS):
       actions.user.extend_left()
 
-    # Bypass extension for getting selected text. This allows dictation to work in, for example, the Search and
-    # Source Control panels.
+    # Bypass extension for getting selected text. This allows dictation to work in, for example, the
+    # Search and Source Control panels.
     with clip.capture() as s:
       actions.user.copy()
     try:
@@ -271,6 +271,6 @@ class ExtensionActions:
       actions.key(f"cmd-p down:{n} enter")
 
   def textflow_get_selected_text_potato_mode() -> str:
-    # By default, VS Code copies the entire line if nothing is selected, which breaks a bunch of TextFlow stuff.
-    # Always pretend nothing is selected.
+    # By default, VS Code copies the entire line if nothing is selected, which breaks a bunch of
+    # TextFlow stuff. Always pretend nothing is selected.
     return ""

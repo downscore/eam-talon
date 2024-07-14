@@ -29,12 +29,12 @@ def _get_tab_title() -> str:
 @mod.action_class
 class BrowserActions:
   """Browser actions.
-  Note that many of these actions are also built-in to Talon in the "browser" namespace. They are defined here in the
-  "user" namespace to avoid conflicts with Talon internals.
+  Note that many of these actions are also built-in to Talon in the "browser" namespace. They are
+  defined here in the "user" namespace to avoid conflicts with Talon internals.
 
-  It looks like browser.address() is called several times by Talon on startup. It should not be implemented by
-  performing any keyboard input, and should likely not have a default implementation unless its usage within Talon is
-  understood."""
+  It looks like browser.address() is called several times by Talon on startup. It should not be
+  implemented by performing any keyboard input, and should likely not have a default implementation
+  unless its usage within Talon is understood."""
 
   def browser_go(url: str):
     """Navigates to the specified URL."""
@@ -77,7 +77,8 @@ class BrowserActions:
     actions.user.insert_via_clipboard(f"[{title}]({url})")
 
   def browser_add_tab_to_obsidian_keep_open(document_name: str = "", section_name: str = ""):
-    """Adds the current tab to the context section of the current Obsidian doc but does not close it."""
+    """Adds the current tab to the context section of the current Obsidian doc but does not close
+    it."""
     url = actions.user.app_get_current_location()
     title = _get_tab_title()
     actions.user.obsidian_append_to_document(document_name, section_name)

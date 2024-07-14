@@ -1,4 +1,5 @@
-"""Draws a set of tags as a floating overlay. Allows users to indicate a particular point on the screen by name."""
+"""Draws a set of tags as a floating overlay. Allows users to indicate a particular point on the
+screen by name."""
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
@@ -97,5 +98,6 @@ class MarkerUi:
 
       # Draw the label
       paint.style = paint.Style.FILL
-      canvas_instance.draw_text(marker.label, bg_rect.x - trect.x + (bg_rect.width - trect.width) / 2,
+      canvas_instance.draw_text(marker.label,
+                                bg_rect.x - trect.x + (bg_rect.width - trect.width) / 2,
                                 bg_rect.y - trect.y + (bg_rect.height - trect.height) / 2)

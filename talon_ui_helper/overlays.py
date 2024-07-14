@@ -47,7 +47,8 @@ class ScreenshotOverlay(abc.ABC):
       else:
         rect = active_window.screen.rect
     self.can = canvas.Canvas.from_rect(rect)
-    # Redundantly include these offset so threads can access them (self.can gets locked during draw handler).
+    # Redundantly include these offset so threads can access them (self.can gets locked during draw
+    # handler).
     self.offsetx = int(self.can.rect.x)
     self.offsety = int(self.can.rect.y)
     self.image = screencap_to_image(rect)
@@ -94,7 +95,8 @@ class ScreenshotOverlay(abc.ABC):
   def _draw_text(self, canvas_instance):
     all_text = self.text or ""
     all_text += "\n\nKeyboard shortcuts (or use equivalent voice command):\n"
-    all_text += "\n".join([f" - {key}: {description}" for key, description in self._get_keyboard_commands()])
+    all_text += "\n".join(
+        [f" - {key}: {description}" for key, description in self._get_keyboard_commands()])
 
     canvas_instance.paint = paint.Paint()
     canvas_instance.paint.antialias = True
@@ -192,9 +194,9 @@ class BoxSelectorOverlay(ScreenshotOverlay):
     return commands
 
   def _selection_settled(self, finished_selection):
-    """Called when we can assume that the user has finished selecting a region, or when they've just started drawing a
-    new one. If you want to draw any other markers after the user has finished selecting this is the place to set and
-    unset a flag for _draw_widgets."""
+    """Called when we can assume that the user has finished selecting a region, or when they've just
+    started drawing a new one. If you want to draw any other markers after the user has finished
+    selecting this is the place to set and unset a flag for _draw_widgets."""
 
   def _get_region(self):
     """Gets the selected region, normalising any negative widths."""
@@ -232,14 +234,16 @@ class BoxSelectorOverlay(ScreenshotOverlay):
     canvas_instance.paint.color = "ffffffff"
     if self.hl_region.width == 0 or self.hl_region.height == 0:
       # Deal with the zero thickness cases that happen when using voice commands
-      canvas_instance.draw_line(self.hl_region.x, self.hl_region.y, self.hl_region.x + self.hl_region.width,
+      canvas_instance.draw_line(self.hl_region.x, self.hl_region.y,
+                                self.hl_region.x + self.hl_region.width,
                                 self.hl_region.y + self.hl_region.height)
     else:
       canvas_instance.draw_rect(self.hl_region)
 
   def _get_region_centre(self):
     if self.hl_region:
-      return (self.hl_region.x + self.hl_region.width / 2, self.hl_region.y + self.hl_region.height / 2)
+      return (self.hl_region.x + self.hl_region.width / 2,
+              self.hl_region.y + self.hl_region.height / 2)
     else:
       return None
 
@@ -405,7 +409,9 @@ class ImageSelectorOverlay(BoxSelectorOverlay):
     canvas_instance.paint.color = "ff00ffff"
     canvas_instance.paint.stroke_width = 1
     if self.offset_coord is None:
-      args = [self.hl_region.x + self.hl_region.width / 2, self.hl_region.y + self.hl_region.height / 2]
+      args = [
+          self.hl_region.x + self.hl_region.width / 2, self.hl_region.y + self.hl_region.height / 2
+      ]
     else:
       args = [self.offset_coord.x, self.offset_coord.y]
       canvas_instance.paint.antialias = True
@@ -421,7 +427,8 @@ class ImageSelectorOverlay(BoxSelectorOverlay):
 
     self.result_rects = locate.locate_in_image(self.image, cropped_img, threshold=0.999)
     self.result_rects = [
-        TalonRect(rect.x + self.offsetx, rect.y + self.offsety, rect.width, rect.height) for rect in self.result_rects
+        TalonRect(rect.x + self.offsetx, rect.y + self.offsety, rect.width, rect.height)
+        for rect in self.result_rects
     ]
 
   def _draw_matches(self, canvas_instance):
@@ -451,7 +458,8 @@ class ImageSelectorOverlay(BoxSelectorOverlay):
 
 
 class BlobBoxOverlay(BoxSelectorOverlay):
-  """And overlay that helps the user build a blob box by displaying the matched blobs live as they define boxes."""
+  """And overlay that helps the user build a blob box by displaying the matched blobs live as they
+  define boxes."""
 
   def _selection_settled(self, finished_selection):
     if not finished_selection:
@@ -467,7 +475,8 @@ class BlobBoxOverlay(BoxSelectorOverlay):
     rects = calculate_blob_rects(img, region)
 
     self.markers = [
-        MarkerUi.Marker(rect, label) for rect, label in zip(rects, "abcdefghijklmnopqrstuvwxyz0123456789" * 3)
+        MarkerUi.Marker(rect, label)
+        for rect, label in zip(rects, "abcdefghijklmnopqrstuvwxyz0123456789" * 3)
     ]
     self.can.freeze()
 

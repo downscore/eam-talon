@@ -1,5 +1,6 @@
 # Keyboard shortcuts to apps and websites.
-# Primarily using ctrl-cmd-<key> to switch to apps and websites, as it minimizes conflicts with other shortcuts.
+# Primarily using ctrl-cmd-<key> to switch to apps and websites, as it minimizes conflicts with
+# other shortcuts.
 #
 # Potential conflicts (keys defined in this file have precedence):
 # - macOS:

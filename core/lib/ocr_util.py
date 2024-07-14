@@ -4,7 +4,8 @@ import bisect
 from dataclasses import dataclass
 from typing import Any, Optional
 
-# Width values by character for Ocr rect interpolation purposes. Any character not included has a default width.
+# Width values by character for Ocr rect interpolation purposes. Any character not included has a
+# default width.
 _DEFAULT_CHAR_WIDTH: float = 10
 _WIDTHS_BY_CHAR: dict[str, float] = {
     "\n": 0,  # Newline characters have no width.
@@ -108,21 +109,24 @@ _WIDTHS_BY_CHAR: dict[str, float] = {
 
 @dataclass
 class OcrTextFlowContext:
-  """Context for using OCRed text in TextFlow, including the screen coordinates where the text is found."""
+  """Context for using OCRed text in TextFlow, including the screen coordinates where the text is
+  found."""
   # The list of raw OCR results.
   ocr_results: list[Any]
   # The concatenated text of the OCR results.
   text: str
-  # The character index into the text where each Ocr result begins. Each element covers the corresponding OCR result
-  # plus an extra appended space. Note: The first element must always be 0.
+  # The character index into the text where each Ocr result begins. Each element covers the
+  # corresponding OCR result plus an extra appended space. Note: The first element must always be 0.
   start_indices: list[int]
-  # The closest index to the mouse. Can be used to simulate a cursor position. Should be snapped to a word boundary to
-  # avoid simulating having the cursor in the middle of a word (which can prevent finding that full word).
+  # The closest index to the mouse. Can be used to simulate a cursor position. Should be snapped to
+  # a word boundary to avoid simulating having the cursor in the middle of a word (which can prevent
+  # finding that full word).
   mouse_index: int = 0
 
   def index_to_screen_coordinates(self, text_index: int) -> tuple[float, float]:
-    """Converts a character index into screen coordinates. On macOS, we only get a rectangle around each result, so we
-    guess at character positions using linear interpolation inside the rectangles."""
+    """Converts a character index into screen coordinates. On macOS, we only get a rectangle around
+    each result, so we guess at character positions using linear interpolation inside the
+    rectangles."""
     if text_index < 0 or text_index > len(self.text) + 1:  # +1 for the implicit appended space.
       raise ValueError(f"Invalid text index: {text_index}")
 
@@ -138,8 +142,8 @@ class OcrTextFlowContext:
     char_offset = text_index - self.start_indices[ocr_result_index]
     assert 0 <= char_offset <= len(ocr_result.text) + 1  # +1 for the implicit appended space.
 
-    # We don't actually assign any width to the implicit appended space, so treat it as if the last character was
-    # requested instead.
+    # We don't actually assign any width to the implicit appended space, so treat it as if the last
+    # character was requested instead.
     if char_offset > len(ocr_result.text):
       char_offset = len(ocr_result.text)
 
@@ -161,7 +165,8 @@ class OcrTextFlowContext:
     return x, y
 
   def expand_range_to_ocr_results(self, start: int, end: int) -> tuple[int, int]:
-    """Expand the given character range so that it covers full OCR results. Returns the expanded range."""
+    """Expand the given character range so that it covers full OCR results. Returns the expanded
+    range."""
     if start < 0 or end < start or end > len(self.text) + 1:  # +1 for the implicit appended space.
       raise ValueError(f"Invalid range: [{start}, {end}]")
 
@@ -177,7 +182,8 @@ class OcrTextFlowContext:
 
     # Expand the range to cover full OCR results.
     expanded_start = self.start_indices[start_ocr_result_index]
-    expanded_end = self.start_indices[end_ocr_result_index] + len(self.ocr_results[end_ocr_result_index].text)
+    expanded_end = self.start_indices[end_ocr_result_index] + len(
+        self.ocr_results[end_ocr_result_index].text)
 
     return expanded_start, expanded_end
 
@@ -191,8 +197,8 @@ def get_string_width(text: str) -> float:
 
 
 def get_closest_ocr_result_index(ocr_results: list[Any], x: float, y: float) -> Optional[int]:
-  """Returns the index of the closest OCR result to the given screen coordinates. Returns None if no nearby result was
-  found."""
+  """Returns the index of the closest OCR result to the given screen coordinates. Returns None if no
+  nearby result was found."""
   if not ocr_results:
     raise ValueError("No OCR results provided.")
 
@@ -223,7 +229,8 @@ def get_closest_ocr_result_index(ocr_results: list[Any], x: float, y: float) -> 
   return closest_index
 
 
-def create_ocr_textflow_context(ocr_results: list[Any], mouse_x: float, mouse_y: float) -> OcrTextFlowContext:
+def create_ocr_textflow_context(ocr_results: list[Any], mouse_x: float,
+                                mouse_y: float) -> OcrTextFlowContext:
   """Creates an OcrTextFlowContext from the given OCR results."""
   if not ocr_results:
     raise ValueError("No OCR results provided.")

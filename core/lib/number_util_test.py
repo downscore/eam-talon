@@ -17,33 +17,44 @@ class ParseNumberTestCase(unittest.TestCase):
     self.assertEqual(parse_number(["one", "hundred", "twenty", "three"]), "123")
     self.assertEqual(parse_number(["one", "oh", "one"]), "101")
     self.assertEqual(parse_number(["one", "hundred", "thousand"]), "100000")
-    self.assertEqual(parse_number(["one", "hundred", "thousand", "three", "hundred", "twenty", "one"]), "100321")
     self.assertEqual(
-        parse_number(["one", "hundred", "twenty", "three", "thousand", "three", "hundred", "twenty", "one"]), "123321")
+        parse_number(["one", "hundred", "thousand", "three", "hundred", "twenty", "one"]), "100321")
+    self.assertEqual(
+        parse_number(
+            ["one", "hundred", "twenty", "three", "thousand", "three", "hundred", "twenty", "one"]),
+        "123321")
     self.assertEqual(parse_number(["one", "million"]), "1000000")
     self.assertEqual(parse_number(["thirty", "hundred"]), "3000")
     self.assertEqual(parse_number(["thirty", "five", "hundred"]), "3500")
     self.assertEqual(parse_number(["eighty", "two", "thousand"]), "82000")
-    self.assertEqual(parse_number(["one", "million", "five", "hundred", "one", "thousand"]), "1501000")
+    self.assertEqual(parse_number(["one", "million", "five", "hundred", "one", "thousand"]),
+                     "1501000")
     self.assertEqual(parse_number(["one", "thousand", "one"]), "1001")
     self.assertEqual(parse_number(["one", "thousand", "ten"]), "1010")
-    self.assertEqual(parse_number(["one", "twenty", "three", "thousand", "four", "fifty", "six"]), "123456")
+    self.assertEqual(parse_number(["one", "twenty", "three", "thousand", "four", "fifty", "six"]),
+                     "123456")
 
   def test_including_and(self):
     self.assertEqual(parse_number(["one", "hundred", "and", "twenty", "three"]), "123")
-    self.assertEqual(parse_number(["one", "hundred", "thousand", "three", "hundred", "and", "twenty", "one"]), "100321")
     self.assertEqual(
-        parse_number(
-            ["one", "hundred", "and", "twenty", "three", "thousand", "three", "hundred", "and", "twenty", "one"]),
-        "123321")
+        parse_number(["one", "hundred", "thousand", "three", "hundred", "and", "twenty", "one"]),
+        "100321")
+    self.assertEqual(
+        parse_number([
+            "one", "hundred", "and", "twenty", "three", "thousand", "three", "hundred", "and",
+            "twenty", "one"
+        ]), "123321")
     self.assertEqual(parse_number(["one", "hundred", "and", "five", "thousand"]), "105000")
     self.assertEqual(
-        parse_number(["one", "million", "five", "hundred", "and", "one", "thousand", "one", "hundred", "and", "six"]),
-        "1501106")
+        parse_number([
+            "one", "million", "five", "hundred", "and", "one", "thousand", "one", "hundred", "and",
+            "six"
+        ]), "1501106")
     self.assertEqual(
-        parse_number(
-            ["one", "hundred", "and", "twenty", "three", "thousand", "and", "four", "hundred", "and", "fifty", "six"]),
-        "123456")
+        parse_number([
+            "one", "hundred", "and", "twenty", "three", "thousand", "and", "four", "hundred", "and",
+            "fifty", "six"
+        ]), "123456")
 
   def test_concatenating_numbers(self):
     self.assertEqual(parse_number(["one", "two"]), "12")
@@ -60,15 +71,17 @@ class ParseNumberTestCase(unittest.TestCase):
 
   def test_unmatchable_first_word(self):
     """We are still able to parse strings with an unmatchable first word.
-    Included for completeness, as we don't currently rely on this functionality and may remove it in the future."""
+    Included for completeness, as we don't currently rely on this functionality and may remove it in
+    the future."""
     self.assertEqual(parse_number(["hundred"]), "100")
     self.assertEqual(parse_number(["hundred", "one"]), "101")
     self.assertEqual(parse_number(["hundred", "and", "one"]), "101")
     self.assertEqual(parse_number(["million"]), "1000000")
 
   def test_unnatural_phrasing(self):
-    """We are still able to parse strings with unnatural phrasing. Some of these may not be matched by voice commands.
-    Included for completeness, as we don't currently rely on this functionality and may remove it in the future."""
+    """We are still able to parse strings with unnatural phrasing. Some of these may not be matched
+    by voice commands. Included for completeness, as we don't currently rely on this functionality
+    and may remove it in the future."""
     self.assertEqual(parse_number(["fifty", "and", "one"]), "51")
     self.assertEqual(parse_number(["one", "hundred", "and", "and", "one"]), "101")
     self.assertEqual(parse_number(["and", "one", "hundred", "and", "one"]), "101")
@@ -77,8 +90,8 @@ class ParseNumberTestCase(unittest.TestCase):
     self.assertEqual(parse_number(["two", "million", "oh", "five"]), "2000005")
 
   def test_corner_cases(self):
-    """Test cases that may potentially be treated as errors in the future. Some or all of these may not be matched by
-    voice commands."""
+    """Test cases that may potentially be treated as errors in the future. Some or all of these may
+    not be matched by voice commands."""
     self.assertEqual(parse_number([]), "")
     self.assertEqual(parse_number(["and"]), "")
     self.assertEqual(parse_number(["and", "and"]), "")

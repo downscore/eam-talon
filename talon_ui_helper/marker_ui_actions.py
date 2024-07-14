@@ -16,7 +16,8 @@ mod.tag("marker_ui_showing", desc="The marker UI labels are showing")
 setting_labels = mod.setting(
     "marker_ui_labels",
     type=str,
-    desc="Space separated labels to use in the marker UI. See also marker_ui_label capture if overwriting.",
+    desc=
+    "Space separated labels to use in the marker UI. See also marker_ui_label capture if overwriting.",
     default=" ".join("abcdefghijklmnopqrstuvwxyz0123456789"))
 
 ctx = Context()
@@ -26,7 +27,8 @@ marker_ui = None
 
 @mod.capture(rule="<user.letter> | <user.number>")
 def marker_ui_label(m) -> str:
-  """Capture for the labels used in the marker UI. See also marker_ui_labels setting if you want to override it."""
+  """Capture for the labels used in the marker UI. See also marker_ui_labels setting if you want to
+  override it."""
   return str(m)
 
 
@@ -35,14 +37,17 @@ class MarkerUiActions:
   """Actions related to showing, hiding, and using the marker UI interface."""
 
   def marker_ui_show(rects: List[TalonRect]):
-    """Shows the given markers in the Marker UI. They can then be clicked or moved to using other actions in this class.
-    """
+    """Shows the given markers in the Marker UI. They can then be clicked or moved to using other
+    actions in this class."""
     global marker_ui
 
     if marker_ui is not None:
       marker_ui.destroy()
 
-    markers = [MarkerUi.Marker(rect, label) for rect, label in zip(rects, setting_labels.get().split(" "))]
+    markers = [
+        MarkerUi.Marker(rect, label) for rect, label in zip(rects,
+                                                            setting_labels.get().split(" "))
+    ]
 
     marker_ui = MarkerUi(markers)
 

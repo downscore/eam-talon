@@ -1,4 +1,5 @@
-// Snippet map key is spoken form. Prefixes can be used as keyboard triggers if this file is imported into vscode.
+// Snippet map key is spoken form. Prefixes can be used as keyboard triggers if this file is
+// imported into vscode.
 // C-style line comments are allowed as long as the line contains only the comment.
 {
   "for loop": {

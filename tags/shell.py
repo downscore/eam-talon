@@ -37,7 +37,8 @@ class Actions:
     actions.key("ctrl-a")
 
   def shell_tmux_command(command: str):
-    """Runs a command at the : prompt in the tmux session. `command` should not include the : character."""
+    """Runs a command at the : prompt in the tmux session. `command` should not include the :
+    character."""
     actions.user.shell_tmux_prefix()
     actions.insert(":")
     actions.sleep("50ms")

@@ -58,5 +58,6 @@ class Actions:
     actions.user.switcher_save_focus()
     actions.user.google_meet_focus()
     actions.key("cmd-w")
-    # Note: If the focus was in the same window, this could switch to the wrong tab after the Meet tab is closed.
+    # Note: If the focus was in the same window, this could switch to the wrong tab after the Meet
+    # tab is closed.
     actions.user.switcher_restore_focus()

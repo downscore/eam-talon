@@ -45,7 +45,8 @@ mod.list("letter_spoken", desc="Words used in spoken phonetic alphabet. No mappi
 ctx.lists["self.letter_spoken"] = _LETTERS.keys()
 
 # Create a list including all letters and capital letters with spoken forms preceded by "ship".
-# TODO: Clean this up. We should be able to allow dictating capital letters without including them in a new list.
+# TODO: Clean this up. We should be able to allow dictating capital letters without including them
+# in a new list.
 _LETTER_WITH_CAPITALS = _LETTERS.copy()
 for spoken, written in _LETTERS.items():
   _LETTER_WITH_CAPITALS[f"ship {spoken}"] = written.upper()
@@ -150,7 +151,8 @@ _PUNCTUATION_WORDS = {
 mod.list("punctuation", desc="Words for inserting punctuation into text")
 ctx.lists["self.punctuation"] = _PUNCTUATION_WORDS
 
-# Symbol keys are a superset of punctuation words, and are usable as commands, but not necessarily in prose.
+# Symbol keys are a superset of punctuation words, and are usable as commands, but not necessarily
+# in prose.
 _SYMBOL_KEYS = _PUNCTUATION_WORDS | {
     "semi": ";",
     "pound": "#",

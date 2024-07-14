@@ -18,11 +18,13 @@ class Actions:
     actions.key("cmd-,")
 
   def app_get_current_directory() -> str:
-    """Returns the current directory of the active window. Empty string if unknown or not applicable."""
+    """Returns the current directory of the active window. Empty string if unknown or not
+    applicable."""
     return ""
 
   def app_get_current_location() -> str:
-    """Returns the current file path or URL from the active window. Empty string if unknown or not applicable."""
+    """Returns the current file path or URL from the active window. Empty string if unknown or not
+    applicable."""
     return ""
 
   def app_copy_current_location():

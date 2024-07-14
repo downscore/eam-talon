@@ -28,8 +28,8 @@ class Actions:
     actions.key("enter")
 
   def select_line_range_including_line_break(from_index: int, to_index: int = 0):
-    """Selects a range of lines. 1-based. Selects trailing line break if present. If `to_index` is zero, selects the
-    from line."""
+    """Selects a range of lines. 1-based. Selects trailing line break if present. If `to_index` is
+    zero, selects the from line."""
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.jump_line(from_index)
@@ -42,9 +42,10 @@ class Actions:
       actions.user.extend_right()
 
   def select_line_range_for_editing(from_index: int, to_index: int = 0):
-    """Selects text from a range of lines in a way suitable for editing them. 1-based. Does not select the trailing line
-    break or leading indentation if a single line is selected. Does select trailing line breaks and leading indentation
-    if multiple lines are selected. If `to_index` is zero, selects the from line."""
+    """Selects text from a range of lines in a way suitable for editing them. 1-based. Does not
+    select the trailing line break or leading indentation if a single line is selected. Does select
+    trailing line breaks and leading indentation if multiple lines are selected. If `to_index` is
+    zero, selects the from line."""
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.jump_line(from_index)
@@ -108,8 +109,12 @@ class Actions:
     actions.insert("\n")
     actions.user.position_restore()
 
-  def line_numbers_bring_line_modifier(line_number: int, modifier_index: int, modifier_name: str, delimiter: str = ""):
-    """Brings the given modifier at the given index from the given line number to the cursor position."""
+  def line_numbers_bring_line_modifier(line_number: int,
+                                       modifier_index: int,
+                                       modifier_name: str,
+                                       delimiter: str = ""):
+    """Brings the given modifier at the given index from the given line number to the cursor
+    position."""
     actions.user.position_mark()
 
     # Jump to the line, then select the target.
@@ -122,8 +127,8 @@ class Actions:
     actions.user.insert_via_clipboard(insert_text)
 
   def line_numbers_bring_line_token(line_number: int, from_index: int, to_index: int = 0):
-    """Brings the token at the given index, or tokens from the given range, from the given line number to the cursor
-    position."""
+    """Brings the token at the given index, or tokens from the given range, from the given line
+    number to the cursor position."""
     actions.user.position_mark()
 
     # Jump to the line, then select the target.
@@ -136,8 +141,8 @@ class Actions:
     actions.user.insert_via_clipboard(insert_text)
 
   def line_numbers_bring_line_token_backwards(line_number: int, from_index: int, to_index: int = 0):
-    """Brings the token at the given index, or tokens from the given range, from the given line number to the cursor
-    position."""
+    """Brings the token at the given index, or tokens from the given range, from the given line
+    number to the cursor position."""
     actions.user.position_mark()
 
     # Jump to the line, then select the target.
@@ -151,7 +156,8 @@ class Actions:
     actions.user.insert_via_clipboard(insert_text)
 
   def line_numbers_bring_line_call(line_number: int, call_index: int):
-    """Brings the given function call at the given index from the given line number to the cursor position."""
+    """Brings the given function call at the given index from the given line number to the cursor
+    position."""
     actions.user.position_mark()
 
     # Jump to the line, then select the target.
@@ -166,7 +172,8 @@ class Actions:
 
   def line_numbers_bring_line_scope(line_number: int):
     """Brings the scope from the given line number to the cursor position."""
-    # Go to the beginning of the line to try to preserve indentation (especially important in python).
+    # Go to the beginning of the line to try to preserve indentation (especially important in
+    # python).
     actions.user.line_start()
 
     actions.user.position_mark()

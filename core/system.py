@@ -10,9 +10,9 @@ mod = Module()
 
 
 def unsupported_command(message: str = ""):
-  """When a command is not supported, this function notifies the user and raises an exception to interrupt chained
-  commands. This prevents subsequent commands that may have relied on the current command completing successfully from
-  having unintended effects."""
+  """When a command is not supported, this function notifies the user and raises an exception to
+  interrupt chained commands. This prevents subsequent commands that may have relied on the current
+  command completing successfully from having unintended effects."""
   message = message if message else "Unsupported command"
   actions.app.notify(message)
   raise ValueError(message)
@@ -54,7 +54,7 @@ class Actions:
       context_gui.show()
 
   def system_toggle_speech():
-    """Toggles speech recognition and updates status file. Useful for making sure the status file is updated when
-    toggling speech via a button (as opposed to a spoken command)."""
+    """Toggles speech recognition and updates status file. Useful for making sure the status file is
+    updated when toggling speech via a button (as opposed to a spoken command)."""
     actions.speech.toggle()
     actions.user.status_file_update()

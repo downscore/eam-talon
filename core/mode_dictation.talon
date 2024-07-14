@@ -51,6 +51,8 @@ title <user.prose> void:
 # Help determine when command words for navigation are being used in prose.
 before <user.word> <user.prose>: user.dictation_insert_prose("before {word} {prose}")
 after <user.word> <user.prose>: user.dictation_insert_prose("after {word} {prose}")
+before <user.word> {user.punctuation}: user.dictation_insert_prose("before {word}{punctuation}")
+after <user.word> {user.punctuation}: user.dictation_insert_prose("after {word}{punctuation}")
 
 # Editing commands that can be chained with prose.
 scratcher [<user.ordinals_small>]:

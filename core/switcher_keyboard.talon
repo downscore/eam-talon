@@ -22,6 +22,7 @@
 key(ctrl-cmd-o): user.switcher_focus_app_by_name("Obsidian")
 key(ctrl-cmd-a): user.switcher_focus_app_by_name("ChatGPT")
 key(ctrl-cmd-q): user.switcher_focus_app_by_name("Google Chat")
+key(ctrl-cmd-f): user.switcher_focus_app_by_name("Finder")
 key(ctrl-cmd-c): user.switcher_focus_coder()
 key(ctrl-cmd-b): user.switcher_focus_browser()
 key(ctrl-cmd-t): user.switcher_focus_terminal()

@@ -7,13 +7,13 @@
   user.textflow_execute_command_from_cursor(textflow_command_type, textflow_target_combo_type, textflow_simple_target)
 
 # Core commands - Single word target.
-<user.textflow_command_type> <user.textflow_word>:
-  user.textflow_execute_command(textflow_command_type, textflow_word)
+<user.textflow_single_word_command_type> <user.textflow_word>:
+  user.textflow_execute_command(textflow_single_word_command_type, textflow_word)
 # Escaped version of the above.
-<user.textflow_command_type> hatch <user.textflow_word>:
-  user.textflow_execute_command(textflow_command_type, textflow_word)
+<user.textflow_single_word_command_type> hatch <user.textflow_word>:
+  user.textflow_execute_command(textflow_single_word_command_type, textflow_word)
 
-# Core commands - Articles (a/the) as target. e.g. "grab indefinite".
+# Core commands - Articles (a/the) as target. e.g. "pick indefinite".
 # This is hard to do with other commands. e.g. "grab a" will select any word with the letter "a" in it.
 <user.textflow_command_type> <user.textflow_definite>:
   user.textflow_execute_command(textflow_command_type, textflow_definite)
@@ -136,8 +136,8 @@ drag argument left: user.textflow_move_argument_left()
 drag argument right: user.textflow_move_argument_right()
 
 # Insert newlines relative to target.
-drink <user.textflow_simple_target>: user.textflow_new_line_above(textflow_simple_target)
-pour <user.textflow_simple_target>: user.textflow_new_line_below(textflow_simple_target)
+drink at <user.textflow_simple_target>: user.textflow_new_line_above(textflow_simple_target)
+pour at <user.textflow_simple_target>: user.textflow_new_line_below(textflow_simple_target)
 
 # Insert newlines relative to current line without moving the cursor.
 spike line: user.textflow_insert_line_above_current()

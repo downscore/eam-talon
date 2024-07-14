@@ -35,4 +35,4 @@ terminal here: user.switcher_new_tmux_window(user.app_get_current_directory())
 terminal paste: user.switcher_new_tmux_window(clip.text())
 
 # Global shortcuts for IDE bookmarks.
-jump <user.number>: user.switcher_jump_to_bookmark(user.number)
+jump <user.number_small>: user.switcher_jump_to_bookmark(user.number_small)

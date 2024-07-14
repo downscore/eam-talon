@@ -116,10 +116,13 @@ harder braking,harder breaking
 JSON,Jason
 kebab,kabab
 main,maine
+mall,mal
 parking brake,parking break
 pure pursuit,peer pursuit
 pure pursuit,pier pursuit
+stop sign,stop sine
 which,witch
+you,yew
 
 # Escaping command words so they can be inlcuded in prose.
 hatch,hatch hatch
@@ -190,6 +193,7 @@ sum,som
 sure,sur
 talon,Tallon
 the,te
+then,en
 then on,Denon
 this,dis
 typing,taping
@@ -198,6 +202,7 @@ were,weir
 when,wen
 whether,wether
 yeah,ya
+you,ou
 
 # Same as above, but for words recognized as profanity or sensitive terms.
 collide,clit

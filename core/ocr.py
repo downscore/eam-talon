@@ -1,4 +1,4 @@
-"""Talon code for handling the mouse."""
+"""Talon code for optical character recognition commands."""
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false

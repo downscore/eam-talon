@@ -30,8 +30,7 @@ class Actions:
 
   def multi_cursor_select_fewer():
     """Removes selection and cursor at last occurrence."""
-    # TODO: Default keystroke for VS Code?
-    #actions.key("cmd-u")
+    actions.key("cmd-u")
 
   def multi_cursor_select_more():
     """Adds cursor at next occurrence of selection."""

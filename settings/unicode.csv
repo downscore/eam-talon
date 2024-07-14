@@ -50,6 +50,19 @@ String to Insert,Spoken
 
 # Other useful characters
 …,ellipsis
+⌘,command
+⌥,option
+⇧,shift
+⌃,control
+↩,return
+⌫,delete
+⌦,forward delete
+⇥,tab
+⇪,caps lock
+⏏,eject
+⎋,escape
+⏎,enter
+⏯,play pause
 
 # Lowercase Greek letters
 α,alpha

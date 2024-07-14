@@ -10,7 +10,7 @@ anchor: skip()
 stumble: sleep(250ms)
 
 # Cancel commands.
-^[<phrase>] cancel command$: app.notify("Command canceled")
+^[<phrase>] cancel that$: app.notify("Command canceled")
 
 # System debugging commands.
 speech debug context: user.system_context_ui_toggle()

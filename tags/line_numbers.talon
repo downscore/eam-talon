@@ -35,6 +35,8 @@ bring line <user.number> [past <user.number>]: user.bring_line_range(number_1, n
 # Using TextFlow to bring text from another line.
 bring line <user.number> token <user.number_small> [past <user.number_small>]:
   user.line_numbers_bring_line_token(number, number_small_1, number_small_2 or 0)
+bring line <user.number> broken <user.number_small> [past <user.number_small>]:
+  user.line_numbers_bring_line_token_backwards(number, number_small_1, number_small_2 or 0)
 bring line <user.number> argument <user.number_small>:
   user.line_numbers_bring_line_modifier(number, number_small, "ARGUMENT_NTH")
 bring line <user.number> string <user.number_small>:

@@ -135,6 +135,21 @@ class Actions:
     actions.user.position_restore()
     actions.user.insert_via_clipboard(insert_text)
 
+  def line_numbers_bring_line_token_backwards(line_number: int, from_index: int, to_index: int = 0):
+    """Brings the token at the given index, or tokens from the given range, from the given line number to the cursor
+    position."""
+    actions.user.position_mark()
+
+    # Jump to the line, then select the target.
+    actions.user.jump_line(line_number)
+    actions.user.line_end()
+    actions.user.textflow_select_nth_token_backwards(from_index, to_index)
+    insert_text = actions.user.selected_text()
+
+    # Go back to original position and insert the text.
+    actions.user.position_restore()
+    actions.user.insert_via_clipboard(insert_text)
+
   def line_numbers_bring_line_call(line_number: int, call_index: int):
     """Brings the given function call at the given index from the given line number to the cursor position."""
     actions.user.position_mark()

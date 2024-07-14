@@ -45,6 +45,11 @@ invoke last: user.textflow_select_nth_modifier(1, "CALL_PREVIOUS")
 sentence next: user.textflow_select_nth_modifier(1, "SENTENCE_NEXT")
 sentence last: user.textflow_select_nth_modifier(1, "SENTENCE_PREVIOUS")
 
+# Special token navigation command: Jumps to the end of the line and counts tokens backwards.
+broken <user.number_small> [past <user.number_small>]:
+  user.line_end()
+  user.textflow_select_nth_token_backwards(number_small_1, number_small_2 or 0)
+
 # Navigation to nested targets.
 invoke nested: user.textflow_select_nested_call()
 brackets nested: user.textflow_select_nested_brackets()

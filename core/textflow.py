@@ -626,6 +626,9 @@ class Actions:
       raise ValueError("Negative from_n not allowed when to_n is positive.")
     if to_n > 0 and from_n >= to_n:
       raise ValueError("from_n must be less than to_n if to_n is provided.")
+    if from_n < 0 and to_n < 0 and from_n <= to_n:
+      raise ValueError("from_n must be greater than to_n if to_n is provided and both are negative.")
+
     if from_n > 0 and to_n > 0:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
@@ -635,14 +638,33 @@ class Actions:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n),
                           tf.SearchDirection.FORWARD))
+    elif from_n < 0 and to_n < 0:
+      target_from = tf.CompoundTarget(
+          tf.SimpleTarget(
+              # pylint: disable=invalid-unary-operand-type
+              # -2 to -3
+              tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-to_n),
+              tf.SearchDirection.BACKWARD),
+          tf.SimpleTarget(tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=from_n - to_n)))
     else:
       target_from = tf.CompoundTarget(
           tf.SimpleTarget(
               # pylint: disable=invalid-unary-operand-type
               tf.TokenMatchOptions(match_method=tf.TokenMatchMethod.TOKEN_COUNT, nth_match=-from_n),
               tf.SearchDirection.BACKWARD))
+
     command = tf.Command(tf.CommandType.SELECT, target_from)
     _run_command(command)
+
+  def textflow_select_nth_token_backwards(from_n: int, to_n: int = 0):
+    """Selects the nth token backwards from the end of the line. If to_n is 0, the selection will be a single
+    token. If to_n is positive, the selection will be a range of tokens. Indices may not be negative."""
+    if from_n < 0 or to_n < 0:
+      raise ValueError("Negative indices not allowed.")
+    if to_n > 0 and from_n >= to_n:
+      raise ValueError("from_n must be less than to_n if to_n is provided.")
+    # pylint: disable=invalid-unary-operand-type
+    actions.user.textflow_select_nth_token(-from_n, -to_n)
 
   def textflow_select_nth_modifier(n: int, modifier_type_string: str, delimiter: str = ""):
     """Selects the nth modifier from the current cursor position. n may be negative to search backwards."""

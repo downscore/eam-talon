@@ -55,6 +55,16 @@ broken <user.number_small> [past <user.number_small>]:
 invoke nested: user.textflow_select_nested_call()
 brackets nested: user.textflow_select_nested_brackets()
 
+# Quick deletion commands.
+chuck argument <user.number_small>:
+  user.textflow_run_command_with_modifier("CLEAR_NO_MOVE", number_small, "ARGUMENT_NTH")
+change argument <user.number_small>:
+  user.textflow_run_command_with_modifier("CLEAR_MOVE_CURSOR", number_small, "ARGUMENT_NTH")
+chuck brackets <user.number_small>:
+  user.textflow_run_command_with_modifier("CLEAR_NO_MOVE", number_small, "BRACKETS_NTH")
+change brackets <user.number_small>:
+  user.textflow_run_command_with_modifier("CLEAR_MOVE_CURSOR", number_small, "BRACKETS_NTH")
+
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
 pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")

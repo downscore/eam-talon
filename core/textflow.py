@@ -745,11 +745,20 @@ class Actions:
   def textflow_select_nth_modifier(n: int, modifier_type_string: str, delimiter: str = ""):
     """Selects the nth modifier from the current cursor position. n may be negative to search
     backwards."""
+    # TODO: Clean up textflow commands.
+    actions.user.textflow_run_command_with_modifier("SELECT", n, modifier_type_string, delimiter)
+
+  def textflow_run_command_with_modifier(command_type: str,
+                                         n: int,
+                                         modifier_type_string: str,
+                                         delimiter: str = ""):
+    """Runs the given command type on the nth modifier from the current cursor position. n may be
+    negative to search backwards."""
     if n == 0:
       return
     modifier_type = actions.user.textflow_modifier_type_from_string(modifier_type_string)
     command = tf.Command(
-        tf.CommandType.SELECT,
+        tf.CommandType[command_type],
         tf.CompoundTarget(modifier=tf.Modifier(modifier_type, delimiter=delimiter, n=n)))
     _run_command(command)
 

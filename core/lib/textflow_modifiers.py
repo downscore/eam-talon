@@ -590,7 +590,7 @@ def _apply_sentence_clause_modifier(text: str, input_match: TextMatch,
   """Expands the match to cover a clause in English prose. Doesn't include leading or trailing
   whitespace in the deletion range"""
   del modifier  # Unused.
-  clause_delimiters = [",", ".", "!", "?", "\n"]
+  clause_delimiters = [",", ".", "!", "?", "\n", "(", ")", ":", ";"]
 
   # Find the end of the previous clause.
   start_index = input_match.text_range.start

@@ -28,13 +28,6 @@ say <user.prose> void:
 phrase <user.text>$: insert(text)
 reformat phrase: user.format_selection_phrase()
 
-# Insert prose with automatic capitalization and spacing.
-dictate <user.prose>$: user.dictation_insert_prose(prose)
-dictate <user.prose> anchor: user.dictation_insert_prose(prose)
-dictate <user.prose> void:
-  user.dictation_insert_prose(prose)
-  insert(" ")
-
 title <user.prose>$: insert(user.format_title_with_history(prose))
 title <user.prose> anchor: insert(user.format_title_with_history(prose))
 title <user.prose> void:

@@ -31,6 +31,10 @@ def _space_required(preceding_text: str, next_text: str) -> bool:
   preceding_char = preceding_text[-1]
   next_char = next_text[0]
 
+  # Special case: No space after quotes if there is nothing before it.
+  if len(preceding_text) == 1 and preceding_char in ("'", "\""):
+    return False
+
   # Special case: No space after quotes if there is whitespace before it.
   if len(preceding_text) >= 2 and preceding_text[-2] in (" ", "\n",
                                                          "\t") and preceding_char in ("'", "\""):

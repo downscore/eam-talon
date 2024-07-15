@@ -923,6 +923,23 @@ class TestSentenceModifier(unittest.TestCase):
     self.assertEqual(result.deletion_range.extract(text), "This is my sentence.")
 
 
+class TestSentenceClauseModifier(unittest.TestCase):
+  """Tests for applying sentence clause modifiers."""
+
+  def test_empty_string(self):
+    text = ""
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.SENTENCE_CLAUSE)
+    self.assertEqual(apply_modifier(text, input_match, modifier), input_match)
+
+  def test_clause(self):
+    text = "This is the first clause, this is the second."
+    input_match = TextMatch(TextRange(29, 29))
+    modifier = Modifier(ModifierType.SENTENCE_CLAUSE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "this is the second.")
+
+
 class TestSentenceNextModifier(unittest.TestCase):
   """Tests for applying modifiers."""
 

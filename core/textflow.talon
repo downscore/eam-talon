@@ -67,6 +67,7 @@ change brackets <user.number_small>:
 
 # Selection commands using TextFlow modifiers.
 pick sentence: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
+pick chunk: user.textflow_execute_command_enum_strings("SELECT", "SENTENCE_CLAUSE")
 pick scope: user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
 pick argument: user.textflow_execute_command_enum_strings("SELECT", "ARGUMENT")
 pick dubstring: user.textflow_execute_command_enum_strings("SELECT", "STRING", "\"")
@@ -82,6 +83,7 @@ pick <user.number_small> tokens: user.textflow_select_nth_token(1, number_small)
 
 # Deletion commands using TextFlow modifiers.
 chuck sentence: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE")
+chuck chunk: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SENTENCE_CLAUSE")
 chuck scope: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "SCOPE")
 chuck argument: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "ARGUMENT")
 chuck dubstring: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "STRING", "\"")
@@ -96,6 +98,9 @@ chuck invoke: user.textflow_execute_command_enum_strings("CLEAR_NO_MOVE", "CALL"
 # Copy commands using TextFlow modifiers.
 copy sentence:
   user.textflow_execute_command_enum_strings("SELECT", "SENTENCE")
+  user.clipboard_history_copy()
+copy chunk:
+  user.textflow_execute_command_enum_strings("SELECT", "SENTENCE_CLAUSE")
   user.clipboard_history_copy()
 copy scope:
   user.textflow_execute_command_enum_strings("SELECT", "SCOPE")
@@ -130,6 +135,7 @@ copy invoke:
 
 # Cut commands using TextFlow modifiers.
 cut sentence: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SENTENCE")
+cut chunk: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SENTENCE_CLAUSE")
 cut scope: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "SCOPE")
 cut argument: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "ARGUMENT")
 cut dubstring: user.textflow_execute_command_enum_strings("CUT_TO_CLIPBOARD", "STRING", "\"")

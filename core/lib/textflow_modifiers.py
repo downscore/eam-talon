@@ -585,6 +585,35 @@ def _apply_sentence_previous_modifier(text: str, input_match: TextMatch,
   return _apply_sentence_modifier(text, _make_match(start_index, start_index), modifier)
 
 
+def _apply_sentence_clause_modifier(text: str, input_match: TextMatch,
+                                    modifier: Modifier) -> TextMatch:
+  """Expands the match to cover a clause in English prose. Doesn't include leading or trailing
+  whitespace in the deletion range"""
+  del modifier  # Unused.
+  clause_delimiters = [",", ".", "!", "?", "\n"]
+
+  # Find the end of the previous clause.
+  start_index = input_match.text_range.start
+  while start_index > 0:
+    if text[start_index - 1] in clause_delimiters:
+      break
+    start_index -= 1
+
+  # Remove leading whitespace from the range.
+  while start_index < len(text) and text[start_index] in [" ", "\t", "\n"]:
+    start_index += 1
+
+  # Find the end of the current sentence.
+  end_index = input_match.text_range.end
+  while end_index < len(text):
+    if text[end_index] in clause_delimiters:
+      end_index += 1  # Include the delimiter.
+      break
+    end_index += 1
+
+  return TextMatch(TextRange(start_index, end_index))
+
+
 def _apply_call_modifier(text: str, input_match: TextMatch, modifier: Modifier) -> TextMatch:
   """Takes the current function call. Assumes the input match is in the function name, not inside
   the parentheses."""
@@ -894,6 +923,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.CALL_PREVIOUS: _apply_call_previous_modifier,
     ModifierType.SENTENCE_NEXT: _apply_sentence_next_modifier,
     ModifierType.SENTENCE_PREVIOUS: _apply_sentence_previous_modifier,
+    ModifierType.SENTENCE_CLAUSE: _apply_sentence_clause_modifier,
 }
 
 

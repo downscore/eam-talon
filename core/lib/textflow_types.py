@@ -180,6 +180,9 @@ class ModifierType(Enum):
   SENTENCE_NEXT = 36
   # Take the previous sentence in English prose.
   SENTENCE_PREVIOUS = 37
+  # A clause in a sentence in English prose. Delimited by commas, some other punctuation, or line
+  # breaks.
+  SENTENCE_CLAUSE = 38
 
 
 @dataclass

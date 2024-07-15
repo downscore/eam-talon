@@ -607,7 +607,6 @@ def _apply_sentence_clause_modifier(text: str, input_match: TextMatch,
   end_index = input_match.text_range.end
   while end_index < len(text):
     if text[end_index] in clause_delimiters:
-      end_index += 1  # Include the delimiter.
       break
     end_index += 1
 

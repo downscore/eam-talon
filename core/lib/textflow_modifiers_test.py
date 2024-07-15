@@ -937,14 +937,21 @@ class TestSentenceClauseModifier(unittest.TestCase):
     input_match = TextMatch(TextRange(29, 29))
     modifier = Modifier(ModifierType.SENTENCE_CLAUSE)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "this is the second.")
+    self.assertEqual(result.text_range.extract(text), "this is the second")
 
   def test_clause_colon(self):
     text = "This is the first clause: this is the second."
     input_match = TextMatch(TextRange(29, 29))
     modifier = Modifier(ModifierType.SENTENCE_CLAUSE)
     result = apply_modifier(text, input_match, modifier)
-    self.assertEqual(result.text_range.extract(text), "this is the second.")
+    self.assertEqual(result.text_range.extract(text), "this is the second")
+
+  def test_clause_trailing_line_break(self):
+    text = "This is the first clause: this is the second\n"
+    input_match = TextMatch(TextRange(29, 29))
+    modifier = Modifier(ModifierType.SENTENCE_CLAUSE)
+    result = apply_modifier(text, input_match, modifier)
+    self.assertEqual(result.text_range.extract(text), "this is the second")
 
 
 class TestSentenceNextModifier(unittest.TestCase):

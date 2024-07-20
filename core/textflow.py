@@ -748,6 +748,17 @@ class Actions:
     # TODO: Clean up textflow commands.
     actions.user.textflow_run_command_with_modifier("SELECT", n, modifier_type_string, delimiter)
 
+  def textflow_select_nth_call(n: int):
+    """Selects the nth modifier from the current cursor position. n may be negative to search
+    backwards."""
+    # TODO: Clean up textflow commands.
+    if n > 0:
+      for _ in range(0, n):
+        actions.user.textflow_run_command_with_modifier("SELECT", 1, "CALL_NEXT")
+    else:
+      for _ in range(0, -n):  # pylint: disable=invalid-unary-operand-type
+        actions.user.textflow_run_command_with_modifier("SELECT", 1, "CALL_PREVIOUS")
+
   def textflow_run_command_with_modifier(command_type: str,
                                          n: int,
                                          modifier_type_string: str,

@@ -12,11 +12,11 @@ bring cross line <user.number> broken <user.number_small> [past <user.number_sma
 bring cross line <user.number> argument <user.number_small>:
   user.splits_line_numbers_bring_line_modifier(number, number_small, "ARGUMENT_NTH")
 bring cross line <user.number> string <user.number_small>:
-  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING", "'")
+  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "'")
 bring cross line <user.number> dubstring <user.number_small>:
-  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING", "\"")
+  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "\"")
 bring cross line <user.number> graves <user.number_small>:
-  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING", "`")
+  user.splits_line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "`")
 bring cross line <user.number> brackets <user.number_small>:
   user.splits_line_numbers_bring_line_modifier(number, number_small, "BRACKETS_NTH")
 bring cross line <user.number> invoke [<user.number_small>]:

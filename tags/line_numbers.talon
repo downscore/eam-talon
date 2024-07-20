@@ -41,11 +41,11 @@ bring line <user.number> broken <user.number_small> [past <user.number_small>]:
 bring line <user.number> argument <user.number_small>:
   user.line_numbers_bring_line_modifier(number, number_small, "ARGUMENT_NTH")
 bring line <user.number> string <user.number_small>:
-  user.line_numbers_bring_line_modifier(number, number_small, "STRING", "'")
+  user.line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "'")
 bring line <user.number> dubstring <user.number_small>:
-  user.line_numbers_bring_line_modifier(number, number_small, "STRING", "\"")
+  user.line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "\"")
 bring line <user.number> graves <user.number_small>:
-  user.line_numbers_bring_line_modifier(number, number_small, "STRING", "`")
+  user.line_numbers_bring_line_modifier(number, number_small, "STRING_NTH", "`")
 bring line <user.number> brackets <user.number_small>:
   user.line_numbers_bring_line_modifier(number, number_small, "BRACKETS_NTH")
 bring line <user.number> invoke [<user.number_small>]:

@@ -65,7 +65,7 @@ class UserActions:
     actions.user.obsidian_command("selectLineRangeForEditing", from_index,
                                   to_index if to_index > 0 else None)
 
-  def bring_line_range(from_index: int, to_index: int = 0):
+  def line_numbers_bring_line_range(from_index: int, to_index: int = 0):
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.obsidian_command("copyLinesToCursor", from_index,

@@ -30,7 +30,8 @@ dedent line <user.number> [past <user.number>]:
   user.select_line_range_including_line_break(number_1, number_2 or 0)
   user.indent_less()
   user.right()
-bring line <user.number> [past <user.number>]: user.bring_line_range(number_1, number_2 or 0)
+bring line <user.number> [past <user.number>]:
+  user.line_numbers_bring_line_range(number_1, number_2 or 0)
 
 # Using TextFlow to bring text from another line.
 bring line <user.number> token <user.number_small> [past <user.number_small>]:

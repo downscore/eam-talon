@@ -62,7 +62,6 @@ make public: insert("public ")
 make private: insert("private ")
 make read only: insert("readonly ")
 make new: insert("new ")
-make todo: insert("TODO: ")
 
   # Operators
 a sign: insert(" = ")

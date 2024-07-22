@@ -290,6 +290,9 @@ make block:
   insert("```\n\n```")
   key("left:4")
 
+# Allow creating a TODO anywhere.
+make to do: insert("TODO: ")
+
 # Special characters.
 hunt moji: key("cmd-ctrl-space")
 moji {user.unicode}: user.insert_via_clipboard(user.unicode)

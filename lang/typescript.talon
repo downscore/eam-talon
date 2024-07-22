@@ -41,7 +41,6 @@ make switch:
 make case:
   insert("case :")
   key(left)
-make todo: insert("TODO: ")
 make default: insert("default:")
 make class: insert("class ")
 make break: insert("break;")

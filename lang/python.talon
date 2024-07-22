@@ -32,7 +32,6 @@ make for range:
 make loop:
   insert("while :")
   key(left)
-make todo: insert("TODO: ")
 make return: insert("return ")
 make (null|none): insert("None")
 make class:

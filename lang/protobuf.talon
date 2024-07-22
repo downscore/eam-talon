@@ -25,7 +25,6 @@ make enum: insert("enum ")
 make service: insert("service ")
 make rpc: insert("rpc ")
 make reserved: insert("reserved ")
-make todo: insert("TODO: ")
 
 # Operators
 a sign: insert(" = ")

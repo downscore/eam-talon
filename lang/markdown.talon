@@ -39,7 +39,7 @@ make inline footnote:
 make note: insert("> [!note]\n")
 make abstract: insert("> [!abstract]\n")
 make info: insert("> [!info]\n")
-make to do: insert("> [!todo]\n")
+make callout to do: insert("> [!todo]\n")
 make tip: insert("> [!tip]\n")
 make success: insert("> [!success]\n")
 make question: insert("> [!question]\n")

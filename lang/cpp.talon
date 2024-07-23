@@ -51,7 +51,7 @@ make case:
   insert("case :")
   key(left)
 make default: insert("default:")
-make (null opt|nullopt): insert("nullopt")
+make (null opt|nullopt): insert("std::nullopt")
 make null pointer: insert("nullptr")
 make class: insert("class ")
 make type deaf: insert("typedef ")

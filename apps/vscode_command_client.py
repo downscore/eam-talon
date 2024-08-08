@@ -52,7 +52,7 @@ def _handle_existing_request_file(path):
   time_difference_ms = abs(modified_time_ms - current_time_ms)
 
   if time_difference_ms < stale_timeout_ms:
-    raise FileExistsError(f"Found recent request file. Age: {time_difference_ms} ms")
+    raise FileExistsError(f"Found recent request file. Age: {time_difference_ms} ms, Path: {path}")
 
   print(f"Removing stale VS Code Command Server request file. Path: {path}")
   path.unlink(missing_ok=True)
@@ -132,6 +132,7 @@ def run_command(
     Function args correspond to fields in the Command Server Request JSON. Returns the command
     output if requested.
     """
+  actions.key("cmd-shift-f17")
   # Convert variable args tuple to a list for use in the dict that will be serialized to JSON.
   args_list = [arg for arg in args if arg is not None]
 

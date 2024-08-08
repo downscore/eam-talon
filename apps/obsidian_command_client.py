@@ -49,7 +49,7 @@ def _handle_existing_request_file(path):
   time_difference_ms = abs(modified_time_ms - current_time_ms)
 
   if time_difference_ms < stale_timeout_ms:
-    raise FileExistsError(f"Found recent request file. Age: {time_difference_ms} ms")
+    raise FileExistsError(f"Found recent request file. Age: {time_difference_ms} ms, Path: {path}")
 
   print(f"Removing stale Obsidian Command Server request file. Path: {path}")
   path.unlink(missing_ok=True)

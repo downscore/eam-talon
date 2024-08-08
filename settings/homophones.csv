@@ -673,8 +673,8 @@ Rome,roam
 room,rheum
 rose,rows
 rough,ruff
-route,root
-routes,roots
+route,root,*rout
+routes,roots,*routs
 row,roe
 rude,rued
 rue,roux

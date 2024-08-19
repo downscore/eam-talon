@@ -8,7 +8,7 @@
 # - VS Code:
 #   - ctrl-cmd-f: Toggling fullscreen.
 # - Google Meet:
-#   - ctrl-cmd-h: Raising hand.
+#   - ctrl-cmd-h: Raising hand - overriding this will break Stream Deck button.
 #   - ctrl-cmd-c: Chat.
 #   - ctrl-cmd-p: Participants.
 # - Safari:
@@ -21,8 +21,8 @@
 
 # Focus an application or browser tab.
 key(ctrl-cmd-o): user.switcher_focus_app_by_name("Obsidian")
-key(ctrl-cmd-a): user.switcher_focus_app_by_name("ChatGPT")
-key(ctrl-cmd-q): user.switcher_focus_app_by_name("Google Chat")
+key(ctrl-cmd-p): user.switcher_focus_app_by_name("ChatGPT")
+key(ctrl-cmd-a): user.switcher_focus_app_by_name("Google Chat")
 key(ctrl-cmd-f): user.switcher_focus_app_by_name("Finder")
 key(ctrl-cmd-c): user.switcher_focus_coder()
 key(ctrl-cmd-b): user.switcher_focus_browser()
@@ -32,7 +32,6 @@ key(ctrl-cmd-y): user.cross_browser_focus_tab_by_hostname("youtube.com")
 key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
 
 # Resizing the active window.
-key(ctrl-cmd-z): user.snap_window_full()
 key(ctrl-alt-up): user.snap_window_full()
 key(ctrl-alt-down): user.snap_window_by_string("center")
 key(ctrl-alt-left): user.snap_window_by_string("left")
@@ -42,3 +41,9 @@ key(ctrl-alt-right): user.snap_window_by_string("right")
 key(ctrl-cmd-1): user.move_window_to_screen(1)
 key(ctrl-cmd-2): user.move_window_to_screen(2)
 key(ctrl-cmd-3): user.move_window_to_screen(3)
+
+# TODO: Move speech shortcuts to a separate file.
+key(ctrl-alt-d): speech.disable()
+key(ctrl-alt-f): speech.enable()
+key(ctrl-alt-g): user.mode_mixed_toggle()
+key(ctrl-alt-s): user.mode_indicator_toggle()

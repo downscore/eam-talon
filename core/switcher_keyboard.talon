@@ -30,6 +30,7 @@ key(ctrl-cmd-t): user.switcher_focus_terminal()
 key(ctrl-cmd-g): user.cross_browser_focus_tab_by_hostname("mail.google.com")
 key(ctrl-cmd-y): user.cross_browser_focus_tab_by_hostname("youtube.com")
 key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
+key(ctrl-cmd-l): user.cross_browser_focus_tab_by_hostname("calendar.google.com")
 
 # Resizing the active window.
 key(ctrl-alt-up): user.snap_window_full()

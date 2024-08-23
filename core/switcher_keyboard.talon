@@ -48,3 +48,5 @@ key(ctrl-alt-d): speech.disable()
 key(ctrl-alt-f): speech.enable()
 key(ctrl-alt-g): user.mode_mixed_toggle()
 key(ctrl-alt-s): user.mode_indicator_toggle()
+
+key(ctrl-alt-n): user.macos_close_all_notifications()

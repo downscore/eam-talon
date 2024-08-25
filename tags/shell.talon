@@ -23,11 +23,6 @@ l s: insert("ls ")
 s s h: insert("ssh ")
 code here: insert("code .")
 where am i: insert("pwd")
-grep [<user.text>]:
-  insert("grep \"")
-  insert(text or "")
-  insert("\"")
-  key("left")
 
 # Pipe contents to/from clipboard
 to clipboard: insert(" | pbcopy")

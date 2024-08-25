@@ -99,6 +99,7 @@ def _move_window_to_screen(window: ui.Window, screen: ui.Screen):
     return
 
   # Retain the same proportions on the new screen.
+  # Note: This often doesn't work as intended. Windows end up too big or too small.
   source_rect = source_screen.visible_rect
   dest_rect = screen.visible_rect
 
@@ -111,6 +112,9 @@ def _move_window_to_screen(window: ui.Window, screen: ui.Screen):
       width=window.rect.width * proportional_width,
       height=window.rect.height * proportional_height,
   )
+
+  # Sleep to give the window time to move to the other screen before chaining other commands.
+  actions.sleep("100ms")
 
 
 def _move_window_to_next_screen(window: ui.Window):

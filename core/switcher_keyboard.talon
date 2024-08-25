@@ -34,8 +34,8 @@ key(ctrl-cmd-l): user.cross_browser_focus_tab_by_hostname("calendar.google.com")
 
 # Resizing the active window.
 key(ctrl-cmd-z): user.snap_window_full()
-key(ctrl-alt-up): user.snap_window_full()
-key(ctrl-alt-down): user.snap_window_by_string("center")
+key(ctrl-alt-up): user.snap_window_by_string("top right")
+key(ctrl-alt-down): user.snap_window_by_string("bottom right")
 key(ctrl-alt-left): user.snap_window_by_string("left")
 key(ctrl-alt-right): user.snap_window_by_string("right")
 

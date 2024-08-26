@@ -77,6 +77,7 @@ make namespace:
   insert("namespace {}  // namespace")
   key(left:15)
   key(enter)
+make using: insert("using ")
 
 # Shortcuts for symbol names hard to type by voice.
 snake pushback: insert("push_back")

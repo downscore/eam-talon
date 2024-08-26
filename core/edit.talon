@@ -290,6 +290,13 @@ make block:
   insert("```\n\n```")
   key("left:4")
 
+# Default to python-style comments if no language is active.
+comment: insert("# ")
+
+# Default to C-style assignment if no language is active.
+# Note: "a sign" has significantly better recognition than "assign".
+a sign: insert(" = ")
+
 # Allow creating a TODO anywhere.
 make to do: insert("TODO: ")
 

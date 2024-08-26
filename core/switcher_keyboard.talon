@@ -44,10 +44,11 @@ key(ctrl-cmd-1): user.move_window_to_screen(1)
 key(ctrl-cmd-2): user.move_window_to_screen(2)
 key(ctrl-cmd-3): user.move_window_to_screen(3)
 
-# TODO: Move speech shortcuts to a separate file.
+# TODO: Move non-switcher shortcuts below to a separate file, or have one dedicated keyboard file.
 key(ctrl-alt-d): speech.disable()
 key(ctrl-alt-f): speech.enable()
 key(ctrl-alt-g): user.mode_mixed_toggle()
 key(ctrl-alt-s): user.mode_indicator_toggle()
 
 key(ctrl-alt-n): user.macos_close_all_notifications()
+key(ctrl-alt-v): user.website_open_clipboard()

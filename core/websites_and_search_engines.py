@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Module, Context, actions
+from talon import Module, Context, actions, clip
 from urllib.parse import quote_plus
 import webbrowser
 from .lib.url_util import extract_url
@@ -59,4 +59,11 @@ class Actions:
       return
 
     # Open the URL in the saved or default browser.
+    actions.user.website_open_url(url)
+
+  def website_open_clipboard():
+    """Open the URL in the clipboard in the default browser."""
+    url = clip.text()
+    if not url:
+      raise ValueError("No URL in clipboard")
     actions.user.website_open_url(url)

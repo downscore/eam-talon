@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions
+from talon import Context, Module, actions, clip
 
 mod = Module()
 ctx = Context()
@@ -180,3 +180,18 @@ class ExtensionActions:
       actions.sleep("50ms")
       actions.insert(name)
       actions.key("enter")
+
+  def website_open_clipboard():
+    # Wait for a while so we can send keystrokes properly.
+    actions.sleep("1500ms")
+    # When opening a URL from the clipboard, we may need to copy the tmux internal buffer to the
+    # system clipboard first. Enter keyboard shortcut to copy tmux buffer to system clipboard. This
+    # should be a no-op in local tmux sessions.
+    actions.key("ctrl-v")
+    # Wait for the remote system to send the clipboard contents.
+    actions.sleep("500ms")
+    url = clip.text()
+    if not url:
+      raise ValueError("No URL in clipboard")
+    actions.user.website_open_url(url)
+    actions.app.notify("Opened URL from clipboard")

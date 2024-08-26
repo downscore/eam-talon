@@ -132,7 +132,6 @@ def run_command(
     Function args correspond to fields in the Command Server Request JSON. Returns the command
     output if requested.
     """
-  actions.key("cmd-shift-f17")
   # Convert variable args tuple to a list for use in the dict that will be serialized to JSON.
   args_list = [arg for arg in args if arg is not None]
 

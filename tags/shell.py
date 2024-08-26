@@ -194,4 +194,3 @@ class ExtensionActions:
     if not url:
       raise ValueError("No URL in clipboard")
     actions.user.website_open_url(url)
-    actions.app.notify("Opened URL from clipboard")

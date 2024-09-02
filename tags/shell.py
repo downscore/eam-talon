@@ -190,7 +190,4 @@ class ExtensionActions:
     actions.key("ctrl-v")
     # Wait for the remote system to send the clipboard contents.
     actions.sleep("500ms")
-    url = clip.text()
-    if not url:
-      raise ValueError("No URL in clipboard")
-    actions.user.website_open_url(url)
+    actions.user.website_open_clipboard_impl()

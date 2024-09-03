@@ -120,10 +120,10 @@ class ExtensionActions:
     actions.user.shell_tmux_command("resize-pane -Z")
 
   def split_next():
-    actions.user.shell_tmux_command("next-window")
+    actions.user.shell_tmux_command("next-pane")
 
   def split_last():
-    actions.user.shell_tmux_command("last-window")
+    actions.user.shell_tmux_command("last-pane")
 
   def split_switch_up():
     actions.user.shell_tmux_command("select-pane -U")

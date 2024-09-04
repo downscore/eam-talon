@@ -8,3 +8,6 @@
 
 # Open the link under the cursor.
 link open: user.website_open_link_under_cursor()
+
+# Open the URL currently in the clipboard.
+clipboard open: user.website_open_clipboard()

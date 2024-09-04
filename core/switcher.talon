@@ -28,6 +28,7 @@ coder: user.switcher_focus_coder()
 browser: user.switcher_focus_browser()
 terminal: user.switcher_focus_terminal()
 hangouts: user.switcher_focus_app_by_name("Google Chat")
+finder: user.switcher_focus_app_by_name("Finder")
 
 # Global shortcuts for opening a new terminal tab.
 terminal new: user.switcher_new_tmux_window()

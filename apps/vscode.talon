@@ -138,6 +138,9 @@ copilot all: key(ctrl-enter)
 # File management.
 file new: user.vscode("explorer.newFile")
 
+# Projects.
+project open: user.vscode("workbench.action.openRecent")
+
 # Debugging
 breakpoint toggle: user.vscode("editor.debug.action.toggleBreakpoint")
 breakpoint next: user.vscode("editor.debug.action.jumpToNextBreakpoint")

@@ -31,6 +31,11 @@ def simulate_actions(initial_text: str, initial_selection: TextRange,
     elif action.action_type in (EditorActionType.SET_CLIPBOARD_WITH_HISTORY,
                                 EditorActionType.SET_CLIPBOARD_NO_HISTORY):
       clipboard = action.text
+    elif action.action_type == EditorActionType.DELETE_RANGE:
+      if action.text_range is None:
+        raise ValueError("Delete range action has no text range")
+      text = text[0:action.text_range.start] + text[action.text_range.end:]
+      selection = TextRange(action.text_range.start, action.text_range.start)
 
     # Verify selection is still inside text after action.
     if selection.end > len(text):

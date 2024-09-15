@@ -285,6 +285,10 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
       if action.text_range is None:
         raise ValueError("Set selection range action with missing range.")
       actions.user.textflow_set_selection_action(action, context)
+    elif action.action_type == tf.EditorActionType.DELETE_RANGE:
+      if action.text_range is None:
+        raise ValueError("Delete range action with missing range.")
+      actions.user.textflow_delete_range_action(action, context)
 
     # Sleep to let the UI catch up to the commands.
     actions.sleep("50ms")
@@ -856,3 +860,11 @@ class Actions:
     select_span = types.span.Span(editor_action.text_range.start + context.text_offset,
                                   editor_action.text_range.end + context.text_offset)
     context.editor_element.AXSelectedTextRange = select_span
+
+  def textflow_delete_range_action(editor_action: tf.EditorAction, context: TextFlowContext):
+    """Deletes a text range in an editor, given a textflow context. Can be overwritten in apps with
+    accessibility extensions."""
+    if editor_action.text_range is None:
+      raise ValueError("Delete range action with missing range.")
+    actions.user.textflow_set_selection_action(editor_action, context)
+    actions.user.delete()

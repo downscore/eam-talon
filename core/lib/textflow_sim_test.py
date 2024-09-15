@@ -21,3 +21,8 @@ class SimulateActionsTestCase(unittest.TestCase):
     with self.assertRaises(ValueError):
       simulate_actions("This is a test", TextRange(0, 0),
                        [EditorAction(EditorActionType.SET_SELECTION_RANGE, TextRange(0, 100))])
+
+    # Set deletion range with no range.
+    with self.assertRaises(ValueError):
+      simulate_actions("This is a test", TextRange(0, 0),
+                       [EditorAction(EditorActionType.DELETE_RANGE)])

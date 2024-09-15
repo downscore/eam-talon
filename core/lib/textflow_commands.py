@@ -35,10 +35,7 @@ def _perform_command_clear_move_cursor(text: str,
   del text, selection_range, match_to, insert_text, utility_functions, lambda_func
   deletion_range = (match_from.deletion_range if use_deletion_range and
                     match_from.deletion_range is not None else match_from.text_range)
-  return [
-      EditorAction(EditorActionType.SET_SELECTION_RANGE, deletion_range),
-      EditorAction(EditorActionType.CLEAR),
-  ]
+  return [EditorAction(EditorActionType.DELETE_RANGE, deletion_range)]
 
 
 def _perform_command_clear_no_move(text: str,
@@ -68,8 +65,7 @@ def _perform_command_clear_no_move(text: str,
                             range_after.end - deletion_range.length())
 
   return [
-      EditorAction(EditorActionType.SET_SELECTION_RANGE, deletion_range),
-      EditorAction(EditorActionType.CLEAR),
+      EditorAction(EditorActionType.DELETE_RANGE, deletion_range),
       EditorAction(EditorActionType.SET_SELECTION_RANGE, range_after),
   ]
 
@@ -134,7 +130,7 @@ def _perform_command_bring(text: str, selection_range: TextRange, match_from: Te
   result: list[EditorAction] = []
   if match_to is not None:
     result.append(
-        EditorAction(EditorActionType.SET_SELECTION_RANGE,
+        EditorAction(EditorActionType.DELETE_RANGE,
                      TextRange(match_to.text_range.start, match_to.text_range.end)))
   result.append(EditorAction(EditorActionType.INSERT_TEXT,
                              text=match_from.text_range.extract(text)))
@@ -219,7 +215,7 @@ def _perform_command_replace(text: str, selection_range: TextRange, match_from: 
       range_after = TextRange(range_after.start - diff_chars, range_after.end - diff_chars)
 
   return [
-      EditorAction(EditorActionType.SET_SELECTION_RANGE, match_from.text_range),
+      EditorAction(EditorActionType.DELETE_RANGE, match_from.text_range),
       EditorAction(EditorActionType.INSERT_TEXT, text=insert_text),
       EditorAction(EditorActionType.SET_SELECTION_RANGE, range_after),
   ]

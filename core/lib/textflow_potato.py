@@ -10,7 +10,6 @@ from .textflow_sim import simulate_actions
 @unique
 class PotatoEditorActionType(Enum):
   """Simple text input action types for an editor in potato mode."""
-  # Note: Integer values match EditorActionType, but selection range cannot be set directly.
   # Clears the selected text. No-op if no text is selected.
   CLEAR = 2
   # Inserts text at the current cursor position. Overwrites selected text, if any.
@@ -106,6 +105,36 @@ def _convert_set_selection_range(set_selection: TextRange, curr_text: str,
   return result
 
 
+def _convert_delete_range(delete_range: TextRange, curr_text: str,
+                          curr_selection: TextRange) -> list[PotatoEditorAction]:
+  """Converts delete range command to potato mode."""
+  result: list[PotatoEditorAction] = []
+
+  # Collapse selection if necessary.
+  cursor_pos = curr_selection.start
+  if curr_selection.start != curr_selection.end:
+    if delete_range.start >= curr_selection.end:
+      result.append(PotatoEditorAction(PotatoEditorActionType.GO_RIGHT))
+      cursor_pos = curr_selection.end
+    else:
+      result.append(PotatoEditorAction(PotatoEditorActionType.GO_LEFT))
+
+  # Move to end of range.
+  if delete_range.end < cursor_pos:
+    result.extend(_move_before_text(curr_text[delete_range.end:cursor_pos]))
+  elif delete_range.end > cursor_pos:
+    result.extend(_move_after_text(curr_text[cursor_pos:delete_range.end]))
+
+  # Select until end.
+  if delete_range.end > delete_range.start:
+    # TODO: Smarter deletion (by word, by line if word wrap disabled, etc.). Deletion by word is
+    # difficult because it works differently in different editors (e.g. handling of line ends and
+    # punctuation characters).
+    result.append(PotatoEditorAction(PotatoEditorActionType.CLEAR, repeat=delete_range.length()))
+
+  return result
+
+
 def convert_actions_to_potato_mode(actions: list[EditorAction], text: str,
                                    selection_range: TextRange) -> list[PotatoEditorAction]:
   """Converts editor actions to the equivalent potato mode actions."""
@@ -127,6 +156,10 @@ def convert_actions_to_potato_mode(actions: list[EditorAction], text: str,
       if action.text_range is None:
         raise ValueError("Set selection range action has no range")
       result.extend(_convert_set_selection_range(action.text_range, curr_text, curr_selection))
+    elif action.action_type == EditorActionType.DELETE_RANGE:
+      if action.text_range is None:
+        raise ValueError("Delete range action has no range")
+      result.extend(_convert_delete_range(action.text_range, curr_text, curr_selection))
     else:
       raise ValueError(f"Unrecognized editor action type: {action.action_type}")
 

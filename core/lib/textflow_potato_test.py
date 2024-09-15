@@ -95,3 +95,35 @@ class ConvertActionsTestCase(unittest.TestCase):
             # Expand selection.
             PotatoEditorAction(PotatoEditorActionType.EXTEND_RIGHT, repeat=4),
         ])
+
+  def test_deletion_left(self):
+    actions = [
+        EditorAction(EditorActionType.DELETE_RANGE, TextRange(5, 7)),
+    ]
+    result = convert_actions_to_potato_mode(actions, "This is a test.", TextRange(8, 9))
+    self.assertListEqual(
+        result,
+        [
+            # Collapse selection.
+            PotatoEditorAction(PotatoEditorActionType.GO_LEFT, repeat=1),
+            # Move to end.
+            PotatoEditorAction(PotatoEditorActionType.GO_LEFT, repeat=1),
+            # Delete range.
+            PotatoEditorAction(PotatoEditorActionType.CLEAR, repeat=2),
+        ])
+
+  def test_deletion_right(self):
+    actions = [
+        EditorAction(EditorActionType.DELETE_RANGE, TextRange(10, 14)),
+    ]
+    result = convert_actions_to_potato_mode(actions, "This is a test.", TextRange(8, 9))
+    self.assertListEqual(
+        result,
+        [
+            # Collapse selection.
+            PotatoEditorAction(PotatoEditorActionType.GO_RIGHT, repeat=1),
+            # Move to end.
+            PotatoEditorAction(PotatoEditorActionType.GO_RIGHT, repeat=5),
+            # Delete range.
+            PotatoEditorAction(PotatoEditorActionType.CLEAR, repeat=4),
+        ])

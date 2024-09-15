@@ -294,6 +294,8 @@ class EditorActionType(Enum):
   SET_CLIPBOARD_WITH_HISTORY = 4
   # Sets the clipboard contents to the given text, but does not add to the clipboard history.
   SET_CLIPBOARD_NO_HISTORY = 5
+  # Deletes the given text range. Leaves the cursor at the start of the deleted range.
+  DELETE_RANGE = 6
 
 
 @dataclass

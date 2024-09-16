@@ -125,6 +125,7 @@ _ENHANCED_UI_BUNDLES = [
 @dataclass
 class TextFlowContext:
   """Context, including text and selection range, that TextFlow will act in."""
+  # Text around the cursor. First and last lines should be full lines from the source text.
   text: str
   selection_range: tf.TextRange
   # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe

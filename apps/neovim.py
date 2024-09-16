@@ -70,6 +70,11 @@ class Actions:
     return NeovimContext(mode, text, tf.TextRange(selection_from, selection_to),
                          tf.TextRange(selection_line_from, selection_line_to))
 
+  def neovim_get_mode() -> str:
+    """Returns a character indicating the current mode in Neovim."""
+    # TODO: More efficient implementation if we need the mode often.
+    return actions.user.neovim_get_context().mode
+
 
 @ctx.action_class("win")
 class WinActions:

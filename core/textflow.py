@@ -137,6 +137,9 @@ class TextFlowContext:
   text_offset: int = 0
   # The element that contains the text we are editing. Not used in potato mode.
   editor_element: Optional[ui.Element] = None
+  # The current editor mode. In neovim, this is a character representing the current mode.
+  # n = normal, i = insert, v = visual.
+  editor_mode: str = ""
 
 
 def _get_context_potato_mode() -> TextFlowContext:
@@ -274,9 +277,9 @@ def _execute_editor_actions(editor_actions: list[tf.EditorAction], context: Text
 
   for action in editor_actions:
     if action.action_type == tf.EditorActionType.CLEAR:
-      actions.user.delete()
+      actions.user.textflow_clear_action(action, context)
     elif action.action_type == tf.EditorActionType.INSERT_TEXT:
-      actions.user.insert_via_clipboard(action.text)
+      actions.user.textflow_insert_text_action(action, context)
     elif action.action_type == tf.EditorActionType.SET_CLIPBOARD_NO_HISTORY:
       actions.clip.set_text(action.text)
     elif action.action_type == tf.EditorActionType.SET_CLIPBOARD_WITH_HISTORY:
@@ -851,8 +854,7 @@ class Actions:
     return _get_context()
 
   def textflow_set_selection_action(editor_action: tf.EditorAction, context: TextFlowContext):
-    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with
-    accessibility extensions."""
+    """Sets the selection in an editor, given a textflow context."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range.")
     if context.editor_element is None:
@@ -862,9 +864,19 @@ class Actions:
     context.editor_element.AXSelectedTextRange = select_span
 
   def textflow_delete_range_action(editor_action: tf.EditorAction, context: TextFlowContext):
-    """Deletes a text range in an editor, given a textflow context. Can be overwritten in apps with
-    accessibility extensions."""
+    """Deletes a text range in an editor, given a textflow context."""
     if editor_action.text_range is None:
       raise ValueError("Delete range action with missing range.")
     actions.user.textflow_set_selection_action(editor_action, context)
     actions.user.delete()
+
+  def textflow_clear_action(editor_action: tf.EditorAction, context: TextFlowContext):
+    """Deletes the selected text or the character to the left of the cursor if there is no
+    selection."""
+    del context
+    actions.user.delete()
+
+  def textflow_insert_text_action(editor_action: tf.EditorAction, context: TextFlowContext):
+    """Inserts the given text in an editor."""
+    del context
+    actions.user.insert_via_clipboard(editor_action.text)

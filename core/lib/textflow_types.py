@@ -287,6 +287,7 @@ class EditorActionType(Enum):
   # Sets the currently selected text range. Zero-length range to move the cursor.
   SET_SELECTION_RANGE = 1
   # Clears the selected text. No-op if no text is selected.
+  # TODO: Mostly superceded by DELETE_RANGE. Remove this if it's no longer needed.
   CLEAR = 2
   # Inserts text at the current cursor position. Overwrites selected text, if any.
   INSERT_TEXT = 3

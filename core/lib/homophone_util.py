@@ -44,7 +44,7 @@ def get_homophone_sets(homophones: list[list[str]]) -> list[HomophoneSet]:
 
 def get_homograph_homophone_sets(homophone_sets: list[list[str]]) -> dict[str, list[HomophoneSet]]:
   """Given a list of homophone sets, return HomophoneSets keyed by homograph."""
-  result = {}
+  result: dict[str, list[HomophoneSet]] = {}
   for homophone_set in homophone_sets:
     if len(homophone_set) == 0:
       raise ValueError("Homophone set must contain at least one word")

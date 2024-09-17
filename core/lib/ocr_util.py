@@ -190,7 +190,7 @@ class OcrTextFlowContext:
 
 def get_string_width(text: str) -> float:
   """Returns the heuristic width of the given string."""
-  width = 0
+  width = 0.0
   for char in text:
     width += _WIDTHS_BY_CHAR.get(char, _DEFAULT_CHAR_WIDTH)
   return width

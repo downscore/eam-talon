@@ -87,19 +87,19 @@ class ModifierType(Enum):
   """Methods of modifying the matched range of a token."""
   # No modification - keep the token itself.
   NONE = 1
-  # Take a range of characters in the token itself.
+  # Take a range of characters in the token itself. NOT USED
   CHARS = 2
-  # Take a range of fragments in the token itself.
+  # Take a range of fragments in the token itself. NOT USED
   FRAGMENTS = 3
-  # Take the line containing the token. Include the trailing line break if present.
+  # Take the line containing the token. Include the trailing line break if present. NOT USED
   LINE_INCLUDING_LINE_BREAK = 4
-  # Take the line containing the token. Do not include trailing line breaks.
+  # Take the line containing the token. Do not include trailing line breaks. NOT USED
   LINE_EXCLUDING_LINE_BREAK = 5
-  # Take the token and the rest of the line before it.
+  # Take the token and the rest of the line before it. NOT USED
   LINE_HEAD = 6
-  # Take the token and the rest of the line after it.
+  # Take the token and the rest of the line after it. NOT USED
   LINE_TAIL = 7
-  # Take the block/paragraph containing the token.
+  # Take the block/paragraph containing the token. NOT USED
   BLOCK = 8
   # Take the function call argument or C-style for loop segment (; separated) containing the token.
   ARGUMENT = 9

@@ -53,6 +53,7 @@ jump bracket: user.vscode("editor.action.jumpToBracket")
 test run all: user.vscode("testing.runAll")
 test run file: user.vscode("testing.runCurrentFile")
 test run blinker: user.vscode("testing.runAtCursor")
+test coverage: user.vscode("coverage-gutters.displayCoverage")
 python run: user.vscode("python.execInTerminal")
 python debug: user.vscode("python.debugInTerminal")
 

@@ -6,8 +6,8 @@ from typing import Callable, Optional, Sequence
 from .scrambler_types import Modifier, ModifierType, TextMatch, TextRange, UtilityFunctions
 
 # Regex for matching a token.
-_TOKEN_CHAR = r"[\w_]"  # Determines which characters are allowed in a token.
-_NON_TOKEN_CHAR = r"[^\w_]"
+_TOKEN_CHAR = r"\w"  # Determines which characters are allowed in a token.
+_NON_TOKEN_CHAR = r"[^\w]"
 _REGEX_TOKEN: re.Pattern = re.compile(_TOKEN_CHAR + r"+", re.IGNORECASE)
 
 
@@ -174,6 +174,102 @@ def _get_phrase_regex_with_expanded_tokens(search: str, get_homophones: Callable
   return f"{_TOKEN_CHAR}*{phrase_regex}{_TOKEN_CHAR}*"
 
 
+def _apply_exact_word_closest_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                       utilities: UtilityFunctions) -> TextMatch:
+  """Gets the closest exact matching word."""
+  del utilities
+  search_text_forward = text[input_match.text_range.end:]
+  search_text_backward = text[:input_match.text_range.start][::-1]
+  regex_forward = re.compile(f"\\b{re.escape(modifier.search)}\\b", re.IGNORECASE)
+  regex_backward = re.compile(f"\\b{re.escape(modifier.search[::-1])}\\b", re.IGNORECASE)
+  match_forward = regex_forward.search(search_text_forward)
+  match_backward = regex_backward.search(search_text_backward)
+  if match_forward is None and match_backward is None:
+    raise ValueError(f"No exact match found: {modifier.search}")
+
+  forward_result = match_backward is None or (match_forward is not None and
+                                              match_forward.start() < match_backward.start())
+  if forward_result:
+    assert match_forward is not None
+    return _maybe_add_token_deletion_range(text, input_match.text_range.end + match_forward.start(),
+                                           input_match.text_range.end + match_forward.end())
+  assert match_backward is not None
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match_backward.end(),
+                                         input_match.text_range.start - match_backward.start())
+
+
+def _apply_exact_word_next_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                    utilities: UtilityFunctions) -> TextMatch:
+  """Gets the next exact matching word after the input match."""
+  del utilities
+  search_text = text[input_match.text_range.end:]
+  regex = re.compile(f"\\b{re.escape(modifier.search)}\\b", re.IGNORECASE)
+  match = regex.search(search_text)
+  if match is None:
+    raise ValueError(f"No exact match found after input match: {input_match}")
+  return _maybe_add_token_deletion_range(text, input_match.text_range.end + match.start(),
+                                         input_match.text_range.end + match.end())
+
+
+def _apply_exact_word_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                        utilities: UtilityFunctions) -> TextMatch:
+  """Gets the previous exact matching word before the input match."""
+  del utilities
+  search_text = text[:input_match.text_range.start][::-1]
+  regex = re.compile(f"\\b{re.escape(modifier.search[::-1])}\\b", re.IGNORECASE)
+  match = regex.search(search_text)
+  if match is None:
+    raise ValueError(f"No exact match found before input match: {input_match}")
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match.end(),
+                                         input_match.text_range.start - match.start())
+
+
+def _get_phrase_regex_with_expanded_tokens_reversed(
+    search: str, get_homophones: Callable[[str], list[str]]) -> str:
+  """Gets a phrase regex with all words reversed."""
+  words = search.split(" ")
+  alt_sets: list[list[str]] = []
+  for word in words:
+    # Get all homophones in lowercase and escaped for use in a regex.
+    phones = list(map(lambda w: re.escape(w.lower()), get_homophones(word)))
+    # Reverse the words.
+    for i in range(len(phones)):
+      phones[i] = phones[i][::-1]
+    alt_sets.append(phones)
+
+  # Iterate through alt sets in reverse order.
+  reversed_alts = []
+  for alt_set in alt_sets[::-1]:
+    reversed_alts.append(f"({'|'.join(alt_set[::-1])})")  # pylint: disable=inconsistent-quotes
+
+  phrase_regex = r"[ .,\-\_\"]*".join(reversed_alts)
+  return f"{_TOKEN_CHAR}*{phrase_regex}{_TOKEN_CHAR}*"
+
+
+def _apply_phrase_closest_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                   utilities: UtilityFunctions) -> TextMatch:
+  """Gets the closest phrase matching the given words."""
+  search_text_forward = text[input_match.text_range.end:]
+  search_text_backward = text[:input_match.text_range.start][::-1]
+  regex_forward = _get_phrase_regex_with_expanded_tokens(modifier.search, utilities.get_homophones)
+  regex_backward = _get_phrase_regex_with_expanded_tokens_reversed(modifier.search,
+                                                                   utilities.get_homophones)
+  match_forward = re.search(regex_forward, search_text_forward, re.IGNORECASE)
+  match_backward = re.search(regex_backward, search_text_backward, re.IGNORECASE)
+  if match_forward is None and match_backward is None:
+    raise ValueError(f"No match for phrase: {modifier.search}")
+
+  forward_result = match_backward is None or (match_forward is not None and
+                                              match_forward.start() < match_backward.start())
+  if forward_result:
+    assert match_forward is not None
+    return _maybe_add_token_deletion_range(text, input_match.text_range.end + match_forward.start(),
+                                           input_match.text_range.end + match_forward.end())
+  assert match_backward is not None
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match_backward.end(),
+                                         input_match.text_range.start - match_backward.start())
+
+
 def _apply_phrase_next_modifier(text: str, input_match: TextMatch, modifier: Modifier,
                                 utilities: UtilityFunctions) -> TextMatch:
   """Gets the next matching phrase after the input match."""
@@ -186,13 +282,31 @@ def _apply_phrase_next_modifier(text: str, input_match: TextMatch, modifier: Mod
                                          input_match.text_range.end + match.end())
 
 
+def _apply_phrase_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                    utilities: UtilityFunctions) -> TextMatch:
+  """Gets the previous matching phrase before the input match."""
+  search_text = text[:input_match.text_range.start][::-1]
+  phrase_regex = _get_phrase_regex_with_expanded_tokens_reversed(modifier.search,
+                                                                 utilities.get_homophones)
+  match = re.search(phrase_regex, search_text, re.IGNORECASE)
+  if match is None:
+    raise ValueError(f"No phrase found before input match: {input_match}")
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match.end(),
+                                         input_match.text_range.start - match.start())
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.TOKEN_NEXT: _apply_token_next_modifier,
     ModifierType.TOKEN_PREVIOUS: _apply_token_previous_modifier,
     ModifierType.WORD_SUBSTRING_CLOSEST: _apply_word_substring_closest_modifier,
     ModifierType.WORD_SUBSTRING_NEXT: _apply_word_substring_next_modifier,
     ModifierType.WORD_SUBSTRING_PREVIOUS: _apply_word_substring_previous_modifier,
+    ModifierType.EXACT_WORD_CLOSEST: _apply_exact_word_closest_modifier,
+    ModifierType.EXACT_WORD_NEXT: _apply_exact_word_next_modifier,
+    ModifierType.EXACT_WORD_PREVIOUS: _apply_exact_word_previous_modifier,
+    ModifierType.PHRASE_CLOSEST: _apply_phrase_closest_modifier,
     ModifierType.PHRASE_NEXT: _apply_phrase_next_modifier,
+    ModifierType.PHRASE_PREVIOUS: _apply_phrase_previous_modifier,
 }
 
 

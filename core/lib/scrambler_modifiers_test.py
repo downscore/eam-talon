@@ -388,3 +388,208 @@ class PhraseNextTestCase(unittest.TestCase):
     modifier = Modifier(ModifierType.PHRASE_NEXT, 1, "none")
     with self.assertRaises(ValueError):
       apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class PhrasePreviousTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.PHRASE_PREVIOUS, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_first_two_tokens(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(10, 10))
+    modifier = Modifier(ModifierType.PHRASE_PREVIOUS, 1, "is is")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This is ")
+
+  def test_homophone_expansion(self):
+    text = "Test they're here"
+    input_match = TextMatch(TextRange(17, 17))
+    modifier = Modifier(ModifierType.PHRASE_PREVIOUS, 1, "there here")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "they're here")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " they're here")
+
+  def test_no_match(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(10, 10))
+    modifier = Modifier(ModifierType.PHRASE_PREVIOUS, 1, "none")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class PhraseClosestTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_match_before(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(8, 8))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "test")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "Test ")
+
+  def test_match_after(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(12, 12))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "test")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " test")
+
+  def test_match_before_substring(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(8, 8))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "es")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "Test ")
+
+  def test_match_after_substring(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(12, 12))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "es")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " test")
+
+  def test_no_match(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PHRASE_CLOSEST, 1, "none")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class ExactWordNextTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.EXACT_WORD_NEXT, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_second_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.EXACT_WORD_NEXT, 1, "is")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.start, 5)  # Make sure we didn't match inside "This".
+    self.assertEqual(result.text_range.extract(text), "is")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "is ")
+
+  def test_match_apostrophe_separator(self):
+    text = "Fake this'is'a'token test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.EXACT_WORD_NEXT, 1, "a")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.start, 13)  # Make sure we didn't match inside "fake".
+    self.assertEqual(result.text_range.extract(text), "a")
+    self.assertIsNone(result.deletion_range)
+
+  def test_no_match_inside_token(self):
+    text = "Fake this_is_a_token test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.EXACT_WORD_NEXT, 1, "a")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class ExactWordPreviousTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.EXACT_WORD_PREVIOUS, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_second_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.EXACT_WORD_PREVIOUS, 1, "is")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.start, 5)  # Make sure we didn't match inside "This".
+    self.assertEqual(result.text_range.extract(text), "is")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "is ")
+
+  def test_match_apostrophe_separator(self):
+    text = "Fake this'is'a'token test"
+    input_match = TextMatch(TextRange(21, 24))
+    modifier = Modifier(ModifierType.EXACT_WORD_PREVIOUS, 1, "a")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.start, 13)  # Make sure we didn't match inside "fake".
+    self.assertEqual(result.text_range.extract(text), "a")
+    self.assertIsNone(result.deletion_range)
+
+  def test_no_match_inside_token(self):
+    text = "Fake this_is_a_token test"
+    input_match = TextMatch(TextRange(24, 24))
+    modifier = Modifier(ModifierType.EXACT_WORD_PREVIOUS, 1, "a")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class ExactWordClosestTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.EXACT_WORD_CLOSEST, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_match_before(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(8, 8))
+    modifier = Modifier(ModifierType.EXACT_WORD_CLOSEST, 1, "test")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "Test ")
+
+  def test_match_after(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(12, 12))
+    modifier = Modifier(ModifierType.EXACT_WORD_CLOSEST, 1, "test")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "test")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " test")
+
+  def test_no_match_for_substring(self):
+    text = "Test and another test"
+    input_match = TextMatch(TextRange(8, 8))
+    modifier = Modifier(ModifierType.EXACT_WORD_CLOSEST, 1, "es")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)

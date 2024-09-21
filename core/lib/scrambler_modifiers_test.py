@@ -381,3 +381,10 @@ class PhraseNextTestCase(unittest.TestCase):
     self.assertEqual(result.text_range.extract(text), "they're here")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), " they're here")
+
+  def test_no_match(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PHRASE_NEXT, 1, "none")
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)

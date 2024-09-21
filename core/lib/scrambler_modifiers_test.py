@@ -351,3 +351,33 @@ class WordSubstringClosestTestCase(unittest.TestCase):
     modifier = Modifier(ModifierType.WORD_SUBSTRING_CLOSEST, 1, "none")
     with self.assertRaises(ValueError):
       apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class PhraseNextTestCase(unittest.TestCase):
+
+  def test_first_token(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PHRASE_NEXT, 1, "this")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This ")
+
+  def test_first_two_tokens(self):
+    text = "This is a test"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PHRASE_NEXT, 1, "is is")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), "This is ")
+
+  def test_homophone_expansion(self):
+    text = "Test they're here"
+    input_match = TextMatch(TextRange(0, 0))
+    modifier = Modifier(ModifierType.PHRASE_NEXT, 1, "there here")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "they're here")
+    assert result.deletion_range is not None
+    self.assertEqual(result.deletion_range.extract(text), " they're here")

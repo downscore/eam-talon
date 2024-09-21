@@ -7,6 +7,7 @@ from .scrambler_types import Modifier, ModifierType, TextMatch, TextRange, Utili
 
 # Regex for matching a token.
 _TOKEN_CHAR = r"[\w_]"  # Determines which characters are allowed in a token.
+_NON_TOKEN_CHAR = r"[^\w_]"
 _REGEX_TOKEN: re.Pattern = re.compile(_TOKEN_CHAR + r"+", re.IGNORECASE)
 
 
@@ -27,30 +28,26 @@ def get_phrase_regex(words: Sequence[str], get_homophones: Callable[[str], list[
   return r"[ .,\-\_\"]*".join(alts)
 
 
-def _maybe_add_token_deletion_range(text: str, match: TextMatch) -> TextMatch:
+def _maybe_add_token_deletion_range(text: str, start: int, end: int) -> TextMatch:
   """Adds a deletion range to the given token match to include spaces and commas around the
   token."""
-  assert match.text_range.end <= len(text)
+  assert end <= len(text)
+  text_range = TextRange(start, end)
 
   # Check if there is ", " following the token.
-  if match.text_range.end + 1 < len(text) and text[match.text_range.end] == "," and text[
-      match.text_range.end + 1] == " ":
-    return TextMatch(text_range=match.text_range,
-                     deletion_range=TextRange(match.text_range.start, match.text_range.end + 2))
+  if end + 1 < len(text) and text[end] == "," and text[end + 1] == " ":
+    return TextMatch(text_range=text_range, deletion_range=TextRange(start, end + 2))
 
   # Check for space or comma.
-  if match.text_range.end < len(text) and text[match.text_range.end] in (" ", ","):
-    return TextMatch(text_range=match.text_range,
-                     deletion_range=TextRange(match.text_range.start, match.text_range.end + 1))
+  if end < len(text) and text[end] in (" ", ","):
+    return TextMatch(text_range=text_range, deletion_range=TextRange(start, end + 1))
 
   # If the sentence ends following the token, try to include a leading space in the deletion range.
-  if (match.text_range.end == len(text) or text[match.text_range.end] in
-      (".", "?", "!")) and match.text_range.start > 0 and text[match.text_range.start - 1] == " ":
-    return TextMatch(text_range=match.text_range,
-                     deletion_range=TextRange(match.text_range.start - 1, match.text_range.end))
+  if (end == len(text) or text[end] in (".", "?", "!")) and start > 0 and text[start - 1] == " ":
+    return TextMatch(text_range=text_range, deletion_range=TextRange(start - 1, end))
 
   # The deletion range would be the same as the text range, so do not include it.
-  return TextMatch(text_range=match.text_range)
+  return TextMatch(text_range=text_range)
 
 
 def _apply_token_next_modifier(text: str, input_match: TextMatch, modifier: Modifier,
@@ -61,11 +58,8 @@ def _apply_token_next_modifier(text: str, input_match: TextMatch, modifier: Modi
   match = _REGEX_TOKEN.search(search_text)
   if match is None:
     raise ValueError(f"No token found after input match: {input_match}")
-  return _maybe_add_token_deletion_range(
-      text,
-      TextMatch(
-          TextRange(input_match.text_range.end + match.start(),
-                    input_match.text_range.end + match.end())))
+  return _maybe_add_token_deletion_range(text, input_match.text_range.end + match.start(),
+                                         input_match.text_range.end + match.end())
 
 
 def _apply_token_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier,
@@ -78,16 +72,14 @@ def _apply_token_previous_modifier(text: str, input_match: TextMatch, modifier: 
   match = _REGEX_TOKEN.search(search_text)
   if match is None:
     raise ValueError(f"No token found before input match: {input_match}")
-  return _maybe_add_token_deletion_range(
-      text,
-      TextMatch(
-          TextRange(input_match.text_range.start - match.end(),
-                    input_match.text_range.start - match.start())))
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match.end(),
+                                         input_match.text_range.start - match.start())
 
 
 def _get_word_start_token_match_after(search_text: str, search: str) -> Optional[TextRange]:
   """Tries to find a token starting with the given substring."""
-  word_start_regex = re.compile(f"(^|[^a-z0-9_])({re.escape(search)}{_TOKEN_CHAR}*)", re.IGNORECASE)
+  word_start_regex = re.compile(f"(^|{_NON_TOKEN_CHAR})({re.escape(search)}{_TOKEN_CHAR}*)",
+                                re.IGNORECASE)
   match = word_start_regex.search(search_text)
   if match is None:
     return None
@@ -98,7 +90,7 @@ def _get_word_start_token_match_after(search_text: str, search: str) -> Optional
 def _get_word_start_token_match_before(search_text: str, search: str) -> Optional[TextRange]:
   """Tries to find a token starting with the given substring, searching reversed text."""
   # Use a reversed search regex as the search text should also be reversed.
-  word_start_regex = re.compile(f"({_TOKEN_CHAR}*{re.escape(search[::-1])})($|[^a-z0-9_])",
+  word_start_regex = re.compile(f"({_TOKEN_CHAR}*{re.escape(search[::-1])})($|{_NON_TOKEN_CHAR})",
                                 re.IGNORECASE)
   match = word_start_regex.search(search_text)
   if match is None:
@@ -137,17 +129,11 @@ def _apply_word_substring_closest_modifier(text: str, input_match: TextMatch, mo
                                               match_forward.start < match_backward.start)
   if forward_result:
     assert match_forward is not None
-    return _maybe_add_token_deletion_range(
-        text,
-        TextMatch(
-            TextRange(input_match.text_range.end + match_forward.start,
-                      input_match.text_range.end + match_forward.end)))
+    return _maybe_add_token_deletion_range(text, input_match.text_range.end + match_forward.start,
+                                           input_match.text_range.end + match_forward.end)
   assert match_backward is not None
-  return _maybe_add_token_deletion_range(
-      text,
-      TextMatch(
-          TextRange(input_match.text_range.start - match_backward.end,
-                    input_match.text_range.start - match_backward.start)))
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match_backward.end,
+                                         input_match.text_range.start - match_backward.start)
 
 
 def _apply_word_substring_next_modifier(text: str, input_match: TextMatch, modifier: Modifier,
@@ -162,11 +148,8 @@ def _apply_word_substring_next_modifier(text: str, input_match: TextMatch, modif
   if match is None:
     raise ValueError(
         f"No match for substring after input match: {input_match}. Substring: {modifier.search}")
-  return _maybe_add_token_deletion_range(
-      text,
-      TextMatch(
-          TextRange(input_match.text_range.end + match.start,
-                    input_match.text_range.end + match.end)))
+  return _maybe_add_token_deletion_range(text, input_match.text_range.end + match.start,
+                                         input_match.text_range.end + match.end)
 
 
 def _apply_word_substring_previous_modifier(text: str, input_match: TextMatch, modifier: Modifier,
@@ -181,11 +164,26 @@ def _apply_word_substring_previous_modifier(text: str, input_match: TextMatch, m
   if match is None:
     raise ValueError(
         f"No match for substring before input match: {input_match}. Substring: {modifier.search}")
-  return _maybe_add_token_deletion_range(
-      text,
-      TextMatch(
-          TextRange(input_match.text_range.start - match.end,
-                    input_match.text_range.start - match.start)))
+  return _maybe_add_token_deletion_range(text, input_match.text_range.start - match.end,
+                                         input_match.text_range.start - match.start)
+
+
+def _get_phrase_regex_with_expanded_tokens(search: str, get_homophones: Callable[[str],
+                                                                                 list[str]]) -> str:
+  phrase_regex = get_phrase_regex(search.split(" "), get_homophones)
+  return f"{_TOKEN_CHAR}*{phrase_regex}{_TOKEN_CHAR}*"
+
+
+def _apply_phrase_next_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                utilities: UtilityFunctions) -> TextMatch:
+  """Gets the next matching phrase after the input match."""
+  search_text = text[input_match.text_range.end:]
+  phrase_regex = _get_phrase_regex_with_expanded_tokens(modifier.search, utilities.get_homophones)
+  match = re.search(phrase_regex, search_text, re.IGNORECASE)
+  if match is None:
+    raise ValueError(f"No phrase found after input match: {input_match}")
+  return _maybe_add_token_deletion_range(text, input_match.text_range.end + match.start(),
+                                         input_match.text_range.end + match.end())
 
 
 _MODIFIER_FUNCTIONS = {
@@ -194,6 +192,7 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.WORD_SUBSTRING_CLOSEST: _apply_word_substring_closest_modifier,
     ModifierType.WORD_SUBSTRING_NEXT: _apply_word_substring_next_modifier,
     ModifierType.WORD_SUBSTRING_PREVIOUS: _apply_word_substring_previous_modifier,
+    ModifierType.PHRASE_NEXT: _apply_phrase_next_modifier,
 }
 
 

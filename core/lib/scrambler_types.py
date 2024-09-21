@@ -87,22 +87,25 @@ class ModifierType(Enum):
   SENTENCE = 26  # Expand the match to the sentence containing it.
   SENTENCE_NEXT = 27  # Move between sentences.
   SENTENCE_PREVIOUS = 28
+  SENTENCE_CLAUSE = 29  # Expand the match to the clause containing it.
   # Match the contents of pairs of brackets.
-  BRACKETS = 29  # Expand the current match to the contents of the brackets containing it.
-  BRACKETS_FIRST = 30  # From outside of brackets, match the contents of the next pair.
-  BRACKETS_NEXT = 31  # Move between pairs of brackets.
-  BRACKETS_PREVIOUS = 32
+  BRACKETS = 30  # Expand the current match to the contents of the brackets containing it.
+  BRACKETS_FIRST = 31  # From outside of brackets, match the contents of the next pair.
+  BRACKETS_NEXT = 32  # Move between pairs of brackets.
+  BRACKETS_PREVIOUS = 33
   # Take the start of the line (empty selection after previous line break or at start of file).
-  START_OF_LINE = 33
+  START_OF_LINE = 34
   # Take the end of the line (empty selection after line break or at end of file).
-  END_OF_LINE = 34
+  END_OF_LINE = 35
+  # Expand the match to text delimited by whitespace.
+  BETWEEN_WHITESPACE = 36
   # Take a link in markdown syntax.
-  MARKDOWN_LINK = 35
+  MARKDOWN_LINK = 37
   # Empty selection before the line break on the last non-whitespace line in a markdown section.
   # "Markdown sections" are delimited by any headings or EOF.
   # Moving the cursor before the last line break can be useful for maintaining indentation or list
   # types when adding a new line below.
-  MARKDOWN_SECTION_END = 36
+  MARKDOWN_SECTION_END = 38
 
 
 @dataclass

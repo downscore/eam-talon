@@ -5,7 +5,7 @@ import re
 from typing import Callable, Optional, Sequence
 from .scrambler_types import Modifier, ModifierType, TextMatch, TextRange, UtilityFunctions
 
-# Regexes for matching a token.
+# Regexes for matching a token. Note: \w includes underscores.
 _TOKEN_CHAR = r"\w"  # Determines which characters are allowed in a token.
 _NON_TOKEN_CHAR = r"[^\w]"
 _REGEX_TOKEN: re.Pattern = re.compile(_TOKEN_CHAR + r"+", re.IGNORECASE)
@@ -117,8 +117,13 @@ def _apply_token_previous_modifier(text: str, input_match: TextMatch, modifier: 
 
 def _get_word_start_token_match_after(search_text: str, search: str) -> Optional[TextRange]:
   """Tries to find a token starting with the given substring."""
-  word_start_regex = re.compile(f"(^|{_NON_TOKEN_CHAR})({re.escape(search)}{_TOKEN_CHAR}*)",
-                                re.IGNORECASE)
+  # If the query begins with a non-token character, do not expand to full tokens.
+  if len(search) > 0 and re.match(_NON_TOKEN_CHAR, search[0]):
+    word_start_regex_text = f"(^|{_NON_TOKEN_CHAR})({re.escape(search)})"
+  else:
+    word_start_regex_text = f"(^|{_NON_TOKEN_CHAR})({re.escape(search)}{_TOKEN_CHAR}*)"
+
+  word_start_regex = re.compile(word_start_regex_text, re.IGNORECASE)
   match = word_start_regex.search(search_text)
   if match is None:
     return None
@@ -129,8 +134,13 @@ def _get_word_start_token_match_after(search_text: str, search: str) -> Optional
 def _get_word_start_token_match_before(search_text: str, search: str) -> Optional[TextRange]:
   """Tries to find a token starting with the given substring, searching reversed text."""
   # Use a reversed search regex as the search text should also be reversed.
-  word_start_regex = re.compile(f"({_TOKEN_CHAR}*{re.escape(search[::-1])})($|{_NON_TOKEN_CHAR})",
-                                re.IGNORECASE)
+  # If the query begins with a non-token character, do not expand to full tokens.
+  if len(search) > 0 and re.match(_NON_TOKEN_CHAR, search[0]):
+    word_start_regex_text = f"({re.escape(search[::-1])})($|{_NON_TOKEN_CHAR})"
+  else:
+    word_start_regex_text = f"({_TOKEN_CHAR}*{re.escape(search[::-1])})($|{_NON_TOKEN_CHAR})"
+
+  word_start_regex = re.compile(word_start_regex_text, re.IGNORECASE)
   match = word_start_regex.search(search_text)
   if match is None:
     return None
@@ -140,7 +150,13 @@ def _get_word_start_token_match_before(search_text: str, search: str) -> Optiona
 
 def _get_substring_token_match(search_text: str, search: str) -> Optional[TextRange]:
   """Tries to find a token containing the given substring."""
-  substring_regex = re.compile(f"{_TOKEN_CHAR}*{re.escape(search)}{_TOKEN_CHAR}*", re.IGNORECASE)
+  # If the query begins with a non-token character, do not expand to full tokens.
+  if len(search) > 0 and re.match(_NON_TOKEN_CHAR, search[0]):
+    substring_regex_text = re.escape(search)
+  else:
+    substring_regex_text = f"{_TOKEN_CHAR}*{re.escape(search)}{_TOKEN_CHAR}*"
+
+  substring_regex = re.compile(substring_regex_text, re.IGNORECASE)
   match = substring_regex.search(search_text)
   return None if match is None else TextRange(match.start(), match.end())
 

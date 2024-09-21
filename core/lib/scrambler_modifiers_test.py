@@ -243,6 +243,13 @@ class WordSubstringNextTestCase(unittest.TestCase):
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), "is_a ")
 
+  def test_punctuation(self):
+    text = "This is.a test"
+    input_match = TextMatch(TextRange(0, 4))
+    modifier = Modifier(ModifierType.WORD_SUBSTRING_NEXT, 1, ".")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), ".")
+
   def test_no_match(self):
     text = "This is a test"
     input_match = TextMatch(TextRange(0, 0))
@@ -289,6 +296,13 @@ class WordSubstringPreviousTestCase(unittest.TestCase):
     self.assertEqual(result.text_range.extract(text), "is_a")
     assert result.deletion_range is not None
     self.assertEqual(result.deletion_range.extract(text), "is_a ")
+
+  def test_punctuation(self):
+    text = "This is.a test"
+    input_match = TextMatch(TextRange(14, 14))
+    modifier = Modifier(ModifierType.WORD_SUBSTRING_PREVIOUS, 1, ".")
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), ".")
 
   def test_no_match(self):
     text = "This is a test"

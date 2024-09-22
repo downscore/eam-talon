@@ -5,7 +5,7 @@
 # mypy: ignore-errors
 
 from enum import Enum, unique
-from typing import Tuple
+from typing import Optional, Tuple
 from talon import Context, Module, actions, grammar
 from .lib import scrambler_types as st
 
@@ -43,6 +43,51 @@ _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
 mod.list("scrambler_single_word_command_type",
          desc="Text navigation command types that act on a single word")
 ctx.lists["self.scrambler_single_word_command_type"] = _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN.keys()
+
+# Tuples of object expansion type and optional delimiter keyed by spoken form.
+_OBJECT_EXPANSION_TYPES_BY_SPOKEN = {
+    "sentence": (st.ModifierType.SENTENCE, None),
+    "chunk": (st.ModifierType.SENTENCE_CLAUSE, None),
+    "scope": (st.ModifierType.C_SCOPE, None),  # Can be replaced with another type based on context.
+    "argument": (st.ModifierType.ARGUMENT, None),
+    "dubstring": (st.ModifierType.STRING, "\""),
+    "string": (st.ModifierType.STRING, "'"),
+    "graves": (st.ModifierType.STRING, "`"),
+    "whitespace": (st.ModifierType.BETWEEN_WHITESPACE, None),
+    "link": (st.ModifierType.MARKDOWN_LINK, None),
+    "comment": (st.ModifierType.COMMENT, None),
+    "brackets": (st.ModifierType.BRACKETS, None),
+    "invoke": (st.ModifierType.FUNCTION_CALL, None),
+}
+mod.list("scrambler_object_expansion_type", desc="Object expansion match types")
+ctx.lists["self.scrambler_object_expansion_type"] = _OBJECT_EXPANSION_TYPES_BY_SPOKEN.keys()
+
+# Tuples of countable object type and optional delimiter keyed by spoken form.
+_OBJECT_COUNT_TYPES_BY_SPOKEN = {
+    "argument": (st.ModifierType.ARGUMENT, None),
+    "dubstring": (st.ModifierType.STRING, "\""),
+    "string": (st.ModifierType.STRING, "'"),
+    "graves": (st.ModifierType.STRING, "`"),
+    "brackets": (st.ModifierType.BRACKETS, None),
+    "invoke": (st.ModifierType.FUNCTION_CALL, None),
+    "token": (st.ModifierType.TOKEN_NEXT, None),
+}
+mod.list("scrambler_object_count_type", desc="Countable object match types")
+ctx.lists["self.scrambler_object_count_type"] = _OBJECT_COUNT_TYPES_BY_SPOKEN.keys()
+
+# Tuples of object movement type and optional delimiter keyed by spoken form.
+_OBJECT_MOVEMENT_TYPES_BY_SPOKEN = {
+    "sentence": (st.ModifierType.SENTENCE, None),
+    "argument": (st.ModifierType.ARGUMENT, None),
+    "dubstring": (st.ModifierType.STRING, "\""),
+    "string": (st.ModifierType.STRING, "'"),
+    "graves": (st.ModifierType.STRING, "`"),
+    "brackets": (st.ModifierType.BRACKETS, None),
+    "invoke": (st.ModifierType.FUNCTION_CALL, None),
+    "token": (st.ModifierType.TOKEN_NEXT, None),
+}
+mod.list("scrambler_object_movement_type", desc="Countable object match types")
+ctx.lists["self.scrambler_object_movement_type"] = _OBJECT_MOVEMENT_TYPES_BY_SPOKEN.keys()
 
 
 @unique
@@ -124,6 +169,24 @@ def scrambler_command_type(m) -> st.CommandType:
 def scrambler_single_word_command_type(m) -> st.CommandType:
   """Maps a spoken command for a single to the command type."""
   return _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN[m.scrambler_single_word_command_type]
+
+
+@mod.capture(rule="{self.scrambler_object_expansion_type}")
+def scrambler_object_expansion_type(m) -> Tuple[st.ModifierType, Optional[str]]:
+  """Maps a spoken object expansion type to the type info."""
+  return _OBJECT_EXPANSION_TYPES_BY_SPOKEN[m.scrambler_object_expansion_type]
+
+
+@mod.capture(rule="{self.scrambler_object_count_type}")
+def scrambler_object_count_type(m) -> Tuple[st.ModifierType, Optional[str]]:
+  """Maps a spoken countable object type to the type info."""
+  return _OBJECT_COUNT_TYPES_BY_SPOKEN[m.scrambler_object_count_type]
+
+
+@mod.capture(rule="{self.scrambler_object_movement_type}")
+def scrambler_object_movement_type(m) -> Tuple[st.ModifierType, Optional[str]]:
+  """Maps a spoken object movement type to the type info."""
+  return _OBJECT_MOVEMENT_TYPES_BY_SPOKEN[m.scrambler_object_movement_type]
 
 
 @mod.capture(rule="{self.scrambler_search_direction}")
@@ -221,3 +284,32 @@ def scrambler_single_word(m) -> list[st.Modifier]:
   else:
     modifier_type = st.ModifierType.EXACT_WORD_PREVIOUS
   return [st.Modifier(modifier_type, repeat, word)]
+
+
+@mod.capture(rule="<user.scrambler_object_expansion_type>")
+def scrambler_object_expansion(m) -> list[st.Modifier]:
+  """A scrambler capture for an object expansion match."""
+  modifier_type, delimiter = m.scrambler_object_expansion_type
+  if modifier_type == st.ModifierType.C_SCOPE:
+    modifier_type = actions.user.scrambler_get_scope_modifier()
+  return [st.Modifier(modifier_type, delimiter=delimiter)]
+
+
+@mod.capture(rule="<user.scrambler_object_count_type> <user.number_small> " +
+             "[<user.scrambler_target_combo_type> <user.number_small>]")
+def scrambler_object_count(m) -> list[st.Modifier]:
+  """A scrambler capture for an object count match."""
+  from_count = m.number_small_list[0]
+  try:
+    to_count = m.number_small_list[1]
+  except AttributeError:
+    to_count = from_count
+
+  if from_count > to_count:
+    raise ValueError("Object `from` count must be less than or equal to `to` count")
+
+  modifier_type, delimiter = m.scrambler_object_count_type
+
+  # TODO: Translate modifier type to appropriate modifiers for the counts.
+
+  return [st.Modifier(modifier_type, delimiter=delimiter)]

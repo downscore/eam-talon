@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum, unique
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 
 @dataclass(frozen=True)
@@ -241,7 +241,7 @@ class Context:
   # contents of the editor. Not used in potato mode.
   text_offset: int = 0
   # The element that contains the text we are editing. Not used outside of AX accessibility mode.
-  editor_element = None
+  editor_element: Any = None
   # The current editor mode. Empty string if not applicable.
   # In vim-style editing, this is a character representing the current mode:
   #   n = normal, i = insert, v = visual.

@@ -1,9 +1,10 @@
-"""Definition of scambler actions and default (potato mode) implementations."""
+"""Definition of scambler actions and default implementations."""
 # Disable linter warnings caused by Talon conventions.
 # pylint: disable=no-self-argument, no-method-argument, relative-beyond-top-level
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from dataclasses import dataclass, field
 from enum import Enum, unique
 from typing import Optional, Tuple
 from talon import Context, Module, actions, grammar
@@ -24,7 +25,7 @@ _COMMAND_TYPES_BY_SPOKEN = {
     "biggest": st.CommandType.UPPERCASE,
     "smaller": st.CommandType.LOWERCASE,
 }
-mod.list("scrambler_command_type", desc="Text navigation command types")
+mod.list("scrambler_command_type", desc="All scrambler command types")
 ctx.lists["self.scrambler_command_type"] = _COMMAND_TYPES_BY_SPOKEN.keys()
 
 # Commands that act on a single word.
@@ -129,6 +130,14 @@ mod.list("scrambler_article", desc="Articles for scrambler commands")
 ctx.lists["self.scrambler_article"] = _ARTICLE_BY_SPOKEN.keys()
 
 
+@dataclass
+class ScramblerMatch:
+  """Sets of modifiers and combination type representing a scrambler match."""
+  modifiers: list[st.Modifier]
+  combination_type: st.MatchCombinationType = st.MatchCombinationType.UP_TO_AND_INCLUDING
+  extend_modifiers: list[st.Modifier] = field(default_factory=list)
+
+
 def _capture_to_words(m) -> list[str]:
   """Convert a capture to a list of words."""
   words = []
@@ -213,22 +222,30 @@ def scrambler_phrase(m) -> str:
   return " ".join(_capture_to_words(m.phrase))
 
 
-@mod.capture(rule="({self.scrambler_article} | <user.word>)")
-def scrambler_word(m) -> str:
-  """A scrambler capture for a single word."""
+@mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
+             "({self.scrambler_article} | <user.word>)")
+def scrambler_word(m) -> ScramblerMatch:
+  """A scrambler capture for a single word match."""
+  repeat, direction = _get_ordinal_and_search_direction(m)
   try:
     article = _ARTICLE_BY_SPOKEN[m.scrambler_article]
     if article == Article.A:
-      return "a"
-    return "the"
+      word = "a"
+    word = "the"
   except AttributeError:
-    pass
-  return m.word
+    word = m.word
+
+  # If direction is none, repeat must also be 1.
+  if direction is None:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_CLOSEST, repeat, word)])
+  if direction == SearchDirection.FORWARD:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_NEXT, repeat, word)])
+  return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_PREVIOUS, repeat, word)])
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
              "(<user.scrambler_characters> | <user.scrambler_phrase>)")
-def scrambler_substring(m) -> list[st.Modifier]:
+def scrambler_substring(m) -> ScramblerMatch:
   """A scrambler capture for a substring match."""
   repeat, direction = _get_ordinal_and_search_direction(m)
 
@@ -241,7 +258,7 @@ def scrambler_substring(m) -> list[st.Modifier]:
       modifier_type = st.ModifierType.WORD_SUBSTRING_NEXT
     else:
       modifier_type = st.ModifierType.WORD_SUBSTRING_PREVIOUS
-    return [st.Modifier(modifier_type, repeat, substring)]
+    return ScramblerMatch([st.Modifier(modifier_type, repeat, substring)])
   except AttributeError:
     pass
 
@@ -253,13 +270,12 @@ def scrambler_substring(m) -> list[st.Modifier]:
     modifier_type = st.ModifierType.PHRASE_NEXT
   else:
     modifier_type = st.ModifierType.PHRASE_PREVIOUS
-  return [st.Modifier(modifier_type, repeat, phrase)]
+  return ScramblerMatch([st.Modifier(modifier_type, repeat, phrase)])
 
 
 @mod.capture(rule="<user.scrambler_substring> " +
              "[<user.scrambler_target_combo_type> <user.scrambler_substring>]")
-def scrambler_substring_range(
-    m) -> Tuple[list[st.Modifier], st.MatchCombinationType, list[st.Modifier]]:
+def scrambler_substring_range(m) -> ScramblerMatch:
   """A scrambler capture substring range match."""
   modifiers = m.scrambler_substring_list[0]
   if len(m.scrambler_substring_list) > 1:
@@ -268,48 +284,116 @@ def scrambler_substring_range(
   else:
     extend_type = st.MatchCombinationType.UP_TO_AND_INCLUDING
     extend_modifiers = []
-  return modifiers, extend_type, extend_modifiers
-
-
-@mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
-             "<user.scrambler_word>")
-def scrambler_single_word(m) -> list[st.Modifier]:
-  """A scrambler capture for a single word match."""
-  repeat, direction = _get_ordinal_and_search_direction(m)
-  word = m.scrambler_word
-  if direction is None:
-    modifier_type = st.ModifierType.EXACT_WORD_CLOSEST
-  elif direction == SearchDirection.FORWARD:
-    modifier_type = st.ModifierType.EXACT_WORD_NEXT
-  else:
-    modifier_type = st.ModifierType.EXACT_WORD_PREVIOUS
-  return [st.Modifier(modifier_type, repeat, word)]
+  return ScramblerMatch(modifiers, extend_type, extend_modifiers)
 
 
 @mod.capture(rule="<user.scrambler_object_expansion_type>")
-def scrambler_object_expansion(m) -> list[st.Modifier]:
+def scrambler_object_expansion(m) -> ScramblerMatch:
   """A scrambler capture for an object expansion match."""
   modifier_type, delimiter = m.scrambler_object_expansion_type
   if modifier_type == st.ModifierType.C_SCOPE:
     modifier_type = actions.user.scrambler_get_scope_modifier()
-  return [st.Modifier(modifier_type, delimiter=delimiter)]
+  return ScramblerMatch([st.Modifier(modifier_type, delimiter=delimiter)])
 
 
 @mod.capture(rule="<user.scrambler_object_count_type> <user.number_small> " +
              "[<user.scrambler_target_combo_type> <user.number_small>]")
-def scrambler_object_count(m) -> list[st.Modifier]:
+def scrambler_object_count(m) -> ScramblerMatch:
   """A scrambler capture for an object count match."""
-  from_count = m.number_small_list[0]
-  try:
-    to_count = m.number_small_list[1]
-  except AttributeError:
-    to_count = from_count
-
-  if from_count > to_count:
-    raise ValueError("Object `from` count must be less than or equal to `to` count")
-
   modifier_type, delimiter = m.scrambler_object_count_type
+  from_count = m.number_small_list[0]
 
-  # TODO: Translate modifier type to appropriate modifiers for the counts.
+  # Get modifiers for initial match.
+  modifiers = []
+  if modifier_type == st.ModifierType.ARGUMENT:
+    modifiers.append(st.Modifier(st.ModifierType.ARGUMENT_FIRST, delimiter=delimiter))
+    if from_count > 1:
+      modifiers.append(
+          st.Modifier(st.ModifierType.ARGUMENT_NEXT, from_count - 1, delimiter=delimiter))
+  elif modifier_type == st.ModifierType.STRING:
+    modifiers.append(st.Modifier(st.ModifierType.STRING_FIRST, delimiter=delimiter))
+    if from_count > 1:
+      modifiers.append(st.Modifier(st.ModifierType.STRING_NEXT, from_count - 1,
+                                   delimiter=delimiter))
+  elif modifier_type == st.ModifierType.BRACKETS:
+    modifiers.append(st.Modifier(st.ModifierType.BRACKETS_FIRST, delimiter=delimiter))
+    if from_count > 1:
+      modifiers.append(
+          st.Modifier(st.ModifierType.BRACKETS_NEXT, from_count - 1, delimiter=delimiter))
+  elif modifier_type == st.ModifierType.FUNCTION_CALL:
+    modifiers.append(
+        st.Modifier(st.ModifierType.FUNCTION_CALL_NEXT, from_count, delimiter=delimiter))
+  elif modifier_type == st.ModifierType.TOKEN_NEXT:
+    modifiers.append(st.Modifier(st.ModifierType.TOKEN_NEXT, from_count, delimiter=delimiter))
 
-  return [st.Modifier(modifier_type, delimiter=delimiter)]
+  # Get modifiers for extend matches if present.
+  extend_type = st.MatchCombinationType.UP_TO_AND_INCLUDING
+  extend_modifiers = []
+  if len(m.number_small_list) > 1:
+    to_count = m.number_small_list[1]
+    count_diff = to_count - from_count
+    if count_diff < 0:
+      raise ValueError("Object `from` count must be less than or equal to `to` count")
+    if count_diff > 0:
+      if modifier_type == st.ModifierType.ARGUMENT:
+        extend_modifiers.append(
+            st.Modifier(st.ModifierType.ARGUMENT_NEXT, count_diff, delimiter=delimiter))
+      elif modifier_type == st.ModifierType.STRING:
+        extend_modifiers.append(
+            st.Modifier(st.ModifierType.STRING_NEXT, count_diff, delimiter=delimiter))
+      elif modifier_type == st.ModifierType.BRACKETS:
+        extend_modifiers.append(
+            st.Modifier(st.ModifierType.BRACKETS_NEXT, count_diff, delimiter=delimiter))
+      elif modifier_type == st.ModifierType.FUNCTION_CALL:
+        extend_modifiers.append(
+            st.Modifier(st.ModifierType.FUNCTION_CALL_NEXT, count_diff, delimiter=delimiter))
+      elif modifier_type == st.ModifierType.TOKEN_NEXT:
+        extend_modifiers.append(
+            st.Modifier(st.ModifierType.TOKEN_NEXT, count_diff, delimiter=delimiter))
+
+  return ScramblerMatch(modifiers, extend_type, extend_modifiers)
+
+
+@mod.capture(rule="<user.scrambler_object_movement_type> [<user.ordinals_small>] " +
+             "<user.scrambler_search_direction>")
+def scrambler_object_movement(m) -> ScramblerMatch:
+  """A scrambler capture for an object count match."""
+  repeat, direction = _get_ordinal_and_search_direction(m)
+  modifier_type, delimiter = m.scrambler_object_movement_type
+
+  if modifier_type == st.ModifierType.SENTENCE:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch(
+          [st.Modifier(st.ModifierType.SENTENCE_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.SENTENCE_PREVIOUS, repeat, delimiter=delimiter)])
+  elif modifier_type == st.ModifierType.ARGUMENT:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch(
+          [st.Modifier(st.ModifierType.ARGUMENT_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.ARGUMENT_PREVIOUS, repeat, delimiter=delimiter)])
+  elif modifier_type == st.ModifierType.STRING:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch([st.Modifier(st.ModifierType.STRING_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.STRING_PREVIOUS, repeat, delimiter=delimiter)])
+  elif modifier_type == st.ModifierType.BRACKETS:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch(
+          [st.Modifier(st.ModifierType.BRACKETS_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.BRACKETS_PREVIOUS, repeat, delimiter=delimiter)])
+  elif modifier_type == st.ModifierType.FUNCTION_CALL:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch(
+          [st.Modifier(st.ModifierType.FUNCTION_CALL_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.FUNCTION_CALL_PREVIOUS, repeat, delimiter=delimiter)])
+  elif modifier_type == st.ModifierType.TOKEN_NEXT:
+    if direction == SearchDirection.FORWARD:
+      return ScramblerMatch([st.Modifier(st.ModifierType.TOKEN_NEXT, repeat, delimiter=delimiter)])
+    return ScramblerMatch(
+        [st.Modifier(st.ModifierType.TOKEN_PREVIOUS, repeat, delimiter=delimiter)])
+
+  raise ValueError(f"Unsupported object movement type: {modifier_type}")

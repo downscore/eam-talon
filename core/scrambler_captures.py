@@ -107,6 +107,10 @@ def _get_ordinal_and_search_direction(m):
   except AttributeError:
     direction = None
 
+  # Default to searching forward if an ordinal was specified.
+  if repeat > 1 and direction is None:
+    direction = SearchDirection.FORWARD
+
   return repeat, direction
 
 
@@ -135,7 +139,7 @@ def scrambler_target_combo_type(m) -> st.MatchCombinationType:
 
 
 @mod.capture(rule="(<user.symbol_key> | <user.letters> | <user.dictate_number>)+")
-def scrambler_substring(m) -> str:
+def scrambler_characters(m) -> str:
   """A scrambler capture for a word substring."""
   return "".join(_capture_to_words(m))
 
@@ -146,7 +150,6 @@ def scrambler_phrase(m) -> str:
   return " ".join(_capture_to_words(m.phrase))
 
 
-# TODO: Move articles to scrambler_modifiers?
 @mod.capture(rule="({self.scrambler_article} | <user.word>)")
 def scrambler_word(m) -> str:
   """A scrambler capture for a single word."""
@@ -161,14 +164,14 @@ def scrambler_word(m) -> str:
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
-             "(<user.scrambler_substring> | <user.scrambler_phrase> | token)")
-def scrambler_modifiers(m) -> list[st.Modifier]:
-  """A scrambler capture for a set of modifiers that match some text."""
+             "(<user.scrambler_characters> | <user.scrambler_phrase>)")
+def scrambler_substring(m) -> list[st.Modifier]:
+  """A scrambler capture for a substring match."""
   repeat, direction = _get_ordinal_and_search_direction(m)
 
   # Check if a substring was specified.
   try:
-    substring = m.scrambler_substring
+    substring = m.scrambler_characters
     if direction is None:
       modifier_type = st.ModifierType.WORD_SUBSTRING_CLOSEST
     elif direction == SearchDirection.FORWARD:
@@ -179,36 +182,26 @@ def scrambler_modifiers(m) -> list[st.Modifier]:
   except AttributeError:
     pass
 
-  # Check if a phrase was specified.
-  try:
-    phrase = m.scrambler_phrase
-    if direction is None:
-      modifier_type = st.ModifierType.PHRASE_CLOSEST
-    elif direction == SearchDirection.FORWARD:
-      modifier_type = st.ModifierType.PHRASE_NEXT
-    else:
-      modifier_type = st.ModifierType.PHRASE_PREVIOUS
-    return [st.Modifier(modifier_type, repeat, phrase)]
-  except AttributeError:
-    pass
-
-  # Default to tokens.
-  if direction is None or direction == SearchDirection.FORWARD:
-    modifier_type = st.ModifierType.TOKEN_NEXT
+  # Default to a phrase.
+  phrase = m.scrambler_phrase
+  if direction is None:
+    modifier_type = st.ModifierType.PHRASE_CLOSEST
+  elif direction == SearchDirection.FORWARD:
+    modifier_type = st.ModifierType.PHRASE_NEXT
   else:
-    modifier_type = st.ModifierType.TOKEN_PREVIOUS
-  return [st.Modifier(modifier_type, repeat)]
+    modifier_type = st.ModifierType.PHRASE_PREVIOUS
+  return [st.Modifier(modifier_type, repeat, phrase)]
 
 
-@mod.capture(rule="<user.scrambler_modifiers> " +
-             "[<user.scrambler_target_combo_type> <user.scrambler_modifiers>]")
-def scrambler_extended_modifiers(
+@mod.capture(rule="<user.scrambler_substring> " +
+             "[<user.scrambler_target_combo_type> <user.scrambler_substring>]")
+def scrambler_substring_range(
     m) -> Tuple[list[st.Modifier], st.MatchCombinationType, list[st.Modifier]]:
-  """A scrambler capture for a set of modifiers with optional extension modifiers."""
-  modifiers = m.scrambler_modifiers_list[0]
-  if len(m.scrambler_modifiers_list) > 1:
+  """A scrambler capture substring range match."""
+  modifiers = m.scrambler_substring_list[0]
+  if len(m.scrambler_substring_list) > 1:
     extend_type = m.scrambler_target_combo_type
-    extend_modifiers = m.scrambler_modifiers_list[1]
+    extend_modifiers = m.scrambler_substring_list[1]
   else:
     extend_type = st.MatchCombinationType.UP_TO_AND_INCLUDING
     extend_modifiers = []
@@ -217,8 +210,8 @@ def scrambler_extended_modifiers(
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
              "<user.scrambler_word>")
-def scrambler_word_modifiers(m) -> list[st.Modifier]:
-  """A scrambler capture for a set of modifiers that match a single word."""
+def scrambler_single_word(m) -> list[st.Modifier]:
+  """A scrambler capture for a single word match."""
   repeat, direction = _get_ordinal_and_search_direction(m)
   word = m.scrambler_word
   if direction is None:

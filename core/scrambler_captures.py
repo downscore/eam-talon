@@ -480,3 +480,18 @@ def scrambler_match_from_cursor(m) -> ScramblerMatch:
         raise ValueError("No valid match found") from exc
 
   return ScramblerMatch([], extend_type, modifiers)
+
+
+@mod.capture(rule="(<user.scrambler_object_count>|<user.scrambler_object_movement>|" +
+             "<user.scrambler_reverse_token>)")
+def scrambler_no_prefix_match(m) -> ScramblerMatch:
+  """Scrambler matches for commands with no command prefix."""
+  try:
+    return m.scrambler_object_count
+  except AttributeError:
+    pass
+  try:
+    return m.scrambler_object_movement
+  except AttributeError:
+    pass
+  return m.scrambler_reverse_token

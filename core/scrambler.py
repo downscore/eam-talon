@@ -4,7 +4,7 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions, types, ui
+from talon import Context, Module, actions, clip, types, ui
 from .lib import scrambler_potato, scrambler_run, scrambler_types as st
 from .scrambler_captures import ScramblerMatch
 
@@ -327,3 +327,47 @@ class Actions:
     command = st.Command(st.CommandType.SELECT, match.modifiers, match.extend_modifiers,
                          match.combination_type)
     _run_command(command)
+
+  def scrambler_move_argument_left():
+    """Moves the current argument to the left."""
+    # Use a scrambler command to capture and delete the argument.
+    command = st.Command(st.CommandType.CUT_TO_CLIPBOARD, [st.Modifier(st.ModifierType.ARGUMENT)])
+    with clip.capture() as s:
+      _run_command(command)
+    try:
+      argument = s.text()
+    except clip.NoChange as exc:
+      raise ValueError("No argument captured") from exc
+    if not argument:
+      raise ValueError("Argument is empty")
+
+    # Move before the argument that is now under the cursor.
+    command = st.Command(st.CommandType.MOVE_CURSOR_BEFORE, [st.Modifier(st.ModifierType.ARGUMENT)])
+    _run_command(command)
+
+    # Re-insert the deleted argument.
+    actions.user.insert_via_clipboard(argument + ", ")
+
+  def scrambler_move_argument_right():
+    # Use a scrambler command to capture and delete the argument.
+    command = st.Command(st.CommandType.CUT_TO_CLIPBOARD, [st.Modifier(st.ModifierType.ARGUMENT)])
+    with clip.capture() as s:
+      _run_command(command)
+    try:
+      argument = s.text()
+    except clip.NoChange as exc:
+      raise ValueError("No argument captured") from exc
+    if not argument:
+      raise ValueError("Argument is empty")
+
+    # The argument modifier prefers to delete leading commas instead of trailing ones, so we need
+    # to move right to get to the next argument. This causes odd behavior if the cursor is already
+    # in the rightmost argument, but it allows moving arguments that aren't the leftmost.
+    actions.key("right")
+
+    # Move after the argument that is now under the cursor.
+    command = st.Command(st.CommandType.MOVE_CURSOR_AFTER, [st.Modifier(st.ModifierType.ARGUMENT)])
+    _run_command(command)
+
+    # Re-insert the deleted argument.
+    actions.user.insert_via_clipboard(", " + argument)

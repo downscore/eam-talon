@@ -6,8 +6,7 @@
 
 import os
 from talon import Context, Module, actions
-from ..core.lib import number_util, scrambler_types as st, textflow_types as tf
-from ..core import textflow as tft
+from ..core.lib import number_util, scrambler_types as st
 
 ctx = Context()
 mod = Module()
@@ -72,27 +71,6 @@ class UserActions:
 
   def snippet_insert(body: str):
     actions.user.vscode_and_wait("eam-talon.insertSnippet", body)
-
-  def textflow_get_context() -> tft.TextFlowContext:
-    context = actions.user.vscode_return_value("eam-talon.getTextFlowContext")
-    # Disable potato mode because we implement the set selection action.
-    text_offset = context["textStartOffset"]
-    result = tft.TextFlowContext(text=context["text"],
-                                 selection_range=tf.TextRange(
-                                     context["selectionStartOffset"] - text_offset,
-                                     context["selectionEndOffset"] - text_offset),
-                                 text_offset=text_offset,
-                                 potato_mode=False)
-    return result
-
-  def textflow_set_selection_action(editor_action: tf.EditorAction, context: tft.TextFlowContext):
-    """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with
-    accessibility extensions."""
-    if editor_action.text_range is None:
-      raise ValueError("Set selection range action with missing range.")
-    actions.user.vscode_and_wait("eam-talon.setSelection",
-                                 editor_action.text_range.start + context.text_offset,
-                                 editor_action.text_range.end + context.text_offset)
 
   def scrambler_get_context() -> st.Context:
     context = actions.user.vscode_return_value("eam-talon.getTextFlowContext")

@@ -579,7 +579,7 @@ https://github.com/chaosparrot/talon_hud
 https://github.com/pokey/pokey_talon
 
 API Notes
-- [ ] VS Code: Set editor.accessibilityPageSize (e.g. to 150) to allow TextFlow to work in long files. Setting value appears to be total number of lines visible to accessibility API
+- [ ] VS Code: Set editor.accessibilityPageSize (e.g. to 150) to allow scrambler to work in long files. Setting value appears to be total number of lines visible to accessibility API
 - [ ] Canvas for onscreen rendering
 - [ ] Action documentation: my_func.__doc__
 - [ ] python/pip executable for Talon: ~/.talon/.venv/bin/python

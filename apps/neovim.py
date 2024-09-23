@@ -5,9 +5,8 @@
 # mypy: ignore-errors
 
 from talon import Context, Module, actions, clip
-from ..core.lib import textflow_types as tf
+from ..core.lib import scrambler_types as st
 from ..core import mode_dictation
-from ..core.textflow import TextFlowContext
 
 mod = Module()
 ctx = Context()
@@ -22,7 +21,7 @@ app: neovim
 """
 
 
-def _insert_mode(context: TextFlowContext):
+def _insert_mode(context: st.Context):
   """Change the editor to insert mode. No-op if it is already in insert mode."""
   if context.editor_mode == "i":
     return
@@ -32,7 +31,7 @@ def _insert_mode(context: TextFlowContext):
   context.editor_mode = "i"
 
 
-def _normal_mode(context: TextFlowContext):
+def _normal_mode(context: st.Context):
   """Change the editor to normal mode. No-op if it is already in normal mode."""
   if context.editor_mode == "n":
     return
@@ -40,7 +39,7 @@ def _normal_mode(context: TextFlowContext):
   context.editor_mode = "n"
 
 
-def _move_cursor_to_start_of_range(text_range: tf.TextRange, context: TextFlowContext):
+def _move_cursor_to_start_of_range(text_range: st.TextRange, context: st.Context):
   """Moves the cursor to the start of the given range. Ends in normal mode."""
   # Make sure all the indices are in bounds. They should be relative to the first character in the
   # context text.
@@ -91,7 +90,7 @@ class Actions:
   def neovim_get_mode() -> str:
     """Returns a character indicating the current mode in Neovim."""
     # TODO: More efficient implementation if we need the mode often.
-    return actions.user.textflow_get_context().editor_mode
+    return actions.user.scrambler_get_context().editor_mode
 
 
 @ctx.action_class("win")
@@ -112,7 +111,7 @@ class ExtensionActions:
   """Action overrides."""
 
   def dictation_get_preceding_text() -> str:
-    context = actions.user.textflow_get_context()
+    context = actions.user.scrambler_get_context()
     from_index = max(0, context.selection_range.start - mode_dictation.NUM_PRECEDING_CHARS)
     to_index = context.selection_range.start
 
@@ -121,8 +120,8 @@ class ExtensionActions:
 
     return context.text[from_index:to_index]
 
-  def textflow_get_context() -> TextFlowContext:
-    """Gets the textflow context for the current editor, including the current mode."""
+  def scrambler_get_context() -> st.Context:
+    """Gets the scrambler context for the current editor, including the current mode."""
     with clip.capture() as s:
       actions.key("ctrl-s")
     try:
@@ -146,13 +145,13 @@ class ExtensionActions:
     text = "\n".join(lines[3:])
 
     # Disable potato mode because we have custom implementations for all actions for neovim.
-    return TextFlowContext(text=text,
-                           selection_range=tf.TextRange(selection_from, selection_to),
-                           potato_mode=False,
-                           editor_mode=mode)
+    return st.Context(text=text,
+                      selection_range=st.TextRange(selection_from, selection_to),
+                      potato_mode=False,
+                      editor_mode=mode)
 
-  def textflow_set_selection_action(editor_action: tf.EditorAction, context: TextFlowContext):
-    """Sets the selection in an editor, given a textflow context."""
+  def scrambler_set_selection_action(editor_action: st.EditorAction, context: st.Context):
+    """Sets the selection in an editor, given a scrambler context."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range in neovim.")
 
@@ -167,8 +166,8 @@ class ExtensionActions:
     # Update context with new selection range to allow subsequent actions to work correctly.
     context.selection_range = editor_action.text_range
 
-  def textflow_delete_range_action(editor_action: tf.EditorAction, context: TextFlowContext):
-    """Deletes a text range in an editor, given a textflow context."""
+  def scrambler_delete_range_action(editor_action: st.EditorAction, context: st.Context):
+    """Deletes a text range in an editor, given a scrambler context."""
     if editor_action.text_range is None:
       raise ValueError("Delete range action with missing range.")
 
@@ -179,11 +178,11 @@ class ExtensionActions:
       # Update context to allow subsequent actions to work correctly.
       context.text = context.text[:editor_action.text_range.start] + context.text[editor_action.
                                                                                   text_range.end:]
-      context.selection_range = tf.TextRange(editor_action.text_range.start,
+      context.selection_range = st.TextRange(editor_action.text_range.start,
                                              editor_action.text_range.start)
     _insert_mode(context)
 
-  def textflow_clear_action(editor_action: tf.EditorAction, context: TextFlowContext):
+  def scrambler_clear_action(editor_action: st.EditorAction, context: st.Context):
     """Deletes the selected text or the character to the left of the cursor if there is no
     selection."""
     # We can delete from normal mode or visual mode.
@@ -194,13 +193,13 @@ class ExtensionActions:
     # TODO: Update context to reflect the deletion. Currently, the clear action never has other
     # editor actions following it, so this isn't a problem in practice.
 
-  def textflow_insert_text_action(editor_action: tf.EditorAction, context: TextFlowContext):
+  def scrambler_insert_text_action(editor_action: st.EditorAction, context: st.Context):
     """Inserts the given text in an editor."""
     _insert_mode(context)
     actions.user.insert_via_clipboard(editor_action.text)
 
   def selected_text() -> str:
-    context: TextFlowContext = actions.user.textflow_get_context()
+    context: st.Context = actions.user.scrambler_get_context()
     return context.selection_range.extract(context.text)
 
   def jump_line(n: int):

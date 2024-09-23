@@ -9,6 +9,8 @@ from urllib.parse import quote_plus
 import webbrowser
 from .lib.url_util import extract_url
 from .user_settings import load_dict_from_csv
+from ..core.lib import scrambler_types as st
+from ..core.scrambler import ScramblerMatch
 
 mod = Module()
 ctx = Context()
@@ -42,9 +44,14 @@ class Actions:
 
   def website_open_link_under_cursor():
     """Opens the link under the cursor in the default browser."""
-    # Select text delimited by whitespace and get url from it.
-    actions.user.textflow_execute_command_enum_strings("SELECT", "BETWEEN_WHITESPACE")
-    selected_text = actions.user.selected_text()
+    # Get text delimited by whitespace and get url from it.
+    with clip.capture() as s:
+      match = ScramblerMatch([st.Modifier(st.ModifierType.BETWEEN_WHITESPACE)])
+      actions.user.scrambler_run_command(st.CommandType.COPY_TO_CLIPBOARD, match)
+    try:
+      selected_text = s.text()
+    except clip.NoChange as exc:
+      raise ValueError("No text containing a URL found") from exc
     url = extract_url(selected_text)
 
     # Fall back to selecting the entire line if we did not find a URL.

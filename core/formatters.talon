@@ -50,7 +50,7 @@ repeat {user.formatter}: insert(user.format_replay(formatter))
 repeat title: insert(user.format_replay_title())
 repeat clause: insert(user.format_replay_sentence())
 
-# Convenience reformatting commands consistent with TextFlow commands.
+# Convenience reformatting commands consistent with scrambler commands.
 bigger that: user.format_selection_title()
 smaller that: user.format_selection_phrase()
 biggest that: user.format_selection_single("allcaps")

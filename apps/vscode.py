@@ -276,7 +276,7 @@ class ExtensionActions:
     else:
       actions.key(f"cmd-p down:{n} enter")
 
-  def textflow_get_selected_text_potato_mode() -> str:
+  def scrambler_get_selected_text_potato_mode() -> str:
     # By default, VS Code copies the entire line if nothing is selected, which breaks a bunch of
-    # TextFlow stuff. Always pretend nothing is selected.
+    # scrambler stuff. Always pretend nothing is selected.
     return ""

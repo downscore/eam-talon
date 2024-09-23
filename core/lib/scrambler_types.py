@@ -106,6 +106,11 @@ class ModifierType(Enum):
   # Moving the cursor before the last line break can be useful for maintaining indentation or list
   # types when adding a new line below.
   MARKDOWN_SECTION_END = 38
+  # Selecting a line with and without the trailing line break, if present. There is no trailing
+  # line break if the line is the last in the file. These modifiers can be useful as they ignore
+  # line wrapping.
+  LINE_INCLUDING_LINE_BREAK = 39
+  LINE_EXCLUDING_LINE_BREAK = 40
 
 
 @dataclass

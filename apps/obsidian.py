@@ -5,6 +5,8 @@
 # mypy: ignore-errors
 
 from talon import Context, Module, actions
+from ..core.lib import scrambler_types as st
+from ..core.scrambler import ScramblerMatch
 
 mod = Module()
 ctx = Context()
@@ -40,8 +42,8 @@ class ExtensionActions:
   #   actions.key("cmd-left:2 cmd-shift-right shift-right")
 
   def select_line_including_line_break():
-    # Use textflow so we can properly handle wrapped lines.
-    actions.user.textflow_execute_command_enum_strings("SELECT", "LINE_INCLUDING_LINE_BREAK")
+    match = ScramblerMatch([st.Modifier(st.ModifierType.LINE_INCLUDING_LINE_BREAK)])
+    actions.user.scrambler_run_command(st.CommandType.SELECT, match)
 
   def line_swap_up():
     actions.user.obsidian("Move line up")
@@ -65,7 +67,8 @@ class ExtensionActions:
     actions.user.obsidian("Close this tab group")
 
   def split_last():
-    # Use a partial command to focus on another split regardless of position. Works when there are two splits.
+    # Use a partial command to focus on another split regardless of position. Works when there are
+    # two splits.
     actions.user.obsidian("Focus on tab group ")
 
   def split_switch_up():
@@ -132,12 +135,13 @@ class ExtensionActions:
     else:
       actions.key(f"cmd-o down:{n} enter")
 
-  def textflow_get_selected_text_potato_mode() -> str:
-    # Obsidian copies the entire line if nothing is selected, which breaks a bunch of TextFlow stuff.
-    # Always pretend nothing is selected.
+  def scrambler_get_selected_text_potato_mode() -> str:
+    # Obsidian copies the entire line if nothing is selected, which breaks a bunch of scrambler
+    # stuff. Always pretend nothing is selected.
     return ""
 
-  def textflow_force_potato_mode() -> bool:
-    # Obsidian does not properly implement the accessibility API. It does not give accurate character counts for
-    # the current selection, and appears to group multiple consecutive line breaks into a single line break.
+  def scrambler_force_potato_mode() -> bool:
+    # Obsidian does not properly implement the accessibility API. It does not give accurate
+    # character counts for the current selection, and appears to group multiple consecutive line
+    # breaks into a single line break.
     return True

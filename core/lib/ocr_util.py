@@ -108,8 +108,8 @@ _WIDTHS_BY_CHAR: dict[str, float] = {
 
 
 @dataclass
-class OcrTextFlowContext:
-  """Context for using OCRed text in TextFlow, including the screen coordinates where the text is
+class OcrScramblerContext:
+  """Context for using OCRed text in scrambler, including the screen coordinates where the text is
   found."""
   # The list of raw OCR results.
   ocr_results: list[Any]
@@ -229,9 +229,9 @@ def get_closest_ocr_result_index(ocr_results: list[Any], x: float, y: float) -> 
   return closest_index
 
 
-def create_ocr_textflow_context(ocr_results: list[Any], mouse_x: float,
-                                mouse_y: float) -> OcrTextFlowContext:
-  """Creates an OcrTextFlowContext from the given OCR results."""
+def create_ocr_scrambler_context(ocr_results: list[Any], mouse_x: float,
+                                 mouse_y: float) -> OcrScramblerContext:
+  """Creates an OcrScramblerContext from the given OCR results."""
   if not ocr_results:
     raise ValueError("No OCR results provided.")
 
@@ -249,4 +249,4 @@ def create_ocr_textflow_context(ocr_results: list[Any], mouse_x: float,
     assert 0 <= closest_result_index < len(ocr_results)
     mouse_index = start_indices[closest_result_index]
 
-  return OcrTextFlowContext(ocr_results, text, start_indices, mouse_index)
+  return OcrScramblerContext(ocr_results, text, start_indices, mouse_index)

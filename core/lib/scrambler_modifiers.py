@@ -1058,6 +1058,26 @@ def _apply_markdown_section_end_modifier(text: str, input_match: TextMatch, modi
   return _make_match(result_index, result_index)
 
 
+def _apply_line_including_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                              utilities: UtilityFunctions) -> TextMatch:
+  """Takes the line containing the match."""
+  del modifier, utilities
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=True)
+  return TextMatch(line_range)
+
+
+def _apply_line_excluding_line_break_modifier(text: str, input_match: TextMatch, modifier: Modifier,
+                                              utilities: UtilityFunctions) -> TextMatch:
+  """Takes the line containing the match."""
+  del modifier, utilities
+  line_range = _get_line_at_index(text,
+                                  input_match.text_range.start,
+                                  include_trailing_line_break=False)
+  return TextMatch(line_range)
+
+
 _MODIFIER_FUNCTIONS = {
     ModifierType.TOKEN_NEXT: _apply_token_next_modifier,
     ModifierType.TOKEN_PREVIOUS: _apply_token_previous_modifier,
@@ -1097,6 +1117,8 @@ _MODIFIER_FUNCTIONS = {
     ModifierType.BETWEEN_WHITESPACE: _apply_between_whitespace_modifier,
     ModifierType.MARKDOWN_LINK: _apply_markdown_link_modifier,
     ModifierType.MARKDOWN_SECTION_END: _apply_markdown_section_end_modifier,
+    ModifierType.LINE_INCLUDING_LINE_BREAK: _apply_line_including_line_break_modifier,
+    ModifierType.LINE_EXCLUDING_LINE_BREAK: _apply_line_excluding_line_break_modifier,
 }
 
 

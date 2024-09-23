@@ -6,7 +6,7 @@
 
 import re
 from talon import Context, Module, actions
-from ..core.lib import browser_util, textflow_match
+from ..core.lib import browser_util, scrambler_modifiers
 
 mod = Module()
 ctx = Context()
@@ -104,7 +104,7 @@ class ExtensionActions:
 
   def tab_switch_by_name(name: str):
     # Prepare query regex with homophones, if any.
-    regex_str = textflow_match.get_phrase_regex(name.split(), actions.user.get_all_homophones)
+    regex_str = scrambler_modifiers.get_phrase_regex(name.split(), actions.user.get_all_homophones)
     regex = re.compile(regex_str, re.IGNORECASE)
 
     # Get all tabs matching the name.

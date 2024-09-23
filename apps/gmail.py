@@ -45,8 +45,8 @@ class ExtensionActions:
 
     return preceding_text
 
-  def textflow_potato_get_text_before_cursor():
-    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for
+  def scrambler_potato_get_text_before_cursor():
+    # We only allow scrambler to act on one line in Gmail due to unusual UI behavior. See above for
     # more information.
     actions.key("ctrl-shift-a")
     result = actions.user.selected_text()
@@ -58,8 +58,8 @@ class ExtensionActions:
 
     return result
 
-  def textflow_potato_get_text_after_cursor():
-    # We only alllow TextFlow to act on one line in Gmail due to unusual UI behavior. See above for
+  def scrambler_potato_get_text_after_cursor():
+    # We only allow scrambler to act on one line in Gmail due to unusual UI behavior. See above for
     # more information.
     actions.key("ctrl-shift-e")
     result = actions.user.selected_text()

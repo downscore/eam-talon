@@ -13,7 +13,7 @@ from talon.experimental import ocr
 from talon.types import Rect
 from talon.skia.typeface import Typeface
 from .lib.ocr_util import get_closest_ocr_result_index
-from .lib.textflow_match import get_phrase_regex
+from .lib.scrambler_modifiers import get_phrase_regex
 from .lib.url_util import extract_url
 from .user_settings import append_to_csv, load_coords_from_csv
 

@@ -64,16 +64,16 @@ class GetClosestOcrResultIndexTestCase(unittest.TestCase):
     self.assertEqual(get_closest_ocr_result_index(ocr_results, 0.5, 0.5), 0)
 
 
-class CreateOcrTextflowContextTestCase(unittest.TestCase):
+class CreateOcrScramblerContextTestCase(unittest.TestCase):
   """Util function tests."""
 
   def test_empty_ocr_results(self):
     with self.assertRaises(ValueError):
-      create_ocr_textflow_context([], 0, 0)
+      create_ocr_scrambler_context([], 0, 0)
 
   def test_single_ocr_result(self):
     ocr_results = [OcrResult("Test", Rect(0, 0, 10, 10))]
-    context = create_ocr_textflow_context(ocr_results, 5, 5)
+    context = create_ocr_scrambler_context(ocr_results, 5, 5)
     self.assertEqual(context.text, "Test ")
     self.assertEqual(context.start_indices, [0])
     self.assertEqual(context.mouse_index, 0)
@@ -84,7 +84,7 @@ class CreateOcrTextflowContextTestCase(unittest.TestCase):
         OcrResult("Second", Rect(20, 20, 10, 10)),
         OcrResult("Third", Rect(40, 40, 10, 10))
     ]
-    context = create_ocr_textflow_context(ocr_results, 25, 25)
+    context = create_ocr_scrambler_context(ocr_results, 25, 25)
     self.assertEqual(context.text, "First Second Third ")
     self.assertEqual(context.start_indices, [0, 6, 13])
     self.assertEqual(context.mouse_index, 6)  # "Second" is the closest to (25, 25)
@@ -95,7 +95,7 @@ class CreateOcrTextflowContextTestCase(unittest.TestCase):
         OcrResult("B", Rect(100, 100, 10, 10)),
         OcrResult("C", Rect(50, 50, 10, 10))
     ]
-    context = create_ocr_textflow_context(ocr_results, 52, 52)
+    context = create_ocr_scrambler_context(ocr_results, 52, 52)
     self.assertEqual(context.text, "A B C ")
     self.assertEqual(context.start_indices, [0, 2, 4])
     self.assertEqual(context.mouse_index, 4)  # "C" is the closest to (52, 52)
@@ -109,14 +109,14 @@ class IndexToScreenCoordinatesTestCase(unittest.TestCase):
         OcrResult("Hello", Rect(0, 0, 50, 10)),
         OcrResult("World", Rect(60, 0, 50, 10))
     ]
-    self.context = create_ocr_textflow_context(self.ocr_results, mouse_x=0, mouse_y=0)
+    self.context = create_ocr_scrambler_context(self.ocr_results, mouse_x=0, mouse_y=0)
 
   def test_no_width_string(self):
     bad_ocr_results = [
         OcrResult("Hello", Rect(0, 0, 50, 10)),
         OcrResult("\n\n\n\n", Rect(60, 0, 50, 10))
     ]
-    bad_context = create_ocr_textflow_context(bad_ocr_results, mouse_x=0, mouse_y=0)
+    bad_context = create_ocr_scrambler_context(bad_ocr_results, mouse_x=0, mouse_y=0)
     with self.assertRaises(ValueError):
       bad_context.index_to_screen_coordinates(8)
 
@@ -162,13 +162,13 @@ class OcrUtilTestCase(unittest.TestCase):
   """Util function tests."""
 
   def test_expand_range_to_ocr_results(self):
-    # Create a sample OcrTextFlowContext object
+    # Create a sample OcrScramblerContext object
     ocr_results = [
         OcrResult("Hello", Rect(0, 0, 50, 20)),
         OcrResult("World", Rect(60, 0, 50, 20)),
         OcrResult("!", Rect(120, 0, 20, 20))
     ]
-    ocr_context = OcrTextFlowContext(ocr_results, "Hello World!", [0, 6, 12], 0)
+    ocr_context = OcrScramblerContext(ocr_results, "Hello World!", [0, 6, 12], 0)
 
     # Test expanding a range within the OCR text.
     start, end = ocr_context.expand_range_to_ocr_results(1, 3)

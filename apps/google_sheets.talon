@@ -1,3 +1,3 @@
 app: google_sheets
 -
-# TODO: Fix textflow
+# TODO: Fix scrambler commands for Google Sheets.

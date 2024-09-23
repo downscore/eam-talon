@@ -5,7 +5,7 @@
 # mypy: ignore-errors
 
 from talon import Context, Module
-from ..core.lib import textflow_types as tf
+from ..core.lib import scrambler_types as st
 
 mod = Module()
 ctx = Context()
@@ -19,5 +19,5 @@ tag: user.lang_typescript
 class ExtensionActions:
   """Action overrides."""
 
-  def textflow_get_scope_modifier() -> tf.ModifierType:
-    return tf.ModifierType.C_SCOPE
+  def scrambler_get_scope_modifier() -> st.ModifierType:
+    return st.ModifierType.C_SCOPE

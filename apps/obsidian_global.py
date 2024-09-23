@@ -31,7 +31,7 @@ class Actions:
     Appends to the bottom of the document if no section name is provided."""
     actions.user.obsidian_open_document(document_name)
     if section_name:
-      actions.user.textflow_move_cursor_after_markdown_section(section_name)
+      actions.user.scrambler_move_cursor_after_markdown_section(section_name)
       actions.user.line_insert_down()
     else:
       actions.user.file_end()

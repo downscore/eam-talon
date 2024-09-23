@@ -262,8 +262,8 @@ class Actions:
 
   def scrambler_get_scope_modifier() -> st.ModifierType:
     """Gets the current scope modifier type."""
-    # Default to C-style scopes.
-    return st.ModifierType.C_SCOPE
+    # Default to python-style scopes.
+    return st.ModifierType.PYTHON_SCOPE
 
   def scrambler_get_selected_text_potato_mode() -> str:
     """Gets the selected text. For editors that copy/cut the current line when nothing is selected,
@@ -500,4 +500,14 @@ class Actions:
     # direction.
     modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=word)]
     command = st.Command(st.CommandType.REPLACE, modifiers, insert_text=word)
+    _run_command(command)
+
+  def scrambler_move_cursor_after_markdown_section(section_name: str):
+    """Moves the cursor to the end of the given markdown section. Sections are separated by
+    headings."""
+    modifiers = [
+        st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=f"# {section_name}\n"),
+        st.Modifier(st.ModifierType.MARKDOWN_SECTION_END)
+    ]
+    command = st.Command(st.CommandType.MOVE_CURSOR_AFTER, modifiers)
     _run_command(command)

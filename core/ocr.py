@@ -5,10 +5,11 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from typing import Any, Tuple
+from typing import Any, Optional, Tuple
 from talon import Context, Module, actions, screen, ui
 from talon.experimental import ocr
-from .lib import ocr_util, textflow, textflow_types as tf
+from .lib import ocr_util, scrambler_run, scrambler_types as st
+from ..core.scrambler import ScramblerMatch
 
 mod = Module()
 ctx = Context()
@@ -35,12 +36,12 @@ def _ocr_active_screen() -> list[Any]:
   return ocr.ocr(screencap)
 
 
-def _run_command(command: tf.Command, expand_to_ocr_results: bool = False):
+def _run_command(command: st.Command, expand_to_ocr_results: bool = False):
   """Runs the given command and returns the selection range."""
   # Run OCR and turn the result into a context we can use.
   ocr_results = _ocr_active_screen()
-  context = ocr_util.create_ocr_textflow_context(ocr_results, actions.mouse_x(), actions.mouse_y())
-  utility_functions = tf.UtilityFunctions(actions.user.get_all_homophones,
+  context = ocr_util.create_ocr_scrambler_context(ocr_results, actions.mouse_x(), actions.mouse_y())
+  utility_functions = st.UtilityFunctions(actions.user.get_all_homophones,
                                           actions.user.get_next_homophone)
 
   # Uncomment the following line to disable trying to infer a cursor position from the current mouse
@@ -48,16 +49,16 @@ def _run_command(command: tf.Command, expand_to_ocr_results: bool = False):
   # context.mouse_index = 0
 
   # Run the command.
-  editor_actions = textflow.run_command(
+  editor_actions = scrambler_run.run_command(
       command,
       context.text,
-      tf.TextRange(context.mouse_index, context.mouse_index),
+      st.TextRange(context.mouse_index, context.mouse_index),
       utility_functions,
   )
 
   # Only execute selection range actions.
   for action in editor_actions:
-    if action.action_type != tf.EditorActionType.SET_SELECTION_RANGE:
+    if action.action_type != st.EditorActionType.SET_SELECTION_RANGE:
       continue
     if action.text_range is None:
       raise ValueError("Set selection range action with missing range.")
@@ -75,50 +76,32 @@ def _run_command(command: tf.Command, expand_to_ocr_results: bool = False):
     actions.sleep("50ms")
 
 
+def _modifier_type_from_string(modifier_type: str) -> Optional[st.ModifierType]:
+  """Converts a string to a modifier type. "SCOPE" is a special modifier that gets the appropriate
+  modifier for the current context."""
+  if modifier_type == "":
+    return None
+  if modifier_type == "SCOPE":
+    return actions.user.scrambler_get_scope_modifier()
+  else:
+    return st.ModifierType[modifier_type]
+
+
 @mod.action_class
 class Actions:
   """OCR actions."""
 
-  def ocr_select_by_word(target_from: tf.CompoundTarget,
-                         modifier_string: str = "",
-                         delimiter: str = ""):
+  def ocr_select_by_word(match: ScramblerMatch, modifier_string: str = "", delimiter: str = ""):
     """Selects a modified range on screen with the given word."""
-    modifier_type = actions.user.textflow_modifier_type_from_string(modifier_string)
-    if modifier_type != tf.ModifierType.NONE:
-      target_from.modifier = tf.Modifier(modifier_type, delimiter=delimiter)
-    command = tf.Command(tf.CommandType.SELECT, target_from)
+    modifier_type = _modifier_type_from_string(modifier_string)
+    if modifier_type is not None:
+      match.modifiers.append(st.Modifier(modifier_type, delimiter=delimiter))
+    command = st.Command(st.CommandType.SELECT, match.modifiers, match.extend_modifiers,
+                         match.combination_type)
     _run_command(command)
 
-  def ocr_select_by_word_range(
-      target_from: tf.CompoundTarget,
-      target_to: tf.CompoundTarget,
-      combo_type: tf.TargetCombinationType,
-      modifier_string: str = "",
-      delimiter: str = "",
-  ):
-    """Selects a modified range on screen with the given words."""
-    # Combine the two "compound" targets into an actual compound target. Requires taking
-    # `target_to.target_from`, as the second word was passed as a compound target.
-    compound_target = tf.CompoundTarget(target_from.target_from, target_to.target_from, combo_type)
-    modifier_type = actions.user.textflow_modifier_type_from_string(modifier_string)
-    if modifier_type != tf.ModifierType.NONE:
-      compound_target.modifier = tf.Modifier(modifier_type, delimiter=delimiter)
-    command = tf.Command(tf.CommandType.SELECT, compound_target)
-    _run_command(command)
-
-  def ocr_select_full_result_by_word(target_from: tf.CompoundTarget):
+  def ocr_select_full_result_by_word(match: ScramblerMatch):
     """Selects an OCRed line on screen with the given word."""
-    command = tf.Command(tf.CommandType.SELECT, target_from)
-    _run_command(command, expand_to_ocr_results=True)
-
-  def ocr_select_full_result_by_word_range(
-      target_from: tf.CompoundTarget,
-      target_to: tf.CompoundTarget,
-      combo_type: tf.TargetCombinationType,
-  ):
-    """Selects OCRed lines on screen with the given words."""
-    # Combine the two "compound" targets into an actual compound target. Requires taking
-    # `target_to.target_from`, as the second word was passed as a compound target.
-    compound_target = tf.CompoundTarget(target_from.target_from, target_to.target_from, combo_type)
-    command = tf.Command(tf.CommandType.SELECT, compound_target)
+    command = st.Command(st.CommandType.SELECT, match.modifiers, match.extend_modifiers,
+                         match.combination_type)
     _run_command(command, expand_to_ocr_results=True)

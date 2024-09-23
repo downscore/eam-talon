@@ -1652,3 +1652,110 @@ class TestMarkdownSectionEndModifier(unittest.TestCase):
     modifier = Modifier(ModifierType.MARKDOWN_SECTION_END)
     result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
     self.assertEqual(result, TextMatch(TextRange(38, 38)))
+
+
+class TestLineIncludingLineBreakModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_apply_line_modifier_single_line(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is a test string.")
+
+  def test_apply_line_modifier_trailing_newline(self):
+    text = "This is a test string.\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "")
+
+  def test_apply_line_modifier_multi_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is a test string.\n")
+
+  def test_apply_line_modifier_last_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Another line of text.")
+
+  def test_apply_line_modifier_middle_line(self):
+    text = "This is a test string.\nAnother line of text.\nThe last line."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Another line of text.\n")
+
+  def test_apply_line_modifier_empty_line(self):
+    text = "This is a test string.\n\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 23))  # empty line
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+    self.assertEqual(result, TextMatch(TextRange(23, 24)))
+
+  def test_apply_line_modifier_invalid_match(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(100, 104))
+    modifier = Modifier(ModifierType.LINE_INCLUDING_LINE_BREAK)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+
+
+class TestLineExcludingLineBreakModifier(unittest.TestCase):
+  """Tests for applying modifiers."""
+
+  def test_apply_line_modifier_single_line(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is a test string.")
+
+  def test_apply_line_modifier_trailing_newline(self):
+    text = "This is a test string.\n"
+    input_match = TextMatch(TextRange(len(text), len(text)))
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "")
+
+  def test_apply_line_modifier_multi_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(10, 14))  # "test"
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "This is a test string.")
+
+  def test_apply_line_modifier_last_line(self):
+    text = "This is a test string.\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Another line of text.")
+
+  def test_apply_line_modifier_middle_line(self):
+    text = "This is a test string.\nAnother line of text.\nThe last line."
+    input_match = TextMatch(TextRange(23, 29))  # "Another"
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result.text_range.extract(text), "Another line of text.")
+
+  def test_apply_line_modifier_empty_line(self):
+    text = "This is a test string.\n\nAnother line of text."
+    input_match = TextMatch(TextRange(23, 23))  # empty line
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    result = apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)
+    self.assertEqual(result, TextMatch(TextRange(23, 23)))
+
+  def test_apply_line_modifier_invalid_match(self):
+    text = "This is a test string."
+    input_match = TextMatch(TextRange(100, 104))
+    modifier = Modifier(ModifierType.LINE_EXCLUDING_LINE_BREAK)
+    with self.assertRaises(ValueError):
+      apply_modifier(text, input_match, modifier, UTILITY_FUNCTIONS)

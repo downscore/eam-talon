@@ -40,7 +40,7 @@ def _add_context_to_help(context):
     # Get the formatted command name.
     command_name = command.rule.rule
     command_name = command_name.replace("user.", "")
-    command_name = command_name.replace("textflow", "tf")
+    command_name = command_name.replace("scrambler", "sc")
     command_name = command_name[:_MAX_COMMAND_CHARS]
     if len(command_name) == _MAX_COMMAND_CHARS:
       command_name = command_name[:-1] + "…"
@@ -51,7 +51,7 @@ def _add_context_to_help(context):
     # Get the formatted description.
     description = command.script.code.replace("\n", " ")
     description = description.replace("user.", "")
-    description = description.replace("textflow", "tf")
+    description = description.replace("scrambler", "sc")
     description = description[:_MAX_COMMAND_DESCRIPTION_CHARS]
     if len(description) == _MAX_COMMAND_DESCRIPTION_CHARS:
       description = description[:-1] + "…"

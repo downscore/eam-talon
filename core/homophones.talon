@@ -1,4 +1,4 @@
-# TextFlow has more commands for replacing words with homophones.
+# Scrambler has more commands for replacing words with homophones.
 
 phones that: user.homophones_selected_word()
 phones fragment <user.number>:

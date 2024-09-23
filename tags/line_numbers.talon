@@ -35,4 +35,4 @@ bring line <user.number> [past <user.number>]:
 
 # Scrambler commands using line numbers.
 <user.scrambler_command_type> line <user.number> <user.scrambler_any_match>:
-  user.line_numbers_scrambler_run_command(number, scrambler_command_type, scrambler_any_match)
+  user.splits_line_numbers_scrambler_run_command(number, scrambler_command_type, scrambler_any_match, false)

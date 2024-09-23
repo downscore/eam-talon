@@ -109,37 +109,3 @@ class Actions:
 
     actions.insert("\n")
     actions.user.position_restore()
-
-  def line_numbers_scrambler_run_command(line_number: int, command_type: st.CommandType,
-                                         match: ScramblerMatch):
-    """Runs the given command."""
-    # Check if we need to save and restore the current cursor position.
-    restore_position = command_type not in (st.CommandType.SELECT, st.CommandType.CLEAR_MOVE_CURSOR,
-                                            st.CommandType.MOVE_CURSOR_BEFORE,
-                                            st.CommandType.MOVE_CURSOR_AFTER)
-    if restore_position:
-      actions.user.position_mark()
-
-    # Translate "bring" commands to copy commands so we can insert the text after restoring the
-    # cursor position.
-    is_bring = command_type == st.CommandType.BRING
-    if is_bring:
-      command_type = st.CommandType.COPY_TO_CLIPBOARD
-
-    # Jump to the line and run the command.
-    actions.user.jump_line(line_number)
-    if is_bring:
-      # Bring commands capture the copied text.
-      with clip.capture() as s:
-        actions.user.scrambler_run_command(command_type, match)
-      try:
-        bring_text = s.text()
-      except clip.NoChange as exc:
-        raise ValueError("No text copied by bring command") from exc
-    else:
-      actions.user.scrambler_run_command(command_type, match)
-
-    if restore_position:
-      actions.user.position_restore()
-    if is_bring:
-      actions.user.insert_via_clipboard(bring_text)

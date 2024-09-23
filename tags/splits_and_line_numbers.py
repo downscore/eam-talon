@@ -4,8 +4,9 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions
-from ..core.lib import number_util
+from talon import Context, Module, actions, clip
+from ..core.lib import number_util, scrambler_types as st
+from ..core.scrambler_captures import ScramblerMatch
 
 mod = Module()
 ctx = Context()
@@ -50,98 +51,41 @@ class Actions:
     actions.user.position_restore()
     actions.user.insert_via_clipboard(lines)
 
-  def splits_line_numbers_bring_line_modifier(line_number: int,
-                                              modifier_index: int,
-                                              modifier_name: str,
-                                              delimiter: str = ""):
-    """Brings the given modifier at the given index from the given line number in the previously
-    active split to the cursor position."""
-    # TODO: Refactor and reduce duplicated code with line numbers actions.
-    actions.user.position_mark()
-    actions.user.split_last()
+  def splits_line_numbers_scrambler_run_command(line_number: int, command_type: st.CommandType,
+                                                match: ScramblerMatch, cross_splits: bool):
+    """Runs the given scrambler command on the given line. Optionally runs the command in the
+    previously used split."""
+    # Check if we need to save and restore the current cursor position.
+    restore_position = command_type not in (st.CommandType.SELECT, st.CommandType.CLEAR_MOVE_CURSOR,
+                                            st.CommandType.MOVE_CURSOR_BEFORE,
+                                            st.CommandType.MOVE_CURSOR_AFTER)
+    if restore_position:
+      actions.user.position_mark()
 
-    # Jump to the line, then select the target.
+    # Translate "bring" commands to copy commands so we can insert the text after restoring the
+    # cursor position.
+    is_bring = command_type == st.CommandType.BRING
+    if is_bring:
+      command_type = st.CommandType.COPY_TO_CLIPBOARD
+
+    # Cross splits, jump to the line, and run the command.
+    if cross_splits:
+      actions.user.split_last()
     actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_modifier(modifier_index, modifier_name, delimiter)
-    insert_text = actions.user.selected_text()
+    if is_bring:
+      # Bring commands capture the copied text.
+      with clip.capture() as s:
+        actions.user.scrambler_run_command(command_type, match)
+      try:
+        bring_text = s.text()
+      except clip.NoChange as exc:
+        raise ValueError("No text copied by bring command") from exc
+    else:
+      actions.user.scrambler_run_command(command_type, match)
 
-    # Go back to original position and insert the text.
-    actions.user.split_last()
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def splits_line_numbers_bring_line_token(line_number: int, from_index: int, to_index: int = 0):
-    """Brings the token at the given index, or tokens from the given range, from the given line
-    number in the previously active split to the cursor position."""
-    # TODO: Refactor and reduce duplicated code with line numbers actions.
-    actions.user.position_mark()
-    actions.user.split_last()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_token(from_index, to_index)
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.split_last()
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def splits_line_numbers_bring_line_token_backwards(line_number: int,
-                                                     from_index: int,
-                                                     to_index: int = 0):
-    """Brings the token at the given index, or tokens from the given range, from the given line
-    number in the previously active split to the cursor position."""
-    # TODO: Refactor and reduce duplicated code with line numbers actions.
-    actions.user.position_mark()
-    actions.user.split_last()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    actions.user.line_end()
-    actions.user.textflow_select_nth_token_backwards(from_index, to_index)
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.split_last()
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def splits_line_numbers_bring_line_call(line_number: int, call_index: int):
-    """Brings the given function call at the given index from the given line number  in the
-    previously active split to the cursor position."""
-    # TODO: Refactor and reduce duplicated code with line numbers actions.
-    actions.user.position_mark()
-    actions.user.split_last()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    for _ in range(call_index):
-      actions.user.textflow_select_nth_modifier(1, "CALL_NEXT")
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.split_last()
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
-
-  def splits_line_numbers_bring_line_scope(line_number: int):
-    """Brings the scope from the given line number in the previously active split to the cursor
-    position."""
-    # TODO: Refactor and reduce duplicated code with line numbers actions.
-    # Go to the beginning of the line to try to preserve indentation (especially important in
-    # python).
-    actions.user.line_start()
-
-    actions.user.position_mark()
-    actions.user.split_last()
-
-    # Jump to the line, then select the target.
-    actions.user.jump_line(line_number)
-    actions.user.textflow_select_nth_modifier(1, "SCOPE")
-    insert_text = actions.user.selected_text()
-
-    # Go back to original position and insert the text.
-    actions.user.split_last()
-    actions.user.position_restore()
-    actions.user.insert_via_clipboard(insert_text)
+    if restore_position:
+      if cross_splits:
+        actions.user.split_last()
+      actions.user.position_restore()
+    if is_bring:
+      actions.user.insert_via_clipboard(bring_text)

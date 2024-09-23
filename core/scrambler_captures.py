@@ -20,7 +20,7 @@ _COMMAND_TYPES_BY_SPOKEN = {
     "bring": st.CommandType.BRING,
     "chuck": st.CommandType.CLEAR_NO_MOVE,
     "change": st.CommandType.CLEAR_MOVE_CURSOR,
-    "phony": st.CommandType.NEXT_HOMOPHONE,
+    "phones": st.CommandType.NEXT_HOMOPHONE,
     "bigger": st.CommandType.TITLE_CASE,
     "biggest": st.CommandType.UPPERCASE,
     "smaller": st.CommandType.LOWERCASE,

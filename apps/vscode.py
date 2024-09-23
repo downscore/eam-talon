@@ -162,6 +162,12 @@ class ExtensionActions:
   def navigation_forward():
     actions.user.vscode("workbench.action.navigateForward")
 
+  def position_mark():
+    actions.user.vscode("editor.action.setSelectionAnchor")
+
+  def position_restore():
+    actions.user.vscode("editor.action.goToSelectionAnchor")
+
   def source_control_change_previous():
     actions.user.vscode("workbench.action.editor.previousChange")
 

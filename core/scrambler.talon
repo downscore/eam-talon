@@ -40,3 +40,24 @@ scrambler drag argument right: user.scrambler_move_argument_right()
 # Insert newlines relative to current line without moving the cursor.
 scrambler spike line: user.scrambler_insert_line_above_current()
 scrambler float line: user.scrambler_insert_line_below_current()
+
+# Segmenting or joining words.
+# Note: Including a match ordinal and search direction here makes parsing very ambiguous.
+segment <user.word> <user.word>: user.scrambler_segment_word(word_1, word_2)
+join up <user.word> <user.word>: user.scrambler_join_words(word_1, word_2)
+hyphenate <user.word> <user.word>: user.scrambler_hyphenate_words(word_1, word_2)
+
+# Convert a number written as words to digits ("one thousand and twenty five" -> "1025").
+numberize <user.number_list_of_words>: user.scrambler_words_to_digits(number_list_of_words)
+
+# Make a word possessive ("dog" -> "dog's", "its" -> "it's").
+possessivize <user.scrambler_text_editing_match>:
+  user.scrambler_make_possessive(scrambler_text_editing_match)
+
+# Make a word plural ("dog" -> "dogs", "it" -> "its").
+pluralize <user.scrambler_text_editing_match>:
+  user.scrambler_make_plural(scrambler_text_editing_match)
+
+# Make a word singular ("dogs" -> "dog", "it's" -> "it").
+singularize <user.scrambler_text_editing_match>:
+  user.scrambler_make_singular(scrambler_text_editing_match)

@@ -4,8 +4,9 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
+from typing import Callable, Optional
 from talon import Context, Module, actions, clip, types, ui
-from .lib import scrambler_potato, scrambler_run, scrambler_types as st
+from .lib import number_util, scrambler_potato, scrambler_run, scrambler_types as st
 from .scrambler_captures import ScramblerMatch
 
 mod = Module()
@@ -73,6 +74,19 @@ _ENHANCED_UI_BUNDLES = [
     "com.microsoft.VSCode", "com.microsoft.VSCodeInsiders", "com.visualstudio.code.oss",
     "md.obsidian"
 ]
+
+
+def _make_command(command_type: st.CommandType,
+                  match: ScramblerMatch,
+                  insert_text: str = "",
+                  lambda_func: Optional[Callable[[str], str]] = None) -> st.Command:
+  """Helper function for creating a command from a command type and match."""
+  return st.Command(command_type,
+                    match.modifiers,
+                    match.extend_modifiers,
+                    match.combination_type,
+                    insert_text=insert_text,
+                    lambda_func=lambda_func)
 
 
 def _get_context_potato_mode() -> st.Context:
@@ -330,20 +344,12 @@ class Actions:
 
   def scrambler_replace(match: ScramblerMatch, insert_text: str):
     """"Executes a scrambler replace command."""
-    command = st.Command(st.CommandType.REPLACE,
-                         match.modifiers,
-                         match.extend_modifiers,
-                         match.combination_type,
-                         insert_text=insert_text)
+    command = _make_command(st.CommandType.REPLACE, match, insert_text=insert_text)
     _run_command(command)
 
   def scrambler_replace_word(match: ScramblerMatch, word: str):
     """"Executes a scrambler replace word command, matching original case."""
-    command = st.Command(st.CommandType.REPLACE_WORD_MATCH_CASE,
-                         match.modifiers,
-                         match.extend_modifiers,
-                         match.combination_type,
-                         insert_text=word)
+    command = _make_command(st.CommandType.REPLACE_WORD_MATCH_CASE, match, insert_text=word)
     _run_command(command)
 
   def scrambler_move_argument_left():
@@ -367,6 +373,7 @@ class Actions:
     actions.user.insert_via_clipboard(argument + ", ")
 
   def scrambler_move_argument_right():
+    """Moves the current argument to the right."""
     # Use a scrambler command to capture and delete the argument.
     command = st.Command(st.CommandType.CUT_TO_CLIPBOARD, [st.Modifier(st.ModifierType.ARGUMENT)])
     with clip.capture() as s:
@@ -400,4 +407,80 @@ class Actions:
     """Inserts a line above the current line without moving the cursor to it."""
     command = st.Command(st.CommandType.REPLACE, [st.Modifier(st.ModifierType.START_OF_LINE)],
                          insert_text="\n")
+    _run_command(command)
+
+  def scrambler_segment_word(word1: str, word2: str):
+    """Segment a word into two. e.g. overmatched->over matched."""
+    modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=word1 + word2)]
+    command = st.Command(st.CommandType.REPLACE, modifiers, insert_text=f"{word1} {word2}")
+    _run_command(command)
+
+  def scrambler_join_words(word1: str, word2: str):
+    """Joins two words into one. e.g. base ball->baseball."""
+    modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=f"{word1} {word2}")]
+    command = st.Command(st.CommandType.REPLACE_WITH_LAMBDA,
+                         modifiers,
+                         lambda_func=lambda s: s.replace(" ", ""))
+    _run_command(command)
+
+  def scrambler_hyphenate_words(word1: str, word2: str):
+    """Hyphenates two words. e.g. base ball->base-ball."""
+    modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=f"{word1} {word2}")]
+    command = st.Command(st.CommandType.REPLACE_WITH_LAMBDA,
+                         modifiers,
+                         lambda_func=lambda s: s.replace(" ", "-"))
+    _run_command(command)
+
+  def scrambler_words_to_digits(number_words: list[str]):
+    """Find and convert a number written as words into digits. e.g. "one thousand and twenty five"
+    -> "1025"."""
+    if len(number_words) == 0:
+      return
+    number_string = number_util.parse_number(number_words)
+    # If there is only one word, use an exact match. e.g. for "ten", we don't want to convert
+    # "tent" to "10".
+    if len(number_words) == 1:
+      modifiers = [st.Modifier(st.ModifierType.EXACT_WORD_CLOSEST, search=number_words[0])]
+    else:
+      modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=" ".join(number_words))]
+    command = st.Command(st.CommandType.REPLACE, modifiers, insert_text=number_string)
+    _run_command(command)
+
+  def scrambler_make_possessive(match: ScramblerMatch):
+    """Converts a word to end in "'s". Uses existing trailing 's' if present. e.g. "dog" -> "dog's",
+    "its" -> "it's"."""
+
+    def _make_possessive(s: str) -> str:
+      if s.endswith("'s"):
+        return s
+      if s.endswith("s"):
+        return s[:-1] + "'" + s[-1:]
+      return s + "'s"
+
+    command = _make_command(st.CommandType.REPLACE_WITH_LAMBDA, match, lambda_func=_make_possessive)
+    _run_command(command)
+
+  def scrambler_make_plural(match: ScramblerMatch):
+    """Converts a word to end in "s". Uses existing trailing 's' if present. e.g. "dog" -> "dogs",
+    "it" -> "it's"."""
+
+    def _make_plural(s: str) -> str:
+      if s.endswith("s"):
+        return s
+      return s + "s"
+
+    command = _make_command(st.CommandType.REPLACE_WITH_LAMBDA, match, lambda_func=_make_plural)
+    _run_command(command)
+
+  def scrambler_make_singular(match: ScramblerMatch):
+    """Converts a word to not end in "s" or "'s". e.g. "dogs" -> "dog", "it's" -> "it"."""
+
+    def _make_singular(s: str) -> str:
+      if s.endswith("'s"):
+        return s[:-2]
+      if s.endswith("s"):
+        return s[:-1]
+      return s
+
+    command = _make_command(st.CommandType.REPLACE_WITH_LAMBDA, match, lambda_func=_make_singular)
     _run_command(command)

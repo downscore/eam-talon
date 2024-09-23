@@ -283,10 +283,10 @@ def scrambler_word(m) -> ScramblerMatch:
   repeat, direction = _get_ordinal_and_search_direction(m)
   # If direction is none, repeat must also be 1.
   if direction is None:
-    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_CLOSEST, repeat, m.word)])
+    return ScramblerMatch([st.Modifier(st.ModifierType.WORD_SUBSTRING_CLOSEST, repeat, m.word)])
   if direction == SearchDirection.FORWARD:
-    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_NEXT, repeat, m.word)])
-  return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_PREVIOUS, repeat, m.word)])
+    return ScramblerMatch([st.Modifier(st.ModifierType.WORD_SUBSTRING_NEXT, repeat, m.word)])
+  return ScramblerMatch([st.Modifier(st.ModifierType.WORD_SUBSTRING_PREVIOUS, repeat, m.word)])
 
 
 @mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] " +
@@ -517,3 +517,13 @@ def scrambler_no_prefix_match(m) -> ScramblerMatch:
   except AttributeError:
     pass
   return m.scrambler_reverse_token
+
+
+@mod.capture(rule="(<user.scrambler_substring_range>|<user.scrambler_word>)")
+def scrambler_text_editing_match(m) -> ScramblerMatch:
+  """Scrambler match for text editing commands."""
+  try:
+    return m.scrambler_substring_range
+  except AttributeError:
+    pass
+  return m.scrambler_word

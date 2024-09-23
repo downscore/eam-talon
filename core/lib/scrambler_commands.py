@@ -195,7 +195,7 @@ def _perform_command_next_homophone(text: str, selection_range: TextRange, match
   # Get homophone for the word. No-op if there is no homophone.
   homophone_stripped = utility_functions.get_next_homophone(word_key)
   if not homophone_stripped:
-    print(f"TextFlow: No homophone found. Word: {stripped.stripped}")
+    print(f"Scrambler: No homophone found. Word: {stripped.stripped}")
     return []
 
   # Match original case and whitespace padding.

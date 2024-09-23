@@ -6,9 +6,13 @@
 
 from talon import Context, Module, actions, types, ui
 from .lib import scrambler_potato, scrambler_run, scrambler_types as st
+from .scrambler_captures import ScramblerMatch
 
 mod = Module()
 ctx = Context()
+
+# Whether to log all commands run for debugging.
+_LOG_COMMANDS = True
 
 # Accessibility APIs appear to be limited to this many characters.
 _MAX_ACCESSIBLITY_API_CHARS = 10000
@@ -226,10 +230,15 @@ def _execute_editor_actions(editor_actions: list[st.EditorAction], context: st.C
 def _run_command(command: st.Command):
   """Runs the given command and executes the resulting input actions."""
   context = actions.user.scrambler_get_context()
+  if _LOG_COMMANDS:
+    print(f"Scrambler command: {command}")
+    print(f"Scrambler context: {context}")
   utility_functions = st.UtilityFunctions(actions.user.get_all_homophones,
                                           actions.user.get_next_homophone)
   editor_actions = scrambler_run.run_command(command, context.text, context.selection_range,
                                              utility_functions)
+  if _LOG_COMMANDS:
+    print(f"Scrambler editor actions: {editor_actions}")
   _execute_editor_actions(editor_actions, context)
 
 
@@ -242,13 +251,13 @@ class Actions:
     # Default to C-style scopes.
     return st.ModifierType.C_SCOPE
 
-  def textflow_get_selected_text_potato_mode() -> str:
+  def scrambler_get_selected_text_potato_mode() -> str:
     """Gets the selected text. For editors that copy/cut the current line when nothing is selected,
-    this should be overridden to return an empty string. Otherwise, most textflow commands will not
+    this should be overridden to return an empty string. Otherwise, most scrambler commands will not
     work for targets after the cursor."""
     return actions.user.selected_text()
 
-  def textflow_force_potato_mode() -> bool:
+  def scrambler_force_potato_mode() -> bool:
     """Returns whether to require potato mode even if the accessibility API is available. Required
     in some apps that do not properly implement the accessibility API."""
     return False
@@ -306,3 +315,15 @@ class Actions:
     """Inserts the given text in an editor."""
     del context
     actions.user.insert_via_clipboard(editor_action.text)
+
+  def scrambler_run_command(command_type: st.CommandType, match: ScramblerMatch):
+    """Runs the given command."""
+    command = st.Command(command_type, match.modifiers, match.extend_modifiers,
+                         match.combination_type)
+    _run_command(command)
+
+  def scrambler_run_select_command(match: ScramblerMatch):
+    """Runs a selection command on the given match."""
+    command = st.Command(st.CommandType.SELECT, match.modifiers, match.extend_modifiers,
+                         match.combination_type)
+    _run_command(command)

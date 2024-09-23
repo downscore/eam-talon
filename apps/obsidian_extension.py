@@ -6,7 +6,7 @@
 
 import os
 from talon import Context, Module, actions
-from ..core.lib import number_util, textflow_types as tf
+from ..core.lib import number_util, scrambler_types as st, textflow_types as tf
 from ..core import textflow as tft
 
 ctx = Context()
@@ -85,6 +85,26 @@ class UserActions:
 
   def textflow_set_selection_action(editor_action: tf.EditorAction, context: tft.TextFlowContext):
     """Sets the selection in an editor, given a textflow context. Can be overwritten in apps with
+    accessibility extensions."""
+    if editor_action.text_range is None:
+      raise ValueError("Set selection range action with missing range.")
+    actions.user.obsidian_command_and_wait("setSelection",
+                                           editor_action.text_range.start + context.text_offset,
+                                           editor_action.text_range.end + context.text_offset)
+
+  def scrambler_get_context() -> st.Context:
+    context = actions.user.obsidian_command_return_value("getTextFlowContext")
+    # Disable potato mode because we implement the set selection action.
+    text_offset = context["textStartOffset"]
+    result = st.Context(text=context["text"],
+                        selection_range=st.TextRange(context["selectionFromOffset"] - text_offset,
+                                                     context["selectionToOffset"] - text_offset),
+                        text_offset=text_offset,
+                        potato_mode=False)
+    return result
+
+  def scrambler_set_selection_action(editor_action: st.EditorAction, context: st.Context):
+    """Sets the selection in an editor, given a scrambler context. Can be overwritten in apps with
     accessibility extensions."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range.")

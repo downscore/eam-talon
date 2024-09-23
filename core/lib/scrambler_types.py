@@ -207,7 +207,7 @@ class EditorActionType(Enum):
 
 @dataclass
 class EditorAction:
-  """A text editing action. Used as output from TextFlow."""
+  """A text editing action. Used as output from scrambler."""
   action_type: EditorActionType
   # Text range for selection, deletion, etc.
   text_range: Optional[TextRange] = None
@@ -232,8 +232,8 @@ class Context:
   # The range of the current selection. If the range has zero length, it represents the position of
   # the cursor (an empty selection).
   selection_range: TextRange
-  # Whether we are in potato mode. Defaults to true to make overriding `textflow_get_context` safe
-  # by default. If `textflow_get_context` is overridden but `textflow_set_selection_action` is not,
+  # Whether we are in potato mode. Defaults to true to make overriding `scrambler_get_context` safe
+  # by default. If `scrambler_get_context` is overridden but `scrambler_set_selection_action` is not,
   # the non-potato default implementation is likely to fail (e.g. the overridden context action may
   # not populate `editor_element`).
   potato_mode: bool = True

@@ -68,7 +68,7 @@ class RunCommandTestCase(unittest.TestCase):
     self.assertEqual(clipboard, "")
 
   def test_select_word_not_fragment(self):
-    test_string = "combo type to [m.textflow_target_combo_type]"
+    test_string = "combo type to [m.scrambler_target_combo_type]"
     command = Command(CommandType.SELECT, _get_substring_modifiers("ty"))
     actions = run_command(command, test_string, TextRange(44, 44), UTILITY_FUNCTIONS)
     context = Context(test_string, TextRange(44, 44))

@@ -484,3 +484,20 @@ class Actions:
 
     command = _make_command(st.CommandType.REPLACE_WITH_LAMBDA, match, lambda_func=_make_singular)
     _run_command(command)
+
+  def scrambler_surround_text(match: ScramblerMatch, before: str, after: Optional[str] = None):
+    """Adds strings around a matched target. If `after` is None, it will be set to `before`."""
+    if after is None:
+      after = before
+    command = _make_command(st.CommandType.REPLACE_WITH_LAMBDA,
+                            match,
+                            lambda_func=lambda s: f"{before}{s}{after}")
+    _run_command(command)
+
+  def scrambler_swap_homophone_to_word(word: str):
+    """Finds the nearest homophone for the given word and swaps it to the word."""
+    # TODO: This will match the word itself and word substrings. Also add ordinal and search
+    # direction.
+    modifiers = [st.Modifier(st.ModifierType.PHRASE_CLOSEST, search=word)]
+    command = st.Command(st.CommandType.REPLACE, modifiers, insert_text=word)
+    _run_command(command)

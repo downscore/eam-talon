@@ -371,3 +371,15 @@ class Actions:
 
     # Re-insert the deleted argument.
     actions.user.insert_via_clipboard(", " + argument)
+
+  def scrambler_insert_line_below_current():
+    """Inserts a line below the current line without moving the cursor to it."""
+    command = st.Command(st.CommandType.REPLACE, [st.Modifier(st.ModifierType.END_OF_LINE)],
+                         insert_text="\n")
+    _run_command(command)
+
+  def scrambler_insert_line_above_current():
+    """Inserts a line above the current line without moving the cursor to it."""
+    command = st.Command(st.CommandType.REPLACE, [st.Modifier(st.ModifierType.START_OF_LINE)],
+                         insert_text="\n")
+    _run_command(command)

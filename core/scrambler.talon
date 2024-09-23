@@ -16,4 +16,8 @@ scrambler <user.scrambler_no_prefix_match>:
 
 # Moving arguments left or right.
 scrambler drag argument left: user.scrambler_move_argument_left()
-scrambler drag argument right: user.textflow_move_argument_right()
+scrambler drag argument right: user.scrambler_move_argument_right()
+
+# Insert newlines relative to current line without moving the cursor.
+scrambler spike line: user.scrambler_insert_line_above_current()
+scrambler float line: user.scrambler_insert_line_below_current()

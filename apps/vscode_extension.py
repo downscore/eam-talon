@@ -73,7 +73,7 @@ class UserActions:
     actions.user.vscode_and_wait("eam-talon.insertSnippet", body)
 
   def scrambler_get_context() -> st.Context:
-    context = actions.user.vscode_return_value("eam-talon.getTextFlowContext")
+    context = actions.user.vscode_return_value("eam-talon.getEditorContext")
     # Disable potato mode because we implement the set selection action.
     text_offset = context["textStartOffset"]
     result = st.Context(text=context["text"],

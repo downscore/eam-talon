@@ -71,7 +71,7 @@ class UserActions:
                                   to_index if to_index > 0 else None)
 
   def scrambler_get_context() -> st.Context:
-    context = actions.user.obsidian_command_return_value("getTextFlowContext")
+    context = actions.user.obsidian_command_return_value("getEditorContext")
     # Disable potato mode because we implement the set selection action.
     text_offset = context["textStartOffset"]
     result = st.Context(text=context["text"],

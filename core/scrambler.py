@@ -328,6 +328,24 @@ class Actions:
                          match.combination_type)
     _run_command(command)
 
+  def scrambler_replace(match: ScramblerMatch, insert_text: str):
+    """"Executes a scrambler replace command."""
+    command = st.Command(st.CommandType.REPLACE,
+                         match.modifiers,
+                         match.extend_modifiers,
+                         match.combination_type,
+                         insert_text=insert_text)
+    _run_command(command)
+
+  def scrambler_replace_word(match: ScramblerMatch, word: str):
+    """"Executes a scrambler replace word command, matching original case."""
+    command = st.Command(st.CommandType.REPLACE_WORD_MATCH_CASE,
+                         match.modifiers,
+                         match.extend_modifiers,
+                         match.combination_type,
+                         insert_text=word)
+    _run_command(command)
+
   def scrambler_move_argument_left():
     """Moves the current argument to the left."""
     # Use a scrambler command to capture and delete the argument.

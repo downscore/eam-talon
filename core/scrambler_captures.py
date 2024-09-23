@@ -255,6 +255,28 @@ def scrambler_reverse_token(m) -> ScramblerMatch:
   return ScramblerMatch(modifiers, extend_type, extend_modifiers)
 
 
+@mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] definite")
+def scrambler_definite(m) -> ScramblerMatch:
+  """A scrambler capture for the word "the"."""
+  repeat, direction = _get_ordinal_and_search_direction(m)
+  if direction is None:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_CLOSEST, repeat, "the")])
+  if direction == SearchDirection.FORWARD:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_NEXT, repeat, "the")])
+  return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_PREVIOUS, repeat, "the")])
+
+
+@mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] indefinite")
+def scrambler_indefinite(m) -> ScramblerMatch:
+  """A scrambler capture for the word "a"."""
+  repeat, direction = _get_ordinal_and_search_direction(m)
+  if direction is None:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_CLOSEST, repeat, "a")])
+  if direction == SearchDirection.FORWARD:
+    return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_NEXT, repeat, "a")])
+  return ScramblerMatch([st.Modifier(st.ModifierType.EXACT_WORD_PREVIOUS, repeat, "a")])
+
+
 @mod.capture(rule="[<user.ordinals_small>] [<user.scrambler_search_direction>] <user.word>")
 def scrambler_word(m) -> ScramblerMatch:
   """A scrambler capture for a single word match."""

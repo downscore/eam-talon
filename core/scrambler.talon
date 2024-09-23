@@ -14,6 +14,25 @@ scrambler <user.scrambler_single_word_command_type> <user.scrambler_word>:
 scrambler <user.scrambler_no_prefix_match>:
   user.scrambler_run_select_command(scrambler_no_prefix_match)
 
+# Replace a target with prose (includes punctuation).
+scrambler swap <user.scrambler_substring_range> with <user.prose>$:
+  user.scrambler_replace(scrambler_substring_range, prose)
+scrambler swap <user.scrambler_substring_range> with <user.prose> anchor:
+  user.scrambler_replace(scrambler_substring_range, prose)
+
+# Single word replacement.
+scrambler swap <user.scrambler_word> with <user.word>:
+  user.scrambler_replace_word(scrambler_word, word)
+# Common replacement (with "in") that performs poorly in dictation mode.
+scrambler swap <user.scrambler_word> within:
+  user.scrambler_replace_word(scrambler_word, "in")
+
+# # Swap articles (a <-> the).
+scrambler swap <user.scrambler_definite>:
+  user.scrambler_replace_word(scrambler_definite, "a")
+scrambler swap <user.scrambler_indefinite>:
+  user.scrambler_replace_word(scrambler_indefinite, "the")
+
 # Moving arguments left or right.
 scrambler drag argument left: user.scrambler_move_argument_left()
 scrambler drag argument right: user.scrambler_move_argument_right()

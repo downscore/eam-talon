@@ -6,7 +6,7 @@
 
 from typing import Callable, Optional
 from talon import Context, Module, actions, clip, types, ui
-from .lib import number_util, scrambler_potato, scrambler_run, scrambler_types as st
+from .lib import number_util, scrambler_potato, scrambler_run, scrambler_sim, scrambler_types as st
 from .scrambler_captures import ScramblerMatch
 
 mod = Module()
@@ -236,6 +236,9 @@ def _execute_editor_actions(editor_actions: list[st.EditorAction], context: st.C
       if action.text_range is None:
         raise ValueError("Delete range action with missing range.")
       actions.user.scrambler_delete_range_action(action, context)
+
+    # Update context with the action.
+    scrambler_sim.simulate_actions(context, [action])
 
     # Sleep to let the UI catch up to the commands.
     actions.sleep("50ms")

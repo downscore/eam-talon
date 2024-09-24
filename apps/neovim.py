@@ -28,7 +28,6 @@ def _insert_mode(context: st.Context):
   if context.editor_mode != "n":
     actions.key("escape")
   actions.key("i")
-  context.editor_mode = "i"
 
 
 def _normal_mode(context: st.Context):
@@ -36,7 +35,6 @@ def _normal_mode(context: st.Context):
   if context.editor_mode == "n":
     return
   actions.key("escape")
-  context.editor_mode = "n"
 
 
 def _move_cursor_to_start_of_range(text_range: st.TextRange, context: st.Context):
@@ -154,9 +152,7 @@ class ExtensionActions:
     """Sets the selection in an editor, given a scrambler context."""
     if editor_action.text_range is None:
       raise ValueError("Set selection range action with missing range in neovim.")
-
     _move_cursor_to_start_of_range(editor_action.text_range, context)
-
     # Use visual mode for non-empty selection.
     if editor_action.text_range.length() > 0:
       actions.insert(f"v{editor_action.text_range.length() - 1}l")
@@ -170,16 +166,9 @@ class ExtensionActions:
     """Deletes a text range in an editor, given a scrambler context."""
     if editor_action.text_range is None:
       raise ValueError("Delete range action with missing range.")
-
     _move_cursor_to_start_of_range(editor_action.text_range, context)
-
     if editor_action.text_range.length() > 0:
       actions.insert(f"{editor_action.text_range.length()}x")
-      # Update context to allow subsequent actions to work correctly.
-      context.text = context.text[:editor_action.text_range.start] + context.text[editor_action.
-                                                                                  text_range.end:]
-      context.selection_range = st.TextRange(editor_action.text_range.start,
-                                             editor_action.text_range.start)
     _insert_mode(context)
 
   def scrambler_clear_action(editor_action: st.EditorAction, context: st.Context):
@@ -190,8 +179,6 @@ class ExtensionActions:
       actions.key("escape")
     actions.insert("x")
     _insert_mode(context)
-    # TODO: Update context to reflect the deletion. Currently, the clear action never has other
-    # editor actions following it, so this isn't a problem in practice.
 
   def scrambler_insert_text_action(editor_action: st.EditorAction, context: st.Context):
     """Inserts the given text in an editor."""

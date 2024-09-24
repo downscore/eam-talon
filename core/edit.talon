@@ -101,14 +101,6 @@ sharpen: user.delete_first_and_last_characters_maintain_selection()
 
 # Deleting
 chuck line: user.delete_line()
-chuck left: key(backspace)
-chuck right: key(delete)
-chuck up:
-  user.extend_up()
-  user.delete()
-chuck down:
-  user.extend_down()
-  user.delete()
 chuck everything: user.delete_all()
 chuck word: user.delete_word()
 scratcher: user.delete_word_left()

@@ -37,7 +37,7 @@ _SINGLE_WORD_COMMAND_TYPES_BY_SPOKEN = {
     "append": st.CommandType.MOVE_CURSOR_AFTER,
     "bring word": st.CommandType.BRING,
     "junker": st.CommandType.CLEAR_NO_MOVE,
-    "change": st.CommandType.CLEAR_MOVE_CURSOR,
+    "change word": st.CommandType.CLEAR_MOVE_CURSOR,
     "phony": st.CommandType.NEXT_HOMOPHONE,
     "bigger": st.CommandType.TITLE_CASE,
     "biggest": st.CommandType.UPPERCASE,

@@ -61,6 +61,12 @@ class ExtensionActions:
     text = clip.text()
     actions.insert(text)
 
+  def paste_line():
+    """When the clipboard contains a full, terminated line, paste it as a new line."""
+    actions.user.line_start()
+    actions.user.line_start()
+    actions.user.paste()
+
   def delete():
     """Deletes the currently-selected text or the previous character."""
     actions.key("backspace")
@@ -340,6 +346,14 @@ class ExtensionActions:
     actions.user.insert_via_clipboard(line_text)
     actions.user.left()
 
+  def join_lines():
+    """Joins the current line with the line above."""
+    actions.user.line_end()
+    actions.user.line_start()
+    actions.user.extend_line_start()
+    actions.key("backspace:2")
+    actions.key("space")
+
   def expand_selection_to_adjacent_characters():
     """Expands the current selection to include adjacent characters on the left and right. If
     nothing is selected, selects a character on either side of the cursor."""
@@ -605,6 +619,16 @@ class ExtensionActions:
     if actions.user.selected_text():
       actions.key("left")
     actions.key("shift-left")
+
+  def character_cursor_before(n: int):
+    """Moves the cursor before the nth character of the current token. Index is 1-based."""
+    actions.user.character_select_range(n, 0)
+    actions.key("left")
+
+  def character_cursor_after(n: int):
+    """Moves the cursor after the nth character of the current token. Index is 1-based."""
+    actions.user.character_select_range(n, 0)
+    actions.key("right")
 
   def sort_lines_ascending():
     """Sorts the selected lines in ascending order."""

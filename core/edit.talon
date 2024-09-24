@@ -50,12 +50,8 @@ jump top: user.file_start()
 jump bottom: user.file_end()
 before fragment <user.number_small>: user.fragment_cursor_before(number_small)
 after fragment <user.number_small>: user.fragment_cursor_after(number_small)
-before car <user.number_small>:
-  user.character_select_range(number_small_1, 0)
-  key(left)
-after car <user.number_small>:
-  user.character_select_range(number_small_1, 0)
-  key(right)
+before car <user.number_small>: user.character_cursor_before(number_small)
+after car <user.number_small>: user.character_cursor_after(number_small)
 
 # Selection
 # Poor recognition for "pick line", so added "icline" to help.
@@ -171,10 +167,7 @@ cut tail:
 pasty: user.paste()
 paste match: user.paste_match_style()
 pastry <user.number_small>: user.clipboard_history_paste(number_small)
-paste line:
-  user.line_start()
-  user.line_start()
-  user.paste()
+paste line: user.paste_line()
 # Paste clipboard contents with "insert" to bypass restrictions on pasting.
 dont fuck with paste: user.paste_via_insert()
 
@@ -196,12 +189,7 @@ jump next <user.word>: user.jump_to_next_occurrence(user.word)
 clone line: user.duplicate_line()
 drag up: user.line_swap_up()
 drag down: user.line_swap_down()
-join lines:
-  user.line_end()
-  user.line_start()
-  user.extend_line_start()
-  key(backspace:2)
-  key(space)
+join lines: user.join_lines()
 
 # Indentation
 dedent: user.indent_less()

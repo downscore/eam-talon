@@ -34,12 +34,89 @@ class ExtensionActions:
   avoid the potential for problems in the future."""
 
   def copy():
-    """Copies the currently-selected text to the clipboard."""
+    """Copies the currently-selected text to the clipboard without saving it to history."""
     actions.key("cmd-c")
 
+  def copy_word_with_history():
+    """Copies the current word to the clipboard and saves it to history."""
+    actions.user.select_word()
+    actions.user.clipboard_history_copy()
+
+  def copy_word_left_with_history():
+    """Copies the word to the left of the cursor to the clipboard and saves it to history."""
+    actions.user.extend_word_left()
+    actions.user.clipboard_history_copy()
+
+  def copy_word_right_with_history():
+    """Copies the word to the right of the cursor to the clipboard and saves it to history."""
+    actions.user.extend_word_right()
+    actions.user.clipboard_history_copy()
+
+  def copy_line_including_line_break_with_history():
+    """Copies the current line, including the trailing line break, to the clipboard and saves it to
+    history."""
+    actions.user.select_line_including_line_break()
+    actions.user.clipboard_history_copy()
+
+  def copy_to_line_start_with_history():
+    """Copies text from the cursor to the start of the line to the clipboard and saves it to
+    history."""
+    actions.user.extend_line_start()
+    actions.user.clipboard_history_copy()
+
+  def copy_to_line_end_with_history():
+    """Copies text from the cursor to the end of the line to the clipboard and saves it to
+    history."""
+    actions.user.extend_line_end()
+    actions.user.clipboard_history_copy()
+
+  def copy_multiple_lines_including_line_break_with_history(n: int):
+    """Copies the given number of lines, including the trailing line breaks, to the clipboard and
+    saves them to history."""
+    actions.user.select_multiple_lines_including_line_break(n)
+    actions.user.clipboard_history_copy()
+
   def cut():
-    """Cuts the currently-selected text to the clipboard."""
+    """Cuts the currently-selected text to the clipboard without saving it to history."""
     actions.key("cmd-x")
+
+  def cut_word_with_history():
+    """Cuts the current word to the clipboard and saves it to history."""
+    actions.user.select_word()
+    actions.user.clipboard_history_cut()
+
+  def cut_word_left_with_history():
+    """Cuts the word to the left of the cursor to the clipboard and saves it to history."""
+    actions.user.extend_word_left()
+    actions.user.clipboard_history_cut()
+
+  def cut_word_right_with_history():
+    """Cuts the word to the right of the cursor to the clipboard and saves it to history."""
+    actions.user.extend_word_right()
+    actions.user.clipboard_history_cut()
+
+  def cut_line_including_line_break_with_history():
+    """Cuts the current line, including the trailing line break, to the clipboard and saves it to
+    history."""
+    actions.user.select_line_including_line_break()
+    actions.user.clipboard_history_cut()
+
+  def cut_to_line_start_with_history():
+    """Cuts text from the cursor to the start of the line to the clipboard and saves it to
+    history."""
+    actions.user.extend_line_start()
+    actions.user.clipboard_history_cut()
+
+  def cut_to_line_end_with_history():
+    """Cuts text from the cursor to the end of the line to the clipboard and saves it to history."""
+    actions.user.extend_line_end()
+    actions.user.clipboard_history_cut()
+
+  def cut_multiple_lines_including_line_break_with_history(n: int):
+    """Cuts the given number of lines, including the trailing line breaks, to the clipboard and
+    saves them to history."""
+    actions.user.select_multiple_lines_including_line_break(n)
+    actions.user.clipboard_history_cut()
 
   def paste():
     """Pastes the clipboard contents."""
@@ -94,6 +171,16 @@ class ExtensionActions:
   def delete_to_line_start():
     """Delete from the cursor to the start of the line."""
     actions.user.extend_line_start()
+    actions.user.delete()
+
+  def delete_to_file_start():
+    """Delete from the cursor to the start of the file."""
+    actions.user.extend_file_start()
+    actions.user.delete()
+
+  def delete_to_file_end():
+    """Delete from the cursor to the end of the file."""
+    actions.user.extend_file_end()
     actions.user.delete()
 
   def delete_word_left(n: int = 1):
@@ -607,6 +694,12 @@ class ExtensionActions:
     effective_to = min(len(selected), to_index) if to_index > 0 else from_index
     actions.key(f"left right:{from_index - 1}")
     actions.key(f"shift-right:{effective_to - from_index + 1}")
+
+  def character_delete_range(from_index: int, to_index: int = 0):
+    """Deletes a range of characters in the selected text. 1-based. If `to_index` is zero, deletes
+    the from character."""
+    actions.user.character_select_range(from_index, to_index or 0)
+    actions.user.delete()
 
   def character_select_next():
     """Selects the next character in the selected text."""

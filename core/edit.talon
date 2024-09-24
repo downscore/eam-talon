@@ -103,65 +103,38 @@ scratcher: user.delete_word_left()
 swallow: user.delete_word_right()
 chuck head: user.delete_to_line_start()
 chuck tail: user.delete_to_line_end()
-chuck top:
-  user.extend_file_start()
-  user.delete()
-chuck bottom:
-  user.extend_file_end()
-  user.delete()
+chuck top: user.delete_to_file_start()
+chuck bottom: user.delete_to_file_end()
 chuck fragment [<user.number_small>] [past <user.number_small>]:
   user.fragment_delete(number_small_1 or -1, number_small_2 or 0)
 chuck car <user.number_small> [past <user.number_small>]:
-  user.character_select_range(number_small_1, number_small_2 or 0)
-  user.delete()
+  user.character_delete_range(number_small_1, number_small_2 or 0)
 
 # Copying to clipboard
 copy that: user.clipboard_history_copy()
 copy no history: user.copy()
-copy word:
-  user.select_word()
-  user.clipboard_history_copy()
-copy lefter:
-  user.extend_word_left()
-  user.clipboard_history_copy()
-copy writer:
-  user.extend_word_right()
-  user.clipboard_history_copy()
-copy line:
-  user.select_line_including_line_break()
-  user.clipboard_history_copy()
-copy head:
-  user.extend_line_start()
-  user.clipboard_history_copy()
-copy tail:
-  user.extend_line_end()
-  user.clipboard_history_copy()
+copy word: user.copy_word_with_history()
+copy lefter: user.copy_word_left_with_history()
+copy writer: user.copy_word_right_with_history()
+copy line: user.copy_line_including_line_break_with_history()
+copy head: user.copy_to_line_start_with_history()
+copy tail: user.copy_to_line_end_with_history()
 # Copy multiple lines.
 copy <user.number_small> lines:
-  user.select_multiple_lines_including_line_break(number_small)
-  user.clipboard_history_copy()
+  user.copy_multiple_lines_including_line_break_with_history(number_small)
 
 # Cutting to clipboard
 cut that: user.clipboard_history_cut()
 cut no history: user.cut()
-cut word:
-  user.select_word()
-  user.clipboard_history_cut()
-cut lefter:
-  user.extend_word_left()
-  user.clipboard_history_cut()
-cut writer:
-  user.extend_word_right()
-  user.clipboard_history_cut()
-cut line:
-  user.select_line_including_line_break()
-  user.clipboard_history_cut()
-cut head:
-  user.extend_line_start()
-  user.clipboard_history_cut()
-cut tail:
-  user.extend_line_end()
-  user.clipboard_history_cut()
+cut word: user.cut_word_with_history()
+cut lefter: user.cut_word_left_with_history()
+cut writer: user.cut_word_right_with_history()
+cut line: user.cut_line_including_line_break_with_history()
+cut head: user.cut_to_line_start_with_history()
+cut tail: user.cut_to_line_end_with_history()
+# Copy multiple lines.
+cut <user.number_small> lines:
+  user.cut_multiple_lines_including_line_break_with_history(number_small)
 
 # Pasting from clipboard or clipboard history
 pasty: user.paste()

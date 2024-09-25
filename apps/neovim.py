@@ -138,6 +138,10 @@ class ExtensionActions:
       # Sleep here so that clip.revert doesn't revert the clipboard too soon.
       actions.sleep("50ms")
 
+  def copy():
+    context: st.Context = actions.user.scrambler_get_context()
+    clip.set_text(context.selection_range.extract(context.text))
+
   def jump_line(n: int):
     # Insert mode at the first non-whitespace character of the line.
     actions.user.neovim_run(f"{n}G^i")
@@ -229,7 +233,6 @@ class ExtensionActions:
       actions.insert("$h")
 
   def line_numbers_bring_line_range(from_index: int, to_index: int = 0):
-    """Copies a given line to the cursor location."""
     if to_index > 0:
       to_index = number_util.copy_leading_decimal_digits(from_index, to_index)
     actions.user.position_mark()

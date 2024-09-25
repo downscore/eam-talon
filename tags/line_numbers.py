@@ -4,9 +4,8 @@
 # pyright: reportSelfClsParameterName=false, reportGeneralTypeIssues=false
 # mypy: ignore-errors
 
-from talon import Context, Module, actions, clip
-from ..core.lib import number_util, scrambler_types as st
-from ..core.scrambler_captures import ScramblerMatch
+from talon import Context, Module, actions
+from ..core.lib import number_util
 
 mod = Module()
 ctx = Context()

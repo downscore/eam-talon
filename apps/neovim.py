@@ -7,6 +7,7 @@
 from talon import Context, Module, actions, clip
 from ..core.lib import number_util, scrambler_types as st
 from ..core import mode_dictation
+from ..core.edit import get_selected_text_fragments
 
 mod = Module()
 ctx = Context()
@@ -346,6 +347,150 @@ class ExtensionActions:
 
     # TODO: This will expand the selection if the cursor is at the beinning of the selection.
     actions.insert("oloh")
+
+  def delete_first_and_last_characters_maintain_selection():
+    """Deletes the first and last characters of the selected text. Maintains the selection."""
+    selected_text = actions.user.selected_text()
+    if not selected_text:
+      return
+
+    # Just delete the selection if it is small.
+    if len(selected_text) <= 2:
+      actions.insert("xi")
+      return
+
+    replace_text = selected_text[1:-1]
+    actions.user.insert_replacing_selected(replace_text)
+
+    # Reselect the text.
+    # TODO: This won't work with multi-line selections.
+    actions.user.neovim_run(f"{len(replace_text)}hv{len(replace_text)}l")
+
+  def find_everywhere():
+    # TODO: Ripgrep-style search.
+    actions.user.neovim_run(" sf")
+
+  def fragment_cursor_after(n: int):
+    _, fragments = get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      raise ValueError(f"Invalid fragment index: {n}")
+    fragment = fragments[n - 1]
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if fragment[1] > 0:
+      actions.insert(f"{fragment[1]}l")
+    actions.insert("i")
+
+  def fragment_cursor_before(n: int):
+    _, fragments = get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      raise ValueError(f"Invalid fragment index: {n}")
+    fragment = fragments[n - 1]
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if fragment[0] > 0:
+      actions.insert(f"{fragment[0]}l")
+    actions.insert("i")
+
+  def fragment_delete(from_index: int, to_index: int = 0):
+    if from_index == 0:
+      raise ValueError(f"Invalid fragment index: {from_index}")
+    _, fragments = get_selected_text_fragments()
+    if from_index > len(fragments):
+      raise ValueError(f"Invalid fragment index: {from_index}")
+
+    # Negative index deletes the last fragment.
+    if from_index < 0:
+      from_index = len(fragments)  # pylint: disable=self-cls-assignment
+
+    from_fragment = fragments[from_index - 1]
+    if 0 < to_index <= len(fragments):
+      to_fragment = fragments[to_index - 1]
+    else:
+      to_fragment = from_fragment
+
+    # Check if we need to delete a separator character before or after the fragment.
+    delete_before = from_index > 1 and fragments[from_index - 2][1] < from_fragment[0]
+    # Using int(n) below to suppress pylint error.
+    delete_after = not delete_before and from_index < len(fragments) and to_fragment[1] < fragments[
+        int(from_index)][0]
+
+    start_index = from_fragment[0] - (1 if delete_before else 0)
+    length = to_fragment[1] - from_fragment[0] + (1 if delete_before or delete_after else 0)
+
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if start_index > 0:
+      actions.insert(f"{start_index}l")
+    if length > 0:
+      actions.insert(f"{length}x")
+    actions.insert("i")
+
+  def fragment_select(from_index: int, to_index: int = 0):
+    _, fragments = get_selected_text_fragments()
+    from_index_effective = int(from_index)
+    if from_index_effective < 0:
+      from_index_effective = len(fragments)
+    if from_index_effective <= 0 or from_index_effective > len(fragments):
+      raise ValueError(f"Invalid fragment index: {from_index}")
+    from_fragment = fragments[from_index_effective - 1]
+    if to_index > 0 and to_index <= len(fragments):
+      to_fragment = fragments[to_index - 1]
+    else:
+      to_fragment = from_fragment
+
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if from_fragment[0] > 0:
+      actions.insert(f"{from_fragment[0]}l")
+    length = to_fragment[1] - from_fragment[0] - 1
+    if length > 0:
+      actions.insert(f"v{length}l")
+
+  def fragment_select_head(n: int):
+    _, fragments = get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      raise ValueError(f"Invalid fragment index: {n}")
+    fragment = fragments[n - 1]
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if fragment[1] > 1:
+      actions.insert(f"v{fragment[1] - 1}l")
+
+  def fragment_select_tail(n: int):
+    text, fragments = get_selected_text_fragments()
+    if n <= 0 or n > len(fragments):
+      raise ValueError(f"Invalid fragment index: {n}")
+    fragment = fragments[n - 1]
+
+    actions.insert("o")
+    actions.key("escape")
+    if fragment[0] > 0:
+      actions.insert(f"{fragment[0]}l")
+    length = len(text) - fragment[0] - 1
+    if length > 0:
+      actions.insert(f"v{length}l")
+
+  def fragment_select_next():
+    # TODO: This will not work if the cursor is at the start of the selection.
+    if actions.user.selected_text():
+      actions.user.neovim_run("l")
+    actions.user.extend_word_right()
+    actions.user.fragment_select(1)
+
+  def fragment_select_previous():
+    # TODO: This will not work if the cursor is at the start of the selection.
+    selected = actions.user.selected_text()
+    if selected:
+      actions.user.neovim_run(f"{len(selected)}h")
+    actions.user.extend_word_left()
+    actions.insert("o")  # Move cursor to the end of the selection.
+    actions.user.fragment_select(-1)
 
   def jump_line(n: int):
     # Insert mode at the first non-whitespace character of the line.

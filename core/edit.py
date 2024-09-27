@@ -622,6 +622,12 @@ class ExtensionActions:
       # Sleep here so that clip.revert doesn't revert the clipboard too soon.
       actions.sleep("50ms")
 
+  def insert_replacing_selected(text: str):
+    """Inserts text, replacing the currently-selected text. Can be overridden to provide correct
+    behavior in vim-style editors."""
+    # Most editors will replace the selected text when text is inserted.
+    actions.user.insert_via_clipboard(text)
+
   def jump_to_last_occurrence(text: str):
     """Jumps to the last occurrence of the specified text."""
     actions.key("cmd-f")

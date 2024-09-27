@@ -47,7 +47,7 @@ class Actions:
     result = selected_stripped.apply_padding(result)
 
     # Insert homophone.
-    actions.insert(result)
+    actions.user.insert_replacing_selected(result)
 
   def get_all_homophones(word: str) -> list[str]:
     """Gets a list of all homophones for the given word, including the given word."""

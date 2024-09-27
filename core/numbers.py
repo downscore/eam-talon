@@ -94,7 +94,7 @@ class Actions:
     regex = r"[-]?\d+"
     replace = re.sub(regex, lambda match: str(int(match.group(0)) + n), selected)
 
-    actions.user.insert_via_clipboard(replace)
+    actions.user.insert_replacing_selected(replace)
 
   def number_subtract(n: int):
     """Subtracts n from any selected numbers."""
@@ -108,7 +108,7 @@ class Actions:
     regex = r"[-]?\d+"
     replace = re.sub(regex, lambda match: str(int(match.group(0)) * n), selected)
 
-    actions.user.insert_via_clipboard(replace)
+    actions.user.insert_replacing_selected(replace)
 
   def number_divide(n: int):
     """Divides any selected numbers by n. Truncates results to integers."""
@@ -118,4 +118,4 @@ class Actions:
     regex = r"[-]?\d+"
     replace = re.sub(regex, lambda match: str(int(match.group(0)) // n), selected)
 
-    actions.user.insert_via_clipboard(replace)
+    actions.user.insert_replacing_selected(replace)

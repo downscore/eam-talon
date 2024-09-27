@@ -107,7 +107,7 @@ class Actions:
       return
     for formatter_enum in formatter_enums:
       _LAST_OUTPUT_BY_FORMATTER[formatter_enum] = reformatted
-    actions.user.insert_via_clipboard(reformatted)
+    actions.user.insert_replacing_selectedm(reformatted)
 
   def format_selection_single(formatter_word: str):
     """Formats the current selection in place using the given formatter."""
@@ -132,7 +132,7 @@ class Actions:
     if not reformatted:
       return
     _LAST_TITLE = reformatted
-    actions.user.insert_via_clipboard(reformatted)
+    actions.user.insert_replacing_selected(reformatted)
 
   def format_sentence(phrase: str) -> str:
     """Formats a phrase using sentence casing."""
@@ -153,7 +153,7 @@ class Actions:
     if not reformatted:
       return
     _LAST_SENTENCE = reformatted
-    actions.user.insert_via_clipboard(reformatted)
+    actions.user.insert_replacing_selected(reformatted)
 
   def format_selection_phrase():
     """Reformats the current selection as a phrase."""
@@ -163,7 +163,7 @@ class Actions:
     reformatted = _reformat_string(selected, options)
     if not reformatted:
       return
-    actions.user.insert_via_clipboard(reformatted)
+    actions.user.insert_replacing_selected(reformatted)
 
   def format_uppercase(phrase: str) -> str:
     """Formats a phrase using all caps."""

@@ -21,6 +21,7 @@ app: neovim
 """
 
 _MARK = "q"  # Mark to use for temporary navigation.
+_REGISTER = "0"  # Register to use for temporary storage.
 
 
 def _insert_mode(context: st.Context):
@@ -37,6 +38,15 @@ def _normal_mode(context: st.Context):
   if context.editor_mode == "n":
     return
   actions.key("escape")
+
+
+def _extend_selection(commands: str):
+  """Extend the current selection using the given commands."""
+  # Enter visual mode if not already in it.
+  context: st.Context = actions.user.scrambler_get_context()
+  if context.editor_mode != "v":
+    actions.insert("v")
+  actions.insert(commands)
 
 
 def _move_cursor_to_start_of_range(text_range: st.TextRange, context: st.Context):
@@ -95,6 +105,7 @@ class Actions:
   def neovim_run(command: str):
     """Runs the command string from normal mode in Neovim."""
     actions.key("escape")
+    actions.sleep("100ms")
     actions.insert(command)
 
 
@@ -138,19 +149,214 @@ class ExtensionActions:
       # Sleep here so that clip.revert doesn't revert the clipboard too soon.
       actions.sleep("50ms")
 
+  def insert_replacing_selected(text: str):
+    context: st.Context = actions.user.scrambler_get_context()
+    if context.editor_mode == "v":
+      actions.insert("xi")
+    elif context.editor_mode == "n":
+      actions.insert("i")
+    actions.insert(text)
+
   def copy():
     context: st.Context = actions.user.scrambler_get_context()
-    clip.set_text(context.selection_range.extract(context.text))
+    text = context.selection_range.extract(context.text)
+    if text:
+      clip.set_text(text)
+
+  def cut():
+    context: st.Context = actions.user.scrambler_get_context()
+    text = context.selection_range.extract(context.text)
+    if text:
+      clip.set_text(text)
+      # Text was selected, so we should be in visual mode.
+      actions.insert("xi")
+
+  def delete():
+    context: st.Context = actions.user.scrambler_get_context()
+    if context.editor_mode == "i":
+      actions.key("escape")
+    actions.insert("xi")
+
+  def delete_all():
+    """Deletes all text in the active editor."""
+    actions.user.select_all()
+    actions.user.delete()
+
+  def delete_line():
+    actions.user.select_line_including_line_break()
+    actions.user.delete()
+
+  def delete_word():
+    actions.user.select_word()
+    actions.user.delete()
+
+  def delete_to_line_end():
+    actions.user.extend_line_end()
+    actions.user.delete()
+
+  def delete_to_line_start():
+    actions.user.extend_line_start()
+    actions.user.delete()
+
+  def delete_to_file_start():
+    actions.user.extend_file_start()
+    actions.user.delete()
+
+  def delete_to_file_end():
+    actions.user.extend_file_end()
+    actions.user.delete()
+
+  def delete_word_left(n: int = 1):
+    for _ in range(n):
+      actions.user.extend_word_left()
+      actions.user.delete()
+
+  def delete_word_right(n: int = 1):
+    for _ in range(n):
+      actions.user.extend_word_right()
+      actions.user.delete()
+
+  def line_start():
+    actions.user.neovim_run("0i")
+
+  def line_end():
+    actions.user.neovim_run("$i")
+
+  def file_end():
+    actions.user.neovim_run("Gi")
+
+  def file_start():
+    actions.user.neovim_run("ggi")
+
+  def extend_up():
+    _extend_selection("k")
+
+  def extend_down():
+    _extend_selection("j")
+
+  def extend_left():
+    _extend_selection("h")
+
+  def extend_right():
+    _extend_selection("l")
+
+  def extend_file_end():
+    _extend_selection("G")
+
+  def extend_file_start():
+    _extend_selection("gg")
+
+  def extend_line_end():
+    _extend_selection("$")
+
+  def extend_line_start():
+    _extend_selection("0")
+
+  def extend_page_down():
+    _extend_selection("")
+    actions.key("ctrl-d")
+
+  def extend_page_up():
+    _extend_selection("")
+    actions.key("ctrl-u")
+
+  def extend_word_left():
+    _extend_selection("b")
+
+  def extend_word_right():
+    _extend_selection("w")
+
+  def select_all():
+    actions.user.neovim_run("gg0vG$")
+
+  def select_line_excluding_line_break():
+    actions.user.neovim_run("^v$h")
+
+  def select_line_including_line_break():
+    actions.user.neovim_run("0v$")
+
+  def select_multiple_lines_including_line_break(n: int):
+    if n <= 1:
+      actions.user.neovim_run("0v$")
+    else:
+      actions.user.neovim_run(f"0v{n - 1}j$")
+
+  def select_word():
+    actions.user.neovim_run("viw")
+
+  def find():
+    actions.user.neovim_run("/")
+
+  def find_next():
+    actions.user.neovim_run("ni")
+
+  def find_previous():
+    actions.user.neovim_run("Ni")
+
+  def indent_less():
+    actions.user.neovim_run("<<i")
+
+  def indent_more():
+    actions.user.neovim_run(">>i")
+
+  def line_insert_up():
+    actions.user.neovim_run("O")
+
+  def line_insert_down():
+    actions.user.neovim_run("o")
+
+  def line_swap_up():
+    actions.user.neovim_run(f"\"{_REGISTER}yyddk\"{_REGISTER}P")
+
+  def line_swap_down():
+    actions.user.neovim_run(f"\"{_REGISTER}yydd\"{_REGISTER}p")
+
+  def undo():
+    actions.user.neovim_run("ui")
+
+  def redo():
+    actions.user.neovim_run("")
+    actions.key("ctrl-r")
+    actions.insert("i")
+
+  def save():
+    actions.user.neovim_run(":w<CR>i")
+
+  def save_all():
+    actions.user.neovim_run(":wa<CR>i")
+
+  def duplicate_line():
+    actions.user.neovim_run(f"\"{_REGISTER}yy\"{_REGISTER}pi")
+
+  def join_lines():
+    actions.user.neovim_run("J")
+
+  def expand_selection_to_adjacent_characters():
+    context: st.Context = actions.user.scrambler_get_context()
+    if context.editor_mode != "v":
+      actions.user.neovim_run("hvll")
+    else:
+      # TODO: This will shrink the selection if the cursor is at the beinning of the selection.
+      actions.insert("ohol")
+
+  def shrink_selection_by_first_and_last_characters():
+    context: st.Context = actions.user.scrambler_get_context()
+    if context.editor_mode != "v":
+      raise ValueError("No text selected")
+
+    # TODO: This will expand the selection if the cursor is at the beinning of the selection.
+    actions.insert("oloh")
 
   def jump_line(n: int):
     # Insert mode at the first non-whitespace character of the line.
     actions.user.neovim_run(f"{n}G^i")
 
   def position_mark():
-    actions.user.neovim_run(f"m{_MARK}")
+    actions.user.neovim_run(f"m{_MARK}i")  # End in insert mode.
 
   def position_restore():
-    actions.user.neovim_run(f"`{_MARK}:delmarks {_MARK}\n")  # Jump to the mark and delete it.
+    # Jump to the mark and delete it, then end in insert mode.
+    actions.user.neovim_run(f"`{_MARK}:delmarks {_MARK}\ni")
 
   def scrambler_get_context() -> st.Context:
     with clip.capture() as s:
@@ -202,13 +408,6 @@ class ExtensionActions:
       actions.insert(f"{editor_action.text_range.length()}x")
     _insert_mode(context)
 
-  def scrambler_clear_action(editor_action: st.EditorAction, context: st.Context):
-    # We can delete from normal mode or visual mode.
-    if context.editor_mode == "i":
-      actions.key("escape")
-    actions.insert("x")
-    _insert_mode(context)
-
   def scrambler_insert_text_action(editor_action: st.EditorAction, context: st.Context):
     _insert_mode(context)
     actions.user.insert_via_clipboard(editor_action.text)
@@ -253,12 +452,12 @@ class ExtensionActions:
 
   def line_numbers_insert_line_above_no_move(n: int):
     actions.user.position_mark()
-    actions.user.neovim_run("O")
+    actions.user.neovim_run(f"{n}GO")
     actions.user.position_restore()
 
   def line_numbers_insert_line_below_no_move(n: int):
     actions.user.position_mark()
-    actions.user.neovim_run("o")
+    actions.user.neovim_run(f"{n}Go")
     actions.user.position_restore()
 
   def split_open_down():

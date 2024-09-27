@@ -153,10 +153,8 @@ class ExtensionActions:
   def insert_replacing_selected(text: str):
     context: st.Context = actions.user.scrambler_get_context()
     if context.editor_mode == "v":
-      actions.insert("xi")
-    elif context.editor_mode == "n":
-      actions.insert("i")
-    actions.insert(text)
+      actions.insert("x")
+    actions.user.insert_via_clipboard(text)
 
   def copy():
     context: st.Context = actions.user.scrambler_get_context()
@@ -491,6 +489,54 @@ class ExtensionActions:
     actions.user.extend_word_left()
     actions.insert("o")  # Move cursor to the end of the selection.
     actions.user.fragment_select(-1)
+
+  def jump_to_last_occurrence(text: str):
+    actions.user.neovim_run(f"?{text}<CR>")
+
+  def jump_to_next_occurrence(text: str):
+    actions.user.neovim_run(f"/{text}<CR>")
+
+  def replace():
+    actions.user.neovim_run("/")
+
+  def replace_everywhere():
+    # TODO: Ripgrep-style search and replace.
+    actions.user.neovim_run("/")
+
+  def character_select_range(from_index: int, to_index: int = 0):
+    if 0 < to_index < from_index:
+      raise ValueError(f"Invalid character range: {from_index} to {to_index}")
+
+    selected = actions.user.selected_text_or_word()
+    if len(selected) == 0 or from_index <= 0 or from_index > len(selected):
+      raise ValueError(f"Character range outside of selection: {from_index} to {to_index}")
+
+    effective_to = min(len(selected), to_index) if to_index > 0 else from_index
+
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.insert("o")
+    actions.key("escape")
+    if from_index > 1:
+      actions.insert(f"{from_index - 1}l")
+    length = effective_to - from_index
+    if length > 0:
+      actions.insert(f"v{length}l")
+
+  def character_select_next():
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.user.neovim_run("l")
+
+  def character_select_previous():
+    # TODO: This will not work if the cursor is at the start of the selection.
+    actions.user.neovim_run("h")
+
+  def character_cursor_before(n: int):
+    actions.user.character_select_range(n, 0)
+    actions.user.neovim_run("i")
+
+  def character_cursor_after(n: int):
+    actions.user.character_select_range(n, 0)
+    actions.user.neovim_run("li")
 
   def jump_line(n: int):
     # Insert mode at the first non-whitespace character of the line.

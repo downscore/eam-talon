@@ -677,7 +677,7 @@ class ExtensionActions:
     if replaced == selected:
       replaced = selected.replace(">", "<")
 
-    actions.user.insert_via_clipboard(replaced)
+    actions.user.insert_replacing_selected(replaced)
 
   def replace():
     """Search and replace for text in the active editor."""
@@ -733,13 +733,13 @@ class ExtensionActions:
     """Sorts the selected lines in ascending order."""
     selected_text = actions.user.selected_text()
     selected_text = text_util.sort_lines(selected_text)
-    actions.user.insert_via_clipboard(selected_text)
+    actions.user.insert_replacing_selected(selected_text)
 
   def sort_lines_descending():
     """Sorts the selected lines in descending order."""
     selected_text = actions.user.selected_text()
     selected_text = text_util.sort_lines(selected_text, reverse=False)
-    actions.user.insert_via_clipboard(selected_text)
+    actions.user.insert_replacing_selected(selected_text)
 
   def style_title():
     """Format text as a title."""
@@ -821,7 +821,7 @@ class ExtensionActions:
       line_text = line_text.replace("[ ]", "[x]")
     else:
       line_text = line_text.replace("[x]", "[ ]")
-    actions.user.insert_via_clipboard(line_text)
+    actions.user.insert_replacing_selected(line_text)
 
     # Go back to the original line (we just inserted a line break if it wasn't the last line in the
     # file).
@@ -831,7 +831,7 @@ class ExtensionActions:
     """Surrounds the currently-selected text with the given prefix and suffix."""
     text = actions.user.selected_text()
     if text != "":
-      actions.user.insert_via_clipboard(f"{prefix}{text}{suffix}")
+      actions.user.insert_replacing_selected(f"{prefix}{text}{suffix}")
     else:
-      actions.user.insert_via_clipboard(f"{prefix}{suffix}")
+      actions.user.insert_replacing_selected(f"{prefix}{suffix}")
       actions.key(f"left:{len(suffix)}")

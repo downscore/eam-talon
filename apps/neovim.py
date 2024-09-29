@@ -50,6 +50,13 @@ def _extend_selection(commands: str):
   actions.insert(commands)
 
 
+def _orient_selection():
+  """Preserve the current selection, ensuring the cursor is at the end of it. Must be called in
+  visual mode or normal mode. Ends in visual mode."""
+  actions.key("escape")
+  actions.insert("`<v`>")
+
+
 def _move_cursor_to_start_of_range(text_range: st.TextRange, context: st.Context):
   """Moves the cursor to the start of the given range. Ends in normal mode."""
   # Make sure all the indices are in bounds. They should be relative to the first character in the
@@ -335,15 +342,17 @@ class ExtensionActions:
     if context.editor_mode != "v":
       actions.user.neovim_run("hvll")
     else:
-      # TODO: This will shrink the selection if the cursor is at the beinning of the selection.
+      _orient_selection()
       actions.insert("ohol")
 
   def shrink_selection_by_first_and_last_characters():
     context: st.Context = actions.user.scrambler_get_context()
     if context.editor_mode != "v":
       raise ValueError("No text selected")
-
-    # TODO: This will expand the selection if the cursor is at the beinning of the selection.
+    if context.selection_range.length() <= 2:
+      actions.key("escape")
+      return
+    _orient_selection()
     actions.insert("oloh")
 
   def delete_first_and_last_characters_maintain_selection():
@@ -357,12 +366,13 @@ class ExtensionActions:
       actions.insert("xi")
       return
 
-    replace_text = selected_text[1:-1]
-    actions.user.insert_replacing_selected(replace_text)
+    actions.key("escape")
+    actions.insert("`>x`<xv`>2h")
 
-    # Reselect the text.
-    # TODO: This won't work with multi-line selections.
-    actions.user.neovim_run(f"{len(replace_text)}hv{len(replace_text)}l")
+    # If the original selection was at the end of a line, we may need to move the cursor.
+    new_selected_text = actions.user.selected_text()
+    if len(new_selected_text) < len(selected_text) - 2:
+      actions.insert("l")
 
   def find_everywhere():
     # TODO: Ripgrep-style search.
@@ -373,7 +383,7 @@ class ExtensionActions:
     if n <= 0 or n > len(fragments):
       raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if fragment[1] > 0:
@@ -385,7 +395,7 @@ class ExtensionActions:
     if n <= 0 or n > len(fragments):
       raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if fragment[0] > 0:
@@ -418,7 +428,7 @@ class ExtensionActions:
     start_index = from_fragment[0] - (1 if delete_before else 0)
     length = to_fragment[1] - from_fragment[0] + (1 if delete_before or delete_after else 0)
 
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if start_index > 0:
@@ -440,7 +450,7 @@ class ExtensionActions:
     else:
       to_fragment = from_fragment
 
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if from_fragment[0] > 0:
@@ -454,7 +464,7 @@ class ExtensionActions:
     if n <= 0 or n > len(fragments):
       raise ValueError(f"Invalid fragment index: {n}")
     fragment = fragments[n - 1]
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if fragment[1] > 1:
@@ -475,14 +485,14 @@ class ExtensionActions:
       actions.insert(f"v{length}l")
 
   def fragment_select_next():
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     if actions.user.selected_text():
       actions.user.neovim_run("l")
     actions.user.extend_word_right()
     actions.user.fragment_select(1)
 
   def fragment_select_previous():
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     selected = actions.user.selected_text()
     if selected:
       actions.user.neovim_run(f"{len(selected)}h")
@@ -513,7 +523,7 @@ class ExtensionActions:
 
     effective_to = min(len(selected), to_index) if to_index > 0 else from_index
 
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.insert("o")
     actions.key("escape")
     if from_index > 1:
@@ -523,11 +533,11 @@ class ExtensionActions:
       actions.insert(f"v{length}l")
 
   def character_select_next():
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.user.neovim_run("l")
 
   def character_select_previous():
-    # TODO: This will not work if the cursor is at the start of the selection.
+    _orient_selection()
     actions.user.neovim_run("h")
 
   def character_cursor_before(n: int):

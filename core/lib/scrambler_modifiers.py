@@ -286,10 +286,10 @@ def _get_phrase_regex_with_expanded_tokens_reversed(
   alt_sets: list[list[str]] = []
   for word in words:
     # Get all homophones in lowercase and escaped for use in a regex.
-    phones = list(map(lambda w: re.escape(w.lower()).replace("\n", "\\n"), get_homophones(word)))
+    phones = list(map(lambda w: re.escape(w.lower()), get_homophones(word)))
     # Reverse the words.
     for i in range(len(phones)):
-      phones[i] = phones[i][::-1]
+      phones[i] = phones[i][::-1].replace("\n", "\\n")
     alt_sets.append(phones)
 
   # Iterate through alt sets in reverse order.

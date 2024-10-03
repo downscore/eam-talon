@@ -22,7 +22,7 @@ def get_phrase_regex(words: Sequence[str], get_homophones: Callable[[str], list[
   alts = []
   for word in words:
     # Get all homophones in lowercase and escaped for use in a regex.
-    phones = list(map(lambda w: re.escape(w.lower()).replace("\n", "\\n"), get_homophones(word)))
+    phones = list(map(lambda w: re.escape(w.lower()), get_homophones(word)))
     phones_alt = ""
     if len(phones) > 1:
       phones_alt = f"({'|'.join(phones)})"  # pylint: disable=inconsistent-quotes
@@ -286,10 +286,10 @@ def _get_phrase_regex_with_expanded_tokens_reversed(
   alt_sets: list[list[str]] = []
   for word in words:
     # Get all homophones in lowercase and escaped for use in a regex.
-    phones = list(map(lambda w: re.escape(w.lower()), get_homophones(word)))
+    phones = list(map(lambda w: w.lower(), get_homophones(word)))
     # Reverse the words.
     for i in range(len(phones)):
-      phones[i] = phones[i][::-1].replace("\n", "\\n")
+      phones[i] = re.escape(phones[i][::-1])
     alt_sets.append(phones)
 
   # Iterate through alt sets in reverse order.

@@ -110,6 +110,9 @@ class ExtensionActions:
   def indent_less():
     actions.user.vscode("editor.action.outdentLines")
 
+  def join_lines():
+    actions.user.vscode("editor.action.joinLines")
+
   def jump_line(n: int):
     actions.user.vscode("workbench.action.gotoLine")
     actions.insert(n)

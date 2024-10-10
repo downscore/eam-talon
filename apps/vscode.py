@@ -170,6 +170,7 @@ class ExtensionActions:
 
   def position_restore():
     actions.user.vscode("editor.action.goToSelectionAnchor")
+    actions.user.vscode("editor.action.cancelSelectionAnchor")
 
   def source_control_change_previous():
     actions.user.vscode("workbench.action.editor.previousChange")

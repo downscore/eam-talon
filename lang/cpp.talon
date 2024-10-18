@@ -78,6 +78,9 @@ make namespace:
   key(left:15)
   key(enter)
 make using: insert("using ")
+make static cast:
+  insert("static_cast<>()")
+  key(left:3)
 
 # Shortcuts for symbol names hard to type by voice.
 snake pushback: insert("push_back")

@@ -24,6 +24,7 @@ key(ctrl-cmd-o): user.switcher_focus_app_by_name("Obsidian")
 key(ctrl-cmd-p): user.switcher_focus_app_by_name("ChatGPT")
 key(ctrl-cmd-a): user.switcher_focus_app_by_name("Google Chat")
 key(ctrl-cmd-f): user.switcher_focus_app_by_name("Finder")
+key(ctrl-cmd-m): user.switcher_focus_app_by_name("Messages")
 key(ctrl-cmd-c): user.switcher_focus_coder()
 key(ctrl-cmd-b): user.switcher_focus_browser()
 key(ctrl-cmd-t): user.switcher_focus_terminal()
@@ -31,6 +32,14 @@ key(ctrl-cmd-g): user.cross_browser_focus_tab_by_hostname("mail.google.com")
 key(ctrl-cmd-y): user.cross_browser_focus_tab_by_hostname("youtube.com")
 key(ctrl-cmd-d): user.cross_browser_focus_tab_by_hostname("docs.google.com")
 key(ctrl-cmd-l): user.cross_browser_focus_tab_by_hostname("calendar.google.com")
+
+# Save and restore a focused window.
+key(ctrl-cmd-j): user.switcher_save_focus()
+key(ctrl-cmd-k): user.switcher_restore_focus()
+
+# Remember the current window as the canonical window for an app type.
+key(ctrl-cmd-.): user.switcher_save_current_window_by_name("coder")
+key(ctrl-cmd-,): user.switcher_save_current_window_by_name("browser")
 
 # Resizing the active window.
 key(ctrl-cmd-z): user.snap_window_full()

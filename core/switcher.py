@@ -165,7 +165,8 @@ class Actions:
   def switcher_focus_window_by_type(type_name: str,
                                     app_name1: str = "",
                                     app_name2: str = "",
-                                    app_name3: str = ""):
+                                    app_name3: str = "",
+                                    app_name4: str = ""):
     """Tries to focus a window given its type name and possible app names."""
     # Talon doesn't support list arguments, so use optional arguments instead.
     app_names: list[str] = []
@@ -175,6 +176,8 @@ class Actions:
       app_names.append(app_name2)
     if app_name3:
       app_names.append(app_name3)
+    if app_name4:
+      app_names.append(app_name4)
 
     if type_name in _window_id_by_name:
       try:
@@ -229,7 +232,8 @@ class Actions:
 
   def switcher_focus_terminal():
     """Focuses the terminal application."""
-    actions.user.switcher_focus_window_by_type("terminal", "Alacritty", "iTerm2", "Terminal")
+    actions.user.switcher_focus_window_by_type("terminal", "Ghostty", "Alacritty", "iTerm2",
+                                               "Terminal")
 
   def switcher_focus_coder():
     """Focuses the IDE application."""
